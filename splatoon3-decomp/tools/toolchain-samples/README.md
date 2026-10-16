@@ -20,6 +20,9 @@ clang-17 --target=aarch64-none-elf -O3 -mcpu=cortex-a57 \
 
 合计 1032/1040 = **99.2%**。
 
+> **后续修正**：这 6 个是简单样本。扩大到 29 个函数后平均 **95.2%**，
+> 且配置需要加 `-fomit-frame-pointer`。见 `docs/07-batch-verification.md`。
+
 ## 复现步骤
 
 ```bash
