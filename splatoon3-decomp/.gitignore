@@ -1,0 +1,45 @@
+# 游戏二进制与 RomFS —— 受版权保护，禁止提交
+binaries/*
+!binaries/README.md
+romfs/*
+
+# 工具二进制（可重新编译，不入库）
+tools/bin/
+
+# Key 文件（绝对禁止）
+tools/keys/
+*.keys
+prod.keys
+title.keys
+
+# NCA / NSP / XCI 等容器
+*.nca
+*.nsp
+*.xci
+*.nsz
+*.xcz
+*.nro
+
+# 反编译中间产物
+work/*
+!work/README.md
+*.uncompressed
+*.decompressed
+
+# 游戏 RomFS 解包内容
+romfs-extract/
+
+# Python / 工具
+__pycache__/
+.venv/
+venv/
+
+# 编辑器 / macOS
+.DS_Store
+*.swp
+
+# 工具链样本产物（可用 tools/toolchain-samples/README.md 复现，不入库）
+tools/toolchain-samples/**/*.o
+
+# ROM / 中继产物
+*.rom

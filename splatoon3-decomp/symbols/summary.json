@@ -1,0 +1,20 @@
+{
+  "source": "main.uncompressed",
+  "total_unique_strings": 124368,
+  "game_names_total": 5376,
+  "sdk_string_count": 2714,
+  "buckets": {
+    "spl::": 2027,
+    "spl__": 1855,
+    "game::": 92,
+    "game__": 379,
+    "UniqueSequence": 345,
+    "UniqueFlow": 120,
+    "UniqueNode": 23,
+    "GameSeq": 60,
+    "Coop": 382,
+    "Msn_": 45,
+    "Plz_": 27,
+    "LayoutMsg/": 21
+  }
+}
