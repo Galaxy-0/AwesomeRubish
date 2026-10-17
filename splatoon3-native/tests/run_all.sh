@@ -3,7 +3,16 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$root"
 python="${PYTHON:-$root/.venv/bin/python}"
+milestone=m1
+if [[ "${1:-}" == --milestone ]]; then
+    milestone="${2:?--milestone requires m1 or m2}"
+    shift 2
+fi
+case "$milestone" in m1|m2) ;; *) echo "Unknown milestone: $milestone" >&2; exit 2 ;; esac
 mkdir -p work/tests
+make -C upstream/dm/host/tests GAME=0100C2500FC20000 build/t_hid_motion build/t_ldn_frontend > work/tests/hid-build.log 2>&1
+upstream/dm/host/tests/build/t_hid_motion > work/tests/hid-motion.log 2>&1
+upstream/dm/host/tests/build/t_ldn_frontend > work/tests/ldn-frontend.log 2>&1
 make -C upstream/dm/host GAME=0100C2500FC20000 dmhost > work/tests/host-build.log 2>&1
 make -C upstream/dm/gfx/tests GAME=0100C2500FC20000 t_render_enable t_nvn > work/tests/gpu-build.log 2>&1
 (
@@ -13,4 +22,6 @@ make -C upstream/dm/gfx/tests GAME=0100C2500FC20000 t_render_enable t_nvn > work
 )
 tail -1 work/tests/render-enable.log
 tail -1 work/tests/nvn.log
-"$python" tests/test_m1.py "$@"
+tail -1 work/tests/hid-motion.log
+tail -1 work/tests/ldn-frontend.log
+"$python" "tests/test_$milestone.py" "$@"

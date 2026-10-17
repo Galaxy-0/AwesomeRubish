@@ -2,10 +2,12 @@
 """M1 integration gate. Requires the locally extracted game and built host."""
 import argparse
 import datetime
+import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import time
 
@@ -16,13 +18,18 @@ FRAME = re.compile(r"\[nvn\] 帧 (\d+)：")
 FAILURE = re.compile(r"CRASH|FATAL|invalid source|看门狗：|命令缓冲执行出错|命令缓冲错误详情")
 
 
-def run(seconds):
+def run(seconds, save_ref=None):
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     out = ROOT / "work/tests" / f"m1-{stamp}"
     out.mkdir(parents=True)
     for name in ("save", "temp"):
         (out / name).mkdir()
-    env = os.environ.copy()
+    save_sha256 = None
+    if save_ref is not None:
+        seed = save_ref / "save.dat"
+        save_sha256 = hashlib.sha256(seed.read_bytes()).hexdigest()
+        shutil.copyfile(seed, out / "save/save.dat")
+    env = {k: v for k, v in os.environ.items() if not k.startswith("DM_")}
     env.update(
         DM_ROOT=str(ROOT / "work"),
         DM_ROMFS=str(ROOT / "work/data/v720896/RomFS"),
@@ -78,6 +85,8 @@ def run(seconds):
         errors.append(f"runtime failure markers: {sorted(set(failures))}")
     if "优雅退出完成" not in text:
         errors.append("graceful shutdown was not completed")
+    if save_ref is not None and hashlib.sha256(seed.read_bytes()).hexdigest() != save_sha256:
+        errors.append("reference save changed during the run")
     for frame in (600, 1200, 2400):
         path = out / f"frame_{frame}.png"
         if not path.exists():
@@ -92,6 +101,8 @@ def run(seconds):
             if rgb.size != (1920, 1080) or variance < 25 or nonblack < 0.05:
                 errors.append(f"frame {frame} failed 1080p/nonblack gate")
     result = {"passed": not errors, "seconds": seconds, "final_frame": final_frame,
+              "save_reference": str(save_ref) if save_ref is not None else None,
+              "save_sha256": save_sha256,
               "returncode": proc.returncode, "samples": samples, "images": images, "errors": errors}
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2), flush=True)
@@ -101,7 +112,10 @@ def run(seconds):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seconds", type=float, default=75)
+    parser.add_argument("--save-ref", type=Path, help="copy this directory's save.dat into a fresh run")
     args = parser.parse_args()
     if args.seconds < 45:
         parser.error("M1 requires at least 45 seconds")
-    raise SystemExit(run(args.seconds))
+    if args.save_ref is not None and not (args.save_ref / "save.dat").is_file():
+        parser.error("--save-ref must contain save.dat")
+    raise SystemExit(run(args.seconds, args.save_ref))

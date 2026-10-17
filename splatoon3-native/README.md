@@ -7,6 +7,8 @@
 - `tools/survey.py`：对 XCI 本体 + 11.3.0 更新 NSP 跑 nxnative 粗查
 - `notes/`：粗查报告与进度
 - `work/`：解包 / 构建产物（gitignore，含游戏数据，绝不入库）
-- `tests/run_all.sh`：M1 一键回归（依赖与门槛见 [tests/README.md](tests/README.md)）；M1 已通过，当前进度见 [notes/PROGRESS.md](notes/PROGRESS.md)
+- `tests/run_all.sh`：M1 / M2 一键回归（依赖与门槛见 [tests/README.md](tests/README.md)）；M1、M2 已通过，当前进度见 [notes/PROGRESS.md](notes/PROGRESS.md)
+- `tools/routes/`：M2 使用已过教学的存档副本，脚本走到 The Shoal 的 Private Battle 菜单，入口后连续十分钟验收通过；旧教学路线仅保留历史记录。
+- `work/save_ref/save.dat`：指定模拟器存档的只读副本，不入库。M2 测试每次复制到独立运行目录，绝不把参考档或原件作为 `DM_SAVE`。
 
 复现：`git clone https://github.com/seedds/nxnative upstream && (cd upstream && git checkout 9579030 && git apply ../patches/*.diff)`
