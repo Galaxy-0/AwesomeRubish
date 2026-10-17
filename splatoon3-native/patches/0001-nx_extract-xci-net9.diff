@@ -1,0 +1,31 @@
+diff --git a/dm/tools/nx_extract/Program.cs b/dm/tools/nx_extract/Program.cs
+index acb2a0b..2155191 100644
+--- a/dm/tools/nx_extract/Program.cs
++++ b/dm/tools/nx_extract/Program.cs
+@@ -69,8 +69,11 @@ static class P {
+ 
+     // Open an NSP (PFS0), import its common tickets, list all NCAs
+     static List<Nca> OpenNsp(KeySet ks, string path) {
+-        var pfs = new PartitionFileSystem();
+-        pfs.Initialize(new LocalStorage(path, FileAccess.Read)).ThrowIfFailure();
++        IFileSystem pfs;
++        if (path.EndsWith(".xci", StringComparison.OrdinalIgnoreCase)) {   // game card image: NCAs live in the secure partition
++            var xci = new LibHac.Tools.Fs.Xci(ks, new LocalStorage(path, FileAccess.Read));
++            pfs = xci.OpenPartition(LibHac.Tools.Fs.XciPartitionType.Secure);
++        } else { var p0 = new PartitionFileSystem(); p0.Initialize(new LocalStorage(path, FileAccess.Read)).ThrowIfFailure(); pfs = p0; }
+         var ncas = new List<Nca>();
+         foreach (DirectoryEntryEx e in pfs.EnumerateEntries("*", SearchOptions.Default)) {
+             using var f = new UniqueRef<IFile>();
+diff --git a/dm/tools/nx_extract/nx_extract.csproj b/dm/tools/nx_extract/nx_extract.csproj
+index 3459d94..ca3854f 100644
+--- a/dm/tools/nx_extract/nx_extract.csproj
++++ b/dm/tools/nx_extract/nx_extract.csproj
+@@ -3,7 +3,7 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup>
+     <OutputType>Exe</OutputType>
+-    <TargetFramework>net10.0</TargetFramework>
++    <TargetFramework>net9.0</TargetFramework>
+     <Nullable>disable</Nullable>
+     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+   </PropertyGroup>
