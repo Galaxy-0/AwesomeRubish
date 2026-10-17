@@ -84,11 +84,115 @@ index 0000000..8539a5d
 @@ -0,0 +1,2 @@
 +# 预热种子清单（随包，与 shader_map.tsv 同目录）。行：S<TAB>着色器键<TAB>阶段 / R<TAB>渲染管线键（pso_skey 十六进制）/ C<TAB>计算着色器键。
 +# 本作尚未录制（DM_PSO_RECORD）：空表 = 不预热。行序 = 首次使用顺序，不要排序。
+diff --git a/dm/gfx/nvn/hle_nvn.c b/dm/gfx/nvn/hle_nvn.c
+index d4c3531..e6de2eb 100644
+--- a/dm/gfx/nvn/hle_nvn.c
++++ b/dm/gfx/nvn/hle_nvn.c
+@@ -570,8 +570,50 @@ NVN(nvnCommandBufferEndRecording, NVNcommandHandle, NVNcommandBuffer *c) {
+     return (NVNcommandHandle)o->begin;
+ }
+ NVN(nvnCommandBufferIsRecording, NVNboolean, const NVNcommandBuffer *c) { return ((const cmd_t *)c)->recording != 0; }
+-NVN(nvnCommandBufferCopyCommands, void, NVNcommandBuffer *c, int n, const NVNcommandHandle *h) {
+-    for (int i = 0; i < n; i++) { uint8_t *p = cmd_alloc(CB(c), 16); put_hdr(p, OP_CALL, 16); memcpy(p + 8, &h[i], 8); }
++// CopyCommands owns the copied bytes. CallCommands alone retains a reference
++// to the source handle, whose storage must remain alive until execution.
++static const tex_t *cmd_copy_tex(const tex_t *t, const uint8_t *src, uint8_t *dst, uint32_t size) {
++    uintptr_t a = (uintptr_t)t, lo = (uintptr_t)src;
++    return a >= lo && a - lo < size ? (const tex_t *)(dst + (a - lo)) : t;
++}
++static void cmd_copy_record(cmd_t *o, const uint8_t *src, op_hdr h) {
++    uint8_t *dst = cmd_alloc(o, h.size); memcpy(dst, src, h.size);
++    cs_op(h.op, h.size);
++    void *a = dst + 8;
++    // Texture snapshots live inside the record. External resources and nested
++    // CALL targets retain their original addresses.
++    switch (h.op) {
++        case OP_SET_RT: {
++            p_set_rt *r = a;
++            for (int i = 0; i < r->n; i++) r->color[i] = cmd_copy_tex(r->color[i], src, dst, h.size);
++            r->depth = cmd_copy_tex(r->depth, src, dst, h.size); break;
++        }
++        case OP_COPY_B2T: case OP_COPY_T2B: {
++            p_copy_b2t *r = a; r->tex = cmd_copy_tex(r->tex, src, dst, h.size); break;
++        }
++        case OP_COPY_T2T: {
++            p_copy_t2t *r = a;
++            r->src = cmd_copy_tex(r->src, src, dst, h.size);
++            r->dst = cmd_copy_tex(r->dst, src, dst, h.size); break;
++        }
++        case OP_CLEAR_TEX: {
++            p_clear_tex *r = a; r->tex = cmd_copy_tex(r->tex, src, dst, h.size); break;
++        }
++    }
++}
++NVN(nvnCommandBufferCopyCommands, void, NVNcommandBuffer *c, int n, const NVNcommandHandle *handles) {
++    for (int i = 0; i < n; i++) {
++        const uint8_t *p = (const uint8_t *)handles[i];
++        for (unsigned count = 0; ; count++) {
++            op_hdr h; memcpy(&h, p, sizeof h);
++            if (count >= 1000000 || ((uintptr_t)p & 7) || h.size < 8 || (h.size & 7) || h.op >= OP_COUNT_)
++                die("CopyCommands invalid source %p: op=%u size=%u", p, h.op, h.size);
++            if (h.op == OP_END) break;
++            if (h.op == OP_JUMP) { memcpy(&p, p + 8, 8); continue; }
++            if (h.op != OP_BEGIN) cmd_copy_record(CB(c), p, h);
++            p += h.size;
++        }
++    }
+ }
+ NVN(nvnCommandBufferSignalEvent, void, NVNcommandBuffer *c, const NVNevent *e, NVNeventSignalMode m, NVNeventSignalLocation loc, int flags, uint32_t v) {
+     (void)loc; (void)flags;
+@@ -1435,7 +1477,9 @@ NVN_NOPROTO(nvnProgramSetShadersExt, NVNboolean, NVNprogram *p, int n, const sha
+ // Singular / combined forms → plural / separate forms; state the replay layer does not have yet (conditional render, depth bounds, ...) is logged once and drawing continues (better to over-draw than to drop).
+ #include "../tex/nvn_deswizzle.h"
+ 
+-NVN(nvnCommandBufferCallCommands, void, NVNcommandBuffer *c, int n, const NVNcommandHandle *h) { h_nvnCommandBufferCopyCommands(c, n, h); }   // the replay layer treats CALL and COPY alike
++NVN(nvnCommandBufferCallCommands, void, NVNcommandBuffer *c, int n, const NVNcommandHandle *h) {
++    for (int i = 0; i < n; i++) { uint8_t *p = cmd_alloc(CB(c), 16); put_hdr(p, OP_CALL, 16); memcpy(p + 8, &h[i], 8); }
++}
+ // Combined texture handle (texture id | sampler id << 20) is recorded into the texture slot as is: the replay layer takes the texture from the low 20 bits and the sampler from the high bits (nvn_mtl.m NVN_RB_SAMPT)
+ NVN(nvnCommandBufferBindTexture, void, NVNcommandBuffer *c, NVNshaderStage st, int i, NVNtextureHandle h) { uint64_t v = (uint64_t)h; bind_handles(c, OP_BIND_TEX, st, i, 1, &v); }
+ // "Deferred" binding: the GPU reads the handles h points to when it executes this command, not at recording. The per-texture binding of The Legend of Zelda: Breath of the Wild's engine (main+0xec2e64) always uses it,
+@@ -1478,9 +1522,10 @@ NVN(nvnCommandBufferReportValue, void, NVNcommandBuffer *c, uint32_t v, NVNbuffe
+ // Clear a buffer to a 32-bit value: one OP_CLEAR_BUF record, filled in order within the submission at replay (fillBuffer when all bytes match, otherwise copied from a pattern buffer)
+ NVN(nvnCommandBufferClearBuffer, void, NVNcommandBuffer *c, NVNbufferAddress a, size_t n, uint32_t v) { *REC(c, OP_CLEAR_BUF, p_clear_buf) = (p_clear_buf){a, n, v, 0}; }
+ 
+-// State the replay layer does not have yet: logged once (conditional rendering is treated as "always draw")
+-NVN(nvnCommandBufferSetRenderEnable, void, NVNcommandBuffer *c, uint32_t en) { (void)c; if (!(en & 0xff)) ONCE_LOG("【红】SetRenderEnable(false)：宿主暂按恒画"); }
+-NVN(nvnCommandBufferSetRenderEnableConditional, void, NVNcommandBuffer *c, NVNconditionalRenderMode m, NVNbufferAddress a) { (void)c; (void)m; (void)a; ONCE_LOG("【红】SetRenderEnableConditional：宿主暂按恒画"); }
++// Render-enable state is recorded, not applied while building command lists.
++NVN(nvnCommandBufferSetRenderEnable, void, NVNcommandBuffer *c, uint32_t en) { *REC(c, OP_RENDER_ENABLE, p_render_enable) = (p_render_enable){0, 0, !!(en & 0xff)}; }
++NVN(nvnCommandBufferSetRenderEnableConditional, void, NVNcommandBuffer *c, NVNconditionalRenderMode m, NVNbufferAddress a) { *REC(c, OP_RENDER_ENABLE, p_render_enable) = (p_render_enable){a, 1, m}; }
++// State the replay layer does not have yet: logged once.
+ NVN(nvnCommandBufferSetDepthClamp, void, NVNcommandBuffer *c, uint32_t en) { (void)c; if (en & 0xff) ONCE_LOG("SetDepthClamp 开：宿主暂忽略"); }
+ NVN(nvnCommandBufferSetLineWidth, void, NVNcommandBuffer *c, float w) { (void)c; if (w != 1.0f) ONCE_LOG("SetLineWidth %.2f：Metal 只有 1 像素线", w); }
+ NVN(nvnCommandBufferSetPointSize, void, NVNcommandBuffer *c, float s) { (void)c; (void)s; ONCE_LOG("SetPointSize：点大小由着色器给"); }
 diff --git a/dm/gfx/nvn/nvn_mtl.m b/dm/gfx/nvn/nvn_mtl.m
-index 10c5eac..0efa650 100644
+index 10c5eac..eb73331 100644
 --- a/dm/gfx/nvn/nvn_mtl.m
 +++ b/dm/gfx/nvn/nvn_mtl.m
-@@ -2208,7 +2208,7 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
+@@ -759,7 +759,12 @@ uint64_t mtl_sub_commit(void) {
+                 for (int k = 0; k < l->n; k++) { sum += ((const uint64_t *)((__bridge id<MTLBuffer>)l->s[k].buf).contents)[l->s[k].slot]; CFRelease(l->s[k].buf); }
+                 free(l); uint64_t rec[2] = {sum, gpu_ticks()}; memcpy((void *)ops[i].addr, rec, sizeof rec);
+             }
+-            else { uint64_t t = gpu_ticks(), rec[2] = {ops[i].type == 0 || ops[i].type == 0x10 ? t : 0, t}; memcpy((void *)ops[i].addr, rec, sizeof rec); }
++            // TIMESTAMP/TIMESTAMP_TOP report a zero payload and the GPU clock in
++            // the timestamp field, not two copies of the clock. Splatoon 3's
++            // SDK 20.5.22 driver (sdk+0x4ef450) emits a zero semaphore payload.
++            // A nonzero counter makes its conditional clear-only passes erase
++            // the completed 1080p scene before the final composite.
++            else { uint64_t t = gpu_ticks(), rec[2] = {0, t}; memcpy((void *)ops[i].addr, rec, sizeof rec); }
+         }
+         free(ops);
+         pthread_mutex_lock(&g_mu); if (fence > g_done) g_done = fence; pthread_cond_broadcast(&g_cv); pthread_mutex_unlock(&g_mu);
+@@ -1455,6 +1460,7 @@ static struct {
+     uint8_t clear_d, clear_s; double cd; uint32_t cs;
+     p_scissor sc; int has_sc;
+ } R;
++static int g_render_enable = 1;
+ 
+ // ---------- Zero-source skip ----------
+ // Shader fact table (statically proven keys): 'the textures it samples are all 0 and the coefficient is finite ⇒ the output is all 0'. Coefficient = component comp of vector vec of fragment-stage constant buffer register ubo_slot.
+@@ -2208,7 +2214,7 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
      if (fd < 0 || fstat(fd, &st) || st.st_size <= 0) { if (fd >= 0) close(fd); if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"打不开 %@", path]}]; return nil; }
      size_t len = (size_t)st.st_size; void *m = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
      if (m == MAP_FAILED) { if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"映射失败 %@", path]}]; return nil; }
@@ -97,6 +201,229 @@ index 10c5eac..0efa650 100644
      // Shell: when the user's computer has no Apple shader compiler (the no-compiler mode of tools/d2rm_pack.py, gfx/tools/nometal_run.py), the "library files" contain
      // shader source rather than compiled libraries (a compiled library starts with MTLB). They are compiled here on the spot; the system caches the compiled result, and from the second launch on the same shader no longer costs this time.
      // Measured on a real device (cold): about 80 ms each on average, about 450 ms for the longest single one; one session uses several hundred.
+@@ -2628,6 +2634,7 @@ static const prog_t *bind_stages(const prog_t *p, int stages) {
+ }
+ static void state_reset(void) {
+     memset(&S, 0, sizeof S);
++    g_render_enable = 1;
+     g_pso_dirty = g_dss_dirty = 1;
+     for (int i = 0; i < 8; i++) S.blend[i] = (blend_st){i, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_EQUATION_ADD, NVN_BLEND_EQUATION_ADD};
+     S.color = (color_st){0, NVN_LOGIC_OP_COPY, NVN_ALPHA_FUNC_ALWAYS}; S.chmask.mask = 0xffffffffu;
+@@ -5712,11 +5719,15 @@ static void sub_cut(void) {
+ }
+ 
+ void mtl_exec(const uint8_t *p) {
++    const uint8_t *entry = p, *prev = NULL; op_hdr prev_h = {0};
+     static int inited; if (!inited) { inited = 1; state_reset(); }
+     static int dump_all = -1; if (dump_all < 0) dump_all = getenv("DM_NVN_PASSDUMP_ALL") != NULL;
+     int trace = dump_all && passdump();   // Normal mode does not check the frame range per operation; the full command position is only used for the designated diagnostic frames
+     for (;;) {
+         op_hdr h; memcpy(&h, p, sizeof h);
++        if (((uintptr_t)p & 7) || h.size < sizeof h || (h.size & 7) || h.op >= OP_COUNT_)
++            MDIE("invalid command at %p: op=%u size=%u depth=%d caller=%p entry=%p prev=%p op=%u size=%u", p, h.op, h.size, g_ret_n, g_ret_n > 0 && g_ret_n <= 16 ? g_ret[g_ret_n - 1] : NULL, entry, prev, prev_h.op, prev_h.size);
++        prev = p; prev_h = h;
+         g_exec_cur = p;   // Scan start point of the store lookahead: the operation that ends the render pass (inclusive)
+         if (p == g_defer_pend) { for (int gi = 0; gi < 4; gi++) if (g_defer_slots[gi].active && g_defer_slots[gi].p_end_op == p) g_defer_slots[gi].in_p = 0; g_defer_pend = NULL; }
+         sdx_seq(p);
+@@ -5728,7 +5739,32 @@ void mtl_exec(const uint8_t *p) {
+         if (g_allocprof) { static uint64_t last; static int prev = -1; uint64_t now = g_dev.currentAllocatedSize; if (prev >= 0 && prev < 64 && now > last) g_ap_bytes[prev] += now - last; last = now; prev = h.op; }
+         if (g_hoist_n && hoist_take(p)) { if (g_fz.active && p == g_fz.rt2_op) { g_fz.phase = 2; g_rt_merged = 0; PD("F %llu 合并通道进入后一个通道的绘制", g_stat_pass); } p += h.size; continue; }   // A pure-clear render pass already executed early / the start of a later pass already merged in   // Entering the later pass: the same-target continuation of the earlier pass ends here; the later pass reading the earlier pass's attachment is proven to be same-pixel by fz_p2_draw, and is no longer split by the continuation rule
+         const void *a = p + 8;
++        if (!g_render_enable && (h.op == OP_DRAW || h.op == OP_DRAW_IDX || h.op == OP_CLEAR_COLOR || h.op == OP_CLEAR_DS)) { PD("RE skip op=%u", h.op); p += h.size; continue; }
+         switch (h.op) {
++            case OP_RENDER_ENABLE: {
++                const p_render_enable *c = a;
++                if (c->conditional && c->addr) {
++                    // Resolve producers before reading a predicate on the CPU.
++                    // Reports are deferred to completion, so reading guest RAM
++                    // without this boundary can use the previous query result.
++                    int pending = pend_hits(c->addr, 32);
++                    for (int i = 0; i < g_npost; i++) {
++                        uint64_t dst = g_post[i].kind == 1 ? (uint64_t)(uintptr_t)g_post[i].val : g_post[i].addr;
++                        size_t len = g_post[i].kind == 1 ? 4 : 16;
++                        if (dst < c->addr + 32 && dst + len > c->addr) pending = 1;
++                    }
++                    if (pending) {
++                        const uint8_t *cur = g_exec_cur;
++                        uint64_t fence = mtl_sub_commit();
++                        if (!mtl_wait(fence, UINT64_MAX)) MDIE("conditional render producer wait failed");
++                        mtl_sub_begin(); g_exec_cur = cur;
++                    } else if (!mtl_wait(g_fence, UINT64_MAX)) MDIE("conditional render prior submit wait failed");
++                    const uint64_t *v = (const uint64_t *)(uintptr_t)c->addr;
++                    g_render_enable = c->mode == 0 ? v[0] == v[2] : v[0] != v[2];
++                    PD("RE conditional mode=%u addr=%#llx values=%llx,%llx enable=%d", c->mode, (unsigned long long)c->addr, (unsigned long long)v[0], (unsigned long long)v[2], g_render_enable);
++                } else { g_render_enable = !!c->mode; PD("RE direct=%u", c->mode); }
++                break;
++            }
+             case OP_END: g_exec_cur = NULL;
+                 if (g_hoist_n && !g_ret_n && !g_nrest) {
+                     if (g_fz.active) fz_unskip();
+diff --git a/dm/gfx/nvn/nvn_obj.h b/dm/gfx/nvn/nvn_obj.h
+index fa314c4..cedb611 100644
+--- a/dm/gfx/nvn/nvn_obj.h
++++ b/dm/gfx/nvn/nvn_obj.h
+@@ -100,8 +100,11 @@ enum {
+     OP_BIND_PROGRAM, OP_BIND_STATE, OP_BIND_VATTR, OP_BIND_VSTREAM, OP_BIND_VBUF,
+     OP_BIND_UBO, OP_BIND_SSBO, OP_BIND_TEX, OP_BIND_SAMP,
+     OP_STENCIL, OP_POLY_OFFSET, OP_DRAW, OP_DRAW_IDX, OP_DISPATCH, OP_BARRIER,
+-    OP_SET_TEX_POOL, OP_SET_SAMP_POOL, OP_COPY_B2T, OP_COPY_STRIDE, OP_BLEND_COLOR, OP_COPY_T2B, OP_BIND_IMG, OP_COPY_T2T, OP_RESET_COUNTER, OP_CLEAR_TEX, OP_CLEAR_BUF, OP_COUNT_
++    OP_SET_TEX_POOL, OP_SET_SAMP_POOL, OP_COPY_B2T, OP_COPY_STRIDE, OP_BLEND_COLOR, OP_COPY_T2B, OP_BIND_IMG, OP_COPY_T2T, OP_RESET_COUNTER, OP_CLEAR_TEX, OP_CLEAR_BUF, OP_RENDER_ENABLE, OP_COUNT_
+ };
++// Conditional compares the counter fields of two 16-byte NVNcounterData records;
++// their timestamps at +8/+24 are not operands. Direct mode is a boolean.
++typedef struct { uint64_t addr; uint32_t conditional, mode; } p_render_enable;
+ // Payload (immediately follows op_hdr)
+ typedef struct { int32_t n; const tex_t *color[8]; view_t cview[8]; uint8_t has_cview[8]; const tex_t *depth; view_t dview; uint8_t has_dview; } p_set_rt;
+ typedef struct { int32_t index, mask; float rgba[4]; } p_clear_color;
+diff --git a/dm/gfx/tests/Makefile b/dm/gfx/tests/Makefile
+index 41be22b..466976d 100644
+--- a/dm/gfx/tests/Makefile
++++ b/dm/gfx/tests/Makefile
+@@ -16,7 +16,7 @@ $(GAME_H):
+ 	$(MAKE) -C ../../host game_profile GAME=$(GAME)
+ FW=-framework Metal -framework Foundation -framework QuartzCore -framework ImageIO -framework CoreGraphics -framework UniformTypeIdentifiers
+ # Host crash.c is linked in as well: the write-protect unit tests go through the same page-fault hook as production
+-t_nvn: t_nvn.c ../nvn/hle_nvn.c ../../host/crash.c $(GFX) $(GFX_H)
++t_nvn: t_nvn.c ../nvn/hle_nvn.c ../../host/hle_bigstack.c ../../host/crash.c $(GFX) $(GFX_H)
+ 	clang $(CFLAGS) -fobjc-arc -o $@ t_nvn.c ../../host/crash.c $(GFX) $(FW)
+ t_dirty_slots: t_dirty_slots.c ../nvn/nvn_dirty.c ../../host/crash.c ../nvn/nvn_dirty.h
+ 	clang $(CFLAGS) -o $@ t_dirty_slots.c ../../host/crash.c ../nvn/nvn_dirty.c
+@@ -50,6 +50,8 @@ t_ub: t_ub.m ../../host/crash.c $(GFX) $(GFX_H)
+ 	clang $(CFLAGS) -fobjc-arc -o $@ t_ub.m ../../host/crash.c $(filter-out ../nvn/nvn_mtl.m ../nvn/nvn_entry.S ../nvn/nvn_thunks.S,$(GFX)) $(FW)
+ t_mip_extent: t_mip_extent.m ../nvn/hle_nvn.c ../../host/crash.c $(GFX) $(GFX_H)
+ 	clang $(CFLAGS) -fobjc-arc -o $@ t_mip_extent.m ../../host/crash.c $(filter-out ../nvn/nvn_mtl.m,$(GFX)) $(FW)
++t_render_enable: t_render_enable.m ../nvn/hle_nvn.c ../../host/hle_bigstack.c ../../host/crash.c $(GFX) $(GFX_H)
++	clang $(CFLAGS) -fobjc-arc -o $@ t_render_enable.m ../../host/crash.c $(filter-out ../nvn/nvn_mtl.m,$(GFX)) $(FW)
+ t_rt_range_shape: t_rt_range_shape.m ../../host/crash.c $(GFX) $(GFX_H)
+ 	clang $(CFLAGS) -fobjc-arc -o $@ t_rt_range_shape.m ../../host/crash.c $(filter-out ../nvn/nvn_mtl.m ../nvn/nvn_entry.S ../nvn/nvn_thunks.S,$(GFX)) $(FW)
+ t_rt_range_ro: t_rt_range_ro.m ../../host/crash.c $(GFX) $(GFX_H)
+diff --git a/dm/gfx/tests/t_nvn.c b/dm/gfx/tests/t_nvn.c
+index d21874c..33424f0 100644
+--- a/dm/gfx/tests/t_nvn.c
++++ b/dm/gfx/tests/t_nvn.c
+@@ -1,6 +1,8 @@
+ // NVN null device unit tests: look up addresses from nvnBootstrapLoader the way the game does and go all the way to present; all expected values are hand-calculated, without calling the implementation under test.
+ // For build and run see dm/gfx/tests/Makefile (make -C dm/gfx/tests).
+ #include "../nvn/hle_nvn.c"
++#include "../../host/hle_bigstack.c"
++int dm_guest_as_contains(uintptr_t a) { (void)a; return 0; } // tests run on host stacks
+ uint64_t g_t0_ns;   // process start time from host main.c (used by hle_nvn's per-frame @t_s); unit test stub
+ #include "../tex/nvn_deswizzle.h"
+ #include <time.h>
+@@ -110,7 +112,7 @@ int main(void) {
+     EXPECT("录完不在录制", 0, P(nvnCommandBufferIsRecording)(&cb));
+     P(nvnCommandBufferBeginRecording)(&cb);
+     P(nvnCommandBufferCopyBufferToBuffer)(&cb, (NVNbufferAddress)src, (NVNbufferAddress)dst, 64, 0);
+-    P(nvnCommandBufferCopyCommands)(&cb, 1, &h1);         // nested: execute h1 once more (event 7 → +5 → write 7 again → +5)
++    P(nvnCommandBufferCallCommands)(&cb, 1, &h1);         // nested: execute h1 once more (event 7 → +5 → write 7 again → +5)
+     NVNcommandHandle h2 = P(nvnCommandBufferEndRecording)(&cb);
+     printf("（命令内存回调 %d 次，用掉 %zu B）\n", g_cb_calls, g_cmdoff);
+     EXPECT("命令内存回调至少 2 次（多段）", 1, g_cb_calls >= 2);
+@@ -130,10 +132,11 @@ int main(void) {
+     int ub_ok = 1;
+     for (int k = 0; k < 20; k++) for (int i = 0; i < 16; i++) { uint32_t w; memcpy(&w, ub + k * 64 + i * 4, 4); ub_ok &= w == (uint32_t)(k * 100 + i); }
+     EXPECT("uniform 缓冲 20×16 个字全等录制值", 1, ub_ok);
+-    EXPECT("事件值：h1(7,+5) h2 拷贝后再跑 h1(7,+5) = 12", 12, P(nvnEventGetValue)(&ev));
++    EXPECT("事件值：h1(7,+5) h2 调用 h1(7,+5) = 12", 12, P(nvnEventGetValue)(&ev));
+     EXPECT("缓冲拷贝 64 B 全等", 0, memcmp(src, dst, 64));
+     uint64_t ts[2]; memcpy(ts, cnt, 16);
+-    EXPECT("计数器时间戳已写（非 0）", 1, ts[0] != 0 && ts[0] == ts[1]);
++    EXPECT("timestamp report has zero counter payload", 0, ts[0]);
++    EXPECT("timestamp report writes a nonzero timestamp", 1, ts[1] != 0);
+ 
+     // 5b. Sync must hold the CPU back: first queue 24 copies of 64 MiB to keep the GPU busy, with the last one copying src to dst;
+     //     the CPU rewrites src only after the fence wait returns. If the wait is released early, that last copy reads the rewritten src.
+diff --git a/dm/gfx/tests/t_render_enable.m b/dm/gfx/tests/t_render_enable.m
+new file mode 100644
+index 0000000..b98d2e2
+--- /dev/null
++++ b/dm/gfx/tests/t_render_enable.m
+@@ -0,0 +1,85 @@
++// Real NVN recording -> Metal replay -> pixel readback. No game assets.
++#define nvn_game_fps nvn_game_fps_mtl_default
++#include "../nvn/nvn_mtl.m"
++#undef nvn_game_fps
++#include "../nvn/hle_nvn.c"
++#include "../../host/hle_bigstack.c"
++int dm_guest_as_contains(uintptr_t a) { (void)a; return 0; } // tests run on host stacks
++uint64_t g_t0_ns;
++void *front_metal_layer(void) { return NULL; }
++module_t *module_of(const void *p) { (void)p; return NULL; }
++module_t g_mod[MAX_MOD]; int g_nmod;
++void svc_thread_dump(void) {}
++uint64_t now_ns(void) { return bp_now(); }
++static int checks, failed;
++#define CHECK(name, ok) do { checks++; if (!(ok)) { failed++; fprintf(stderr,"FAIL %s\n",name); } } while (0)
++static prog_t pg;
++static void run_case(int mode, int enabled, int draw_test, int producer, int copy) {
++    static uint64_t serial = 91000;
++    tex_t t = {.magic=MAGIC('T','E','X',0), .serial=serial++};
++    t.d = (nvn_texdesc){.width=4,.height=4,.depth=1,.levels=1,.samples=1,.target=NVN_TEXTURE_TARGET_2D,.format=NVN_FORMAT_RGBA8};
++    NVNcommandBuffer cb; void *mem; if (posix_memalign(&mem,getpagesize(),65536)) abort(); memset(mem,0,65536);
++    pool_t pool={.mem=mem,.size=65536}; mtl_pool_add(mem,65536);
++    h_nvnCommandBufferInitialize(&cb,NULL); h_nvnCommandBufferAddCommandMemory(&cb,(const NVNmemoryPool *)&pool,0,65536);
++    h_nvnCommandBufferBeginRecording(&cb);
++    const NVNtexture *ct[]={(const NVNtexture *)&t};
++    h_nvnCommandBufferSetRenderTargets(&cb,1,ct,NULL,NULL,NULL);
++    float blue[]={0,0,1,1}, red[]={1,0,0,1};
++    h_nvnCommandBufferSetRenderEnable(&cb,1); h_nvnCommandBufferClearColor(&cb,0,blue,15);
++    // Flush the blue seed before attempting a second clear in the same target.
++    h_nvnCommandBufferSetRenderTargets(&cb,1,ct,NULL,NULL,NULL);
++    // Equal low words with different high words catch 32-bit-only comparisons;
++    // different timestamps catch incorrectly comparing +0 against +8.
++    uint64_t *q=(uint64_t *)((uint8_t *)mem+32768);
++    q[0]=0x100000007ull; q[1]=111; q[2]=mode==0?(enabled?q[0]:0x200000007ull):(enabled?0x200000007ull:q[0]); q[3]=222;
++    if (producer) {
++        q[0]=55; q[2]=0;
++        h_nvnCommandBufferReportCounter(&cb,NVN_COUNTER_TYPE_TIMESTAMP_TOP,(NVNbufferAddress)q);
++    }
++    if (mode<0) h_nvnCommandBufferSetRenderEnable(&cb,enabled);
++    else h_nvnCommandBufferSetRenderEnableConditional(&cb,mode,(NVNbufferAddress)q);
++    if (draw_test) {
++        h_nvnCommandBufferBindProgram(&cb,(const NVNprogram *)&pg,3);
++        h_nvnCommandBufferDrawArrays(&cb,NVN_DRAW_PRIMITIVE_TRIANGLES,0,3);
++    } else h_nvnCommandBufferClearColor(&cb,0,red,15);
++    h_nvnCommandBufferSetRenderEnable(&cb,1);
++    NVNcommandHandle h=h_nvnCommandBufferEndRecording(&cb);
++    if (copy) {
++        NVNcommandBuffer dst; h_nvnCommandBufferInitialize(&dst,NULL);
++        h_nvnCommandBufferAddCommandMemory(&dst,(const NVNmemoryPool *)&pool,16384,16384);
++        h_nvnCommandBufferBeginRecording(&dst); h_nvnCommandBufferCopyCommands(&dst,1,&h);
++        h=h_nvnCommandBufferEndRecording(&dst);
++        // The source command storage and its embedded texture snapshot expire.
++        memset(mem,0xa5,16384);
++    }
++    state_reset(); memset(&R,0,sizeof R); mtl_sub_begin(); mtl_exec((const uint8_t *)h);
++    CHECK("GPU completed",mtl_wait(mtl_sub_commit(),5000000000ull));
++    CHECK("GPU feedback clean",!mtl_last_commit_error());
++    id<MTLTexture> tex=tex_mtl(&t);
++    id<MTLBuffer> out=[g_dev newBufferWithLength:64 options:MTLResourceStorageModeShared];
++    id<MTLCommandBuffer> read=[g_q commandBuffer]; id<MTLBlitCommandEncoder> b=[read blitCommandEncoder];
++    [b copyFromTexture:tex sourceSlice:0 sourceLevel:0 sourceOrigin:MTLOriginMake(0,0,0) sourceSize:MTLSizeMake(4,4,1)
++       toBuffer:out destinationOffset:0 destinationBytesPerRow:16 destinationBytesPerImage:64];
++    [b endEncoding]; [read commit]; [read waitUntilCompleted];
++    const uint8_t *px=out.contents; int bad=0;
++    for(int i=0;i<16;i++) bad+=px[i*4]!=(enabled?255:0)||px[i*4+1]!=0||px[i*4+2]!=(enabled?0:255)||px[i*4+3]!=255;
++    CHECK("all 16 pixels match predicate",!bad);
++    if(producer) { CHECK("timestamp top zero payload",q[0]==0); CHECK("timestamp top timestamp",q[1]!=0); }
++    CHECK("direct enable restores state",g_render_enable==1);
++    mtl_tex_release(&t); mtl_pool_del(mem); free(mem);
++}
++int main(void) { @autoreleasepool {
++    setenv("DM_NVN_TBDR","0",1); mtl_init(); NSError *e=nil;
++    id<MTLLibrary> lib=[g_dev newLibraryWithSource:@"#include <metal_stdlib>\nusing namespace metal;\n"
++        "vertex float4 v(uint n[[vertex_id]]){float2 p[3]={float2(-1,-1),float2(3,-1),float2(-1,3)};return float4(p[n],0,1);}\n"
++        "fragment float4 f(){return float4(1,0,0,1);}\n" options:nil error:&e];
++    if(!lib) { fprintf(stderr,"%s\n",e.localizedDescription.UTF8String); return 2; }
++    NvProg *p=[NvProg new]; p->sh[0]=[NvShader new];p->sh[0]->fn=[lib newFunctionWithName:@"v"];
++    p->sh[1]=[NvShader new];p->sh[1]->fn=[lib newFunctionWithName:@"f"];p->sh[1]->stage=1;
++    pg.serial=90000;serial_put(pg.serial,p);
++    for(int copy=0;copy<=1;copy++) {
++        for(int mode=-1;mode<=1;mode++)for(int en=0;en<=1;en++)for(int draw=0;draw<=1;draw++)run_case(mode,en,draw,0,copy);
++        run_case(1,0,0,1,copy); // same-submit timestamp producer must be resolved before comparison
++    }
++    printf("render-enable: %d checks, %d failed\n",checks,failed);return failed!=0;
++} }
 diff --git a/dm/gfx/tools/dmsh_chain.lock b/dm/gfx/tools/dmsh_chain.lock
 index c925370..da5ad1e 100644
 --- a/dm/gfx/tools/dmsh_chain.lock
