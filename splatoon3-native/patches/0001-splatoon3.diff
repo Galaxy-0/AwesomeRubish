@@ -85,10 +85,93 @@ index 0000000..8539a5d
 +# 预热种子清单（随包，与 shader_map.tsv 同目录）。行：S<TAB>着色器键<TAB>阶段 / R<TAB>渲染管线键（pso_skey 十六进制）/ C<TAB>计算着色器键。
 +# 本作尚未录制（DM_PSO_RECORD）：空表 = 不预热。行序 = 首次使用顺序，不要排序。
 diff --git a/dm/gfx/nvn/hle_nvn.c b/dm/gfx/nvn/hle_nvn.c
-index d4c3531..e6de2eb 100644
+index d4c3531..1ed414d 100644
 --- a/dm/gfx/nvn/hle_nvn.c
 +++ b/dm/gfx/nvn/hle_nvn.c
-@@ -570,8 +570,50 @@ NVN(nvnCommandBufferEndRecording, NVNcommandHandle, NVNcommandBuffer *c) {
+@@ -16,6 +16,7 @@
+ #include "nvn_pace.h"
+ #include "../../host/front.h"
+ #include "nvn_dirty.h"
++#include "nvn_cmdwatch.h"
+ #include <mach/mach_time.h>
+ #include <CommonCrypto/CommonDigest.h>
+ #include <CoreFoundation/CoreFoundation.h>
+@@ -481,11 +482,14 @@ static void cs_dump(void) {   // Called once per frame (at present)
+ }
+ static void put_hdr(uint8_t *p, uint32_t op, uint32_t size) { op_hdr h = {op, size}; memcpy(p, &h, sizeof h); if (op) cs_op(op, size); }
+ // New segment: if recording is in progress, write a JUMP at the end of the old segment to link it
+-static void cmd_new_segment(cmd_t *o, uint8_t *mem, size_t n) {
++static void cmd_new_segment(cmd_t *o, uint8_t *mem, size_t n, int host) {
++    nvn_cmdwatch_grant(mem, n);
+     uint8_t *start = align8(mem), *end = mem + n;
+-    if (o->recording && o->cur) { if (cs_on() && o->end > o->cur) { pthread_mutex_lock(&g_cs_mu); g_cs.waste += (uint64_t)(o->end - o->cur); pthread_mutex_unlock(&g_cs_mu); } put_hdr(o->cur, OP_JUMP, 16); memcpy(o->cur + 8, &start, 8);
+-        o->used += 16; }   // the JUMP also occupies guest memory of this recording: count it in used, so the game packing the next recording right behind by used does not overwrite it
++    if (o->recording && o->cur) { if (cs_on() && o->end > o->cur) { pthread_mutex_lock(&g_cs_mu); g_cs.waste += (uint64_t)(o->end - o->cur); pthread_mutex_unlock(&g_cs_mu); } put_hdr(o->cur, OP_JUMP, 16); nvn_cmdwatch_jump(o->cur,start,o->begin); memcpy(o->cur + 8, &start, 8);
++        o->used += 16; if (!o->host_segment) o->grant_used += 16; }
+     o->cur = start; o->end = end;
++    o->host_segment = host;
++    if (!host) { o->grant_used = 0; o->had_guest = 1; }
+ }
+ // Host-supplied segment when the game's own command memory runs out: when the game's out-of-memory callback cannot allocate from its command memory pool, it calls AddCommandMemory with an empty pool (p = NULL, n = 0)
+ // (opening the advanced stats page on the level 88 sorceress save: many list items in one frame, and the original implementation segfaulted here reading NULL+8). Our records are larger than real-device NVN commands, so the budget the game reserved for real-device usage is not necessarily enough,
+@@ -532,46 +536,97 @@ static void hostseg_release(uintptr_t lo, uintptr_t hi) {
+ }
+ NVN(nvnCommandBufferAddCommandMemory, void, NVNcommandBuffer *c, const NVNmemoryPool *p, ptrdiff_t off, size_t n) {
+     const pool_t *pl = (const pool_t *)p;
+-    if (!pl || n < 64) { if (cs_on()) { pthread_mutex_lock(&g_cs_mu); g_cs.hostseg++; pthread_mutex_unlock(&g_cs_mu); } cmd_new_segment(CB(c), hostseg_take(CB(c)), HOSTSEG_SZ); return; }
++    if (!pl || n < 64) { if (cs_on()) { pthread_mutex_lock(&g_cs_mu); g_cs.hostseg++; pthread_mutex_unlock(&g_cs_mu); } cmd_new_segment(CB(c), hostseg_take(CB(c)), HOSTSEG_SZ, 1); return; }
+     if (!pl->mem) { LOG("【红】AddCommandMemory 池没有 CPU 存储"); return; }
+     hostseg_release((uintptr_t)(pl->mem + off), (uintptr_t)(pl->mem + off + n));
+     if (cs_on()) { pthread_mutex_lock(&g_cs_mu); g_cs.grants++; g_cs.grant_bytes += n; if (!g_cs.grant_min || n < g_cs.grant_min) g_cs.grant_min = n; if (n > g_cs.grant_max) g_cs.grant_max = n; pthread_mutex_unlock(&g_cs_mu); }
+     { static int cblog = -1; if (cblog < 0) cblog = getenv("DM_NVN_CBLOG") != NULL; static uint64_t ng; if (cblog && (++ng <= 60 || ng % 500 == 0)) LOG("[nvn] AddCommandMemory #%llu cmd=%p 池 %p +%#lx 长 %#zx（录制中 %d）", (unsigned long long)ng, (void *)c, (const void *)pl, (long)off, n, CB(c)->recording); }
+-    cmd_new_segment(CB(c), pl->mem + off, n);
++    cmd_new_segment(CB(c), pl->mem + off, n, 0);
+ }
+ NVN(nvnCommandBufferAddControlMemory, void, NVNcommandBuffer *c, void *m, size_t n) { (void)c; (void)m; (void)n; }
+ // Get space for one record; if not enough, call back into the game per the NVN convention to add command memory
+-static uint8_t *cmd_alloc(cmd_t *o, uint32_t size) {
++static uint8_t *cmd_alloc_reserve(cmd_t *o, uint32_t size, uint32_t reserve) {
+     size = (size + 7) & ~7u;
+-    for (int tries = 0; !o->cur || o->cur + size + OP_RESERVE > o->end; tries++) {
++    for (int tries = 0; !o->cur || o->cur + size + reserve > o->end; tries++) {
+         // The game's callback cannot supply enough (newer-SDK games hand out small chunks sized for real-device commands, or disable the callback and manage memory themselves): continue recording in a host segment instead of aborting
+         if (!o->cb || tries == 2) {
+-            static int once; if (!once++) LOG("[nvn] 命令内存：游戏回调补不够（cb=%p，需 %u 字节），改用宿主补段", (void *)o->cb, size + OP_RESERVE);
+-            cmd_new_segment(o, hostseg_take(o), HOSTSEG_SZ); break;
++            static int once; if (!once++) LOG("[nvn] 命令内存：游戏回调补不够（cb=%p，需 %u 字节），改用宿主补段", (void *)o->cb, size + reserve);
++            cmd_new_segment(o, hostseg_take(o), HOSTSEG_SZ, 1); break;
+         }
+         if (cs_on()) { pthread_mutex_lock(&g_cs_mu); g_cs.cbs++; pthread_mutex_unlock(&g_cs_mu); }
+         { static int cblog = -1; if (cblog < 0) cblog = getenv("DM_NVN_CBLOG") != NULL; static uint64_t ncb;
+-          if (cblog && (++ncb <= 40 || ncb % 1000 == 0)) LOG("[nvn] 命令内存回调 #%llu cmd=%p 需 %u（本段已用 %ld）", (unsigned long long)ncb, (void *)o, size + OP_RESERVE, o->cur && o->end ? (long)(o->cur - (o->end - 1)) : -1L); }
+-        o->cb((NVNcommandBuffer *)o, NVN_COMMAND_BUFFER_MEMORY_EVENT_OUT_OF_COMMAND_MEMORY, size + OP_RESERVE, o->cb_data);
++          if (cblog && (++ncb <= 40 || ncb % 1000 == 0)) LOG("[nvn] 命令内存回调 #%llu cmd=%p 需 %u（本段已用 %ld）", (unsigned long long)ncb, (void *)o, size + reserve, o->cur && o->end ? (long)(o->cur - (o->end - 1)) : -1L); }
++        o->cb((NVNcommandBuffer *)o, NVN_COMMAND_BUFFER_MEMORY_EVENT_OUT_OF_COMMAND_MEMORY, size + reserve, o->cb_data);
+     }
+     if (cs_on()) { pthread_mutex_lock(&g_cs_mu); g_cs.bytes += size; g_cs.recs++; pthread_mutex_unlock(&g_cs_mu); }
+-    uint8_t *p = o->cur; o->cur += size; o->used += size; put_hdr(p, 0, size); return p;
++    uint8_t *p = o->cur; o->cur += size; o->used += size;
++    if (!o->host_segment) o->grant_used += size;
++    put_hdr(p, 0, size); return p;
+ }
++static uint8_t *cmd_alloc(cmd_t *o, uint32_t size) { return cmd_alloc_reserve(o,size,OP_RESERVE); }
+ NVN(nvnCommandBufferBeginRecording, void, NVNcommandBuffer *c) {
+     cmd_t *o = CB(c);
+     if (o->recording) LOG("【红】BeginRecording 重入");
+     o->recording = 1; o->used = 0;
+     uint8_t *p = cmd_alloc(o, 8); put_hdr(p, OP_BEGIN, 8); o->begin = p;
++    nvn_cmdwatch_created(o->begin,NULL,dm_nvn_frame_count(),(uint64_t)__builtin_return_address(0));
+ }
+ NVN(nvnCommandBufferEndRecording, NVNcommandHandle, NVNcommandBuffer *c) {
+     cmd_t *o = CB(c);
+-    uint8_t *p = cmd_alloc(o, 8); put_hdr(p, OP_END, 8);
++    // END terminates the chain: it never needs a trailing JUMP reservation.
++    // Keeping the regular 24-byte reserve here invokes the game's allocator
++    // callback, which may pack the next cached list at this cursor before our
++    // segment-switch JUMP is emitted. Its payload then overwrites that BEGIN.
++    uint8_t *p = cmd_alloc_reserve(o, 8, 0); put_hdr(p, OP_END, 8);
+     o->recording = 0;
++    nvn_cmdwatch_created(o->begin,o->cur,dm_nvn_frame_count(),(uint64_t)__builtin_return_address(0));
      return (NVNcommandHandle)o->begin;
  }
  NVN(nvnCommandBufferIsRecording, NVNboolean, const NVNcommandBuffer *c) { return ((const cmd_t *)c)->recording != 0; }
@@ -141,7 +224,41 @@ index d4c3531..e6de2eb 100644
  }
  NVN(nvnCommandBufferSignalEvent, void, NVNcommandBuffer *c, const NVNevent *e, NVNeventSignalMode m, NVNeventSignalLocation loc, int flags, uint32_t v) {
      (void)loc; (void)flags;
-@@ -1435,7 +1477,9 @@ NVN_NOPROTO(nvnProgramSetShadersExt, NVNboolean, NVNprogram *p, int n, const sha
+@@ -841,10 +896,12 @@ NVN(nvnQueueSubmitCommands, void, NVNqueue *q, int n, const NVNcommandHandle *h)
+     gfx_enter();
+     uint64_t t0 = now_ns(), c0 = clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID), i0, y0, s0 = thr_sys_ns(); thr_counts(&i0, &y0);
+     ((queue_t *)q)->submits++;
++    nvn_cmdwatch_begin((const uint64_t *)h,n,dm_nvn_frame_count());
+     mtl_sub_begin();
+     mtl_sub_index((const uint64_t *)h, n);
+     for (int i = 0; i < n; i++) { mtl_exec_rest((const uint64_t *)h + i + 1, n - i - 1); mtl_exec((const uint8_t *)h[i]); }
+     mtl_exec_rest(NULL, 0);
++    nvn_cmdwatch_end();
+     mtl_sub_commit();
+     uint64_t dw = now_ns() - t0;
+     atomic_fetch_add(&g_nvn_ns, dw); atomic_fetch_add(&g_sub_wall_ns, dw);
+@@ -1412,12 +1469,15 @@ NVN(nvnDeviceRegisterFastClearColor, NVNboolean, NVNdevice *d, const float *c, N
+ NVN_NOPROTO(nvnWindowBuilderSetNumActiveTextures, void, NVNwindowBuilder *b, int n) { (void)b; ONCE_LOG("WindowBuilderSetNumActiveTextures %d（宿主按 SetTextures 的张数轮转）", n); }
+ NVN_NOPROTO(nvnWindowSetNumActiveTextures, void, NVNwindow *w, int n) { (void)w; ONCE_LOG("WindowSetNumActiveTextures %d（宿主按 SetTextures 的张数轮转）", n); }
+ 
+-// Command buffer memory usage: record bytes written in this recording (accumulated across segments; the host does not use control memory, always 0); the memory callback switch is ignored.
+-// It used to be cur - begin: once a recording overflowed into a host segment, cur is in host memory (an address below the guest begin) and it returned 0. SMBW asks for this value after recording each material setup handle,
+-// and on 0 (with control memory also 0) treats the recording as empty and marks the handle invalid (from main+0x4bb6c it clears bit 0 of the material entry +0x50); later draws no longer CALL it and inherit the previous object's vertex buffers / textures:
+-// on the iPhone a batch of draws on odd frames of the opening course fetched vertices out of bounds, giving huge triangles and NaN (black band, black-edged glow, grey stripes). Without overflow the accumulated value equals cur - begin
++// SDK 20.5.22 (sdk+0x4b8fa0): current cursor minus current grant base.
++// BeginRecording does not reset this offset; AddCommandMemory does. Charging
++// logical host spill bytes or resetting per recording mispositions agl's packed
++// material allocator: a later segment-switch JUMP overwrites a cached BEGIN.
++// Spill records are host-owned; only guest bytes, including our JUMP, consume
++// the game's grant. A command buffer with no guest grant reports its host usage
++// so clients which test both memory usage counters do not discard real work.
+ NVN(nvnCommandBufferGetCommandMemoryUsed, size_t, const NVNcommandBuffer *c) { const cmd_t *m = (const cmd_t *)c;
+-    return m->begin ? (size_t)m->used : 0; }
++    return m->had_guest ? (size_t)m->grant_used : (size_t)m->used; }
+ NVN(nvnCommandBufferGetControlMemoryUsed, size_t, const NVNcommandBuffer *c) { (void)c; return 0; }
+ NVN_NOPROTO(nvnCommandBufferSetCommandMemoryCallbackEnabled, void, NVNcommandBuffer *c, uint32_t on) { (void)c; (void)on; }
+ 
+@@ -1435,7 +1495,9 @@ NVN_NOPROTO(nvnProgramSetShadersExt, NVNboolean, NVNprogram *p, int n, const sha
  // Singular / combined forms → plural / separate forms; state the replay layer does not have yet (conditional render, depth bounds, ...) is logged once and drawing continues (better to over-draw than to drop).
  #include "../tex/nvn_deswizzle.h"
  
@@ -152,7 +269,7 @@ index d4c3531..e6de2eb 100644
  // Combined texture handle (texture id | sampler id << 20) is recorded into the texture slot as is: the replay layer takes the texture from the low 20 bits and the sampler from the high bits (nvn_mtl.m NVN_RB_SAMPT)
  NVN(nvnCommandBufferBindTexture, void, NVNcommandBuffer *c, NVNshaderStage st, int i, NVNtextureHandle h) { uint64_t v = (uint64_t)h; bind_handles(c, OP_BIND_TEX, st, i, 1, &v); }
  // "Deferred" binding: the GPU reads the handles h points to when it executes this command, not at recording. The per-texture binding of The Legend of Zelda: Breath of the Wild's engine (main+0xec2e64) always uses it,
-@@ -1478,9 +1522,10 @@ NVN(nvnCommandBufferReportValue, void, NVNcommandBuffer *c, uint32_t v, NVNbuffe
+@@ -1478,9 +1540,10 @@ NVN(nvnCommandBufferReportValue, void, NVNcommandBuffer *c, uint32_t v, NVNbuffe
  // Clear a buffer to a 32-bit value: one OP_CLEAR_BUF record, filled in order within the submission at replay (fillBuffer when all bytes match, otherwise copied from a pattern buffer)
  NVN(nvnCommandBufferClearBuffer, void, NVNcommandBuffer *c, NVNbufferAddress a, size_t n, uint32_t v) { *REC(c, OP_CLEAR_BUF, p_clear_buf) = (p_clear_buf){a, n, v, 0}; }
  
@@ -166,11 +283,259 @@ index d4c3531..e6de2eb 100644
  NVN(nvnCommandBufferSetDepthClamp, void, NVNcommandBuffer *c, uint32_t en) { (void)c; if (en & 0xff) ONCE_LOG("SetDepthClamp 开：宿主暂忽略"); }
  NVN(nvnCommandBufferSetLineWidth, void, NVNcommandBuffer *c, float w) { (void)c; if (w != 1.0f) ONCE_LOG("SetLineWidth %.2f：Metal 只有 1 像素线", w); }
  NVN(nvnCommandBufferSetPointSize, void, NVNcommandBuffer *c, float s) { (void)c; (void)s; ONCE_LOG("SetPointSize：点大小由着色器给"); }
+diff --git a/dm/gfx/nvn/nvn_cmdwatch.c b/dm/gfx/nvn/nvn_cmdwatch.c
+new file mode 100644
+index 0000000..1e3efac
+--- /dev/null
++++ b/dm/gfx/nvn/nvn_cmdwatch.c
+@@ -0,0 +1,210 @@
++// DM_NVN_CMDWATCH=<first frame>: inventory reachable CALL/JUMP records, hash
++// each record, and protect its pages until CPU replay ends. The first write
++// terminates through the ordinary crash reporter (writer PC/LR/backtrace).
++// DM_NVN_CMDWATCH_HASH=1 retains hashes only, for shared-page investigations.
++#include "../../host/dm.h"
++#include "nvn_obj.h"
++#include "nvn_hmap.h"
++#include "nvn_cmdwatch.h"
++#include <stdatomic.h>
++#include <sys/mman.h>
++#include <sys/ucontext.h>
++#include <unistd.h>
++
++typedef struct { uintptr_t lo, hi; } cw_span;
++typedef struct { uint32_t size; uint64_t hash; } cw_record;
++static cw_span *g_grants; static size_t g_ngrant, g_cgrant;
++static pthread_mutex_t g_grant_mu = PTHREAD_MUTEX_INITIALIZER;
++static cw_span g_ranges[65536]; static size_t g_nrange;
++static uintptr_t g_pages[131072]; static size_t g_npage, g_page_size;
++static nvn_hmap g_records = {.klen=8}, g_seen = {.klen=8};
++typedef struct {uintptr_t end,caller,thread;uint64_t frame,head;} cw_creation;
++static nvn_hmap g_created = {.klen=8};
++static _Atomic int g_active, g_pubkind;
++static _Atomic uint64_t g_pubfence, g_pubaddr, g_replay;
++static uint64_t g_first, g_frame, g_submit;
++static int g_hash_only;
++static _Atomic uintptr_t g_force;
++static _Atomic uintptr_t g_ever[262144];
++static int cw_ever(uintptr_t page,int insert){
++    size_t i=(page/g_page_size*2654435761u)&262143;
++    for(size_t n=0;n<262144;n++,i=(i+1)&262143){
++        uintptr_t p=atomic_load(&g_ever[i]);if(p==page)return 1;
++        if(!p){if(!insert)return 0;if(atomic_compare_exchange_strong(&g_ever[i],&p,page)||p==page)return 1;}
++    }return 0;
++}
++typedef struct { uintptr_t page,addr,pc,lr,thread,replay; uint64_t frame,submit,fence,pubaddr; int phase,kind,exact; } cw_write;
++static cw_write g_writes[16384]; static _Atomic unsigned g_nwrite;
++static void cw_disarm(void);
++static void cw_history(uintptr_t address) {
++    pthread_mutex_lock(&g_grant_mu);
++    cw_creation *c=nvn_hm_get(&g_created,&address);
++    if(c){LOG("[cmdwatch] created entry=%#lx end=%#lx frame=%llu caller=%#lx thread=%#lx head=%#llx",address,c->end,c->frame,c->caller,c->thread,c->head);
++        module_t *m=module_of((void *)c->caller);if(m)LOG("[cmdwatch] creator=%s+%#llx",m->name,(uint64_t)c->caller-(uint64_t)m->base);}
++    pthread_mutex_unlock(&g_grant_mu);
++    uintptr_t page=address&~(g_page_size-1);unsigned n=atomic_load(&g_nwrite),printed=0;
++    for(unsigned k=0;k<n&&k<16384&&printed<8;k++){
++        cw_write w=g_writes[(n-1-k)%16384];if(w.page!=page)continue;printed++;
++        LOG("[cmdwatch] writer history target=%#lx phase=%d exact=%d frame=%llu submit=%llu addr=%#lx pc=%#lx lr=%#lx thread=%#lx replay=%#lx last_publish={fence=%llu kind=%d addr=%#llx}",address,w.phase,w.exact,w.frame,w.submit,w.addr,w.pc,w.lr,w.thread,w.replay,w.fence,w.kind,w.pubaddr);
++        module_t *m=module_of((void *)w.pc),*l=module_of((void *)w.lr);
++        if(m)LOG("[cmdwatch] writer pc=%s+%#llx",m->name,(uint64_t)w.pc-(uint64_t)m->base);
++        if(l)LOG("[cmdwatch] writer lr=%s+%#llx",l->name,(uint64_t)w.lr-(uint64_t)l->base);
++    }
++}
++static int cw_fault(void *addr, int is_write, void *uc_) {
++    if (!is_write || !g_first || g_hash_only) return 0;
++    uintptr_t a = (uintptr_t)addr, page = a & ~(g_page_size - 1);
++    uintptr_t forced=atomic_load(&g_force);
++    if(forced && a>=forced && a<forced+8){
++        ucontext_t *u=uc_;char info[256];int z=snprintf(info,sizeof info,"[cmdwatch] JUMP writer addr=%p pc=%#llx lr=%#llx thread=%p frame=%llu\n",addr,u->uc_mcontext->__ss.__pc,u->uc_mcontext->__ss.__lr,(void *)pthread_self(),dm_nvn_frame_count());
++        if(z>0)(void)write(2,info,(size_t)z);
++        static const char note[]="[cmdwatch] CONFIRMED write into cached BEGIN by JUMP payload; normal crash reports actual writer\n";
++        (void)write(2,note,sizeof note-1);return -1;
++    }
++    if(!atomic_load(&g_active))return cw_ever(page,0)&&!mprotect((void *)page,g_page_size,PROT_READ|PROT_WRITE);
++    size_t lo=0, hi=g_npage;
++    while (lo < hi) { size_t mid=(lo+hi)/2; if(g_pages[mid]<page)lo=mid+1;else hi=mid; }
++    if(lo==g_npage || g_pages[lo]!=page)return cw_ever(page,0)&&!mprotect((void *)page,g_page_size,PROT_READ|PROT_WRITE);
++    int exact=0;
++    for(size_t i=0;i<g_nrange;i++)if(a>=g_ranges[i].lo&&a<g_ranges[i].hi){exact=1;break;}
++    ucontext_t *uc = uc_;
++    int phase=atomic_load(&g_active);
++    unsigned wi=atomic_fetch_add(&g_nwrite,1)%16384;
++    g_writes[wi]=(cw_write){page,a,uc->uc_mcontext->__ss.__pc,uc->uc_mcontext->__ss.__lr,(uintptr_t)pthread_self(),atomic_load(&g_replay),g_frame,g_submit,atomic_load(&g_pubfence),atomic_load(&g_pubaddr),phase,atomic_load(&g_pubkind),exact};
++    if(phase==2){mprotect((void *)page,g_page_size,PROT_READ|PROT_WRITE);return 1;}
++    static _Atomic unsigned shared;
++    unsigned count=exact?0:atomic_fetch_add(&shared,1);
++    if(!exact && count>=12){mprotect((void *)page,g_page_size,PROT_READ|PROT_WRITE);return 1;}
++    // write(2) avoids stdio locks on the normal replay thread. No allocation or
++    // mutex is taken here; the normal crash path prints symbolic PC/LR/stack.
++    char b[512]; int n=snprintf(b,sizeof b,
++        "[cmdwatch] WRITE submit=%llu frame=%llu addr=%p pc=%#llx lr=%#llx thread=%p replay=%#llx last_publish={fence=%llu kind=%d addr=%#llx}\n",
++        g_submit,g_frame,addr,uc->uc_mcontext->__ss.__pc,uc->uc_mcontext->__ss.__lr,
++        (void *)pthread_self(),atomic_load(&g_replay),atomic_load(&g_pubfence),
++        atomic_load(&g_pubkind),atomic_load(&g_pubaddr));
++    if(n>0) (void)write(2,b,(size_t)n);
++    for(size_t i=0;i<g_nrange;i++) if(a>=g_ranges[i].lo && a<g_ranges[i].hi) {
++        n=snprintf(b,sizeof b,"[cmdwatch] writer address is INSIDE reachable command segment [%#lx,%#lx)\n",g_ranges[i].lo,g_ranges[i].hi);
++        if(n>0)(void)write(2,b,(size_t)n); break;
++    }
++    if(!exact){
++        static const char shared_note[]="[cmdwatch] shared-page neighbour write; unprotect page, retain per-record hash checks\n";
++        (void)write(2,shared_note,sizeof shared_note-1);
++        mprotect((void *)page,g_page_size,PROT_READ|PROT_WRITE);return 1;
++    }
++    return -1; // fatal even if a later texture dirty-page hook covers this page
++}
++__attribute__((constructor)) static void cw_init(void) {
++    const char *e=getenv("DM_NVN_CMDWATCH"); if(!e)return;
++    g_first=strtoull(e,NULL,0); if(!g_first)g_first=1;
++    g_hash_only=getenv("DM_NVN_CMDWATCH_HASH")!=NULL;
++    g_page_size=(size_t)getpagesize();
++    dm_fault_hook_register(cw_fault);
++}
++void nvn_cmdwatch_grant(const void *mem,size_t size) {
++    if(!g_first || !mem || !size)return;
++    pthread_mutex_lock(&g_grant_mu);
++    if(g_ngrant==g_cgrant){g_cgrant=g_cgrant?g_cgrant*2:256;g_grants=realloc(g_grants,g_cgrant*sizeof *g_grants);if(!g_grants)abort();}
++    g_grants[g_ngrant++]=(cw_span){(uintptr_t)mem,(uintptr_t)mem+size};
++    pthread_mutex_unlock(&g_grant_mu);
++}
++void nvn_cmdwatch_created(const void *begin,const void *end,uint64_t frame,uint64_t caller){
++    if(!g_first)return;
++    uintptr_t key=(uintptr_t)begin;
++    pthread_mutex_lock(&g_grant_mu);
++    cw_creation *c=nvn_hm_get(&g_created,&key);if(!c){c=malloc(sizeof *c);if(!c)abort();nvn_hm_put(&g_created,&key,c);}
++    uint64_t head;memcpy(&head,begin,8);
++    *c=(cw_creation){(uintptr_t)end,caller,(uintptr_t)pthread_self(),frame,head};
++    if((uint32_t)head>=OP_COUNT_ || (head>>32)<8 || ((head>>32)&7))LOG("[cmdwatch] INVALID AT END entry=%p end=%p frame=%llu caller=%#llx head=%#llx",begin,end,frame,caller,head);
++    pthread_mutex_unlock(&g_grant_mu);
++}
++void nvn_cmdwatch_jump(const void *record,const void *target,const void *begin){
++    if(!g_first)return;uintptr_t key=(uintptr_t)record+8;
++    pthread_mutex_lock(&g_grant_mu);cw_creation *c=nvn_hm_get(&g_created,&key);
++    if(c)LOG("[cmdwatch] JUMP payload overwrites known BEGIN at=%#lx target=%p current_begin=%p created_frame=%llu write_frame=%llu end=%#lx head=%#llx",key,target,begin,c->frame,dm_nvn_frame_count(),c->end,c->head);
++    pthread_mutex_unlock(&g_grant_mu);
++    if(c && c->frame>=g_first && getenv("DM_NVN_CMDWATCH_JUMP_TRAP")){
++        atomic_store(&g_force,key);cw_ever(key&~(g_page_size-1),1);
++        if(mprotect((void *)(key&~(g_page_size-1)),g_page_size,PROT_READ))die("cmdwatch jump trap protect");
++    }
++}
++static void cw_range(uintptr_t lo,uintptr_t hi) {
++    if(g_nrange==65536)die("cmdwatch range capacity");
++    g_ranges[g_nrange++]=(cw_span){lo,hi};
++    for(uintptr_t p=lo&~(g_page_size-1);p<hi;p+=g_page_size){
++        if(g_npage==131072)die("cmdwatch page capacity");g_pages[g_npage++]=p;
++    }
++}
++static void cw_scan(const uint8_t *p,int depth) {
++    if(depth>64)die("cmdwatch CALL depth");
++    for(;;){
++        uintptr_t key=(uintptr_t)p;
++        if(nvn_hm_get(&g_seen,&key))return;
++        nvn_hm_put(&g_seen,&key,(void *)1);
++        const uint8_t *start=p;
++        for(unsigned count=0;;count++){
++            op_hdr h;memcpy(&h,p,8);
++            if(count>1000000 || ((uintptr_t)p&7) || h.size<8 || (h.size&7) || h.size>(8u<<20) || h.op>=OP_COUNT_) {
++                cw_history((uintptr_t)p);
++                die("cmdwatch invalid BEFORE replay at %p op=%u size=%u frame=%llu",p,h.op,h.size,g_frame);
++            }
++            cw_record *r=malloc(sizeof *r);if(!r)abort();
++            *r=(cw_record){h.size,nvn_hm_hash(p,h.size)};key=(uintptr_t)p;
++            cw_record *old=nvn_hm_put(&g_records,&key,r);free(old);
++            if(h.op==OP_CALL){const uint8_t *t;memcpy(&t,p+8,8);cw_scan(t,depth+1);}
++            if(h.op==OP_END || h.op==OP_JUMP){
++                cw_range((uintptr_t)start,(uintptr_t)p+h.size);
++                if(h.op==OP_END)return;
++                memcpy(&p,p+8,8);break;
++            }
++            p+=h.size;
++        }
++    }
++}
++static int cw_cmp(const void *a,const void *b){uintptr_t x=*(const uintptr_t *)a,y=*(const uintptr_t *)b;return (x>y)-(x<y);}
++void nvn_cmdwatch_begin(const uint64_t *handles,int n,uint64_t frame){
++    if(!g_first || frame<g_first)return;
++    cw_disarm();
++    g_frame=frame;g_submit++;g_nrange=g_npage=0;
++    nvn_hm_clear(&g_records,free);nvn_hm_clear(&g_seen,NULL);
++    for(int i=0;i<n;i++)cw_scan((const uint8_t *)handles[i],0);
++    qsort(g_pages,g_npage,sizeof *g_pages,cw_cmp);
++    size_t out=0;for(size_t i=0;i<g_npage;i++)if(!out||g_pages[i]!=g_pages[out-1])g_pages[out++]=g_pages[i];g_npage=out;
++    if(g_submit==1 || frame>=890){
++        LOG("[cmdwatch] begin submit=%llu frame=%llu records=%u ranges=%zu pages=%zu mode=%s",g_submit,frame,g_records.n,g_nrange,g_npage,g_hash_only?"hash":"protect");
++        pthread_mutex_lock(&g_grant_mu);
++        for(size_t i=0;i<g_nrange;i++){
++            cw_span s=g_ranges[i],grant={0};
++            for(size_t j=g_ngrant;j>0;j--)if(s.lo>=g_grants[j-1].lo&&s.lo<g_grants[j-1].hi){grant=g_grants[j-1];break;}
++            LOG("[cmdwatch] range [%#lx,%#lx) AddCommandMemory=[%#lx,%#lx)",s.lo,s.hi,grant.lo,grant.hi);
++        }
++        pthread_mutex_unlock(&g_grant_mu);
++    }
++    atomic_store(&g_replay,0);atomic_store(&g_active,1);
++    if(!g_hash_only)for(size_t i=0;i<g_npage;i++){
++        if(!cw_ever(g_pages[i],1))die("cmdwatch ever-page capacity");
++        dm_guest_write_prepare((void *)g_pages[i],g_page_size);
++        if(mprotect((void *)g_pages[i],g_page_size,PROT_READ))die("cmdwatch protect failed");
++    }
++}
++void nvn_cmdwatch_before(const void *p){
++    if(!atomic_load(&g_active))return;
++    uintptr_t key=(uintptr_t)p;atomic_store(&g_replay,key);
++    cw_record *r=nvn_hm_get(&g_records,&key);
++    if(!r || r->hash!=nvn_hm_hash(p,r->size))die("cmdwatch CHANGED before decode %p frame=%llu last_publish fence=%llu kind=%d addr=%#llx",p,g_frame,atomic_load(&g_pubfence),atomic_load(&g_pubkind),atomic_load(&g_pubaddr));
++}
++void nvn_cmdwatch_publish(uint64_t fence,int kind,uint64_t addr){
++    if(!g_first)return;
++    atomic_store(&g_pubfence,fence);atomic_store(&g_pubkind,kind);atomic_store(&g_pubaddr,addr);
++    if(atomic_load(&g_active)==1)LOG("[cmdwatch] publish during replay submit=%llu frame=%llu fence=%llu kind=%d addr=%#llx replay=%#llx",g_submit,g_frame,fence,kind,addr,atomic_load(&g_replay));
++}
++static void cw_disarm(void){
++    if(!atomic_load(&g_active))return;
++    if(!g_hash_only)for(size_t i=0;i<g_npage;i++)if(mprotect((void *)g_pages[i],g_page_size,PROT_READ|PROT_WRITE))die("cmdwatch unprotect failed");
++    atomic_store(&g_active,0);
++}
++void nvn_cmdwatch_end(void){
++    // Retain a tolerant between-submission watch: a stale CALL may already be
++    // corrupt at the next submit. Legitimate reuse is logged, never blocked.
++    if(atomic_load(&g_active))atomic_store(&g_active,2);
++}
+diff --git a/dm/gfx/nvn/nvn_cmdwatch.h b/dm/gfx/nvn/nvn_cmdwatch.h
+new file mode 100644
+index 0000000..a3e9e45
+--- /dev/null
++++ b/dm/gfx/nvn/nvn_cmdwatch.h
+@@ -0,0 +1,11 @@
++// Opt-in command-memory ownership diagnostics. No game data is persisted.
++#pragma once
++#include <stdint.h>
++#include <stddef.h>
++void nvn_cmdwatch_grant(const void *mem, size_t size);
++void nvn_cmdwatch_created(const void *begin,const void *end,uint64_t frame,uint64_t caller);
++void nvn_cmdwatch_jump(const void *record,const void *target,const void *begin);
++void nvn_cmdwatch_begin(const uint64_t *handles, int n, uint64_t frame);
++void nvn_cmdwatch_before(const void *record);
++void nvn_cmdwatch_publish(uint64_t fence, int kind, uint64_t address);
++void nvn_cmdwatch_end(void);
 diff --git a/dm/gfx/nvn/nvn_mtl.m b/dm/gfx/nvn/nvn_mtl.m
-index 10c5eac..eb73331 100644
+index 10c5eac..5026ff5 100644
 --- a/dm/gfx/nvn/nvn_mtl.m
 +++ b/dm/gfx/nvn/nvn_mtl.m
-@@ -759,7 +759,12 @@ uint64_t mtl_sub_commit(void) {
+@@ -14,6 +14,7 @@
+ #endif
+ #include "nvn_mtl.h"
+ #include "nvn_obj.h"
++#include "nvn_cmdwatch.h"
+ #include "../tex/nvn_fmt_mtl.h"
+ #include "../tex/nvn_deswizzle.h"
+ #include "../tex/nvn_deswizzle_gpu.h"
+@@ -753,15 +754,22 @@ uint64_t mtl_sub_commit(void) {
+         gpu_tag_done(gpu_f, cb.GPUStartTime, cb.GPUEndTime);
+         if (cb.error) { atomic_store(&g_last_commit_error, 1); static int n, nv; int victim = [cb.error.description containsString:@"InnocentVictim"]; if (victim ? nv++ < 1 : n++ < 8) MLOG("【红】命令缓冲错误详情 fence=%llu：%s | GPU %.3f→%.3f", (unsigned long long)fence, cb.error.description.UTF8String, cb.GPUStartTime, cb.GPUEndTime); if (!victim) MLOG("【红】出错那次提交的现场 fence=%llu：%s", (unsigned long long)fence, cctx.UTF8String); MLOG("【红】命令缓冲执行出错：%s", cb.error.localizedDescription.UTF8String); }
+         for (int i = 0; i < n; i++) {
++            nvn_cmdwatch_publish(fence,ops[i].kind,ops[i].kind==1?(uint64_t)(uintptr_t)ops[i].val:ops[i].addr);
+             if (ops[i].kind == 1) { if (ops[i].mode == 1) *ops[i].val += ops[i].v; else *ops[i].val = ops[i].v; }
+             else if (ops[i].kind == 3) {   // Samples passed: the sum of all slots since the reset
+                 vis_list *l = ops[i].vis; uint64_t sum = 0;
                  for (int k = 0; k < l->n; k++) { sum += ((const uint64_t *)((__bridge id<MTLBuffer>)l->s[k].buf).contents)[l->s[k].slot]; CFRelease(l->s[k].buf); }
                  free(l); uint64_t rec[2] = {sum, gpu_ticks()}; memcpy((void *)ops[i].addr, rec, sizeof rec);
              }
@@ -183,8 +548,11 @@ index 10c5eac..eb73331 100644
 +            else { uint64_t t = gpu_ticks(), rec[2] = {0, t}; memcpy((void *)ops[i].addr, rec, sizeof rec); }
          }
          free(ops);
++        nvn_cmdwatch_publish(fence,5,0);
          pthread_mutex_lock(&g_mu); if (fence > g_done) g_done = fence; pthread_cond_broadcast(&g_cv); pthread_mutex_unlock(&g_mu);
-@@ -1455,6 +1460,7 @@ static struct {
+         defer_drain();
+     }];
+@@ -1455,6 +1463,7 @@ static struct {
      uint8_t clear_d, clear_s; double cd; uint32_t cs;
      p_scissor sc; int has_sc;
  } R;
@@ -192,7 +560,7 @@ index 10c5eac..eb73331 100644
  
  // ---------- Zero-source skip ----------
  // Shader fact table (statically proven keys): 'the textures it samples are all 0 and the coefficient is finite ⇒ the output is all 0'. Coefficient = component comp of vector vec of fragment-stage constant buffer register ubo_slot.
-@@ -2208,7 +2214,7 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
+@@ -2208,7 +2217,7 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
      if (fd < 0 || fstat(fd, &st) || st.st_size <= 0) { if (fd >= 0) close(fd); if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"打不开 %@", path]}]; return nil; }
      size_t len = (size_t)st.st_size; void *m = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
      if (m == MAP_FAILED) { if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"映射失败 %@", path]}]; return nil; }
@@ -201,7 +569,7 @@ index 10c5eac..eb73331 100644
      // Shell: when the user's computer has no Apple shader compiler (the no-compiler mode of tools/d2rm_pack.py, gfx/tools/nometal_run.py), the "library files" contain
      // shader source rather than compiled libraries (a compiled library starts with MTLB). They are compiled here on the spot; the system caches the compiled result, and from the second launch on the same shader no longer costs this time.
      // Measured on a real device (cold): about 80 ms each on average, about 450 ms for the longest single one; one session uses several hundred.
-@@ -2628,6 +2634,7 @@ static const prog_t *bind_stages(const prog_t *p, int stages) {
+@@ -2628,6 +2637,7 @@ static const prog_t *bind_stages(const prog_t *p, int stages) {
  }
  static void state_reset(void) {
      memset(&S, 0, sizeof S);
@@ -209,7 +577,7 @@ index 10c5eac..eb73331 100644
      g_pso_dirty = g_dss_dirty = 1;
      for (int i = 0; i < 8; i++) S.blend[i] = (blend_st){i, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_EQUATION_ADD, NVN_BLEND_EQUATION_ADD};
      S.color = (color_st){0, NVN_LOGIC_OP_COPY, NVN_ALPHA_FUNC_ALWAYS}; S.chmask.mask = 0xffffffffu;
-@@ -5712,11 +5719,15 @@ static void sub_cut(void) {
+@@ -5712,11 +5722,16 @@ static void sub_cut(void) {
  }
  
  void mtl_exec(const uint8_t *p) {
@@ -218,6 +586,7 @@ index 10c5eac..eb73331 100644
      static int dump_all = -1; if (dump_all < 0) dump_all = getenv("DM_NVN_PASSDUMP_ALL") != NULL;
      int trace = dump_all && passdump();   // Normal mode does not check the frame range per operation; the full command position is only used for the designated diagnostic frames
      for (;;) {
++        nvn_cmdwatch_before(p);
          op_hdr h; memcpy(&h, p, sizeof h);
 +        if (((uintptr_t)p & 7) || h.size < sizeof h || (h.size & 7) || h.op >= OP_COUNT_)
 +            MDIE("invalid command at %p: op=%u size=%u depth=%d caller=%p entry=%p prev=%p op=%u size=%u", p, h.op, h.size, g_ret_n, g_ret_n > 0 && g_ret_n <= 16 ? g_ret[g_ret_n - 1] : NULL, entry, prev, prev_h.op, prev_h.size);
@@ -225,7 +594,7 @@ index 10c5eac..eb73331 100644
          g_exec_cur = p;   // Scan start point of the store lookahead: the operation that ends the render pass (inclusive)
          if (p == g_defer_pend) { for (int gi = 0; gi < 4; gi++) if (g_defer_slots[gi].active && g_defer_slots[gi].p_end_op == p) g_defer_slots[gi].in_p = 0; g_defer_pend = NULL; }
          sdx_seq(p);
-@@ -5728,7 +5739,32 @@ void mtl_exec(const uint8_t *p) {
+@@ -5728,7 +5743,32 @@ void mtl_exec(const uint8_t *p) {
          if (g_allocprof) { static uint64_t last; static int prev = -1; uint64_t now = g_dev.currentAllocatedSize; if (prev >= 0 && prev < 64 && now > last) g_ap_bytes[prev] += now - last; last = now; prev = h.op; }
          if (g_hoist_n && hoist_take(p)) { if (g_fz.active && p == g_fz.rt2_op) { g_fz.phase = 2; g_rt_merged = 0; PD("F %llu 合并通道进入后一个通道的绘制", g_stat_pass); } p += h.size; continue; }   // A pure-clear render pass already executed early / the start of a later pass already merged in   // Entering the later pass: the same-target continuation of the earlier pass ends here; the later pass reading the earlier pass's attachment is proven to be same-pixel by fz_p2_draw, and is no longer split by the continuation rule
          const void *a = p + 8;
@@ -259,10 +628,21 @@ index 10c5eac..eb73331 100644
                  if (g_hoist_n && !g_ret_n && !g_nrest) {
                      if (g_fz.active) fz_unskip();
 diff --git a/dm/gfx/nvn/nvn_obj.h b/dm/gfx/nvn/nvn_obj.h
-index fa314c4..cedb611 100644
+index fa314c4..2c69798 100644
 --- a/dm/gfx/nvn/nvn_obj.h
 +++ b/dm/gfx/nvn/nvn_obj.h
-@@ -100,8 +100,11 @@ enum {
+@@ -73,7 +73,9 @@ typedef struct {
+     uint8_t *begin;                      // BEGIN record of this recording
+     PFNNVNCOMMANDBUFFERMEMORYCALLBACKPROC cb; void *cb_data;
+     NVNdevice *dev;
+-    uint64_t used;                       // Bytes written in this recording (across segments, including segment-switch JUMPs; returned by GetCommandMemoryUsed)
++    uint64_t used;                       // Logical bytes in this recording, including host spill storage.
++    uint64_t grant_used;                 // Guest bytes since AddCommandMemory, across recordings; host spill bytes are not guest allocations.
++    uint32_t host_segment, had_guest;
+ } cmd_t;                                                                                   FITS(cmd_t, NVNcommandBuffer);
+ 
+ // ---------- State objects (defaults follow the NVN / GL defaults) ----------
+@@ -100,8 +102,11 @@ enum {
      OP_BIND_PROGRAM, OP_BIND_STATE, OP_BIND_VATTR, OP_BIND_VSTREAM, OP_BIND_VBUF,
      OP_BIND_UBO, OP_BIND_SSBO, OP_BIND_TEX, OP_BIND_SAMP,
      OP_STENCIL, OP_POLY_OFFSET, OP_DRAW, OP_DRAW_IDX, OP_DISPATCH, OP_BARRIER,
@@ -298,7 +678,7 @@ index 41be22b..466976d 100644
  	clang $(CFLAGS) -fobjc-arc -o $@ t_rt_range_shape.m ../../host/crash.c $(filter-out ../nvn/nvn_mtl.m ../nvn/nvn_entry.S ../nvn/nvn_thunks.S,$(GFX)) $(FW)
  t_rt_range_ro: t_rt_range_ro.m ../../host/crash.c $(GFX) $(GFX_H)
 diff --git a/dm/gfx/tests/t_nvn.c b/dm/gfx/tests/t_nvn.c
-index d21874c..33424f0 100644
+index d21874c..bea62c8 100644
 --- a/dm/gfx/tests/t_nvn.c
 +++ b/dm/gfx/tests/t_nvn.c
 @@ -1,6 +1,8 @@
@@ -310,7 +690,46 @@ index d21874c..33424f0 100644
  uint64_t g_t0_ns;   // process start time from host main.c (used by hle_nvn's per-frame @t_s); unit test stub
  #include "../tex/nvn_deswizzle.h"
  #include <time.h>
-@@ -110,7 +112,7 @@ int main(void) {
+@@ -73,6 +75,38 @@ int main(void) {
+     EXPECT("MemoryPoolInitialize 成功", 1, P(nvnMemoryPoolInitialize)(&pool, &pb));
+     EXPECT("池 GPU 地址 = 存储地址", (long long)(uintptr_t)poolmem, P(nvnMemoryPoolGetBufferAddress)(&pool));
+ 
++    // SDK 20.5.22 GetCommandMemoryUsed is cursor minus the current grant's
++    // base, not bytes in just the latest recording. Host spill bytes must not
++    // advance the game's allocator into a neighbouring cached handle.
++    {
++        NVNcommandBuffer packed;
++        P(nvnCommandBufferInitialize)(&packed,&dev);
++        P(nvnCommandBufferAddCommandMemory)(&packed,&pool,0x8000,512);
++        P(nvnCommandBufferBeginRecording)(&packed); P(nvnCommandBufferEndRecording)(&packed);
++        EXPECT("command grant first empty recording consumes 16 bytes",16,P(nvnCommandBufferGetCommandMemoryUsed)(&packed));
++        P(nvnCommandBufferBeginRecording)(&packed); P(nvnCommandBufferEndRecording)(&packed);
++        EXPECT("command grant usage accumulates across recordings",32,P(nvnCommandBufferGetCommandMemoryUsed)(&packed));
++        uint8_t payload[512]={0};
++        P(nvnCommandBufferBeginRecording)(&packed);
++        P(nvnCommandBufferUpdateUniformBuffer)(&packed,(NVNbufferAddress)poolmem,4096,0,sizeof payload,payload);
++        P(nvnCommandBufferEndRecording)(&packed);
++        EXPECT("host spill charges guest BEGIN and JUMP only",56,P(nvnCommandBufferGetCommandMemoryUsed)(&packed));
++        P(nvnCommandBufferAddCommandMemory)(&packed,&pool,0x8400,512);
++        EXPECT("a new grant resets command memory usage",0,P(nvnCommandBufferGetCommandMemoryUsed)(&packed));
++        // There is room for END (8 bytes), but not END + regular reserve (32).
++        // Ending must not touch the following packed list at byte 72.
++        P(nvnCommandBufferAddCommandMemory)(&packed,&pool,0x8800,88);
++        P(nvnCommandBufferBeginRecording)(&packed);
++        P(nvnCommandBufferSetRenderEnable)(&packed,1);
++        float color[4]={0}; P(nvnCommandBufferClearColor)(&packed,0,color,15);
++        uint64_t guard=0x800000002ull; memcpy(poolmem+0x8848,&guard,8);
++        P(nvnCommandBufferEndRecording)(&packed);
++        EXPECT("END consumes only its 8 bytes without a spill",72,P(nvnCommandBufferGetCommandMemoryUsed)(&packed));
++        uint64_t after;memcpy(&after,poolmem+0x8848,8);
++        EXPECT("END preserves the next packed BEGIN",guard,after);
++        P(nvnCommandBufferFinalize)(&packed);
++    }
++
+     // 4. Texture storage size (block-linear: GOB = 64 B × 8 rows; block height from the GOB count of "height × 1.5": ≥16→16, ≥8→8 ...)
+     //    256×256 RGBA8: 1024 B per row = 16 GOBs; height 256 rows = 32 GOB rows, block height 16 GOBs → 2 blocks; 16×2×(512×16) = 262144
+     size_t al; EXPECT("256x256 RGBA8 尺寸", 262144, tex_size(NVN_FORMAT_RGBA8, 256, 256, 0, &al));
+@@ -110,7 +144,7 @@ int main(void) {
      EXPECT("录完不在录制", 0, P(nvnCommandBufferIsRecording)(&cb));
      P(nvnCommandBufferBeginRecording)(&cb);
      P(nvnCommandBufferCopyBufferToBuffer)(&cb, (NVNbufferAddress)src, (NVNbufferAddress)dst, 64, 0);
@@ -319,7 +738,7 @@ index d21874c..33424f0 100644
      NVNcommandHandle h2 = P(nvnCommandBufferEndRecording)(&cb);
      printf("（命令内存回调 %d 次，用掉 %zu B）\n", g_cb_calls, g_cmdoff);
      EXPECT("命令内存回调至少 2 次（多段）", 1, g_cb_calls >= 2);
-@@ -130,10 +132,11 @@ int main(void) {
+@@ -130,10 +164,11 @@ int main(void) {
      int ub_ok = 1;
      for (int k = 0; k < 20; k++) for (int i = 0; i < 16; i++) { uint32_t w; memcpy(&w, ub + k * 64 + i * 4, 4); ub_ok &= w == (uint32_t)(k * 100 + i); }
      EXPECT("uniform 缓冲 20×16 个字全等录制值", 1, ub_ok);
@@ -436,6 +855,34 @@ index c925370..da5ad1e 100644
 -metal_iphoneos	Apple metal version 32023.921 (metalfe-32023.921.6)
 +metal_macosx	none
 +metal_iphoneos	none
+diff --git a/dm/host/crash.c b/dm/host/crash.c
+index f513ee3..5508a0b 100644
+--- a/dm/host/crash.c
++++ b/dm/host/crash.c
+@@ -89,7 +89,9 @@ void dm_backtrace(uint64_t fp) {
+     fputc('\n', stderr);
+ }
+ // ---------- Page fault hooks (write-protect dirty page tracking) ----------
+-// Called in registration order before on_crash prints the crash state; returning 1 = handled (return directly and re-execute the faulting instruction); the crash path is taken only when all return 0.
++// Called in registration order before on_crash prints the crash state; returning
++// 1 = handled (retry instruction), 0 = try next hook, negative = force the crash
++// report even if a later dirty-page hook would otherwise consume this fault.
+ // Hooks run in signal handler context: only table lookups / atomic operations / mprotect are allowed, no memory allocation and no locking.
+ #define MAX_FAULT_HOOK 4
+ static int (*g_fault_hook[MAX_FAULT_HOOK])(void *addr, int is_write, void *uc);
+@@ -130,7 +132,11 @@ static void on_crash(int sig, siginfo_t *si, void *uc_) {
+     if (sig == SIGTRAP && g_trap_hook && g_trap_hook(uc)) return;
+     if (sig == SIGSEGV || sig == SIGBUS) {
+         int is_write = (int)((uc->uc_mcontext->__es.__esr >> 6) & 1);   // The WnR bit of ESR
+-        for (int i = 0; i < g_nfault_hook; i++) if (g_fault_hook[i](si->si_addr, is_write, uc)) return;
++        for (int i = 0; i < g_nfault_hook; i++) {
++            int handled = g_fault_hook[i](si->si_addr, is_write, uc);
++            if (handled < 0) break; // Diagnostic ownership guard: report the writer even when another hook could unprotect the page.
++            if (handled > 0) return;
++        }
+     }
+     crash_gate(sig);
+     // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/hle_fs.c b/dm/host/hle_fs.c
 index 074f933..7545141 100644
 --- a/dm/host/hle_fs.c

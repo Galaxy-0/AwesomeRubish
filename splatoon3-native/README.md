@@ -7,6 +7,6 @@
 - `tools/survey.py`：对 XCI 本体 + 11.3.0 更新 NSP 跑 nxnative 粗查
 - `notes/`：粗查报告与进度
 - `work/`：解包 / 构建产物（gitignore，含游戏数据，绝不入库）
-- `tests/run_all.sh`：M1 一键回归（依赖与门槛见 [tests/README.md](tests/README.md)）；当前 M1 仍未通过，卡点见 [notes/PROGRESS.md](notes/PROGRESS.md)
+- `tests/run_all.sh`：M1 一键回归（依赖与门槛见 [tests/README.md](tests/README.md)）；M1 已通过，当前进度见 [notes/PROGRESS.md](notes/PROGRESS.md)
 
 复现：`git clone https://github.com/seedds/nxnative upstream && (cd upstream && git checkout 9579030 && git apply ../patches/*.diff)`
