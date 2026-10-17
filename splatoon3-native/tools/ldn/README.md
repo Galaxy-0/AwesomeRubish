@@ -57,3 +57,11 @@ Integration details found during bring-up:
   namespace uses EAGAIN=11; BSD/Darwin wire errors are converted at the adapter.
 - The game binds UDP port 12345 and requests SO_BROADCAST and SO_REUSEPORT.
   Reuse is enforced for both sockets sharing a virtual port.
+
+
+M4 diagnostics: the medium emits a `metric` line every five seconds for each
+connected process. It includes the full session, state, cumulative sent/received
+UDP datagrams and payload bytes, current queue depth, per-endpoint queue peak,
+and dropped datagrams. The existing 256-datagram bound is retained; overflow is
+counted instead of silently disappearing from diagnostics. Compare both sides
+and their frame/scene progress when loading or a match stops advancing.

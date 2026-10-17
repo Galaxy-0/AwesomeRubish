@@ -14,6 +14,7 @@ from pathlib import Path
 import secrets
 import signal
 import struct
+import time
 
 MAGIC = 0x334E444C
 NET_SIZE = 0x480
@@ -41,6 +42,11 @@ class Peer:
     sockets: dict = field(default_factory=dict)
     next_fd: int = 100
     received: int = 0
+    sent: int = 0
+    sent_bytes: int = 0
+    received_bytes: int = 0
+    dropped: int = 0
+    queue_peak: int = 0
 
     @property
     def ip(self): return 0x0A0D0001 + self.player
@@ -261,11 +267,17 @@ class Air:
             if dest not in [x.ip for x in p.room.members] + [0xffffffff, 0x0a0d00ff]: return 51, b''
             if not s['port']: s['port'] = 40000+fd
             source = bytes([16, 2]) + s['port'].to_bytes(2, 'big') + p.ip.to_bytes(4, 'big') + bytes(8)
+            p.sent += 1
+            p.sent_bytes += len(b)-20
             for x in p.room.members:
                 if x is p or dest not in (x.ip, 0xffffffff, 0x0a0d00ff): continue
                 for recv in x.sockets.values():
-                    if recv['port'] == port and recv['event'] is None and len(recv['queue']) < 256:
+                    if recv['port'] == port and recv['event'] is None:
+                        if len(recv['queue']) >= 256:
+                            x.dropped += 1
+                            continue
                         recv['queue'].append(source + b[20:])
+                        x.queue_peak = max(x.queue_peak, len(recv['queue']))
                         self.frames += 1
             if self.frames and self.frames & (self.frames-1) == 0:
                 print(f'data frames={self.frames} session={p.room.info[16:32].hex()}', flush=True)
@@ -277,7 +289,9 @@ class Air:
             p.received += 1
             if p.received & (p.received-1) == 0:
                 print(f'recv player={p.player} frames={p.received} session={p.room.info[16:32].hex() if p.room else "-"}', flush=True)
-            return 0, s['queue'].popleft()
+            packet = s['queue'].popleft()
+            p.received_bytes += len(packet)-16
+            return 0, packet
         elif op == 24:
             fd, = struct.unpack('<I', b)
             if fd not in p.sockets: return 9, b''
@@ -319,6 +333,21 @@ class Air:
             return 45, b''
         return 0, b''
 
+    async def metrics(self):
+        # Wall time is shared by all local hosts. Report delivery and backlog
+        # independently of game scene progress; a live frame loop is not PIA health.
+        start = time.monotonic()
+        while True:
+            await asyncio.sleep(5)
+            for p in sorted(self.peers, key=lambda x: x.player):
+                queued = sum(len(s['queue']) for s in p.sockets.values())
+                session = p.room.info[16:32].hex() if p.room else '-'
+                print(f'metric t={time.monotonic()-start:.3f} player={p.player} '
+                      f'state={p.state} session={session} sent={p.sent} '
+                      f'sent_bytes={p.sent_bytes} recv={p.received} '
+                      f'recv_bytes={p.received_bytes} queued={queued} '
+                      f'queue_peak={p.queue_peak} dropped={p.dropped}', flush=True)
+
     async def client(self, reader, writer):
         p = Peer(writer)
         self.peers.add(p)
@@ -352,11 +381,13 @@ async def run(path):
     stopped = asyncio.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
         asyncio.get_running_loop().add_signal_handler(sig, stopped.set)
+    metrics = asyncio.create_task(air.metrics())
     print(f'ready unix={path}', flush=True)
     try:
         async with server:
             await stopped.wait()
     finally:
+        metrics.cancel()
         for p in list(air.peers): p.writer.close()
         path.unlink(missing_ok=True)
 

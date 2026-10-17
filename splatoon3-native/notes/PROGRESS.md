@@ -587,3 +587,81 @@ M2.5 已按调整后的口径完成并以 `b5c0f99` 推送，随后开始 M3。�
   仅提交 `splatoon3-native/` 内源码补丁、脚本、测试和文档；游戏数据、存档、日志、截图及父仓库其它工作未提交。
 - **当前下一里程碑是 M4**：实际 1v1 私房开局并到结算，同时补地图 / 模式全解锁及全选项验证。
   M3 完成不表示 M4、4v4、多开资源优化或 RL step 接口已经完成。
+
+## 2026-10-18：M4 地图 / 模式与 1v1（验收进行中）
+
+M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示完整 M4 PASS。
+
+### 地图目录与两处赛季过滤
+
+- 以本地 11.3.0 的 `RSDB/VersusSceneInfo.Product.b30.rstbl.byml.zs` 为权威目录：共 26 行，
+  **25 行 `IsDisplayInStageList=true`**，ID 为 1..24 和 26；ID 25 / `Vss_Manbou00` 标为隐藏，不纳入普通私房地图。
+  ID 26 是 Urchin Underpass；目录保留原生场景名 / 布局，不导入外部游戏数据。
+- 原始 `?/19` 受参考档的已解锁赛季 **4** 限制。`main+0x39047d0` 构建房间地图列表，
+  `main+0x39049f4` 的 `b.gt` 排除目录 Season 高于上限的行。
+  第一版只绕过此处，原生列表实测 25 个唯一 ID、完成计数 25，房间卡片变为 `?/25`，但这不够。
+- `work/tests/m3-20261018-031124-289123/player-0/frame_7800.png` 保留了第一版的反例：
+  实际选择面板仍为 **19 项**。`Cmn_SelectStage_00` 通过 `main+0x31f4ff0` 另建目录，
+  `main+0x31f52d8` 有独立的赛季过滤；已补上第二处覆盖。
+- 两处覆盖都只将赛季 `b.gt` 改为 NOP，继续保留 `IsDisplayInStageList` 检查。
+  沿用 `DM_FULL_UNLOCK=1`、main 构建号 `28c4287aee36f7499da60f3e68b54c70` 和全套原指令预校验；
+  默认关闭，不修改拥有表或参考档。模式无需新增覆盖：Turf War、Splat Zones、Tower Control、Rainmaker、Clam Blitz
+  在原生私房中已全部可选，第二轮固定输入实际轮选并保存截图 / 本机 OCR。
+- `t_spl3_unlock` 扩展到开启时 **61 项原生执行检查**：两处显示标记 / 赛季过滤覆盖显示与隐藏、Season -1..8、
+  关闭 / 开启两种情况，并保留武器及分类检查。21 个身份 / 开关 / 构建 / 签名进程用例通过。
+
+### 开局路线与网络诊断
+
+- 第一轮 `work/tests/m3-20261018-030520-058679/` 用 FIFO 找到实际队伍设置路线；
+  `player-0/frame_11400.png` 确认 RL-0 = Alpha、RL-1 = Bravo。
+  该轮仍由 M3 的 120 秒同房保持门槛结束，不能作为 M4 整局验收。
+- 第二轮 `work/tests/m3-20261018-031124-289123/` 使用全自动 DM_KEYS：A 建房，B 加入，
+  五模式轮选、地图面板翻页、选 Scorch Gorge，A 把两人分别设为 Alpha / Bravo 并开始，双方确认准备。
+  `player-0/frame_13500.png` 已加载地图，`player-1/frame_9600.png` 为实际对战 HUD，时间 **2:51**。
+  为切换到包含两处地图修复及完整判定的正式入口，主动中止此诊断；两宿主均优雅退出 0，
+  该目录的 `result.json` 为 `passed: false`，不以诊断运行代替正式验收。
+- 空气服务新增每五秒逐端 metric：完整 session、收 / 发数据报与 payload 字节、当前排队、队列峰值、丢包数。
+  保留既有每 socket 256 包上限。第二轮到入图时队列峰值 2、丢包 0；没有通过加大队列或跳过同步来制造开局。
+- 新增 `tests/test_m4.py`，接到 `tests/run_all.sh --milestone m4`：动态核对房间列表和实际选择面板的完整 ID 集合 / 完成计数，
+  本机 Vision OCR 核对五模式与双方 Victory / Defeat，并要求双方实际进入 InGame / ResultJudge / ResultWinners，
+  从 InGame 到判定至少 178 秒。探针只采样，不改写比赛、队伍、倒计时或结算。
+  独立存档副本、原件 / 参考档前后 hash、运行错误与优雅退出仍作为硬门槛。
+- 最终入口已启动：`bash tests/run_all.sh --milestone m4 --timeout 1200`，总日志 `work/m4/acceptance-final.log`，
+  产物 `work/tests/m4-20261018-031759-249564/`。
+  前置 Metal 116 / NVN 79 / HID 73 / LDN 前端 10、21 个进程用例、59 项虚拟 LDN 检查通过。
+  **正式双游戏整局结果待本节后续记录；当前不签收 M4，不 commit / push。**
+
+### M4 最终全自动验收与交付
+
+**M4 PASS / 完成。** `bash tests/run_all.sh --milestone m4 --timeout 1200` 返回 **0**。
+最终产物 `work/tests/m4-20261018-031759-249564/`，总日志 `work/m4/acceptance-final.log`；
+`result.json` 为 `passed: true`、`errors: []`。上文“进行中 / 待结果”为验收过程记录，以本节为最终结论。
+
+- 全新参考档副本，全程固定 DM_KEYS，无 FIFO 补按、无队伍 / 倒计时 / 结算内存改写。
+  A 建房后启动 B；完整同房会话 **`5a6b3f91b5df99a30ae03b761f83186e`**。
+  A 选涂地 / Scorch Gorge，RL-0 = Alpha、RL-1 = Bravo，双方自动确认准备并实际入图。
+- **地图选项 25 / 25**：房间地图列表与实际选择面板的唯一 ID 集合都严格等于本地可显示目录，
+  无缺项、无额外项，两处完成计数都是 25。`player-0/frame_7500.png` 人工确认第二页追加地图及 `?/25`；
+  `frame_8100.png` 确认第三页 Urchin Underpass。不是只检查房间卡片。
+  目录 SHA256 `bd69f94732014b6bbdd6fd2f9c89d0f67333ac84a1714faffd74069d5af09367`。
+- **五模式全部可选**：`settings-ocr.jsonl` 从原生设置截图依次识别 Turf War、Splat Zones、Tower Control、Rainmaker、Clam Blitz，
+  `result.json` 五项均为 true；没有为已开放的模式增加无必要覆盖。
+- **完整 1v1 到双端结算**：A 的 InGame / ResultJudge / ResultWinners 相对宿主启动时间为
+  **363.4446 / 549.4420 / 564.9022 秒**；B 为 **262.4213 / 448.3558 / 463.4163 秒**。
+  对局进入至判定分别 **185.9974 / 185.9345 秒**，中途不输入；倒计时自然走完。
+  已人工复核 A `frame_21000.png` 的 **VICTORY**、B `frame_16500.png` 的 **DEFEAT**，
+  与原生序列探针及本机 OCR 一致；双方随后都到个人结算 / 装备画面。
+- 空气服务最后 590.113 秒采样：A 发 **4247 包 / 555451 payload 字节**，B 已全部取出；
+  B 发 **4298 包 / 556370 payload 字节**，A 已全部取出。双方当时排队 0，整个采样周期队列峰值均为 **2**、丢包 **0**。
+  大厅、入图、对战、结算均使用同一 PIA / 虚拟 LDN 会话；没有绕过 PIA 或伪造对端消息。
+  此局无需修改队列容量、时钟或额外同步逻辑。
+- 两个宿主均优雅退出 **0**，最后采样帧为 **21900 / 17700**；无 CRASH / FATAL / 看门狗 / GPU 执行失败。
+  原件及只读参考档前后 SHA256 保持指定值。截图、日志、存档副本、OCR 产物和本地游戏目录不入库。
+- 完整入口前置的 Metal 116 / NVN 79 / HID 73 / LDN 前端 10、21 个身份 / 门控进程用例和 59 项虚拟 LDN 检查全过。
+  解锁原生执行检查开启时 61 项，关闭时保留两个赛季限制及隐藏标记。
+  重新生成源码补丁，排除 shader 表和 `c1_full.tsv`；当前源码反向应用、独立临时 index 对 upstream HEAD 的正向应用、
+  源码空白检查、Python 语法及 shell 语法检查通过。
+
+当前边界：本次跑完的是 **Scorch Gorge / 涂地 1v1**；25 地图及五模式的全选项已验收，
+没有声称每个地图 / 模式组合都各跑完一局。胜利动画仍可见角色模型渲染缺件（如 `frame_21000.png`），
+本轮不把流程 / 网络 PASS 扩大为完整图形正确性。**下一里程碑 M5，尚未开始 4v4、省资源改造或 RL 接口。**

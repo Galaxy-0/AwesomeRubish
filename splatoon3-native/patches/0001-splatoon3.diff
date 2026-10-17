@@ -2168,10 +2168,10 @@ index 0000000..6a0067c
 +HLE_FORCE("_ZN2nn3pdm30QueryApplicationPlayStatisticsEPNS0_25ApplicationPlayStatisticsERKNS_7account3UidEPKNS_13ApplicationIdEi", "pdm；没有游玩记录：0 条", int, h_pdm_Query, void *o, const void *u, const void *ids, int n) { (void)o; (void)u; (void)ids; (void)n; return 0; }
 diff --git a/dm/host/hle_spl3_unlock.c b/dm/host/hle_spl3_unlock.c
 new file mode 100644
-index 0000000..c2a80b7
+index 0000000..9c87e79
 --- /dev/null
 +++ b/dm/host/hle_spl3_unlock.c
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,53 @@
 +// Runtime ownership overrides for the verified Splatoon 3 build. No save edits.
 +#include "dm.h"
 +#include <sys/mman.h>
@@ -2182,7 +2182,12 @@ index 0000000..c2a80b7
 +// tree-search bytes for a native Type==Versus guard before the ID getter.
 +// Type lives at WeaponInfoMain+0x50 (native selector also checks this field).
 +// This keeps single-player / Coop / NPC rows out and changes no save nodes.
++// Both private stage lists retain IsDisplayInStageList, but ignores the saved
++// unlocked-season ceiling. 11.3.0 has 25 displayed Versus scenes; the hidden
++// Manbou row remains excluded by the native flag check at main+0x39049bc.
 +static const spl3_cut ownership_cuts[] = {
++    {0x31f52d8, 0x54000f2c, 0xd503201f, "stage picker: ignore season ceiling"},
++    {0x39049f4, 0x5400034c, 0xd503201f, "private stages: ignore season ceiling"},
 +    {0x338bbe8, 0x9140f409, 0x52800020, "weapon inventory: true"},
 +    {0x338bbec, 0x91136129, 0xd65f03c0, "weapon inventory: return"},
 +    {0x4401f04, 0x529a9b08, 0x14000046, "weapon selector: owned arm"},
@@ -2505,10 +2510,10 @@ index 0000000..acde13d
 +}
 diff --git a/dm/host/tests/t_spl3_unlock.c b/dm/host/tests/t_spl3_unlock.c
 new file mode 100644
-index 0000000..8754f99
+index 0000000..8f41733
 --- /dev/null
 +++ b/dm/host/tests/t_spl3_unlock.c
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,97 @@
 +// Synthetic executable memory exercises opt-in/build/signature guards, no game image.
 +#include "../hle_spl3_unlock.c"
 +module_t g_mod[MAX_MOD]; int g_nmod;
@@ -2533,12 +2538,51 @@ index 0000000..8754f99
 +    *(uint32_t *)(m->base + 0x4401d78) = 0xd65f03c0;
 +    *(uint32_t *)(m->base + 0x4401e4c) = 0x52800020; // mov w0,1
 +    *(uint32_t *)(m->base + 0x4401e50) = 0xd65f03c0;
++    // Native private-stage display flag and season guard, with accept/skip stubs.
++    *(uint32_t *)(m->base + 0x39049e4) = 0x39407008;
++    *(uint32_t *)(m->base + 0x39049e8) = 0x340003a8;
++    *(uint32_t *)(m->base + 0x39049ec) = 0xb9401808;
++    *(uint32_t *)(m->base + 0x39049f0) = 0x6b16011f;
++    *(uint32_t *)(m->base + 0x39049f8) = 0x52800020;
++    *(uint32_t *)(m->base + 0x39049fc) = 0xd65f03c0;
++    *(uint32_t *)(m->base + 0x3904a5c) = 0x52800000;
++    *(uint32_t *)(m->base + 0x3904a60) = 0xd65f03c0;
++    // The picker has an independent native flag / season filter.
++    *(uint32_t *)(m->base + 0x31f52c8) = 0x394072a8;
++    *(uint32_t *)(m->base + 0x31f52cc) = 0x34000f88;
++    *(uint32_t *)(m->base + 0x31f52d0) = 0xb9401aa8;
++    *(uint32_t *)(m->base + 0x31f52d4) = 0x6b17011f;
++    *(uint32_t *)(m->base + 0x31f52dc) = 0x52800020;
++    *(uint32_t *)(m->base + 0x31f52e0) = 0xd65f03c0;
++    *(uint32_t *)(m->base + 0x31f54bc) = 0x52800000;
++    *(uint32_t *)(m->base + 0x31f54c0) = 0xd65f03c0;
 +    if (mprotect(m->base, m->size, PROT_READ | PROT_EXEC)) return 2;
 +    spl3_unlock_install();
 +    int enabled = getenv("DM_FULL_UNLOCK") && !strcmp(getenv("DM_FULL_UNLOCK"), "1");
 +    for (unsigned i = 0; i < sizeof ownership_cuts / sizeof *ownership_cuts; i++) {
 +        const spl3_cut *c = &ownership_cuts[i];
 +        CHECK(c->reason, *(uint32_t *)(m->base + c->offset) == (enabled ? c->replacement : c->expected));
++    }
++    for (unsigned display = 0; display < 2; display++) {
++        for (int season = -1; season <= 8; season++) {
++            unsigned char stage[0x20] = {0};
++            *(int *)(stage + 0x18) = season;
++            stage[0x1c] = display;
++            register uintptr_t row __asm__("x0") = (uintptr_t)stage;
++            register uintptr_t ceiling __asm__("x22") = 4;
++            void *guard = m->base + 0x39049e4;
++            __asm__ volatile("blr %2" : "+r"(row) : "r"(ceiling), "r"(guard) : "x8", "x30", "cc", "memory");
++            CHECK("private stages retain hidden flag; season override is opt-in",
++                  row == (display && (enabled || season <= 4)));
++            register uintptr_t picker_stage __asm__("x21") = (uintptr_t)stage;
++            register uintptr_t picker_ceiling __asm__("x23") = 4;
++            register uintptr_t accepted __asm__("x0");
++            guard = m->base + 0x31f52c8;
++            __asm__ volatile("blr %3" : "=r"(accepted) : "r"(picker_stage), "r"(picker_ceiling), "r"(guard) : "x8", "x30", "cc", "memory");
++            CHECK("stage picker retains hidden flag; season override is opt-in",
++                  accepted == (display && (enabled || season <= 4)));
++
++        }
 +    }
 +    if (enabled) {
 +        int item[2] = {1, 100};
