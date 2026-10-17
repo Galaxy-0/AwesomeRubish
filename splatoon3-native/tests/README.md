@@ -51,7 +51,8 @@ SHA256 为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。
 
 M2 显式启用 `DM_LDN_FRONTEND=1`（仅 main 构建 `28c4287aee36f7499da60f3e68b54c70`）：
 提供进程内空闲初始化状态和 NX 协议配置，使游戏能显示本地私房入口；默认仍离线。
-建房、扫描、加入、收发均未实现；本测试不按下 Private Battle 的确认键，不证明 M3 互通。
+该前端本身不提供建房、扫描、加入、收发；M3 的 `DM_LDN_AIR` 另行显式启用。
+M2 测试不按下 Private Battle 的确认键，不证明 M3 互通。
 没有联网到外部或连接任天堂服务。
 
 M1 可用相同框架做存档场景对照（仍创建独立副本）：
@@ -92,3 +93,29 @@ bash tests/run_all.sh --milestone m25
 地图 / 模式解锁与私房设置验证已移到 M4，不参与 M2.5 结果判定。
 结果仍记录 `stages_modes.status: deferred_to_m4`，`passed` 要求武器和身份检查均通过。
 `--weapons-only` 保留为兼容别名，执行相同范围。M2.5 通过不证明 M3 建房、扫描或双进程互通。
+
+## M3（已通过）
+
+```sh
+bash tests/run_all.sh --milestone m3
+```
+
+入口先跑通用组件与无游戏的 `tests/test_ldn_air.py`，再跑两个真实 dmhost。
+无游戏测试用两个 C 进程直接调用宿主同一份 HLE；覆盖会话 / 信标一致性、扫描过滤、接纳策略、
+状态事件、IPv4 字节序、变更历史、双向数据、EventFd、离房与房主退出、Finalize / 事件复用。
+单跑这项可用 `.venv/bin/python tests/test_ldn_air.py`（先按 tools/ldn/README.md 构建测试客户端）。
+
+真实验收创建独立 Unix socket 空气服务和每进程独立的参考档副本。A 在 Private Battle 的房间列表按 Y，
+再按 A 确认；只有服务收到 A 的实际 CreateNetwork 后才启动 B。B 在房间列表选择，再在 Join this room 对话框确认加入。
+要求完整会话 ID 有服务端建房 / 扫描 / 加入证据，两个宿主最新状态分别是 AP-created / Station-connected，
+双方均看到两节点同房，两个游戏各实际取出至少一个对方数据帧，保持同房至少十秒后正常退出。
+组件通过与真实游戏通过分别记录；真实阶段未通过时，完整 M3 必须返回非零。
+
+默认超时 360 秒，可用 `--timeout` 延长。`--a-route` / `--b-route` 为诊断时的附加 DM_KEYS；
+默认路线已由无补按的真实双进程验收证明。截图、日志、路由、结果仅放 `work/tests/m3-*`。
+服务设计与独立使用见 [tools/ldn/README.md](../tools/ldn/README.md)。只使用 Unix domain socket，
+虚拟 UDP 描述符不会交给 OS IP 网络；外部地址拒绝，DNS / SSL / 在线服务保持离线。
+
+当前基线：59 项无游戏通信检查通过，两个真实游戏同房稳定 10.164 秒、各实际接收至少 128 帧，
+两个宿主均优雅退出 0；最终证据为 `work/tests/m3-20261018-025742-268957/`。
+此结果只覆盖 M3，开局 / 结算和地图 / 模式解锁留待 M4。

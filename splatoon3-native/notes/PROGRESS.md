@@ -503,3 +503,87 @@ GOAL.md 于 2026-10-18 将地图 / 模式解锁与私房设置验证移到 M4；
   三个真实宿主退出码均为 0，无运行时失败标记，参考档与原件 SHA256 均未变。
 - 已重新生成补丁并通过 upstream 反向应用检查与源码空白检查；补丁继续排除 shader 表和 `c1_full.tsv`。
   只提交 `splatoon3-native/`。M3 在该提交推送之后开始；地图 / 模式仍待 M4。
+
+## 2026-10-18：M3 虚拟本地通信实现与真实验收
+
+M2.5 已按调整后的口径完成并以 `b5c0f99` 推送，随后开始 M3。下列组件通过本身不代替双游戏验收。
+
+### 实现与无游戏检查
+
+- 新增 `tools/ldn/air.py`：独立的 Unix domain socket 空气服务；每次实验一个 socket / 房间域，
+  权限 0600，已有路径不覆盖，进程身份 0..7 不可重复注册。无 OS IP socket、外部网络或在线服务。
+- `upstream/dm/host/hle_ldn.c` 替代原空闲 LDN stub。实现 Station / AP、创建 / 私有创建、扫描与过滤、
+  加入 / 私有加入、NetworkInfo / IPv4 / SecurityParameter、广播数据更新、节点历史、接纳策略、拒绝和退出。
+  状态由服务确认并异步发布；SystemEvent 接到真实内核事件。仅显式 `DM_LDN_AIR` 和已知 main 构建启用，
+  要求 `DM_PLAYER=0..7`；未启用时保留离线与 M2 空闲前端。
+- 游戏的 PIA 代码继续原生运行；`nn::socket` 的 UDP / Poll / EventFd 接到同一服务的虚拟描述符和数据队列。
+  数据只能发给同房成员或该虚拟子网广播；队列有界，离房会清空旧包，外部目的地址拒绝。TCP / DNS / SSL 继续不可用。
+- 扫描返回从创建参数构造、由后续 SetAdvertiseData 原样更新的 NetworkInfo；会话、用户节点、版本和信标一致。
+  使用 libnx / Switchbrew 的公开 ABI 布局，并核对本地 SDK 22 C++ 包装器（NetworkInfo 0x480、ScanFilter 0x60、
+  UserConfig 仅复制前 32 字节，LDN IPv4 为 host order、BSD sockaddr 为 network order）。
+- `tests/test_ldn_air.py` 用两个独立 C 假客户端直接调用与 dmhost 同一份 HLE，不读取游戏文件。
+  当前 **59 项检查全过**：状态前置条件、会话 / 信标、Scene / Channel / NetworkType 过滤、密码 / 接纳策略、
+  双方节点、事件、IPv4 / 安全参数 / 历史、双向收包、Poll / EventFd、复用端口、错误号、离房与退出清理、重初始化。
+  最终整合入口组件产物：`work/tests/ldn-air-20261018-025205-536818/`。
+- `tests/run_all.sh --milestone m3` 先构建并检查通用组件、虚拟 LDN 组件，再启动独立参考档的 A、B。
+  A 真实建房后才启动 B；要求扫描 / 加入同一会话、宿主最新状态同房两节点、双方实际收包，并稳定十秒。
+  保存每次独立的路由、截图、日志、结果，始终核对参考档与原件 SHA256。完整入口不因组件通过而直接 PASS。
+
+### 真实游戏暴露并修复的问题
+
+1. 最初数轮已完成真实 OpenStation / 空扫描，但游戏显示通信错误并回广场，尚未建房。
+   `work/m3/explore-20261018-023107/`、`023307/`、`023502/`、`023718/` 保留。
+   游戏在 `main+0x9576cc` 轮询 GetNetworkInfo，并显式忽略 `0x40cb` 的 LDN InvalidState 范围；
+   通用离线 `0x2a2` 会被记录为通信故障。改为真实 LDN 状态错误后，`work/m3/explore-20261018-024005/frame_3000.png`
+   已人工确认进入 Rooms / Y Create a Room；未在空闲状态伪造网络信息成功。
+2. 从房间列表切到创建时，游戏 Finalize / 重新 Initialize 并复用 SystemEvent 存储。
+   宿主绑定表保留已关闭的写句柄，触发 `SystemEvent 写端句柄失效 0x1030`。
+   新增显式清除绑定，等 reader 不再触发后才允许 guest 销毁 / 复用；服务还确认释放身份，避免重连竞争。
+3. NetworkType 应为 LDN 位 2，扫描按 bitmask 匹配；与是否 Private 无关。
+   同时保留游戏传入的 Scene、SessionId、节点和信标；没有注入固定游戏房间或 erepo 信标。
+4. 首次完整验收 `work/tests/m3-20261018-024250-143375/` 已真实 CreateNetwork、发布游戏信标、
+   创建 UDP socket 并 Bind 12345，但 SO_REUSEPORT 0x200 尚不支持，后续房间撤销；该次 FAIL 保留。
+   加入该选项和两端均须启用的绑定语义，并以组件检查覆盖。
+5. 第二 / 三轮 `work/tests/m3-20261018-024531-282572/`、`024856-176835/` 继续在建房后撤销。
+   第三轮取得原始 ErrorResultVariant：类型 1、Result `0x33d73e`，即 **2318-6635**；
+   游戏非阻塞收包路径为 `main+0x92c490`，flags=0x80，重试错误按 SDK 的 errno **11** 处理。
+   空队列原先用了 BSD / Darwin 的 35，导致游戏把正常空读当成故障。现将服务 wire errno 转成 SDK 的 Linux/newlib 编号，
+   包括 EAGAIN=11、EADDRINUSE=98、ENETDOWN=100、ENETUNREACH=101；LDN Result 与 socket errno 分开处理。
+   同时修正 SendTo 的有符号 -1 返回（避免 uint32_t 条件表达式变成正 4294967295），加入原生执行检查。
+- 第四轮正式入口：`work/tests/m3-20261018-025206-059726/`，总日志 `work/tests/m3-acceptance-fourth.log`。
+  Metal 116 / NVN 79 / HID 73 / LDN 前端 10、21 个身份 / 解锁进程用例和 59 项 LDN 检查均通过；
+  真实游戏阶段的最终结论记在下方。
+
+### 第四轮通信验证（有诊断输入，完整自动路线另跑）
+
+- A 稳定建房，B 的真实 Scan 返回 1；`player-1/frame_3000.png` 已人工确认 **RL-0 / Joinable**。
+  扫描返回的会话 ID 与游戏发布信标和房主一致：`200afdf4b656b3313ac3a0fe6575984b`。
+- B 的 3900 帧 A 只打开 **Join this room?** 对话框，4200 帧截图确认仍待第二次确认。
+  本轮通过 FIFO 诊断补按 A，记录在 `diagnostic-input.json`，因此不把它当成最终全自动验收。
+- 补按后真实 Connect 成功：A 为 state=3 / node=0 / nodes=2，B 为 state=5 / node=1 / nodes=2。
+  两个游戏实际通过 UDP 从服务取出对方帧，日志至少到双方各 64 帧，稳定同房十秒后均正常退出。
+  没有再出现 2318-6635，证明 errno 修正让真实 PIA 通信继续推进。
+- 自动路线补上 B 的 `f4500:A` 二次确认。最后一轮重新使用全新存档副本、全自动输入，
+  接收证据也按完整 session 对齐；最终验收结论在下方，不以这次诊断补按代替。
+
+### M3 最终全自动验收与交付
+
+**M3 PASS / 完成。** `bash tests/run_all.sh --milestone m3 --timeout 360` 返回 **0**。
+最终产物为 `work/tests/m3-20261018-025742-268957/`，总日志 `work/tests/m3-acceptance-final.log`。
+
+- 全新参考档副本、全自动 DM_KEYS，无补按或游戏状态改写：A 在 2700 帧进入房间列表、3300 帧 Y、3900 帧 A 建房；
+  B 在 2700 帧扫描、3900 帧选中 RL-0、4500 帧确认加入。完整输入保存于各进程 `input.json`。
+- 服务确认 A 创建、B 扫描并加入同一完整会话 **`5e237a024b437776ac1121d30ceba948`**。
+  扫描信标直接来自 A 游戏的 SetAdvertiseData，字段与房主 NetworkInfo 一致；没有虚构扫描结果。
+- 两个宿主最新状态：A **AP-created / node 0 / nodes 2**；B **Station-connected / node 1 / nodes 2**。
+  双方各从服务实际 Recv 至少 **128 个**该会话的数据帧，服务转发累计至少 256 帧；原生 PIA 继续运行。
+  同房稳定 **10.164 秒**，通过十秒门槛。
+- 人工检查 B 的 `frame_3000.png` 显示 **RL-0 / Joinable**；`frame_4800.png` 已进入私房，列表同时显示 **RL-0 与 RL-1**。
+  图像只留 `work/`，不入库。该画面不是地图 / 模式全解锁验收，没有开始 M4 对战。
+- 两个宿主优雅退出码均为 **0**，最后采样帧分别 **9000 / 4800**；无 CRASH / FATAL / 看门狗 / GPU 执行失败。
+  原件与只读参考档前后 SHA256 仍为指定值。通用组件、21 个身份 / 解锁进程用例、59 项虚拟 LDN 检查均通过。
+- 重新生成 `patches/0001-splatoon3.diff`，继续排除游戏 shader 表和 `c1_full.tsv`。
+  通过当前源码反向应用检查、独立临时 index 对 upstream HEAD 的正向应用检查，以及源码空白与 Python 语法检查。
+  仅提交 `splatoon3-native/` 内源码补丁、脚本、测试和文档；游戏数据、存档、日志、截图及父仓库其它工作未提交。
+- **当前下一里程碑是 M4**：实际 1v1 私房开局并到结算，同时补地图 / 模式全解锁及全选项验证。
+  M3 完成不表示 M4、4v4、多开资源优化或 RL step 接口已经完成。

@@ -1196,6 +1196,17 @@ index c925370..da5ad1e 100644
 -metal_iphoneos	Apple metal version 32023.921 (metalfe-32023.921.6)
 +metal_macosx	none
 +metal_iphoneos	none
+diff --git a/dm/host/Makefile b/dm/host/Makefile
+index 31b4420..16ca6ba 100644
+--- a/dm/host/Makefile
++++ b/dm/host/Makefile
+@@ -51,5 +51,5 @@ $(GAME_STAMP): FORCE
+ 	@mkdir -p gen; echo $(GAME) | cmp -s - $@ || echo $(GAME) > $@
+ .PHONY: FORCE
+ FORCE:
+-dmhost: $(SRC) $(GFX) dm.h hle.h dm_input.h front.h touch_mac.h ../ios/Sources/dm_touch_controls.[ch] $(GFX_H) $(GAME_H) $(GAME_DIR)/dmsh_chain.h $(GAME_STAMP) $(VPX_LIB)
++dmhost: $(SRC) $(GFX) dm.h hle.h hle_ldn.h dm_input.h front.h touch_mac.h ../ios/Sources/dm_touch_controls.[ch] $(GFX_H) $(GAME_H) $(GAME_DIR)/dmsh_chain.h $(GAME_STAMP) $(VPX_LIB)
+ 	clang $(CFLAGS) -I../gfx/nvn/include -I$(dir $(GAME_H)) -I$(GAME_DIR) -I$(VPX) -I../third_party/stb_vorbis -fobjc-arc -o $@ $(SRC) $(GFX) $(VPX_LIB) -framework Cocoa -framework QuartzCore -framework Metal -framework AudioToolbox -framework ImageIO -framework UniformTypeIdentifiers
 diff --git a/dm/host/crash.c b/dm/host/crash.c
 index f513ee3..5508a0b 100644
 --- a/dm/host/crash.c
@@ -1224,6 +1235,18 @@ index f513ee3..5508a0b 100644
      }
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
+diff --git a/dm/host/dm.h b/dm/host/dm.h
+index fda33ac..8602d6e 100644
+--- a/dm/host/dm.h
++++ b/dm/host/dm.h
+@@ -94,6 +94,7 @@ void dm_prof_mark(const char *seg);
+ uint64_t dm_prof_ribbon_ns(void);   // The now_ns time at which OpenPanel MainMenuButtonRibbon first appeared (0 = not yet; needs DM_BOOTPROF=1)
+ void *objmap_get(const void *guest); void objmap_put(const void *guest, void *host); void *objmap_del(const void *guest);
+ void hle_signal_system_event(void *g);   // hle_thread.c: signal a service-layer SystemEvent (any thread)
++void hle_forget_system_event(void *g);   // Detach service binding before the guest destroys/reuses the event
+ void hle_bind_system_event(void *g, int autoclear);   // On a guest thread, bind a guest SystemEvent to a kernel event
+ // Page fault hook / hook before the host writes guest memory (crash.c; used for write-protect dirty page tracking)
+ void dm_fault_hook_register(int (*fn)(void *addr, int is_write, void *uc));
 diff --git a/dm/host/hle_account.c b/dm/host/hle_account.c
 index 362a6c2..7cd8d37 100644
 --- a/dm/host/hle_account.c
@@ -1559,48 +1582,539 @@ index 561a3c8..265328c 100644
  HLE_FORCE("_ZN2nn3hid25GetGyroscopeZeroDriftModeERKNS0_19SixAxisSensorHandleE", "陀螺零漂模式：标准", int, h_hid_GyroGet, const uint32_t *h) { (void)h; return 1; }
  HLE_FORCE("_ZN2nn3hid25SetGyroscopeZeroDriftModeERKNS0_19SixAxisSensorHandleERKNS0_22GyroscopeZeroDriftModeE", "陀螺零漂模式；宿主忽略", void, h_hid_GyroSet, const uint32_t *h, const int *m) { (void)h; (void)m; }
  HLE_FORCE("_ZN2nn3hid32GetSixAxisSensorFusionParametersEPfS1_RKNS0_19SixAxisSensorHandleE", "六轴融合参数：0", void, h_hid_FusionGet, float *a, float *b, const uint32_t *h) { (void)h; *a = 0; *b = 0; }
+diff --git a/dm/host/hle_ldn.c b/dm/host/hle_ldn.c
+new file mode 100644
+index 0000000..793f7a0
+--- /dev/null
++++ b/dm/host/hle_ldn.c
+@@ -0,0 +1,307 @@
++// Virtual local wireless over a user-started AF_UNIX medium (tools/ldn/air.py).
++// State/NetworkInfo layouts: switchbrew/libnx services/ldn.h. C++ Scan/Create
++// wrappers checked against SDK 22.5.0 in the user's dump. Game data is opaque.
++#include "hle.h"
++#include "hle_ldn.h"
++#include <errno.h>
++#include <limits.h>
++#include <stdatomic.h>
++#include <sys/socket.h>
++#include <sys/un.h>
++#include <time.h>
++#include <unistd.h>
++
++enum { LDN_INVALID_STATE = 0x40cb, LDN_NET = 0x480, LDN_MAGIC = 0x334e444c, LDN_LIMIT = 65536 };
++static _Atomic int g_ldn_state;
++static int g_ldn_reason, g_ldn_node = -1;
++static uint8_t g_ldn_net[LDN_NET], g_ldn_history[64];
++static void *g_ldn_event;
++static pthread_mutex_t ldn_lock = PTHREAD_MUTEX_INITIALIZER;
++static pthread_mutex_t ldn_rpc_lock = PTHREAD_MUTEX_INITIALIZER;
++static pthread_cond_t ldn_response = PTHREAD_COND_INITIALIZER;
++static pthread_t ldn_thread;
++static int ldn_fd = -1, ldn_running, ldn_done;
++static uint32_t ldn_sequence, ldn_error;
++static void *ldn_reply;
++static size_t ldn_reply_cap, ldn_reply_size;
++static __thread int ldn_skerr = 100;
++
++static int ldn_build(void) { return !strcmp(dm_main_build(), "28c4287aee36f7499da60f3e68b54c70"); }
++static int ldn_frontend(void) {
++    const char *e = getenv("DM_LDN_FRONTEND");
++    return e && !strcmp(e, "1") && ldn_build();
++}
++int dm_ldn_enabled(void) { return ldn_build() && getenv("DM_LDN_AIR") && *getenv("DM_LDN_AIR"); }
++int dm_ldn_errno(void) { return ldn_skerr; }
++static uint32_t ld32(const void *p) { uint32_t x; memcpy(&x, p, 4); return x; }
++static int transfer(int fd, void *p, size_t n, int sending) {
++    for (size_t done = 0; done < n;) {
++        ssize_t k = sending ? send(fd, (char *)p + done, n-done, 0) : recv(fd, (char *)p + done, n-done, 0);
++        if (k < 0 && errno == EINTR) continue;
++        if (k <= 0) return -1;
++        done += (size_t)k;
++    }
++    return 0;
++}
++static void *ldn_reader(void *unused) {
++    (void)unused;
++    uint8_t *b = malloc(LDN_LIMIT);
++    uint32_t h[4];
++    while (b && !transfer(ldn_fd, h, sizeof h, 0) && h[0] == LDN_MAGIC && h[3] <= LDN_LIMIT &&
++           !transfer(ldn_fd, b, h[3], 0)) {
++        pthread_mutex_lock(&ldn_lock);
++        if (h[1] == 100 && h[3] == 12+LDN_NET) {
++            int state = (int)ld32(b), node = (int)ld32(b+8);
++            for (int i = 0; i < 8; i++) {
++                int old = g_ldn_net[0x68+i*64+11], next = b[12+0x68+i*64+11];
++                if (old != next) g_ldn_history[i*8] |= next ? 1 : 2;
++            }
++            int changed = atomic_load(&g_ldn_state) != state || memcmp(g_ldn_net, b+12, LDN_NET);
++            g_ldn_reason = (int)ld32(b+4); g_ldn_node = node;
++            memcpy(g_ldn_net, b+12, LDN_NET);
++            atomic_store(&g_ldn_state, state);
++            // The event was already bound on a guest thread. Holding the lock
++            // prevents Finalize from detaching it while the reader signals it.
++            if (changed && g_ldn_event) hle_signal_system_event(g_ldn_event);
++            if (changed) LOG("LDN state=%d node=%d nodes=%u session=%02x%02x%02x%02x", state, node,
++                             g_ldn_net[0x67], g_ldn_net[16], g_ldn_net[17], g_ldn_net[18], g_ldn_net[19]);
++        } else if ((h[1] & 0x80000000u) && h[2] == ldn_sequence && h[3] >= 4) {
++            ldn_error = ld32(b); ldn_reply_size = h[3]-4;
++            if (ldn_reply_size > ldn_reply_cap) ldn_error = 90;
++            else if (ldn_reply_size) memcpy(ldn_reply, b+4, ldn_reply_size);
++            ldn_done = 1; pthread_cond_signal(&ldn_response);
++        } else {
++            pthread_mutex_unlock(&ldn_lock); break;
++        }
++        pthread_mutex_unlock(&ldn_lock);
++    }
++    free(b);
++    pthread_mutex_lock(&ldn_lock);
++    ldn_running = 0; atomic_store(&g_ldn_state, 0); g_ldn_reason = 6;
++    if (g_ldn_event) hle_signal_system_event(g_ldn_event);
++    pthread_cond_broadcast(&ldn_response);
++    pthread_mutex_unlock(&ldn_lock);
++    return NULL;
++}
++static int ldn_rpc(int op, const void *data, size_t n, void *out, size_t cap, size_t *actual) {
++    if (n > LDN_LIMIT || (n && !data)) return 22;
++    pthread_mutex_lock(&ldn_rpc_lock);
++    pthread_mutex_lock(&ldn_lock);
++    if (!ldn_running) { pthread_mutex_unlock(&ldn_lock); pthread_mutex_unlock(&ldn_rpc_lock); return 50; }
++    uint32_t h[] = { LDN_MAGIC, (uint32_t)op, ++ldn_sequence, (uint32_t)n };
++    ldn_done = 0; ldn_reply = out; ldn_reply_cap = cap; ldn_reply_size = 0;
++    pthread_mutex_unlock(&ldn_lock);
++    int err = transfer(ldn_fd, h, sizeof h, 1) || transfer(ldn_fd, (void *)data, n, 1);
++    pthread_mutex_lock(&ldn_lock);
++    struct timespec deadline; clock_gettime(CLOCK_REALTIME, &deadline); deadline.tv_sec += 3;
++    while (!err && ldn_running && !ldn_done)
++        if (pthread_cond_timedwait(&ldn_response, &ldn_lock, &deadline) == ETIMEDOUT) err = 1;
++    int result = err || !ldn_done ? 50 : (int)ldn_error;
++    if (actual) *actual = ldn_reply_size;
++    ldn_reply = NULL; ldn_reply_cap = 0;
++    pthread_mutex_unlock(&ldn_lock);
++    if (err) shutdown(ldn_fd, SHUT_RDWR);
++    pthread_mutex_unlock(&ldn_rpc_lock);
++    return result;
++}
++static void ldn_caller(const char *label, void *pc) {
++    for (int i=0;i<g_nmod;i++) if ((uint8_t *)pc >= g_mod[i].base && (uint8_t *)pc < g_mod[i].base+g_mod[i].size) {
++        LOG("LDN %s caller=%s+%#llx",label,g_mod[i].name,(unsigned long long)((uint8_t *)pc-g_mod[i].base)); return;
++    }
++}
++static Result ldn_cmd(int op, const void *b, size_t n) {
++    int err = ldn_rpc(op, b, n, NULL, 0, NULL);
++    if (err) LOG("LDN command=%d failed errno=%d state=%d", op, err, atomic_load(&g_ldn_state));
++    return err ? RES_FAIL : RES_OK;
++}
++HLE_FORCE("_ZN2nn3ldn10InitializeEv", "local virtual LDN or opt-in idle frontend", Result, h_ldn_Init, void) {
++    if (atomic_load(&g_ldn_state)) return RES_FAIL;
++    if (!dm_ldn_enabled()) {
++        if (ldn_frontend()) { atomic_store(&g_ldn_state, 1); LOG("LDN Initialize: local frontend initialized; no network"); return RES_OK; }
++        return RES_FAIL;
++    }
++    const char *path = getenv("DM_LDN_AIR"), *player = getenv("DM_PLAYER");
++    if (!player || strlen(player) != 1 || *player < '0' || *player > '7') return RES_FAIL;
++    struct sockaddr_un a = { .sun_family = AF_UNIX };
++    if (strlen(path) >= sizeof a.sun_path) return RES_FAIL;
++    strcpy(a.sun_path, path);
++    ldn_fd = socket(AF_UNIX, SOCK_STREAM, 0);
++    if (ldn_fd < 0) return RES_FAIL;
++    int no_sigpipe = 1; setsockopt(ldn_fd, SOL_SOCKET, SO_NOSIGPIPE, &no_sigpipe, sizeof no_sigpipe);
++    struct timeval timeout = {3, 0}; setsockopt(ldn_fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout);
++    if (connect(ldn_fd, (void *)&a, sizeof a)) { close(ldn_fd); ldn_fd = -1; return RES_FAIL; }
++    ldn_running = 1;
++    if (pthread_create(&ldn_thread, NULL, ldn_reader, NULL)) { ldn_running = 0; close(ldn_fd); ldn_fd = -1; return RES_FAIL; }
++    uint32_t p = *player - '0';
++    int err = ldn_rpc(1, &p, 4, NULL, 0, NULL);
++    if (err) { shutdown(ldn_fd, SHUT_RDWR); pthread_join(ldn_thread, NULL); close(ldn_fd); ldn_fd = -1; return RES_FAIL; }
++    LOG("LDN Initialize: virtual medium player=%u unix=%s", p, path);
++    return RES_OK;
++}
++HLE_FORCE("_ZN2nn3ldn8FinalizeEv", "detach local medium", void, h_ldn_Fini, void) {
++    pthread_mutex_lock(&ldn_lock); void *ev = g_ldn_event; g_ldn_event = NULL; pthread_mutex_unlock(&ldn_lock);
++    if (ev) hle_forget_system_event(ev);
++    if (ldn_fd >= 0) (void)ldn_rpc(16,NULL,0,NULL,0,NULL);
++    if (ldn_fd >= 0) { shutdown(ldn_fd, SHUT_RDWR); pthread_join(ldn_thread, NULL); close(ldn_fd); ldn_fd = -1; }
++    pthread_mutex_lock(&ldn_lock);
++    memset(g_ldn_net, 0, sizeof g_ldn_net); memset(g_ldn_history, 0, sizeof g_ldn_history);
++    g_ldn_reason = 0; g_ldn_node = -1; atomic_store(&g_ldn_state, 0);
++    pthread_mutex_unlock(&ldn_lock);
++}
++HLE_FORCE("_ZN2nn3ldn8GetStateEv", "virtual LDN state", int, h_ldn_State, void) { return ldn_build() ? atomic_load(&g_ldn_state) : 0; }
++HLE_FORCE("_ZN2nn3ldn11SetProtocolENS0_8ProtocolE", "NX protocol selection", Result, h_ldn_Protocol, int p) {
++    return ldn_build() && atomic_load(&g_ldn_state) == 1 && (p == 0 || p == 1 || p == 3) ? RES_OK : RES_FAIL;
++}
++HLE_FORCE("_ZN2nn3ldn22AttachStateChangeEventEPNS_2os15SystemEventTypeE", "virtual LDN state event", void, h_ldn_Attach, void *ev) {
++    hle_bind_system_event(ev, 1);
++    pthread_mutex_lock(&ldn_lock); g_ldn_event = ev; pthread_mutex_unlock(&ldn_lock);
++}
++#define LDN_SIMPLE(symbol, name, op) HLE_FORCE(symbol, "virtual local LDN", Result, name, void) { ldn_caller(#name,__builtin_return_address(0)); return ldn_cmd(op, NULL, 0); }
++LDN_SIMPLE("_ZN2nn3ldn11OpenStationEv", h_ldn_OpenSta, 3)
++LDN_SIMPLE("_ZN2nn3ldn12CloseStationEv", h_ldn_CloseSta, 5)
++LDN_SIMPLE("_ZN2nn3ldn15OpenAccessPointEv", h_ldn_OpenAp, 2)
++LDN_SIMPLE("_ZN2nn3ldn16CloseAccessPointEv", h_ldn_CloseAp, 4)
++LDN_SIMPLE("_ZN2nn3ldn10DisconnectEv", h_ldn_Disc, 10)
++LDN_SIMPLE("_ZN2nn3ldn14DestroyNetworkEv", h_ldn_Destroy, 9)
++LDN_SIMPLE("_ZN2nn3ldn17ClearAcceptFilterEv", h_ldn_ClearFilter, 14)
++static Result ldn_scan(void *out, int *count, int max, const void *filter, int channel, int priv) {
++    if (count) *count = 0;
++    if (!out || !count || !filter || max < 1 || channel < 0) return RES_FAIL;
++    if (max > 24) max = 24;
++    uint8_t request[108] = {0}; memcpy(request, &channel, 4); memcpy(request+4, &max, 4);
++    memcpy(request+8, filter, 96); memcpy(request+104, &priv, 4);
++    size_t size = 0, cap = 4 + max*LDN_NET;
++    uint8_t *reply = malloc(cap);
++    if (!reply) return RES_FAIL;
++    int err = ldn_rpc(7, request, sizeof request, reply, cap, &size);
++    if (!err && size >= 4 && ld32(reply) <= (unsigned)max && size == 4+ld32(reply)*LDN_NET) {
++        *count = (int)ld32(reply); memcpy(out, reply+4, size-4);
++        static unsigned calls; if (*count || !(calls++ % 120)) LOG("LDN Scan: private=%d count=%d flags=%#x", priv, *count, ld32((const char *)filter+92));
++    } else err = 1;
++    free(reply); return err ? RES_FAIL : RES_OK;
++}
++HLE_FORCE("_ZN2nn3ldn4ScanEPNS0_11NetworkInfoEPiiRKNS0_10ScanFilterEi", "virtual LDN scan", Result, h_ldn_Scan, void *out, int *n, int max, const void *f, int ch) { ldn_caller("Scan",__builtin_return_address(0)); return ldn_scan(out,n,max,f,ch,0); }
++HLE_FORCE("_ZN2nn3ldn11ScanPrivateEPNS0_11NetworkInfoEPiiRKNS0_10ScanFilterEi", "virtual private LDN scan", Result, h_ldn_ScanP, void *out, int *n, int max, const void *f, int ch) { return ldn_scan(out,n,max,f,ch,1); }
++static Result ldn_create(const void *config, const void *sec, const void *param, const void *user, int n, const void *addresses) {
++    if (!config || !sec || !user || n < 0 || n > 8 || (n && !addresses)) return RES_FAIL;
++    // C++ UserConfig holds 32 bytes; the IPC form reserves 48 (SDK CreateNetwork wrapper).
++    uint8_t b[280] = {0}; memcpy(b, config, 32); memcpy(b+32, sec, 68); memcpy(b+100, user, 32);
++    if (param) memcpy(b+148, param, 32);
++    memcpy(b+180, &n, 4); if (n) memcpy(b+184, addresses, n*12);
++    LOG("LDN CreateNetwork: intent=%llx scene=%u version=%u max=%u private=%d", (unsigned long long)(*(const uint64_t *)config),
++        (unsigned)((const uint16_t *)config)[5], (unsigned)((const uint16_t *)config)[10], ((const uint8_t *)config)[18], n);
++    return ldn_cmd(6, b, 184+n*12);
++}
++HLE_FORCE("_ZN2nn3ldn13CreateNetworkERKNS0_13NetworkConfigERKNS0_14SecurityConfigERKNS0_10UserConfigE", "virtual LDN create", Result, h_ldn_Create, const void *a, const void *b, const void *c) { return ldn_create(a,b,NULL,c,0,NULL); }
++HLE_FORCE("_ZN2nn3ldn20CreateNetworkPrivateERKNS0_13NetworkConfigERKNS0_14SecurityConfigERKNS0_17SecurityParameterERKNS0_10UserConfigEiPKNS0_12AddressEntryE", "virtual private LDN create", Result, h_ldn_CreateP, const void *a,const void *b,const void *c,const void *d,int n,const void *e) { return ldn_create(a,b,c,d,n,e); }
++HLE_FORCE("_ZN2nn3ldn7ConnectERKNS0_11NetworkInfoERKNS0_14SecurityConfigERKNS0_10UserConfigEiNS0_13ConnectOptionE", "virtual LDN connect", Result, h_ldn_Connect, const void *a,const void *b,const void *c,int v,int o) {
++    if (!a || !b || !c || v < 0 || v > 32767 || o < 0 || o > 1) return RES_FAIL;
++    uint8_t request[LDN_NET+124] = {0}; memcpy(request,a,LDN_NET); memcpy(request+LDN_NET,b,68); memcpy(request+LDN_NET+68,c,32);
++    memcpy(request+LDN_NET+116,&v,4); memcpy(request+LDN_NET+120,&o,4);
++    return ldn_cmd(8,request,sizeof request);
++}
++HLE_FORCE("_ZN2nn3ldn14ConnectPrivateERKNS0_13NetworkConfigERKNS0_14SecurityConfigERKNS0_17SecurityParameterERKNS0_10UserConfigEiNS0_13ConnectOptionE", "virtual private LDN connect", Result, h_ldn_ConnectP, const void *a,const void *b,const void *c,const void *d,int v,int o) {
++    if (!a || !b || !c || !d) return RES_FAIL;
++    uint8_t filter[96] = {0}, *nets = malloc(24*LDN_NET); int count = 0;
++    if (!nets) return RES_FAIL;
++    memcpy(filter,a,16); memcpy(filter+16,(const char *)c+16,16); uint32_t flags = 0x23; memcpy(filter+92,&flags,4);
++    Result r = ldn_scan(nets,&count,24,filter,0,1);
++    r = !r && count ? h_ldn_Connect(nets,b,d,v,o) : RES_FAIL;
++    free(nets); return r;
++}
++HLE_FORCE("_ZN2nn3ldn14GetNetworkInfoEPNS0_11NetworkInfoE", "virtual LDN network snapshot", Result, h_ldn_NetInfo, void *out) {
++    pthread_mutex_lock(&ldn_lock); int s = atomic_load(&g_ldn_state);
++    int ok = out && (s == 3 || s == 5); if (ok) memcpy(out,g_ldn_net,LDN_NET);
++    pthread_mutex_unlock(&ldn_lock);
++    // main+0x9576cc polls this even while idle and explicitly ignores LDN's
++    // module-203 InvalidState range (0x40cb). A generic offline failure instead
++    // becomes a latched communication error before the room can be created.
++    return ok ? RES_OK : (dm_ldn_enabled() ? LDN_INVALID_STATE : RES_FAIL);
++}
++HLE_FORCE("_ZN2nn3ldn14GetNetworkInfoEPNS0_11NetworkInfoEPNS0_16NodeLatestUpdateEi", "virtual LDN node history", Result, h_ldn_NetHistory, void *out, void *updates, int n) {
++    if (!out || !updates || n != 8) return RES_FAIL;
++    pthread_mutex_lock(&ldn_lock); int s = atomic_load(&g_ldn_state);
++    if (s == 3 || s == 5) { memcpy(out,g_ldn_net,LDN_NET); memcpy(updates,g_ldn_history,64); memset(g_ldn_history,0,64); }
++    pthread_mutex_unlock(&ldn_lock); return s == 3 || s == 5 ? RES_OK : RES_FAIL;
++}
++HLE_FORCE("_ZN2nn3ldn14GetIpv4AddressEPNS0_11Ipv4AddressEPNS0_10SubnetMaskE", "virtual LDN IPv4 in host order", Result, h_ldn_Ip, uint32_t *ip,uint32_t *mask) {
++    pthread_mutex_lock(&ldn_lock); int s = atomic_load(&g_ldn_state), node = g_ldn_node;
++    int ok = ip && mask && (s == 3 || s == 5) && node >= 0 && node < 8;
++    if (ip) *ip = ok ? ld32(g_ldn_net+0x68+node*64) : 0;
++    if (mask) *mask = ok ? 0xffffff00u : 0;
++    pthread_mutex_unlock(&ldn_lock); LOG("LDN GetIpv4Address: state=%d node=%d result=%d",s,node,ok); return ok ? RES_OK : RES_FAIL;
++}
++HLE_FORCE("_ZN2nn3ldn20GetSecurityParameterEPNS0_17SecurityParameterE", "virtual LDN security parameters", Result, h_ldn_SecPrm, void *out) {
++    if (!out) return RES_FAIL;
++    pthread_mutex_lock(&ldn_lock); int s = atomic_load(&g_ldn_state);
++    if (s == 3 || s == 5) { memcpy(out,g_ldn_net+0x50,16); memcpy((char *)out+16,g_ldn_net+16,16); }
++    pthread_mutex_unlock(&ldn_lock); return s == 3 || s == 5 ? RES_OK : RES_FAIL;
++}
++HLE_FORCE("_ZN2nn3ldn16SetAdvertiseDataEPKvm", "publish exact game beacon bytes", Result, h_ldn_Adv, const void *d,uint64_t n) { return n <= 384 && (d || !n) ? ldn_cmd(11,d,n) : RES_FAIL; }
++HLE_FORCE("_ZN2nn3ldn19GetDisconnectReasonEv", "virtual LDN disconnect reason", int, h_ldn_DiscReason, void) { pthread_mutex_lock(&ldn_lock); int r=g_ldn_reason; pthread_mutex_unlock(&ldn_lock); return r; }
++HLE_FORCE("_ZN2nn3ldn20AddAcceptFilterEntryENS0_10MacAddressE", "virtual LDN MAC policy", Result, h_ldn_Filter, uint64_t mac) { return ldn_cmd(13,&mac,6); }
++HLE_FORCE("_ZN2nn3ldn22SetStationAcceptPolicyENS0_12AcceptPolicyE", "virtual LDN accept policy", Result, h_ldn_Policy, int p) { return p >= 0 && p <= 3 ? ldn_cmd(12,&p,4) : RES_FAIL; }
++HLE_FORCE("_ZN2nn3ldn6RejectENS0_11Ipv4AddressE", "virtual LDN reject node", Result, h_ldn_Reject, uint32_t ip) { return ldn_cmd(15,&ip,4); }
++
++// BSD UDP calls carry only virtual descriptors and opaque datagrams over AF_UNIX.
++static int ldn_skcall(int op,const void *b,size_t n,void *out,size_t cap,size_t *sz) {
++    int err = ldn_rpc(op,b,n,out,cap,sz);
++    // The medium uses BSD-style wire errors, but SDK 22 nn::socket exposes
++    // Linux/newlib errno numbers. main+0x92c490 uses MSG_DONTWAIT and its
++    // error table treats 11 as retry; returning Darwin's 35 aborts the room
++    // with 2318-6635. Keep these namespaces separate from LDN Results.
++    if (err) {
++        switch(err) {
++            case 35: ldn_skerr=11; break;
++            case 42: ldn_skerr=92; break;
++            case 43: ldn_skerr=93; break;
++            case 45: ldn_skerr=95; break;
++            case 48: ldn_skerr=98; break;
++            case 49: ldn_skerr=99; break;
++            case 50: ldn_skerr=100; break;
++            case 51: ldn_skerr=101; break;
++            default: ldn_skerr=err; break;
++        } static _Atomic unsigned failures[32]; if(op<32){unsigned k=atomic_fetch_add(&failures[op],1)+1;if((k&(k-1))==0)LOG("LDN socket op=%d errno=%d count=%u state=%d",op,err,k,atomic_load(&g_ldn_state));} return -1; } return 0;
++}
++int dm_ldn_socket(int f,int t,int p) { uint32_t b[]={f,t,p},fd=0; return ldn_skcall(20,b,sizeof b,&fd,4,NULL) ? -1 : (int)fd; }
++int dm_ldn_bind(int fd,const void *a,unsigned n) { if (!a || n < 16) { ldn_skerr=22; return -1; } uint8_t b[20]; memcpy(b,&fd,4); memcpy(b+4,a,16); return ldn_skcall(21,b,20,NULL,0,NULL); }
++long dm_ldn_sendto(int fd,const void *buf,size_t n,int flags,const void *a,unsigned len) {
++    (void)flags;
++    if (!a || len < 16 || n > 65507 || (!buf && n)) { ldn_skerr=22; return -1; }
++    uint8_t *b=malloc(n+20); if (!b) { ldn_skerr=12; return -1; }
++    memcpy(b,&fd,4); memcpy(b+4,a,16); if(n) memcpy(b+20,buf,n);
++    uint32_t sent=0; int r=ldn_skcall(22,b,n+20,&sent,4,NULL); free(b); return r ? -1 : (long)sent;
++}
++long dm_ldn_recvfrom(int fd,void *buf,size_t n,int flags,void *a,unsigned *len) {
++    (void)flags;
++    if ((!buf && n) || (a && !len)) { ldn_skerr=22; return -1; }
++    uint8_t *b=malloc(LDN_LIMIT); if (!b) { ldn_skerr=12; return -1; } size_t sz=0;
++    int r=ldn_skcall(23,&fd,4,b,LDN_LIMIT,&sz);
++    if (!r && sz >= 16) { if (n > sz-16) n=sz-16; if(n) memcpy(buf,b+16,n); if(a) { unsigned k=*len<16?*len:16; memcpy(a,b,k); *len=16; } }
++    else { n=0; if (!r) { r=-1; ldn_skerr=22; } }
++    free(b); return r ? -1 : (long)n;
++}
++int dm_ldn_poll(void *fds,size_t n,int timeout) {
++    if (n > 64 || (!fds && n) || timeout < -1) { ldn_skerr=22; return -1; }
++    struct timespec t; clock_gettime(CLOCK_MONOTONIC,&t); uint64_t start=(uint64_t)t.tv_sec*1000+t.tv_nsec/1000000;
++    uint8_t b[512];
++    for (;;) {
++        if (ldn_skcall(25,fds,n*8,b,sizeof b,NULL)) return -1;
++        int ready=0; for (size_t i=0;i<n;i++) if (((int16_t *)(b+i*8))[3]) ready++;
++        clock_gettime(CLOCK_MONOTONIC,&t); uint64_t now=(uint64_t)t.tv_sec*1000+t.tv_nsec/1000000;
++        if (ready || (timeout >= 0 && now-start >= (unsigned)timeout)) { memcpy(fds,b,n*8); return ready; }
++        usleep(2000);
++    }
++}
++int dm_ldn_close(int fd) { return ldn_skcall(24,&fd,4,NULL,0,NULL); }
++int dm_ldn_sockname(int fd,void *a,unsigned *n) { if(!a||!n) { ldn_skerr=22; return -1; } uint8_t b[16]; int r=ldn_skcall(26,&fd,4,b,16,NULL); if(!r){ unsigned k=*n<16?*n:16; memcpy(a,b,k); *n=16; } return r; }
++int dm_ldn_sockopt(int fd,int level,int option,const void *v,unsigned n) {
++    // FreeBSD SOL_SOCKET: REUSEADDR/REUSEPORT/BROADCAST/SNDBUF/RCVBUF, IP_TOS.
++    LOG("LDN SetSockOpt fd=%d level=%#x option=%#x len=%u",fd,level,option,n);
++    if (!v || n != 4 || !((level == 0xffff && (option == 4 || option == 0x20 || option == 0x200 || option == 0x1001 || option == 0x1002)) || (level == 0 && option == 3))) { ldn_skerr=92; return -1; }
++    uint32_t b[4]={(uint32_t)fd,(uint32_t)level,(uint32_t)option,ld32(v)};
++    return ldn_skcall(30,b,sizeof b,NULL,0,NULL);
++}
++int dm_ldn_eventfd(uint64_t value,int flags) { uint8_t b[12]; memcpy(b,&value,8); memcpy(b+8,&flags,4); uint32_t fd=0; return ldn_skcall(27,b,12,&fd,4,NULL) ? -1 : (int)fd; }
++int dm_ldn_eventread(int fd,uint64_t *value) { if(!value){ldn_skerr=22;return -1;} return ldn_skcall(28,&fd,4,value,8,NULL); }
++int dm_ldn_eventwrite(int fd,uint64_t value) { uint8_t b[12];memcpy(b,&fd,4);memcpy(b+4,&value,8);return ldn_skcall(29,b,12,NULL,0,NULL); }
+diff --git a/dm/host/hle_ldn.h b/dm/host/hle_ldn.h
+new file mode 100644
+index 0000000..2e0229b
+--- /dev/null
++++ b/dm/host/hle_ldn.h
+@@ -0,0 +1,17 @@
++// Local virtual LDN and BSD datagram adapter. No IP sockets are opened.
++#pragma once
++#include <stddef.h>
++#include <stdint.h>
++int dm_ldn_enabled(void);
++int dm_ldn_socket(int family, int type, int protocol);
++int dm_ldn_bind(int fd, const void *addr, unsigned len);
++long dm_ldn_sendto(int fd, const void *buf, size_t n, int flags, const void *addr, unsigned len);
++long dm_ldn_recvfrom(int fd, void *buf, size_t n, int flags, void *addr, unsigned *len);
++int dm_ldn_poll(void *fds, size_t n, int timeout);
++int dm_ldn_close(int fd);
++int dm_ldn_sockname(int fd, void *addr, unsigned *len);
++int dm_ldn_sockopt(int fd, int level, int option, const void *value, unsigned len);
++int dm_ldn_eventfd(uint64_t value, int flags);
++int dm_ldn_eventread(int fd, uint64_t *value);
++int dm_ldn_eventwrite(int fd, uint64_t value);
++int dm_ldn_errno(void);
+diff --git a/dm/host/hle_net.c b/dm/host/hle_net.c
+index 234d762..268a478 100644
+--- a/dm/host/hle_net.c
++++ b/dm/host/hle_net.c
+@@ -1,14 +1,16 @@
+-// Networking (out of scope: online play/friends/store/cloud saves): all hooked up as "network unavailable", the game takes the offline branch.
++// Networking: online/friends/store/cloud remain unavailable. The explicit virtual LDN adapter handles local UDP/Poll/EventFd over AF_UNIX only.
+ // Cuts: nifm reports no network; socket only hooks up Initialize (returns success, creates no session), the rest of socket/ssl/friends are hooked up as failures when they come into use.
+ #include "hle.h"
++#include "hle_ldn.h"
++#include <stdatomic.h>
+ 
+ HLE_FORCE("_ZN2nn6socket10InitializeERKNS0_6ConfigE", "连 bsd 套接字服务；离线，不建会话（剪）", Result, h_socket_Initialize, const void *cfg) { (void)cfg; return RES_OK; }
+ HLE_FORCE("_ZN2nn4nifm10InitializeEv", "连 nifm 网络管理服务；离线（剪）", Result, h_nifm_Initialize, void) { return RES_OK; }
+ HLE_FORCE("_ZN2nn4nifm20SubmitNetworkRequestEv", "离线：网络请求不提交", void, h_nifm_Submit, void) {}
+ HLE_FORCE("_ZN2nn4nifm20CancelNetworkRequestEv", "离线：无请求可取消", void, h_nifm_Cancel, void) {}
+ HLE_FORCE("_ZN2nn4nifm22IsNetworkRequestOnHoldEv", "离线：请求不在等待中", int, h_nifm_OnHold, void) { return 0; }
+-HLE_FORCE("_ZN2nn4nifm18IsNetworkAvailableEv", "离线：网络恒不可用", int, h_nifm_Available, void) { return 0; }
+-HLE_FORCE("_ZN2nn4nifm31HandleNetworkRequestErrorResultEv", "离线：报失败，不弹系统联网界面", Result, h_nifm_HandleErr, void) { return RES_FAIL; }
++HLE_FORCE("_ZN2nn4nifm18IsNetworkAvailableEv", "离线：网络恒不可用", int, h_nifm_Available, void) { if(dm_ldn_enabled()) LOG("LDN NIFM IsNetworkAvailable (offline)"); return 0; }
++HLE_FORCE("_ZN2nn4nifm31HandleNetworkRequestErrorResultEv", "离线：报失败，不弹系统联网界面", Result, h_nifm_HandleErr, void) { if(dm_ldn_enabled()) LOG("LDN NIFM HandleNetworkRequestErrorResult (offline)"); return RES_FAIL; }
+ HLE_FORCE("_ZN2nn4nifm26GetCurrentPrimaryIpAddressEPNS_6socket6InAddrE", "离线：无 IP", Result, h_nifm_GetIp, uint32_t *a) { if (a) *a = 0; return RES_FAIL; }
+ HLE_FORCE("_ZN2nn4nifm22GetCurrentProxySettingEPNS0_12ProxySettingE", "离线：无代理设置", Result, h_nifm_GetProxy, void *p) { (void)p; return RES_FAIL; }
+ HLE_FORCE("nnsslInitialize", "连 ssl 服务；网络库全局初始化依赖它成功，离线不建会话（剪）", Result, h_ssl_Initialize, void) { return RES_OK; }
+@@ -16,54 +18,58 @@ HLE_FORCE("nnsslFinalize", "与 nnsslInitialize 配对（剪）", Result, h_ssl_
+ 
+ // ---------- socket: offline, all calls that contact the service return -1 in BSD convention, error code ENETDOWN ----------
+ // Not cut: Inet* / nnsocketInet* byte order and address text conversion (pure computation).
+-#define SK_ENETDOWN 50                  // Horizon sockets use FreeBSD error codes
++#define SK_ENETDOWN 50                  // Legacy offline value; virtual LDN converts its wire errors to the verified SDK errno namespace
+ static __thread int t_skerr = SK_ENETDOWN;
+-static int sk_fail(void) { t_skerr = SK_ENETDOWN; return -1; }
++static int sk_fail(void) {
++    t_skerr = SK_ENETDOWN;
++    if (dm_ldn_enabled()) { static _Atomic unsigned n; unsigned k=atomic_fetch_add(&n,1); if(k<8){LOG("LDN unsupported BSD socket operation");dm_backtrace((uint64_t)__builtin_frame_address(0));} }
++    return -1;
++}
+ #define SKF(m, cname, ...) HLE_FORCE(m, "bsd 套接字服务（剪）：回 -1/ENETDOWN", int, cname, __VA_ARGS__)
+-SKF("_ZN2nn6socket6SocketENS0_6FamilyENS0_4TypeENS0_8ProtocolE", h_sk_Socket, int a, int b, int c) { (void)a; (void)b; (void)c; return sk_fail(); }
+-SKF("_ZN2nn6socket4BindEiPKNS0_8SockAddrEj", h_sk_Bind, int s, const void *a, unsigned n) { (void)s; (void)a; (void)n; return sk_fail(); }
++SKF("_ZN2nn6socket6SocketENS0_6FamilyENS0_4TypeENS0_8ProtocolE", h_sk_Socket, int a, int b, int c) { if (dm_ldn_enabled()) { return dm_ldn_socket(a,b,c); } (void)a; (void)b; (void)c; return sk_fail(); }
++SKF("_ZN2nn6socket4BindEiPKNS0_8SockAddrEj", h_sk_Bind, int s, const void *a, unsigned n) { if (dm_ldn_enabled()) { return dm_ldn_bind(s,a,n); } (void)s; (void)a; (void)n; return sk_fail(); }
+ SKF("_ZN2nn6socket7ConnectEiPKNS0_8SockAddrEj", h_sk_Connect, int s, const void *a, unsigned n) { (void)s; (void)a; (void)n; return sk_fail(); }
+ SKF("_ZN2nn6socket6ListenEii", h_sk_Listen, int s, int n) { (void)s; (void)n; return sk_fail(); }
+ SKF("_ZN2nn6socket6AcceptEiPNS0_8SockAddrEPj", h_sk_Accept, int s, void *a, unsigned *n) { (void)s; (void)a; (void)n; return sk_fail(); }
+-SKF("_ZN2nn6socket5CloseEi", h_sk_Close, int s) { (void)s; return sk_fail(); }
++SKF("_ZN2nn6socket5CloseEi", h_sk_Close, int s) { if (dm_ldn_enabled()) { return dm_ldn_close(s); } (void)s; return sk_fail(); }
+ SKF("_ZN2nn6socket11GetPeerNameEiPNS0_8SockAddrEPj", h_sk_GetPeerName, int s, void *a, unsigned *n) { (void)s; (void)a; (void)n; return sk_fail(); }
+-SKF("_ZN2nn6socket11GetSockNameEiPNS0_8SockAddrEPj", h_sk_GetSockName, int s, void *a, unsigned *n) { (void)s; (void)a; (void)n; return sk_fail(); }
++SKF("_ZN2nn6socket11GetSockNameEiPNS0_8SockAddrEPj", h_sk_GetSockName, int s, void *a, unsigned *n) { if (dm_ldn_enabled()) { return dm_ldn_sockname(s,a,n); } (void)s; (void)a; (void)n; return sk_fail(); }
+ SKF("_ZN2nn6socket10GetSockOptEiNS0_5LevelENS0_6OptionEPvPj", h_sk_GetSockOpt, int s, int l, int o, void *v, unsigned *n) { (void)s; (void)l; (void)o; (void)v; (void)n; return sk_fail(); }
+-SKF("_ZN2nn6socket10SetSockOptEiNS0_5LevelENS0_6OptionEPKvj", h_sk_SetSockOpt, int s, int l, int o, const void *v, unsigned n) { (void)s; (void)l; (void)o; (void)v; (void)n; return sk_fail(); }
++SKF("_ZN2nn6socket10SetSockOptEiNS0_5LevelENS0_6OptionEPKvj", h_sk_SetSockOpt, int s, int l, int o, const void *v, unsigned n) { if (dm_ldn_enabled()) { return dm_ldn_sockopt(s,l,o,v,n); } (void)s; (void)l; (void)o; (void)v; (void)n; return sk_fail(); }
+ SKF("_ZN2nn6socket5FcntlEiNS0_12FcntlCommandEz", h_sk_Fcntl, int s, int c) { (void)s; (void)c; return sk_fail(); }
+-SKF("_ZN2nn6socket4PollEPNS0_6PollFdEmi", h_sk_Poll, void *f, unsigned long n, int t) { (void)f; (void)n; (void)t; return sk_fail(); }
++SKF("_ZN2nn6socket4PollEPNS0_6PollFdEmi", h_sk_Poll, void *f, unsigned long n, int t) { if (dm_ldn_enabled()) { return dm_ldn_poll(f,n,t); } (void)f; (void)n; (void)t; return sk_fail(); }
+ SKF("_ZN2nn6socket6SelectEiPNS0_5FdSetES2_S2_PNS0_7TimeValE", h_sk_Select, int n, void *r, void *w, void *e, void *t) { (void)n; (void)r; (void)w; (void)e; (void)t; return sk_fail(); }
+-SKF("_ZN2nn6socket7EventFdEmNS0_12EventFdFlagsE", h_sk_EventFd, unsigned long v, int f) { (void)v; (void)f; return sk_fail(); }
+-SKF("_ZN2nn6socket11EventFdReadEiPm", h_sk_EventFdRead, int s, unsigned long *v) { (void)s; (void)v; return sk_fail(); }
+-SKF("_ZN2nn6socket12EventFdWriteEim", h_sk_EventFdWrite, int s, unsigned long v) { (void)s; (void)v; return sk_fail(); }
++SKF("_ZN2nn6socket7EventFdEmNS0_12EventFdFlagsE", h_sk_EventFd, unsigned long v, int f) { if (dm_ldn_enabled()) { return dm_ldn_eventfd(v,f); } (void)v; (void)f; return sk_fail(); }
++SKF("_ZN2nn6socket11EventFdReadEiPm", h_sk_EventFdRead, int s, unsigned long *v) { if (dm_ldn_enabled()) { return dm_ldn_eventread(s,(uint64_t *)v); } (void)s; (void)v; return sk_fail(); }
++SKF("_ZN2nn6socket12EventFdWriteEim", h_sk_EventFdWrite, int s, unsigned long v) { if (dm_ldn_enabled()) { return dm_ldn_eventwrite(s,v); } (void)s; (void)v; return sk_fail(); }
+ SKF("_ZN2nn6socket17ResolverGetOptionEPNS0_14ResolverOptionENS0_17ResolverOptionKeyE", h_sk_ResGet, void *o, int k) { (void)o; (void)k; return sk_fail(); }
+ SKF("_ZN2nn6socket17ResolverSetOptionERKNS0_14ResolverOptionE", h_sk_ResSet, const void *o) { (void)o; return sk_fail(); }
+ HLE_FORCE("_ZN2nn6socket4RecvEiPvmNS0_7MsgFlagE", "bsd 套接字服务（剪）", long, h_sk_Recv, int s, void *b, unsigned long n, int f) { (void)s; (void)b; (void)n; (void)f; return sk_fail(); }
+-HLE_FORCE("_ZN2nn6socket8RecvFromEiPvmNS0_7MsgFlagEPNS0_8SockAddrEPj", "bsd 套接字服务（剪）", long, h_sk_RecvFrom, int s, void *b, unsigned long n, int f, void *a, unsigned *al) { (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return sk_fail(); }
++HLE_FORCE("_ZN2nn6socket8RecvFromEiPvmNS0_7MsgFlagEPNS0_8SockAddrEPj", "bsd 套接字服务（剪）", long, h_sk_RecvFrom, int s, void *b, unsigned long n, int f, void *a, unsigned *al) { if (dm_ldn_enabled()) { return dm_ldn_recvfrom(s,b,n,f,a,al); } (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return sk_fail(); }
+ HLE_FORCE("_ZN2nn6socket4SendEiPKvmNS0_7MsgFlagE", "bsd 套接字服务（剪）", long, h_sk_Send, int s, const void *b, unsigned long n, int f) { (void)s; (void)b; (void)n; (void)f; return sk_fail(); }
+ HLE_FORCE("_ZN2nn6socket11GetAddrInfoEPKcS2_PKNS0_8AddrInfoEPPS3_", "域名解析（剪）：EAI_FAIL", int, h_sk_GetAddrInfo, const char *h, const char *s, const void *hint, void **res) {
+     (void)h; (void)s; (void)hint; if (res) *res = NULL; return 4;   // EAI_FAIL
+ }
+ HLE_FORCE("_ZN2nn6socket12FreeAddrInfoEPNS0_8AddrInfoE", "与 GetAddrInfo 配对（剪）", void, h_sk_FreeAddrInfo, void *ai) { (void)ai; }
+ HLE_FORCE("_ZN2nn6socket16GetHostEntByNameEPKcPKNS0_14ResolverOptionEm", "域名解析（剪）：NULL", void *, h_sk_GetHostEnt, const char *n, const void *o, unsigned long c) { (void)n; (void)o; (void)c; t_skerr = SK_ENETDOWN; return NULL; }
+-HLE_FORCE("_ZN2nn6socket12GetLastErrorEv", "套接字错误码由宿主记录", int, h_sk_GetLastError, void) { return t_skerr; }
++HLE_FORCE("_ZN2nn6socket12GetLastErrorEv", "套接字错误码由宿主记录", int, h_sk_GetLastError, void) { return dm_ldn_enabled() ? dm_ldn_errno() : t_skerr; }
+ // C interface
+-SKF("nnsocketSocket", h_nsk_Socket, int a, int b, int c) { (void)a; (void)b; (void)c; return sk_fail(); }
+-SKF("nnsocketBind", h_nsk_Bind, int s, const void *a, unsigned n) { (void)s; (void)a; (void)n; return sk_fail(); }
++SKF("nnsocketSocket", h_nsk_Socket, int a, int b, int c) { if (dm_ldn_enabled()) { return dm_ldn_socket(a,b,c); } (void)a; (void)b; (void)c; return sk_fail(); }
++SKF("nnsocketBind", h_nsk_Bind, int s, const void *a, unsigned n) { if (dm_ldn_enabled()) { return dm_ldn_bind(s,a,n); } (void)s; (void)a; (void)n; return sk_fail(); }
+ SKF("nnsocketConnect", h_nsk_Connect, int s, const void *a, unsigned n) { (void)s; (void)a; (void)n; return sk_fail(); }
+-SKF("nnsocketClose", h_nsk_Close, int s) { (void)s; return sk_fail(); }
++SKF("nnsocketClose", h_nsk_Close, int s) { if (dm_ldn_enabled()) { return dm_ldn_close(s); } (void)s; return sk_fail(); }
+ SKF("nnsocketGetPeerName", h_nsk_GetPeerName, int s, void *a, unsigned *n) { (void)s; (void)a; (void)n; return sk_fail(); }
+-SKF("nnsocketGetSockName", h_nsk_GetSockName, int s, void *a, unsigned *n) { (void)s; (void)a; (void)n; return sk_fail(); }
++SKF("nnsocketGetSockName", h_nsk_GetSockName, int s, void *a, unsigned *n) { if (dm_ldn_enabled()) { return dm_ldn_sockname(s,a,n); } (void)s; (void)a; (void)n; return sk_fail(); }
+ SKF("nnsocketGetSockOpt", h_nsk_GetSockOpt, int s, int l, int o, void *v, unsigned *n) { (void)s; (void)l; (void)o; (void)v; (void)n; return sk_fail(); }
+-SKF("nnsocketSetSockOpt", h_nsk_SetSockOpt, int s, int l, int o, const void *v, unsigned n) { (void)s; (void)l; (void)o; (void)v; (void)n; return sk_fail(); }
++SKF("nnsocketSetSockOpt", h_nsk_SetSockOpt, int s, int l, int o, const void *v, unsigned n) { if (dm_ldn_enabled()) { return dm_ldn_sockopt(s,l,o,v,n); } (void)s; (void)l; (void)o; (void)v; (void)n; return sk_fail(); }
+ SKF("nnsocketFcntl", h_nsk_Fcntl, int s, int c) { (void)s; (void)c; return sk_fail(); }
+-SKF("nnsocketPoll", h_nsk_Poll, void *f, unsigned long n, int t) { (void)f; (void)n; (void)t; return sk_fail(); }
++SKF("nnsocketPoll", h_nsk_Poll, void *f, unsigned long n, int t) { if (dm_ldn_enabled()) { return dm_ldn_poll(f,n,t); } (void)f; (void)n; (void)t; return sk_fail(); }
+ SKF("nnsocketResolverGetOption", h_nsk_ResGet, void *o, int k) { (void)o; (void)k; return sk_fail(); }
+ SKF("nnsocketResolverSetOption", h_nsk_ResSet, const void *o) { (void)o; return sk_fail(); }
+ HLE_FORCE("nnsocketRecv", "bsd 套接字服务（剪）", long, h_nsk_Recv, int s, void *b, unsigned long n, int f) { (void)s; (void)b; (void)n; (void)f; return sk_fail(); }
+ HLE_FORCE("nnsocketSend", "bsd 套接字服务（剪）", long, h_nsk_Send, int s, const void *b, unsigned long n, int f) { (void)s; (void)b; (void)n; (void)f; return sk_fail(); }
+ HLE_FORCE("nnsocketGetHostByNameWithOptions", "域名解析（剪）：NULL", void *, h_nsk_GetHost, const char *n, const void *o, unsigned long c) { (void)n; (void)o; (void)c; t_skerr = SK_ENETDOWN; return NULL; }
+-HLE_FORCE("nnsocketGetLastErrno", "套接字错误码由宿主记录", int, h_nsk_GetErrno, void) { return t_skerr; }
++HLE_FORCE("nnsocketGetLastErrno", "套接字错误码由宿主记录", int, h_nsk_GetErrno, void) { return dm_ldn_enabled() ? dm_ldn_errno() : t_skerr; }
+ HLE_FORCE("nnsocketSetLastErrno", "套接字错误码由宿主记录", void, h_nsk_SetErrno, int e) { t_skerr = e; }
+ 
+ // ---------- ssl: offline, Initialize succeeds (the network library's global initialization depends on it), everything else that contacts the service fails ----------
 diff --git a/dm/host/hle_offline.c b/dm/host/hle_offline.c
-index 367779a..9662010 100644
+index 367779a..f05c688 100644
 --- a/dm/host/hle_offline.c
 +++ b/dm/host/hle_offline.c
-@@ -2,8 +2,17 @@
+@@ -1,9 +1,8 @@
+-// Networking and peripheral system services (out of scope: online play, local wireless, friends, telemetry, SSL) as seen through newer SDKs: all made "unavailable", the game takes its offline branch.
++// Networking and peripheral system services (out of scope: online play, friends, telemetry, SSL; virtual LDN is in hle_ldn.c) as seen through newer SDKs: all made "unavailable", the game takes its offline branch.
  // Only entry points that go to a service are hooked; library functions that only read and write the game's own buffers (prepo Add / Array / Struct, err ErrorResultVariant, friends getters, socket byte-order conversion) keep running in the SDK.
  // Return convention as in hle_friends.c: Result returns RES_FAIL ("saved / submitted" kinds return RES_OK so the game does not retry); bool returns false; events get a bound SystemEvent that never fires.
  #include "hle.h"
-+#include <stdatomic.h>
- 
- static _Alignas(16) uint8_t g_ev_ldn[0x100];
-+// M2's single-process local-play frontend. This establishes an idle service
-+// context only: no network is created and every peer operation still fails.
-+// State values follow switchbrew/libnx nx/include/switch/services/ldn.h.
-+static _Atomic int g_ldn_state;
-+static int ldn_frontend(void) {
-+    const char *e = getenv("DM_LDN_FRONTEND");
-+    return e && !strcmp(e, "1") && !strcmp(dm_main_build(), "28c4287aee36f7499da60f3e68b54c70");
-+}
+-
+-static _Alignas(16) uint8_t g_ev_ldn[0x100];
++#include "hle_ldn.h"
  
  // ---------- prepo: telemetry reports. Saving / submitting all report success; nothing is sent ----------
  HLE_FORCE("_ZN2nn5prepo10PlayReport4SaveERKNS_7account3UidE", "遥测报告保存（用户）；不发送，报成功", Result, h_prepo_SaveU, void *self, const void *uid) { (void)self; (void)uid; return RES_OK; }
-@@ -15,13 +24,14 @@ HLE_FORCE("_ZN2nn5prepo27AddInternetConnectionStatusEPNS0_10PlayReportEPKcS4_S4_
+@@ -14,48 +13,18 @@ HLE_FORCE("_ZN2nn5prepo12AddSessionIdEPNS0_10PlayReportEPKc", "遥测会话号
+ HLE_FORCE("_ZN2nn5prepo27AddInternetConnectionStatusEPNS0_10PlayReportEPKcS4_S4_", "遥测联网状态：不连服务，不加，报成功", Result, h_prepo_AddNet, void *rep, const char *a, const char *b, const char *c) { (void)rep; (void)a; (void)b; (void)c; return RES_OK; }
  HLE_FORCE("_ZN2nn5prepo28RequestImmediateTransmissionEv", "遥测立即上传；不发送，报成功", Result, h_prepo_Tx, void) { return RES_OK; }
  
- // ---------- ldn: local wireless. Initialization fails, state is always "none" ----------
+-// ---------- ldn: local wireless. Initialization fails, state is always "none" ----------
 -HLE_FORCE("_ZN2nn3ldn10InitializeEv", "本地无线（剪）：初始化失败", Result, h_ldn_Init, void) { return RES_FAIL; }
 -HLE_FORCE("_ZN2nn3ldn8FinalizeEv", "本地无线（剪）", void, h_ldn_Fini, void) {}
 -HLE_FORCE("_ZN2nn3ldn8GetStateEv", "本地无线（剪）：状态 0（无）", int, h_ldn_State, void) { return 0; }
-+HLE_FORCE("_ZN2nn3ldn10InitializeEv", "本地无线：可选本机空闲上下文", Result, h_ldn_Init, void) { if (ldn_frontend()) { atomic_store(&g_ldn_state, 1); LOG("LDN Initialize: local frontend initialized; no network"); return RES_OK; } LOG("LDN Initialize: offline stub returns %#x", RES_FAIL); return RES_FAIL; }
-+HLE_FORCE("_ZN2nn3ldn8FinalizeEv", "本地无线（剪）", void, h_ldn_Fini, void) { atomic_store(&g_ldn_state, 0); }
-+HLE_FORCE("_ZN2nn3ldn8GetStateEv", "本地无线：空闲上下文或无", int, h_ldn_State, void) { return ldn_frontend() ? atomic_load(&g_ldn_state) : 0; }
-+HLE_FORCE("_ZN2nn3ldn11SetProtocolENS0_8ProtocolE", "本地无线：可选本机协议配置", Result, h_ldn_Protocol, int protocol) { LOG("LDN SetProtocol: %d", protocol); return ldn_frontend() && atomic_load(&g_ldn_state) && (protocol == 0 || protocol == 1 || protocol == 3) ? RES_OK : RES_FAIL; }
- HLE_FORCE("_ZN2nn3ldn22AttachStateChangeEventEPNS_2os15SystemEventTypeE", "本地无线状态事件：绑定、永不触发", void, h_ldn_Attach, void *ev) { hle_bind_system_event(ev, 0); (void)g_ev_ldn; }
+-HLE_FORCE("_ZN2nn3ldn22AttachStateChangeEventEPNS_2os15SystemEventTypeE", "本地无线状态事件：绑定、永不触发", void, h_ldn_Attach, void *ev) { hle_bind_system_event(ev, 0); (void)g_ev_ldn; }
 -HLE_FORCE("_ZN2nn3ldn11OpenStationEv", "本地无线（剪）", Result, h_ldn_OpenSta, void) { return RES_FAIL; }
-+HLE_FORCE("_ZN2nn3ldn11OpenStationEv", "本地无线（剪）", Result, h_ldn_OpenSta, void) { LOG("LDN OpenStation: unavailable"); return RES_FAIL; }
- HLE_FORCE("_ZN2nn3ldn12CloseStationEv", "本地无线（剪）", Result, h_ldn_CloseSta, void) { return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn12CloseStationEv", "本地无线（剪）", Result, h_ldn_CloseSta, void) { return RES_FAIL; }
 -HLE_FORCE("_ZN2nn3ldn15OpenAccessPointEv", "本地无线（剪）", Result, h_ldn_OpenAp, void) { return RES_FAIL; }
-+HLE_FORCE("_ZN2nn3ldn15OpenAccessPointEv", "本地无线（剪）", Result, h_ldn_OpenAp, void) { LOG("LDN OpenAccessPoint: unavailable"); return RES_FAIL; }
- HLE_FORCE("_ZN2nn3ldn16CloseAccessPointEv", "本地无线（剪）", Result, h_ldn_CloseAp, void) { return RES_FAIL; }
- HLE_FORCE("_ZN2nn3ldn10DisconnectEv", "本地无线（剪）", Result, h_ldn_Disc, void) { return RES_FAIL; }
- HLE_FORCE("_ZN2nn3ldn14DestroyNetworkEv", "本地无线（剪）", Result, h_ldn_Destroy, void) { return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn16CloseAccessPointEv", "本地无线（剪）", Result, h_ldn_CloseAp, void) { return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn10DisconnectEv", "本地无线（剪）", Result, h_ldn_Disc, void) { return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn14DestroyNetworkEv", "本地无线（剪）", Result, h_ldn_Destroy, void) { return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn4ScanEPNS0_11NetworkInfoEPiiRKNS0_10ScanFilterEi", "本地无线扫描（剪）：0 个", Result, h_ldn_Scan, void *out, int *n, int max, const void *f, int ch) { (void)out; (void)max; (void)f; (void)ch; if (n) *n = 0; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn11ScanPrivateEPNS0_11NetworkInfoEPiiRKNS0_10ScanFilterEi", "本地无线扫描（剪）：0 个", Result, h_ldn_ScanP, void *out, int *n, int max, const void *f, int ch) { (void)out; (void)max; (void)f; (void)ch; if (n) *n = 0; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn13CreateNetworkERKNS0_13NetworkConfigERKNS0_14SecurityConfigERKNS0_10UserConfigE", "本地无线（剪）", Result, h_ldn_Create,
+-          const void *a, const void *b, const void *c) { (void)a; (void)b; (void)c; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn20CreateNetworkPrivateERKNS0_13NetworkConfigERKNS0_14SecurityConfigERKNS0_17SecurityParameterERKNS0_10UserConfigEiPKNS0_12AddressEntryE", "本地无线（剪）",
+-          Result, h_ldn_CreateP, const void *a, const void *b, const void *c, const void *d, int n, const void *e) { (void)a; (void)b; (void)c; (void)d; (void)n; (void)e; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn7ConnectERKNS0_11NetworkInfoERKNS0_14SecurityConfigERKNS0_10UserConfigEiNS0_13ConnectOptionE", "本地无线（剪）", Result, h_ldn_Connect,
+-          const void *a, const void *b, const void *c, int v, int o) { (void)a; (void)b; (void)c; (void)v; (void)o; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn14ConnectPrivateERKNS0_13NetworkConfigERKNS0_14SecurityConfigERKNS0_17SecurityParameterERKNS0_10UserConfigEiNS0_13ConnectOptionE", "本地无线（剪）",
+-          Result, h_ldn_ConnectP, const void *a, const void *b, const void *c, const void *d, int v, int o) { (void)a; (void)b; (void)c; (void)d; (void)v; (void)o; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn14GetNetworkInfoEPNS0_11NetworkInfoE", "本地无线（剪）", Result, h_ldn_NetInfo, void *o) { (void)o; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn14GetIpv4AddressEPNS0_11Ipv4AddressEPNS0_10SubnetMaskE", "本地无线（剪）", Result, h_ldn_Ip, uint32_t *a, uint32_t *m) { if (a) *a = 0; if (m) *m = 0; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn20GetSecurityParameterEPNS0_17SecurityParameterE", "本地无线（剪）", Result, h_ldn_SecPrm, void *o) { (void)o; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn16SetAdvertiseDataEPKvm", "本地无线（剪）", Result, h_ldn_Adv, const void *d, uint64_t n) { (void)d; (void)n; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn19GetDisconnectReasonEv", "本地无线（剪）：0", int, h_ldn_DiscReason, void) { return 0; }
+-HLE_FORCE("_ZN2nn3ldn20AddAcceptFilterEntryENS0_10MacAddressE", "本地无线（剪）", Result, h_ldn_Filter, uint64_t mac) { (void)mac; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn22SetStationAcceptPolicyENS0_12AcceptPolicyE", "本地无线（剪）", Result, h_ldn_Policy, int p) { (void)p; return RES_FAIL; }
+-HLE_FORCE("_ZN2nn3ldn6RejectENS0_11Ipv4AddressE", "本地无线（剪）", Result, h_ldn_Reject, uint32_t a) { (void)a; return RES_FAIL; }
+-
+ // ---------- socket: offline. Initialization succeeds (the network library's global init depends on it), every later operation fails with errno = ENETDOWN ----------
+ enum { SK_ENETDOWN = 50, SK_EAI_FAIL = 4 };
+ HLE_FORCE("_ZN2nn6socket10InitializeEPvmmi", "连 bsd 套接字服务；离线，不建会话（剪）", Result, h_sk_Init4, void *mem, uint64_t sz, uint64_t alloc, int conc) { (void)mem; (void)sz; (void)alloc; (void)conc; return RES_OK; }
+ HLE_FORCE("_ZN2nn6socket8FinalizeEv", "与 Initialize 配对（剪）", Result, h_sk_Fini, void) { return RES_OK; }
+-HLE_FORCE("_ZN2nn6socket12GetLastErrnoEv", "离线：ENETDOWN", int, h_sk_Errno, void) { return SK_ENETDOWN; }
+-HLE_FORCE("_ZN2nn6socket6SocketEiii", "离线（剪）：-1", int, h_sk_Socket3i, int a, int b, int c) { (void)a; (void)b; (void)c; return -1; }
++HLE_FORCE("_ZN2nn6socket12GetLastErrnoEv", "离线：ENETDOWN", int, h_sk_Errno, void) { return dm_ldn_enabled() ? dm_ldn_errno() : SK_ENETDOWN; }
++HLE_FORCE("_ZN2nn6socket6SocketEiii", "离线（剪）：-1", int, h_sk_Socket3i, int a, int b, int c) { if (dm_ldn_enabled()) { return dm_ldn_socket(a,b,c); } (void)a; (void)b; (void)c; return -1; }
+ HLE_FORCE("_ZN2nn6socket8ShutdownEii", "离线（剪）", int, h_sk_Shutdown, int s, int h) { (void)s; (void)h; return -1; }
+-HLE_FORCE("_ZN2nn6socket4BindEiPK8sockaddrj", "离线（剪）", int, h_sk_Bind, int s, const void *a, unsigned n) { (void)s; (void)a; (void)n; return -1; }
+-HLE_FORCE("_ZN2nn6socket4PollEP6pollfdmi", "离线（剪）", int, h_sk_Poll, void *p, uint64_t n, int t) { (void)p; (void)n; (void)t; return -1; }
+-HLE_FORCE("_ZN2nn6socket6SendToEiPKvmiPK8sockaddrj", "离线（剪）", long, h_sk_SendTo, int s, const void *b, unsigned long n, int f, const void *a, unsigned al) { (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return -1; }
+-HLE_FORCE("_ZN2nn6socket6SendToEiPKvmNS0_7MsgFlagEPKNS0_8SockAddrEj", "离线（剪）", long, h_sk_SendTo2, int s, const void *b, unsigned long n, int f, const void *a, unsigned al) { (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return -1; }
+-HLE_FORCE("_ZN2nn6socket8RecvFromEiPvmiP8sockaddrPj", "离线（剪）", long, h_sk_RecvFrom2, int s, void *b, unsigned long n, int f, void *a, unsigned *al) { (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return -1; }
++HLE_FORCE("_ZN2nn6socket4BindEiPK8sockaddrj", "离线（剪）", int, h_sk_Bind, int s, const void *a, unsigned n) { if (dm_ldn_enabled()) { return dm_ldn_bind(s,a,n); } (void)s; (void)a; (void)n; return -1; }
++HLE_FORCE("_ZN2nn6socket4PollEP6pollfdmi", "离线（剪）", int, h_sk_Poll, void *p, uint64_t n, int t) { if (dm_ldn_enabled()) { return dm_ldn_poll(p,n,t); } (void)p; (void)n; (void)t; return -1; }
++HLE_FORCE("_ZN2nn6socket6SendToEiPKvmiPK8sockaddrj", "离线（剪）", long, h_sk_SendTo, int s, const void *b, unsigned long n, int f, const void *a, unsigned al) { if (dm_ldn_enabled()) { return dm_ldn_sendto(s,b,n,f,a,al); } (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return -1; }
++HLE_FORCE("_ZN2nn6socket6SendToEiPKvmNS0_7MsgFlagEPKNS0_8SockAddrEj", "离线（剪）", long, h_sk_SendTo2, int s, const void *b, unsigned long n, int f, const void *a, unsigned al) { if (dm_ldn_enabled()) { return dm_ldn_sendto(s,b,n,f,a,al); } (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return -1; }
++HLE_FORCE("_ZN2nn6socket8RecvFromEiPvmiP8sockaddrPj", "离线（剪）", long, h_sk_RecvFrom2, int s, void *b, unsigned long n, int f, void *a, unsigned *al) { if (dm_ldn_enabled()) { return dm_ldn_recvfrom(s,b,n,f,a,al); } (void)s; (void)b; (void)n; (void)f; (void)a; (void)al; return -1; }
+ HLE_FORCE("_ZN2nn6socket11GetAddrInfoEPKcS2_PK8addrinfoPPS3_", "域名解析（剪）：EAI_FAIL", int, h_sk_Gai2, const char *h, const char *s, const void *hint, void **res) { (void)h; (void)s; (void)hint; if (res) *res = NULL; return SK_EAI_FAIL; }
+ HLE_FORCE("_ZN2nn6socket12FreeAddrInfoEP8addrinfo", "与 GetAddrInfo 配对（剪）", void, h_sk_FreeAi2, void *ai) { (void)ai; }
+ HLE_FORCE("_ZN2nn6socket11GAIStrErrorENS0_7AiErrnoE", "解析错误文字", const char *, h_sk_GaiStr, int e) { (void)e; return "network unavailable"; }
+@@ -68,8 +37,8 @@ HLE_FORCE("_ZN2nn3ssl14BuiltInManager22GetBuiltInCertificatesEPPNS0_26BuiltInCer
+           void **out, uint8_t *buf, unsigned bn, void *ids, unsigned n) { (void)buf; (void)bn; (void)ids; (void)n; if (out) *out = NULL; return RES_FAIL; }
+ 
+ // ---------- nifm / nsd: offline ----------
+-HLE_FORCE("_ZN2nn4nifm19SetLocalNetworkModeEb", "离线：本地网络模式开关忽略", void, h_nifm_LocalMode, unsigned on) { (void)on; }
+-HLE_FORCE("_ZN2nn4nifm27SubmitNetworkRequestAndWaitEv", "离线：网络请求不提交（立即返回，IsNetworkAvailable 恒假）", void, h_nifm_SubmitWait, void) {}
++HLE_FORCE("_ZN2nn4nifm19SetLocalNetworkModeEb", "离线：本地网络模式开关忽略", void, h_nifm_LocalMode, unsigned on) { if(dm_ldn_enabled()) LOG("LDN NIFM SetLocalNetworkMode=%u",on); (void)on; }
++HLE_FORCE("_ZN2nn4nifm27SubmitNetworkRequestAndWaitEv", "离线：网络请求不提交（立即返回，IsNetworkAvailable 恒假）", void, h_nifm_SubmitWait, void) { if(dm_ldn_enabled()) LOG("LDN NIFM SubmitNetworkRequestAndWait (offline)"); }
+ HLE_FORCE("_ZN2nn4nifm22GetCurrentIpConfigInfoEP7in_addrS2_S2_S2_S2_", "离线：无 IP 配置", Result, h_nifm_IpCfg, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e) {
+     uint32_t *p[5] = {a, b, c, d, e}; for (int i = 0; i < 5; i++) if (p[i]) *p[i] = 0; return RES_FAIL;
+ }
+@@ -99,7 +68,9 @@ HLE_FORCE("_ZN2nn3ngc15ProfanityFilter19CheckProfanityWordsEPjjPPKDsm", "敏感
+ 
+ // ---------- err: error display applet. Only logged, no UI is shown ----------
+ HLE_FORCE("_ZN2nn3err9ShowErrorENS0_9ErrorCodeE", "错误显示小程序；宿主只记日志", void, h_err_ShowCode, uint64_t code) { LOG("游戏请求显示错误：%04u-%04u", (unsigned)(code & 0xffffffff), (unsigned)(code >> 32)); }
+-HLE_FORCE("_ZN2nn3err9ShowErrorERKNS0_18ErrorResultVariantE", "错误显示小程序；宿主只记日志", void, h_err_ShowVar, const void *v) { (void)v; LOG("游戏请求显示错误（ErrorResultVariant）"); }
++HLE_FORCE("_ZN2nn3err9ShowErrorERKNS0_18ErrorResultVariantE", "错误显示小程序；宿主只记日志", void, h_err_ShowVar, const void *v) { uint32_t words[4]; memcpy(words,v,sizeof words);
++    LOG("游戏请求显示错误（ErrorResultVariant）: %08x %08x %08x %08x",words[0],words[1],words[2],words[3]);
++    if (dm_ldn_enabled()) dm_backtrace((uint64_t)__builtin_frame_address(0)); }
+ HLE_FORCE("_ZN2nn3err40ShowUnacceptableAddOnContentVersionErrorEv", "追加内容版本不符错误小程序；宿主只记日志", void, h_err_AocVer, void) { LOG("游戏请求显示错误：追加内容版本不符"); }
+ HLE_FORCE("_ZN2nn3err39ShowUnacceptableApplicationVersionErrorEv", "游戏版本不符错误小程序；宿主只记日志", void, h_err_AppVer, void) { LOG("游戏请求显示错误：游戏版本不符"); }
+ 
 diff --git a/dm/host/hle_spl3.c b/dm/host/hle_spl3.c
 new file mode 100644
 index 0000000..6a0067c
@@ -1737,6 +2251,24 @@ index 7683095..e02b848 100644
          case I_SysResTotal: v = 0x2000000; break; case I_SysResUsed: v = 0x400000; break;
          case I_DebuggerAttached: v = 0; break;
          case I_RandomEntropy: { uint64_t dm_entropy64(void); v = dm_entropy64(); break; }   // a deterministic stream when DM_DETCLOCK is on (hle_os.c)
+diff --git a/dm/host/hle_thread.c b/dm/host/hle_thread.c
+index 96d2674..df3adad 100644
+--- a/dm/host/hle_thread.c
++++ b/dm/host/hle_thread.c
+@@ -788,6 +788,13 @@ void hle_bind_system_event(void *ev, int autoclear) {      // Must be called on
+     g_se[g_nse].ev = ev; g_se[g_nse++].wh = wh;
+     pthread_mutex_unlock(&g_se_lock);
+ }
++// The guest owns the event handles and closes them in DestroySystemEvent.
++// Services must drop their side-table entry before that object is reused.
++void hle_forget_system_event(void *ev) {
++    pthread_mutex_lock(&g_se_lock);
++    for (int i=0;i<g_nse;i++) if (g_se[i].ev == ev) { g_se[i]=g_se[--g_nse]; break; }
++    pthread_mutex_unlock(&g_se_lock);
++}
+ void hle_signal_system_event(void *ev) {   // An unbound one is bound on the spot as manual-clear (can only happen on a guest thread)
+     pthread_mutex_lock(&g_se_lock); uint32_t wh = se_find(ev); pthread_mutex_unlock(&g_se_lock);
+     if (!wh) { hle_bind_system_event(ev, 0); pthread_mutex_lock(&g_se_lock); wh = se_find(ev); pthread_mutex_unlock(&g_se_lock); }
 diff --git a/dm/host/main.c b/dm/host/main.c
 index 6ff3a44..c7dad18 100644
 --- a/dm/host/main.c
@@ -1750,16 +2282,16 @@ index 6ff3a44..c7dad18 100644
      ticks_install();   // DM_TICKS per-tick state hash (tick-entry observation gate)
      { void target_rank_install(void); target_rank_install(); }   // Touch version auto-targeting Boss > elite > normal (hle_target.c)
 diff --git a/dm/host/tests/Makefile b/dm/host/tests/Makefile
-index 50c9e9b..5b776d7 100644
+index 50c9e9b..dca75cb 100644
 --- a/dm/host/tests/Makefile
 +++ b/dm/host/tests/Makefile
-@@ -103,7 +103,15 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
+@@ -103,7 +103,17 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
  
  $(B)/t_hid_receipt: t_hid_receipt.c t_touch_tick_stub.c ../hle_hid.c ../dm_cursor.c ../dm_hud.c ../dm_hud.h ../touch_mac.c ../../ios/Sources/dm_touch_controls.c ../hle.h ../dm.h ../dm_input.h ../front.h | $(B)
  	clang -O1 -Wno-unused-function -I.. -I../../ios/Sources -o $@ t_hid_receipt.c t_touch_tick_stub.c ../dm_cursor.c ../dm_hud.c ../touch_mac.c ../../ios/Sources/dm_touch_controls.c -lm
 +$(B)/t_hid_motion: t_hid_motion.c ../hle_hid.c ../hle.h ../dm.h ../dm_input.h | $(B)
 +	clang -O1 -g -I.. $(GINC) -o $@ t_hid_motion.c -lm
-+$(B)/t_ldn_frontend: t_ldn_frontend.c ../hle_offline.c ../hle.h ../dm.h | $(B)
++$(B)/t_ldn_frontend: t_ldn_frontend.c ../hle_ldn.c ../hle_ldn.h ../hle.h ../dm.h | $(B)
 +	clang -O1 -g -I.. $(GINC) -o $@ t_ldn_frontend.c
 +$(B)/t_account_player: t_account_player.c ../hle_account.c ../hle.h ../dm.h | $(B)
 +	clang -O1 -g -I.. $(GINC) -o $@ t_account_player.c
@@ -1769,6 +2301,8 @@ index 50c9e9b..5b776d7 100644
  	clang -O1 -Wno-unused-function -I.. -o $@ t_target_rank.c ../hle_target.c
 +$(B)/t_spl3_unlock: t_spl3_unlock.c ../hle_spl3_unlock.c ../dm.h | $(B)
 +	clang -O1 -g -I.. $(GINC) -o $@ t_spl3_unlock.c
++$(B)/t_ldn_peer: t_ldn_peer.c ../hle_ldn.c ../hle_ldn.h ../hle.h ../dm.h | $(B)
++	clang -O1 -g -Wall -Wextra -I.. $(GINC) -o $@ t_ldn_peer.c
 diff --git a/dm/host/tests/t_account_player.c b/dm/host/tests/t_account_player.c
 new file mode 100644
 index 0000000..7a3d75c
@@ -1861,20 +2395,22 @@ index 0000000..3f258ba
 +}
 diff --git a/dm/host/tests/t_ldn_frontend.c b/dm/host/tests/t_ldn_frontend.c
 new file mode 100644
-index 0000000..4897612
+index 0000000..e839147
 --- /dev/null
 +++ b/dm/host/tests/t_ldn_frontend.c
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,27 @@
 +// The opt-in local frontend can initialize, but cannot claim peer connectivity.
-+#include "../hle_offline.c"
++#include "../hle_ldn.c"
 +module_t g_mod[MAX_MOD]; int g_nmod;
++void hle_forget_system_event(void *ev) { (void)ev; }
 +void hle_bind_system_event(void *ev, int autoclear) { (void)ev; (void)autoclear; }
++void hle_signal_system_event(void *ev) { (void)ev; }
 +static int checks, failures;
 +#define CHECK(label, condition) do { checks++; if (!(condition)) { failures++; fprintf(stderr, "FAIL %s\n", label); } } while (0)
 +int main(void) {
 +    g_nmod = 1; strcpy(g_mod[0].name, "main");
 +    strcpy(g_mod[0].build_id, "28c4287aee36f7499da60f3e68b54c70");
-+    unsetenv("DM_LDN_FRONTEND");
++    unsetenv("DM_LDN_FRONTEND"); unsetenv("DM_LDN_AIR");
 +    CHECK("default remains offline", h_ldn_Init() == RES_FAIL && h_ldn_State() == 0);
 +    setenv("DM_LDN_FRONTEND", "1", 1);
 +    CHECK("frontend initializes an idle service", h_ldn_Init() == RES_OK && h_ldn_State() == 1);
@@ -1889,6 +2425,83 @@ index 0000000..4897612
 +    CHECK("unknown build remains offline", h_ldn_Init() == RES_FAIL && h_ldn_State() == 0);
 +    printf("ldn-frontend: %d checks, %d failed\n", checks, failures);
 +    return failures != 0;
++}
+diff --git a/dm/host/tests/t_ldn_peer.c b/dm/host/tests/t_ldn_peer.c
+new file mode 100644
+index 0000000..acde13d
+--- /dev/null
++++ b/dm/host/tests/t_ldn_peer.c
+@@ -0,0 +1,71 @@
++// No-game process harness: the exact HLE implementation used by dmhost.
++#include "../hle_ldn.c"
++module_t g_mod[MAX_MOD]; int g_nmod;
++static void *bound_event; static int event_error;
++void hle_forget_system_event(void *ev) { if(bound_event != ev)event_error=1; bound_event=NULL; }
++static _Atomic int events;
++void hle_bind_system_event(void *ev,int mode) { if(bound_event)event_error=1;bound_event=ev;(void)mode; }
++void hle_signal_system_event(void *ev) { (void)ev;atomic_fetch_add(&events,1); }
++static uint8_t net[LDN_NET], config[32], security[68], user[48], filter[96];
++static void address(uint8_t *a,int player) { memset(a,0,16);a[0]=16;a[1]=2;a[2]=0x30;a[3]=0x39;a[4]=10;a[5]=13;a[7]=player+1; }
++int main(void) {
++    g_nmod=1;strcpy(g_mod[0].name,"main");strcpy(g_mod[0].build_id,"28c4287aee36f7499da60f3e68b54c70");
++    uint64_t cid=0x0100c2500fc20000ull;memcpy(config,&cid,8);config[10]=7;config[18]=8;config[20]=3;
++    security[0]=1;security[2]=16;memcpy(security+4,"local-passphrase",16);
++    snprintf((char *)user,32,"RL-%s",getenv("DM_PLAYER"));
++    setvbuf(stdout,NULL,_IOLBF,0);
++    uint8_t ev[256];h_ldn_Attach(ev);
++    printf("ready %u\n",h_ldn_Init());
++    char line[256];int fd=-1;
++    while(fgets(line,sizeof line,stdin)) {
++        Result r=RES_FAIL;int count=0;char cmd[64]={0},value[160]={0};sscanf(line,"%63s %159s",cmd,value);
++        if(!strcmp(cmd,"AP"))r=h_ldn_OpenAp();
++        else if(!strcmp(cmd,"STA"))r=h_ldn_OpenSta();
++        else if(!strcmp(cmd,"CLOSE_AP"))r=h_ldn_CloseAp();
++        else if(!strcmp(cmd,"CLOSE_STA"))r=h_ldn_CloseSta();
++        else if(!strcmp(cmd,"CREATE"))r=h_ldn_Create(config,security,user);
++        else if(!strcmp(cmd,"RESET")) {h_ldn_Fini();r=h_ldn_Init();h_ldn_Attach(ev);if(event_error)r=RES_FAIL;}
++        else if(!strcmp(cmd,"ADV"))r=h_ldn_Adv(value,strlen(value));
++        else if(!strcmp(cmd,"POLICY"))r=h_ldn_Policy(atoi(value));
++        else if(!strcmp(cmd,"SCAN")) {
++            memset(filter,0,96);memcpy(filter,config,16);uint32_t flags=0x25;filter[32]=2;
++            if(!strcmp(value,"type"))filter[32]=1;
++            if(!strcmp(value,"alltypes"))filter[32]=3;
++            memcpy(filter+92,&flags,4);
++            if(!strcmp(value,"wrong"))filter[10]++;
++            if(!strcmp(value,"channel"))count=11;
++            int channel=count;count=0;r=h_ldn_Scan(net,&count,1,filter,channel);
++        } else if(!strcmp(cmd,"JOIN")) {
++            uint8_t sec[68];memcpy(sec,security,68);if(!strcmp(value,"wrong"))sec[4]++;
++            r=h_ldn_Connect(net,sec,user,3,0);
++        } else if(!strcmp(cmd,"IP")) {uint32_t ip=0,mask=0;r=h_ldn_Ip(&ip,&mask);if(!r && (ip!=0x0a0d0001u+(unsigned)atoi(getenv("DM_PLAYER")) || mask!=0xffffff00u))r=RES_FAIL;}
++        else if(!strcmp(cmd,"HISTORY")) {uint8_t history[64];r=h_ldn_NetHistory(net,history,8);if(!r && !history[8])r=RES_FAIL;}
++        else if(!strcmp(cmd,"SECURITY")) {uint8_t sec[32];r=h_ldn_SecPrm(sec);if(!r && memcmp(sec+16,net+16,16))r=RES_FAIL;}
++        else if(!strcmp(cmd,"STATE"))r=RES_OK;
++        else if(!strcmp(cmd,"INFO"))r=h_ldn_NetInfo(net);
++        else if(!strcmp(cmd,"DISC"))r=h_ldn_Disc();
++        else if(!strcmp(cmd,"DESTROY"))r=h_ldn_Destroy();
++        else if(!strcmp(cmd,"SOCKET")) { fd=dm_ldn_socket(2,2,17);r=fd<0?RES_FAIL:RES_OK; }
++        else if(!strcmp(cmd,"BIND")) {uint8_t a[16];address(a,atoi(getenv("DM_PLAYER")));r=dm_ldn_bind(fd,a,16)<0?RES_FAIL:RES_OK;}
++        else if(!strcmp(cmd,"REUSEPORT")) {
++            uint32_t on=1;uint8_t a[16];address(a,atoi(getenv("DM_PLAYER")));
++            int other=dm_ldn_socket(2,2,17);
++            int ok=other>=0 && !dm_ldn_sockopt(fd,0xffff,0x20,&on,4) && !dm_ldn_sockopt(fd,0xffff,0x200,&on,4);
++            ok=ok && dm_ldn_bind(other,a,16)==-1 && dm_ldn_errno()==98;
++            ok=ok && !dm_ldn_sockopt(other,0xffff,0x200,&on,4) && !dm_ldn_bind(other,a,16) && !dm_ldn_close(other);
++            r=ok?RES_OK:RES_FAIL;
++        }
++        else if(!strcmp(cmd,"SEND")) {uint8_t a[16];address(a,atoi(value));r=dm_ldn_sendto(fd,"frame-test",10,0,a,16)==10?RES_OK:RES_FAIL;}
++        else if(!strcmp(cmd,"BADSEND")) {uint8_t a[16];address(a,77);long sent=dm_ldn_sendto(fd,"frame-test",10,0,a,16);r=sent==-1&&dm_ldn_errno()==101?RES_OK:RES_FAIL;}
++        else if(!strcmp(cmd,"RECV")) {char data[64]={0};uint8_t a[16];unsigned n=16;long len=dm_ldn_recvfrom(fd,data,sizeof data,0,a,&n);r=len==10&&!memcmp(data,"frame-test",10)?RES_OK:RES_FAIL;}
++        else if(!strcmp(cmd,"POLL")) {struct {int fd;int16_t events,revents;} p={fd,1,0};r=dm_ldn_poll(&p,1,30)>0?RES_OK:RES_FAIL;}
++        else if(!strcmp(cmd,"EVENTFD")) {uint64_t v=0;int ef=dm_ldn_eventfd(0,0);struct{int fd;int16_t e,r;}p={ef,1,0};r=ef>=0&&dm_ldn_poll(&p,1,0)==0&&!dm_ldn_eventwrite(ef,7)&&dm_ldn_poll(&p,1,0)==1&&!dm_ldn_eventread(ef,&v)&&v==7&&!dm_ldn_close(ef)?RES_OK:RES_FAIL;}
++        else if(!strcmp(cmd,"QUIT")) {h_ldn_Fini();puts("bye");return 0;}
++        pthread_mutex_lock(&ldn_lock);
++        printf("result=%u state=%d nodes=%u events=%d count=%d session=",r,atomic_load(&g_ldn_state),g_ldn_net[0x67],atomic_load(&events),count);
++        for(int i=16;i<32;i++)printf("%02x",net[i]);
++        printf(" advertise=%.*s errno=%d\n",(int)(net[0x26a]|net[0x26b]<<8),net+0x26c,dm_ldn_errno());
++        pthread_mutex_unlock(&ldn_lock);
++    }
++    h_ldn_Fini();return 0;
 +}
 diff --git a/dm/host/tests/t_spl3_unlock.c b/dm/host/tests/t_spl3_unlock.c
 new file mode 100644
