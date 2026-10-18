@@ -277,7 +277,7 @@ bash tests/run_all.sh --milestone a1 --timeout 2400
 
 按指挥方决定，伤害一致性移到 A4 完成 `aim_at` 后补测，使用平地、近距离正对目标并排除台沿遮挡。`tests/diagnose_stamper_aim.py` 保留此前未命中的诊断，不接入 A1 通过条件。
 
-`tests/probe_a1_time.py --clock-mode realtime|fixed60` 逐步记录 present、Timer、位置、动作，始终输出 `full_a1_passed=false`，不能单独替代正式验收。STEP 接收超时30秒，异常时清理前逐宿主执行macOS `sample`（每次调用最多10秒）。有限客体等待上限60秒；无期限空闲等待每次宿主轮询最多1秒，整体由STEP无进展上限负责采样停止。所有原始产物只留忽略的 `work/tests/`。
+`tests/probe_a1_time.py --clock-mode realtime|fixed60` 逐步记录 present、Timer、位置、动作，始终输出 `full_a1_passed=false`，不能单独替代正式验收。realtime 诊断接收超时30秒；fixed60 握手后不设 STEP 绝对接收截止，由原生无进展看门狗中止并关闭连接。异常时清理前逐宿主执行macOS `sample`（每次调用最多10秒）。客体等待无绝对墙钟上限；无期限空闲等待按1秒宿主轮询。所有原始产物只留忽略的 `work/tests/`。
 
 ## A2 配装
 
@@ -288,3 +288,24 @@ bash tests/run_all.sh --milestone a1 --timeout 2400
 `tests/probe_a2_startup.py --case off|host_only|guest_only|original|host_main_valid` 只做开局二分，不签收效果。`off --repeats 2` 重复关闭覆写；单端组显式使用旧后写字段诊断后端；`original` 对原装备技能写回原值并检查整个对象逐字节不变。已签收时钟仍只在InGame后RL_ATTACH接管，断房时诊断立即逐宿主sample后清理。完整现象和追加最小对照在PROGRESS；原始游戏产物只留忽略的work。
 
 A2已通过双端交换配装实测，完整耗墨计数和单次耗墨可用 `tests/a2_metrics.py work/tests/<a2-run>/result.json` 从原始记录自动复核，不改原始结果。正式签收及统计口径变更见PROGRESS。
+
+## A4 地图与技能库（进行中）
+
+`bash tests/run_all.sh --milestone a4 --timeout 2400` 重建三张保守角色碰撞网格，
+检查公共库和实际策略进程仅可读取静态导航JSON，然后依次新开三局验证高台/平地路线、
+瞄准、显式涂路和实际潜墨移动。温泉峡谷另测平地近距离正对目标的连续/暂停伤害一致性。
+每张地图的脚本和总入口均有上限；任一失败保留原件并停止后续地图，不把子项当签收。
+原始证据只在 `work/tests/a4-*`；当前进度见PROGRESS。
+
+fixed60 客体等待不设绝对墙钟上限。独立看门狗默认在有 STEP 预算、非策略暂停且
+120 秒没有任何新 present 时中止；`stall_timeout` / `DM_RL_STALL_SECONDS` 可配置。
+`tests/test_rl_watchdog.py` 包含 65 秒真实策略暂停再恢复、带预算共享暂停和真卡死；
+原生 `t_rl_long_wait` 用 >60 秒墙钟推进 5.425 秒客体睡眠，另测有限事件等待；
+`t_rl_watchdog` 用虚拟时钟验证数小时慢步进及跨天暂停。均接入 A1–A4，
+本次 A4 正在重跑三图实机及伤害补测，不能以组件通过替代实机签收。
+
+当前停止（新卡点）：温泉峡谷 1429 STEP 与 A1 连续/暂停伤害补测已通过；
+District00 在第424 STEP后因 `move_to` 实际位置不前进返回 blocked，
+不是客体停帧或 RL_STALL。整体 `work/tests/a4-20261018-231423-522804/result.json`
+保持失败，Yagara未启动，A5原生四场/百局未运行。卡点截图、双方sample、
+原始steps及只读路径重放保留在 `work/tests/a4-stage2-20261018-232556-373765/`。

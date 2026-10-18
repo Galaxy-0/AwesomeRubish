@@ -23,6 +23,8 @@ class PlayerTruth:
     sample_frame: int | None
     form_squid: bool | None = None
     motion_visible: bool | None = None
+    view_yaw: float | None = None
+    view_pitch: float | None = None
 
 
 @dataclass(frozen=True)

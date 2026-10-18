@@ -53,6 +53,7 @@ def main(args):
             session.start();entry['ingame']=True
             for n in range(2):clients[n]=Client(session.socket_dir/f'player-{n}.sock',30)
             origins={n:clients[n].receive()[1] for n in range(2)}
+            for client in clients.values():client.use_progress_watchdog()
             for frames in (1,7,31,15,60,120,300):
                 session.clock.resume()
                 for c in clients.values():c.send_step(neutral(),frames)

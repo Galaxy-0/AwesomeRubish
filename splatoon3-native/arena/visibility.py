@@ -20,9 +20,11 @@ def _valid_position(p):
 class PolicyProjector:
     """One instance per match; last-seen memory is independent for each observer."""
 
-    def __init__(self, match_id: str, max_sample_age: int = 8):
+    def __init__(self, match_id: str, max_sample_age: int = 8, stage_id: int | None = None):
         if max_sample_age < 0:
             raise ValueError('negative sample age')
+        if stage_id not in (None,1,2,3):raise ValueError('unknown arena map')
+        self.stage_id=stage_id
         self.match_id = match_id
         self.max_sample_age = max_sample_age
         self._last_seen = {}
@@ -84,5 +86,5 @@ class PolicyProjector:
         self._last_frame[observer] = truth.frame
         return PolicyObservation(truth.match_id, truth.frame,
                                  OwnState(_public(own, own.alive), own.position, own.heading,
-                                          own.hp, own.ink, own.sample_frame,own.form_squid,own.submerged),
-                                 tuple(enemies), truth.remaining_seconds)
+                                          own.hp, own.ink, own.sample_frame,own.form_squid,own.submerged,own.view_yaw,own.view_pitch),
+                                 tuple(enemies), truth.remaining_seconds,self.stage_id)

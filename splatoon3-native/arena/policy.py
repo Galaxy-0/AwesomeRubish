@@ -29,6 +29,8 @@ class OwnState:
     sample_frame: int | None
     form_squid: bool | None = None
     submerged: bool | None = None
+    view_yaw: float | None = None
+    view_pitch: float | None = None
 
 
 @dataclass(frozen=True)
@@ -49,6 +51,7 @@ class PolicyObservation:
     own: OwnState
     enemies: tuple[EnemyView, ...]
     remaining_seconds: float | None
+    stage_id: int | None = None
 
 
 def _point(p):
@@ -72,7 +75,8 @@ def encode_policy(obs: PolicyObservation) -> bytes:
     own = obs.own
     own_data = dict(public=_public(own.public), position=_point(own.position),
                     heading=own.heading, hp=own.hp, ink=own.ink,
-                    sample_frame=own.sample_frame,form_squid=own.form_squid,submerged=own.submerged)
+                    sample_frame=own.sample_frame,form_squid=own.form_squid,submerged=own.submerged,
+                    view_yaw=own.view_yaw,view_pitch=own.view_pitch)
     enemies = []
     for e in obs.enemies:
         if type(e) is not EnemyView:
@@ -87,5 +91,5 @@ def encode_policy(obs: PolicyObservation) -> bytes:
                             last_seen_position=_point(e.last_seen_position),
                             last_seen_frame=e.last_seen_frame))
     payload = dict(schema='arena.policy.v1', match_id=obs.match_id, frame=obs.frame,
-                   own=own_data, enemies=enemies, remaining_seconds=obs.remaining_seconds)
+                   own=own_data, enemies=enemies, remaining_seconds=obs.remaining_seconds,stage_id=obs.stage_id)
     return (json.dumps(payload, allow_nan=False, separators=(',', ':'))+'\n').encode()

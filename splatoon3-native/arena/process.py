@@ -20,9 +20,11 @@ def sandbox_profile(policy_root):
     # sockets, game dumps and opposing policy sources. System runtime reads
     # remain available; only this policy/runtime/public skills are exceptions.
     read_dirs=[sys.prefix,sys.base_prefix,policy_root,ROOT/'arena/lib']
+    # Public generated static atlases only; never host state/logs or sockets.
+    read_files=[ROOT/f'work/arena/maps/{name}/navigation.json' for name in ('Yunohana','District00','Yagara')]
     reads=' '.join('(subpath '+_literal(p)+')' for p in read_dirs)
     worker=_literal(ROOT/'arena/policy_worker.py')
-    allowed='(require-any '+reads+' (literal '+worker+'))'
+    allowed='(require-any '+reads+' '+ ' '.join('(literal '+_literal(p)+')' for p in read_files)+' (literal '+worker+'))'
     private='(require-any (subpath '+_literal(Path.home())+') (subpath "/private/var/folders") (subpath "/private/tmp"))'
     protected='(require-all '+private+' (require-not '+allowed+'))'
     return ('(version 1)(allow default)(deny network*)(deny process-fork)'

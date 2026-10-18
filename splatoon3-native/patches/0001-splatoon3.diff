@@ -2075,6 +2075,26 @@ index 0000000..ab0da90
 +    }
 +}
 +#endif
+diff --git a/dm/host/dm_rl_watchdog.h b/dm/host/dm_rl_watchdog.h
+new file mode 100644
+index 0000000..2be3993
+--- /dev/null
++++ b/dm/host/dm_rl_watchdog.h
+@@ -0,0 +1,14 @@
++// Controlled-present progress watchdog. Time outside execution is excluded.
++#pragma once
++#include <stdint.h>
++typedef struct dm_rl_watchdog {
++    uint64_t wall, frame, stalled;
++    int initialized, running;
++} dm_rl_watchdog;
++static inline int dm_rl_watchdog_poll(dm_rl_watchdog *watch, uint64_t wall,
++                                     uint64_t frame, int running, uint64_t limit) {
++    if (!watch->initialized || frame!=watch->frame) watch->stalled=0;
++    else if (running && watch->running && wall>=watch->wall) watch->stalled+=wall-watch->wall;
++    watch->wall=wall;watch->frame=frame;watch->running=running;watch->initialized=1;
++    return running && watch->stalled>=limit;
++}
 diff --git a/dm/host/front_mac.m b/dm/host/front_mac.m
 index c7559ca..d3b7360 100644
 --- a/dm/host/front_mac.m
@@ -3153,15 +3173,16 @@ index 61cf410..631520d 100644
          atomic_store(&g_gdet, wall_guest_ns()); atomic_store(&g_gdet_on, 1);
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..55c2b5d
+index 0000000..f87dc3c
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,432 @@
+@@ -0,0 +1,461 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
 +#include "dm_rl.h"
 +#include "dm_rl_clock.h"
++#include "dm_rl_watchdog.h"
 +#include <sys/mman.h>
 +#include <sys/socket.h>
 +#include <sys/un.h>
@@ -3192,6 +3213,8 @@ index 0000000..55c2b5d
 +static int rl_fixed_clock;
 +static pthread_mutex_t rl_state_mu = PTHREAD_MUTEX_INITIALIZER;
 +static float rl_position[3], rl_ink, rl_heading, rl_hp, rl_special;
++static float rl_view_yaw, rl_view_pitch;
++static int rl_view_seen;
 +static uint64_t rl_position_frame, rl_state_sequence;
 +static int rl_position_seen, rl_ink_seen, rl_heading_seen, rl_hp_seen, rl_special_seen, rl_state_dump;
 +static int rl_form_squid=-1,rl_ground_contact=-1;
@@ -3201,6 +3224,20 @@ index 0000000..55c2b5d
 +static int rl_hud_status[8],rl_hud_seen[8],rl_hud_ever[8],rl_hud_special[8];
 +static uint64_t rl_hud_frame[8],rl_hud_touch[8],rl_hud_downs[8];
 +static float rl_score[2],rl_turf[2];static int rl_score_seen,rl_score_units;static uint64_t rl_score_frame;
++
++static uint64_t rl_stall_limit_ns=UINT64_C(120000000000);
++static void *rl_watchdog_main(void *unused) {
++    (void)unused;dm_rl_watchdog watch={0};
++    for (;;) {
++        int paused=rl_clock && (atomic_load(&rl_clock->state)&DM_RL_CLOCK_PAUSED);
++        int running=atomic_load(&rl_controlled) && atomic_load(&rl_remaining)>0 && !paused;
++        uint64_t frame=atomic_load(&rl_frame);
++        if(dm_rl_watchdog_poll(&watch,dm_rl_clock_wall(),frame,running,rl_stall_limit_ns))
++            die("RL_STALL no present progress frame=%llu active_stall_ns=%llu limit_ns=%llu remaining=%d",frame,watch.stalled,rl_stall_limit_ns,atomic_load(&rl_remaining));
++        struct timespec poll={0,50000000};nanosleep(&poll,NULL);
++    }
++    return NULL;
++}
 +
 +int dm_rl_active(void) { return atomic_load(&rl_controlled); }
 +int dm_rl_frame_allowed(uint64_t frame) {
@@ -3221,7 +3258,7 @@ index 0000000..55c2b5d
 +}
 +static void phase_ingame(const uint64_t *r) {
 +    (void)r;
-+    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_special_seen = rl_time_seen = rl_score_seen = 0;
++    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_special_seen = rl_time_seen = rl_score_seen = rl_view_seen = 0;
 +    rl_self_slot=-1;rl_self_seen=rl_self_ambiguous=0;rl_self_health=-1;
 +    rl_form_squid=rl_ground_contact=-1;
 +    for(int i=0;i<8;i++){rl_hud_node[i]=0;rl_hud_status[i]=2;rl_hud_seen[i]=rl_hud_ever[i]=rl_hud_special[i]=0;rl_hud_frame[i]=rl_hud_touch[i]=rl_hud_downs[i]=0;}
@@ -3261,6 +3298,13 @@ index 0000000..55c2b5d
 +    rl_special_seen=special<=100;rl_special=rl_special_seen ? special/100.0f : 0;
 +    rl_hp_seen=health<=1000;rl_hp=rl_hp_seen ? health/1000.0f : 0;
 +    rl_heading_seen=heading_valid;rl_heading=heading_valid ? atan2f(facing[0],facing[2]) : 0;
++    // A4 own control feedback, already calibrated by M6 packet diagnostics.
++    // This is not the abandoned game-camera visibility probe. Only this
++    // process's own view may enter its own allowlisted policy record.
++    float view[3],pitch;memcpy(view,source+0x5c,sizeof view);memcpy(&pitch,source+0x68,4);
++    float view_norm=view[0]*view[0]+view[2]*view[2];
++    rl_view_seen=isfinite(view_norm) && fabsf(view_norm-1)<.01f && isfinite(pitch) && fabsf(pitch)<=1;
++    rl_view_yaw=rl_view_seen ? atan2f(view[0],view[2]) : 0;rl_view_pitch=rl_view_seen ? pitch : 0;
 +    // A3 approximation: diagnosed on both native sides, outside ink / own ink /
 +    // airborne. This is form + contact, not a claim that all squid are hidden.
 +    uint32_t form,contact;memcpy(&form,source+0xf8,4);memcpy(&contact,source+0x94,4);
@@ -3404,6 +3448,19 @@ index 0000000..55c2b5d
 +    const char *clock_mode=getenv("DM_RL_CLOCK_MODE");
 +    rl_fixed_clock=clock_mode && !strcmp(clock_mode,"fixed60");
 +    if(rl_fixed_clock && !rl_clock) die("RL fixed60 requires a shared clock file for attachment");
++    if(rl_fixed_clock) {
++        const char *value=getenv("DM_RL_STALL_SECONDS");
++        if(value) {
++            char *end;double seconds=strtod(value,&end);
++            if(end==value || *end || !isfinite(seconds) || seconds<=0 || seconds>86400)die("RL invalid stall seconds");
++            rl_stall_limit_ns=(uint64_t)(seconds*1000000000.);
++            if(!rl_stall_limit_ns)die("RL stall seconds below nanosecond precision");
++        }
++        pthread_t watcher;
++        if(pthread_create(&watcher,NULL,rl_watchdog_main,NULL))die("RL watchdog thread");
++        pthread_detach(watcher);
++        LOG("RL_WATCHDOG limit_ns=%llu excludes_policy_pause=1",rl_stall_limit_ns);
++    }
 +    atomic_store(&rl_enabled, 1);
 +    LOG("RL_SOCKET version=1 path=%s pixels=%dx%dx3", path, DM_RL_WIDTH, DM_RL_HEIGHT);
 +}
@@ -3459,8 +3516,11 @@ index 0000000..55c2b5d
 +    if (ink_valid) ink=rl_ink;
 +    if (valid) memcpy(position,rl_position,sizeof position);
 +    int form_squid=fresh ? rl_form_squid : -1,ground_contact=fresh ? rl_ground_contact : -1;
++    int view_valid=fresh && rl_view_seen;
++    float view_yaw=view_valid ? rl_view_yaw : 0,view_pitch=view_valid ? rl_view_pitch : 0;
 +    pthread_mutex_unlock(&rl_state_mu);
-+    char hud_json[1600];size_t h=0;
++    char hud_json[2048];size_t h=0;
++    h=json_append(hud_json,h,sizeof hud_json,",\"own_view\":{\"yaw\":%.9g,\"pitch\":%.9g,\"valid\":%d}",view_yaw,view_pitch,view_valid);
 +    h=json_append(hud_json,h,sizeof hud_json,",\"referee_motion\":{\"form_squid\":%d,\"ground_contact\":%d}",form_squid,ground_contact);
 +    h=json_append(hud_json,h,sizeof hud_json,",\"self_slot\":%d,\"self_slot_valid\":%d,\"alive\":%d,\"alive_valid\":%d",self_slot,self_valid,alive,alive_valid);
 +    h=json_append(hud_json,h,sizeof hud_json,",\"hud_status\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%d",i?",":"",hud[i]);
@@ -3488,19 +3548,12 @@ index 0000000..55c2b5d
 +    pthread_mutex_lock(&rl_input_mu);
 +    int auto_frame=frame==UINT64_MAX;
 +    if (auto_frame) frame=dm_guest_frame();
-+    int limit_set=0;struct timespec input_limit;
 +    // A query at the completed budget endpoint belongs to the next frame.
 +    // It waits for the next STEP, just like the present thread, rather than
 +    // inventing an action or rejecting normal concurrent SDK polling.
 +    while (dm_rl_active() && frame==rl_budget_end) {
-+        if(rl_fixed_clock) {
-+            if(!limit_set) {
-+                clock_gettime(CLOCK_REALTIME,&input_limit);input_limit.tv_sec+=60;limit_set=1;
-+                LOG("RL_INPUT_WAIT frame=%llu budget_end=%llu wall_limit_s=60",frame,rl_budget_end);
-+            }
-+            if(pthread_cond_timedwait(&rl_input_cv,&rl_input_mu,&input_limit)==ETIMEDOUT)
-+                die("RL_INPUT_WAIT timeout frame=%llu budget_end=%llu",frame,rl_budget_end);
-+        } else pthread_cond_wait(&rl_input_cv,&rl_input_mu);
++        // This is a policy/budget pause, not an execution stall.
++        pthread_cond_wait(&rl_input_cv,&rl_input_mu);
 +        if(auto_frame)frame=dm_guest_frame();
 +    }
 +    if (!dm_rl_active()) { pthread_mutex_unlock(&rl_input_mu);return 0; }
@@ -3531,10 +3584,6 @@ index 0000000..55c2b5d
 +            return;
 +        }
 +        if (fcntl(rl_peer, F_SETFL, 0) < 0) die("RL connected socket flags");
-+        if(rl_fixed_clock) {
-+            struct timeval limit={60,0};
-+            if(setsockopt(rl_peer,SOL_SOCKET,SO_RCVTIMEO,&limit,sizeof limit)) die("RL command wait limit");
-+        }
 +#ifdef SO_NOSIGPIPE
 +        int one = 1; setsockopt(rl_peer, SOL_SOCKET, SO_NOSIGPIPE, &one, sizeof one);
 +#endif
@@ -3561,7 +3610,7 @@ index 0000000..55c2b5d
 +        char c; ssize_t n = recv(rl_peer, &c, 1, 0);
 +        if (n < 0 && errno == EINTR) continue;
 +        if (n <= 0) {
-+            if(rl_fixed_clock) LOG("RL_COMMAND_WAIT closed_or_timeout result=%zd errno=%d frame=%llu",n,errno,frame);
++            if(rl_fixed_clock) LOG("RL_COMMAND_WAIT closed_or_error result=%zd errno=%d frame=%llu",n,errno,frame);
 +            rl_release(); return;
 +        }
 +        if (c == '\n') break;
@@ -3852,35 +3901,38 @@ index 7683095..e02b848 100644
          case I_DebuggerAttached: v = 0; break;
          case I_RandomEntropy: { uint64_t dm_entropy64(void); v = dm_entropy64(); break; }   // a deterministic stream when DM_DETCLOCK is on (hle_os.c)
 diff --git a/dm/host/hle_thread.c b/dm/host/hle_thread.c
-index 96d2674..19b5a26 100644
+index 96d2674..3f33307 100644
 --- a/dm/host/hle_thread.c
 +++ b/dm/host/hle_thread.c
-@@ -27,6 +27,9 @@
- #define R_OUT_OF_RES  0xCE01u   // 103
- #define WAITERS_BIT   0x40000000u
- #define H_CUR_THREAD  0xFFFF8000u
-+#ifndef DM_RL_WAIT_LIMIT_NS
-+#define DM_RL_WAIT_LIMIT_NS UINT64_C(60000000000)
-+#endif
+@@ -20,6 +20,12 @@
+ #include <dlfcn.h>
+ #include <stdatomic.h>
  
- enum { O_FREE, O_THREAD, O_EVENT_R, O_EVENT_W };
- typedef struct event { int signaled; int refs; } event_t;
-@@ -153,6 +156,8 @@ static int64_t block(thr_t *t, int kind, int64_t ns) {   // Boot timeline: accum
++// Detailed guest wait traces are opt-in; hangs always report via RL_STALL.
++static pthread_once_t rl_trace_once=PTHREAD_ONCE_INIT;
++static int rl_trace_enabled;
++static void rl_trace_init(void) { const char *v=getenv("DM_RL_WAIT_TRACE");rl_trace_enabled=v && !strcmp(v,"1"); }
++static int rl_trace(void) { pthread_once(&rl_trace_once,rl_trace_init);return rl_trace_enabled; }
++
+ #define R_TIMEOUT     0xEA01u   // Kernel module 1, description 117
+ #define R_CANCELLED   0xEC01u   // 118
+ #define R_BAD_HANDLE  0xE401u   // 114
+@@ -153,6 +159,8 @@ static int64_t block(thr_t *t, int kind, int64_t ns) {   // Boot timeline: accum
  static int64_t block_inner(thr_t *t, int kind, int64_t ns) {
      t->wkind = kind; t->woke = 0; t->next = g_wait; g_wait = t; t->wseq = ++g_wseq;
      if (ns == 0) { wait_unlink(t); t->wkind = 0; return R_TIMEOUT; }
 +    uint64_t fixed_start=dm_guest_fixed60() ? now_ns() : 0;
-+    if(fixed_start) LOG("RL_WAIT begin thread=%#x kind=%d timeout_ns=%lld frame=%llu lr=%#llx",t->handle,kind,ns,dm_guest_frame(),t->last_lr);
++    if(fixed_start && rl_trace()) LOG("RL_WAIT begin thread=%#x kind=%d timeout_ns=%lld frame=%llu lr=%#llx",t->handle,kind,ns,dm_guest_frame(),t->last_lr);
      struct timespec dl;
      int det_wait = ns > 0 && dm_detclock_enabled();
      uint64_t guest_deadline = det_wait ? guest_ns() + (uint64_t)ns : 0;
-@@ -162,12 +167,29 @@ static int64_t block_inner(thr_t *t, int kind, int64_t ns) {
+@@ -162,12 +170,27 @@ static int64_t block_inner(thr_t *t, int kind, int64_t ns) {
          int rc;
          if (det_wait) {
              uint64_t now = guest_ns();
 -            if (now >= guest_deadline) { wait_unlink(t); t->wkind = 0; return R_TIMEOUT; }
 +            if (now >= guest_deadline) {
-+                if(fixed_start) LOG("RL_WAIT timeout thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
++                if(fixed_start && rl_trace()) LOG("RL_WAIT timeout thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
 +                wait_unlink(t); t->wkind = 0; return R_TIMEOUT;
 +            }
              (void)(guest_deadline - now);
@@ -3894,20 +3946,18 @@ index 96d2674..19b5a26 100644
 +            rc=pthread_cond_timedwait(&t->cv,&G,&poll);
          } else rc = ns > 0 ? pthread_cond_timedwait(&t->cv, &G, &dl) : pthread_cond_wait(&t->cv, &G);
 -        if (rc == ETIMEDOUT && !t->woke && (!det_wait || guest_ns() >= guest_deadline)) { wait_unlink(t); t->wkind = 0; return R_TIMEOUT; }
-+        if(fixed_start && ns>0 && now_ns()-fixed_start>DM_RL_WAIT_LIMIT_NS)
-+            die("RL_WAIT wall limit thread=%#x kind=%d timeout_ns=%lld frame=%llu lr=%#llx",t->handle,kind,ns,dm_guest_frame(),t->last_lr);
-+        if(fixed_start && ns<0 && rc==ETIMEDOUT && !t->woke)
++        if(fixed_start && rl_trace() && ns<0 && rc==ETIMEDOUT && !t->woke)
 +            LOG("RL_IDLE_WAIT poll thread=%#x kind=%d frame=%llu wall_ns=%llu",t->handle,kind,dm_guest_frame(),now_ns()-fixed_start);
 +        if (rc == ETIMEDOUT && !t->woke && (fixed_start ? ns>0 && guest_ns()>=guest_deadline : !det_wait || guest_ns() >= guest_deadline)) {
-+            if(fixed_start) LOG("RL_WAIT timeout thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
++            if(fixed_start && rl_trace()) LOG("RL_WAIT timeout thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
 +            wait_unlink(t); t->wkind = 0; return R_TIMEOUT;
 +        }
      }
-+    if(fixed_start) LOG("RL_WAIT end thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
++    if(fixed_start && rl_trace()) LOG("RL_WAIT end thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
      return t->wres;
  }
  
-@@ -535,6 +557,13 @@ int svc_thread(int num, uint64_t *regs) {
+@@ -535,6 +558,13 @@ int svc_thread(int num, uint64_t *regs) {
  }
  static int svc_thread_impl(int num, uint64_t *regs) {
      { thr_t *me = pthread_getspecific(g_keythr); if (me) { me->last_svc = num; me->last_lr = regs[30]; me->nsvc++; } }
@@ -3921,7 +3971,7 @@ index 96d2674..19b5a26 100644
      if (g_flag.thr && num != 0x0B) { thr_t *me = pthread_getspecific(g_keythr); LOG("[%#x] svc %#x x0=%#llx x1=%#llx x2=%#llx x3=%#llx", me ? me->handle : 0, num, regs[0], regs[1], regs[2], regs[3]); }
      switch (num) {
      case 0x08: {  // CreateThread(→w1 handle; x1 entry, x2 argument, x3 stack top, w4 priority, w5 core)
-@@ -564,9 +593,22 @@ static int svc_thread_impl(int num, uint64_t *regs) {
+@@ -564,9 +594,20 @@ static int svc_thread_impl(int num, uint64_t *regs) {
      case 0x0B: {  // SleepThread(x0 ns); 0/-1/-2 = the various kinds of yield
          int64_t ns = (int64_t)regs[0];
          uint64_t t0 = g_flag.bootprof ? now_ns() : 0;
@@ -3930,23 +3980,21 @@ index 96d2674..19b5a26 100644
 +            // Native frame-job polling uses a 1000 ns SleepThread (19 ticks =
 +            // 989 ns after SDK conversion). It must yield inside this frame,
 +            // not wait for a future simulation tick which depends on the job.
-+            LOG("RL_SHORT_SLEEP ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
++            if(rl_trace()) LOG("RL_SHORT_SLEEP ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
 +            struct timespec poll={0,(long)ns};nanosleep(&poll,NULL);
 +        } else if (ns > 0 && dm_detclock_enabled()) {
              uint64_t deadline = guest_ns() + (uint64_t)ns;
 -            while (guest_ns() < deadline) { struct timespec ts = {0, 1000000}; nanosleep(&ts, 0); }
 +            uint64_t fixed_start=dm_guest_fixed60() ? now_ns() : 0;
-+            if(fixed_start) LOG("RL_SLEEP begin ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
++            if(fixed_start && rl_trace()) LOG("RL_SLEEP begin ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
 +            while (guest_ns() < deadline) {
-+                if(fixed_start && now_ns()-fixed_start>DM_RL_WAIT_LIMIT_NS)
-+                    die("RL_SLEEP wall limit ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
 +                struct timespec ts = {0, 1000000}; nanosleep(&ts, 0);
 +            }
-+            if(fixed_start) LOG("RL_SLEEP end ns=%lld frame=%llu wall_ns=%llu",ns,dm_guest_frame(),now_ns()-fixed_start);
++            if(fixed_start && rl_trace()) LOG("RL_SLEEP end ns=%lld frame=%llu wall_ns=%llu",ns,dm_guest_frame(),now_ns()-fixed_start);
          } else if (ns > 0) { thr_t *me = pthread_getspecific(g_keythr); if (me) me->sleeping = 1; sleep_precise(now_ns() + (uint64_t)ns); if (me) me->sleeping = 0; }
          else {   // Yield (0 / -1 / -2). Count and time of the main thread's yields are recorded: the game's render task graph "wait for everything to finish" is pure polling + yield (main+0x15ee898); measure how much of a frame it takes
              thr_t *me = pthread_getspecific(g_keythr);
-@@ -788,6 +830,13 @@ void hle_bind_system_event(void *ev, int autoclear) {      // Must be called on
+@@ -788,6 +829,13 @@ void hle_bind_system_event(void *ev, int autoclear) {      // Must be called on
      g_se[g_nse].ev = ev; g_se[g_nse++].wh = wh;
      pthread_mutex_unlock(&g_se_lock);
  }
@@ -4145,7 +4193,7 @@ index d1bd89b..7ca2611 100644
  }
  
 diff --git a/dm/host/tests/Makefile b/dm/host/tests/Makefile
-index 50c9e9b..8e65905 100644
+index 50c9e9b..90aff29 100644
 --- a/dm/host/tests/Makefile
 +++ b/dm/host/tests/Makefile
 @@ -86,9 +86,15 @@ $(B):
@@ -4162,11 +4210,11 @@ index 50c9e9b..8e65905 100644
 +	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -I.. $(GINC) -o $@ t_rl_sleep.c t_condvar_stub.c ../hle_thread.c
 +
 +$(B)/t_rl_idle: t_rl_idle.c t_condvar_stub.c ../hle_thread.c ../dm.h | $(B)
-+	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -DDM_RL_WAIT_LIMIT_NS=100000000 -I.. $(GINC) -o $@ t_rl_idle.c t_condvar_stub.c ../hle_thread.c
++	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -I.. $(GINC) -o $@ t_rl_idle.c t_condvar_stub.c ../hle_thread.c
  
  $(B)/t_fs_case: t_fs_case.c ../hle_fs.c ../hle.h ../dm.h ../dm_i18n.c | $(B)
  	clang -O1 -Wno-unused-function -I.. $(GINC) -o $@ t_fs_case.c ../dm_i18n.c
-@@ -103,7 +109,32 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
+@@ -103,7 +109,38 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
  
  $(B)/t_hid_receipt: t_hid_receipt.c t_touch_tick_stub.c ../hle_hid.c ../dm_cursor.c ../dm_hud.c ../dm_hud.h ../touch_mac.c ../../ios/Sources/dm_touch_controls.c ../hle.h ../dm.h ../dm_input.h ../front.h | $(B)
  	clang -O1 -Wno-unused-function -I.. -I../../ios/Sources -o $@ t_hid_receipt.c t_touch_tick_stub.c ../dm_cursor.c ../dm_hud.c ../touch_mac.c ../../ios/Sources/dm_touch_controls.c -lm
@@ -4188,7 +4236,7 @@ index 50c9e9b..8e65905 100644
 +$(B)/t_spl3_weapon: t_spl3_weapon.c ../hle_spl3_unlock.c ../dm.h | $(B)
 +	clang -O1 -g -I.. $(GINC) -o $@ t_spl3_weapon.c
 +
-+$(B)/t_rl: t_rl.c ../hle_rl.c ../dm_rl.h ../dm_rl_clock.h ../dm.h | $(B)
++$(B)/t_rl: t_rl.c ../hle_rl.c ../dm_rl.h ../dm_rl_clock.h ../dm_rl_watchdog.h ../dm.h | $(B)
 +	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_rl.c ../hle_rl.c
 +
 +$(B)/t_hid_rl: t_hid_rl.c ../hle_hid.c ../dm_rl.h ../hle.h ../dm.h | $(B)
@@ -4199,6 +4247,12 @@ index 50c9e9b..8e65905 100644
 +
 +$(B)/t_spl3_gear: t_spl3_gear.c ../hle_spl3_gear.c ../dm.h | $(B)
 +	clang -O1 -g -Wall -Wextra -Werror -I.. $(GINC) -o $@ t_spl3_gear.c
++
++$(B)/t_rl_watchdog: t_rl_watchdog.c ../dm_rl_watchdog.h | $(B)
++	clang -O1 -Wall -Wextra -Werror -I.. -o $@ t_rl_watchdog.c
++
++$(B)/t_rl_long_wait: t_rl_long_wait.c t_condvar_stub.c ../hle_thread.c ../dm.h | $(B)
++	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -I.. $(GINC) -o $@ t_rl_long_wait.c t_condvar_stub.c ../hle_thread.c
 diff --git a/dm/host/tests/t_account_player.c b/dm/host/tests/t_account_player.c
 new file mode 100644
 index 0000000..7a3d75c
@@ -4236,17 +4290,25 @@ index 0000000..7a3d75c
 +    return failures != 0;
 +}
 diff --git a/dm/host/tests/t_condvar_stub.c b/dm/host/tests/t_condvar_stub.c
-index 48f0a9a..d363cd3 100644
+index 48f0a9a..f6e573b 100644
 --- a/dm/host/tests/t_condvar_stub.c
 +++ b/dm/host/tests/t_condvar_stub.c
-@@ -10,6 +10,10 @@ module_t *module_of(const void *p) { (void)p; return NULL; }
+@@ -1,5 +1,6 @@
+ // Stubs for t_condvar: host facilities of hle_thread.c that the unit test does not use
+ #include "../dm.h"
++#include <stdatomic.h>
+ struct dm_flags g_flag;
+ uint64_t g_t0_ns;
+ void crash_thread_init(void) {}
+@@ -10,6 +11,11 @@ module_t *module_of(const void *p) { (void)p; return NULL; }
  void dm_prof_add(int id, uint64_t ns, uint64_t bytes) { (void)id; (void)ns; (void)bytes; }
  #include <mach/mach_time.h>
  uint64_t now_ns(void) { static mach_timebase_info_data_t tb; if (!tb.denom) mach_timebase_info(&tb); return mach_absolute_time() * tb.numer / tb.denom; }
 -uint64_t guest_ns(void) { return now_ns(); }
 -int dm_detclock_enabled(void) { return 0; }
 +int test_fixed60;
-+uint64_t guest_ns(void) { return test_fixed60 ? UINT64_C(1000000000) : now_ns(); }
++_Atomic uint64_t test_guest_advance;
++uint64_t guest_ns(void) { return test_fixed60 ? UINT64_C(1000000000)+atomic_load(&test_guest_advance) : now_ns(); }
 +int dm_detclock_enabled(void) { return test_fixed60; }
 +int dm_guest_fixed60(void) { return test_fixed60; }
 +void dm_guest_frame_begin(void) {}
@@ -4512,10 +4574,10 @@ index 0000000..acde13d
 +}
 diff --git a/dm/host/tests/t_rl.c b/dm/host/tests/t_rl.c
 new file mode 100644
-index 0000000..33f0ca5
+index 0000000..1a8577f
 --- /dev/null
 +++ b/dm/host/tests/t_rl.c
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,98 @@
 +// Production transport with independent present and HID scheduling; no game.
 +#include "../dm.h"
 +#include "../dm_rl.h"
@@ -4543,6 +4605,9 @@ index 0000000..33f0ca5
 +    uint8_t rgb[DM_RL_BYTES]={0},state[0x1f0]={0};float position[3]={13.25f,-2,7},ink=.625f,facing[3]={0,0,-1};
 +    uint64_t regs[31]={(uint64_t)(uintptr_t)state};
 +    if(!strcmp(mode,"invalid")){position[0]=NAN;ink=INFINITY;facing[0]=NAN;}
++    float view[3]={1,0,0},pitch=.2f;
++    if(!strcmp(mode,"invalid-view")){view[0]=NAN;pitch=INFINITY;}
++    memcpy(state+0x5c,view,sizeof view);memcpy(state+0x68,&pitch,4);
 +    memcpy(state+0x20,position,sizeof position);memcpy(state+0x84,&ink,sizeof ink);memcpy(state+0x44,facing,sizeof facing);callbacks[OBS_SPL3_INGAME](regs);
 +    uint8_t roots[2][0x110]={{0}},infos[2][0x800]={{0}},stores[2][16]={{0}},nodes[2][0x188]={{0}},damage[0xf08]={0};
 +    for(int i=0;i<2;i++) {
@@ -4556,6 +4621,8 @@ index 0000000..33f0ca5
 +        // Input for the interval from present N to N+1 uses frame N.
 +        if(dm_rl_active()) {
 +            controlled++;
++            if(!strcmp(mode,"slow"))usleep(100000);
++            if(!strcmp(mode,"stall")) for(;;)usleep(10000);
 +            if (!strcmp(mode,"score-reset") && controlled==2) callbacks[OBS_SPL3_INGAME](regs);
 +            if (strstr(mode,"score") && controlled==1) callbacks[OBS_SPL3_JUDGE](regs);
 +            if(!strcmp(mode,"settled")&&controlled==2)callbacks[OBS_SPL3_JUDGE](regs);
@@ -4674,7 +4741,7 @@ index 0000000..af37b58
 +}
 diff --git a/dm/host/tests/t_rl_idle.c b/dm/host/tests/t_rl_idle.c
 new file mode 100644
-index 0000000..29bd4a7
+index 0000000..bb22766
 --- /dev/null
 +++ b/dm/host/tests/t_rl_idle.c
 @@ -0,0 +1,22 @@
@@ -4698,7 +4765,42 @@ index 0000000..29bd4a7
 +    uint64_t wait[32]={0};wait[1]=(uint64_t)(uintptr_t)&read_handle;wait[2]=1;wait[3]=UINT64_MAX;
 +    uint64_t start=now_ns();svc_thread(0x18,wait);pthread_join(signaler,NULL);
 +    if(wait[0]!=0 || now_ns()-start<UINT64_C(2000000000)) return 1;
-+    puts("rl-idle: indefinite event wait survived 100ms guard and two bounded polls");return 0;
++    puts("rl-idle: indefinite event wait survived two bounded polls");return 0;
++}
+diff --git a/dm/host/tests/t_rl_long_wait.c b/dm/host/tests/t_rl_long_wait.c
+new file mode 100644
+index 0000000..acab82a
+--- /dev/null
++++ b/dm/host/tests/t_rl_long_wait.c
+@@ -0,0 +1,29 @@
++// Production guest SleepThread + timed event waits under slow/pause stepping.
++#include "../dm.h"
++#include <stdatomic.h>
++#include <unistd.h>
++extern int test_fixed60;
++extern _Atomic uint64_t test_guest_advance;
++int svc_thread(int num,uint64_t *regs);
++uint32_t svc_thread_main_init(void);
++void (*dm_test_cv_after_release)(void);
++static void *advance(void *arg) {
++    unsigned count=(unsigned)(uintptr_t)arg;
++    for(unsigned n=1;n<=count;n++) {
++        if(n==15)usleep(350000); // Strategy pause: guest time is held.
++        usleep(200000);atomic_fetch_add(&test_guest_advance,UINT64_C(1000000000)/60+1);
++    }
++    return NULL;
++}
++int main(void) {
++    alarm(110);svc_thread_main_init();test_fixed60=1;pthread_t driver;
++    pthread_create(&driver,NULL,advance,(void *)(uintptr_t)326);
++    uint64_t regs[32]={5425000000};uint64_t before=now_ns();svc_thread(0x0B,regs);pthread_join(driver,NULL);
++    if(now_ns()-before<UINT64_C(60000000000) || atomic_load(&test_guest_advance)<5425000000)return 1;
++    uint64_t event[32]={0};svc_thread(0x45,event);uint32_t read_handle=(uint32_t)event[2];
++    pthread_create(&driver,NULL,advance,(void *)(uintptr_t)65);
++    uint64_t wait[32]={0};wait[1]=(uintptr_t)&read_handle;wait[2]=1;wait[3]=1000000000;
++    svc_thread(0x18,wait);pthread_join(driver,NULL);
++    if(wait[0]!=0xEA01u)return 1;
++    puts("rl-long-wait: production 5.425s guest sleep and timed event survived slow steps/pause");return 0;
 +}
 diff --git a/dm/host/tests/t_rl_sleep.c b/dm/host/tests/t_rl_sleep.c
 new file mode 100644
@@ -4723,6 +4825,31 @@ index 0000000..97cece9
 +    }
 +    if(now_ns()-start>UINT64_C(1000000000)) return 1;
 +    puts("rl-short-sleep: 3 frozen-clock SVC checks passed");return 0;
++}
+diff --git a/dm/host/tests/t_rl_watchdog.c b/dm/host/tests/t_rl_watchdog.c
+new file mode 100644
+index 0000000..09aa81f
+--- /dev/null
++++ b/dm/host/tests/t_rl_watchdog.c
+@@ -0,0 +1,19 @@
++#include "../dm_rl_watchdog.h"
++#include <stdio.h>
++#define SECOND UINT64_C(1000000000)
++#define CHECK(x) do{checks++;if(!(x)){printf("FAIL line %d\n",__LINE__);return 1;}}while(0)
++int main(void) {
++    int checks=0;dm_rl_watchdog watch={0};
++    CHECK(!dm_rl_watchdog_poll(&watch,0,0,1,120*SECOND));
++    // A multi-second guest wait can span hours of slow but progressing steps.
++    for(uint64_t frame=1;frame<=360;frame++)
++        CHECK(!dm_rl_watchdog_poll(&watch,frame*119*SECOND,frame,1,120*SECOND));
++    uint64_t now=360*119*SECOND;
++    CHECK(!dm_rl_watchdog_poll(&watch,now+SECOND,360,0,120*SECOND));
++    CHECK(!dm_rl_watchdog_poll(&watch,now+86400*SECOND,360,0,120*SECOND));
++    CHECK(!dm_rl_watchdog_poll(&watch,now+86401*SECOND,360,1,120*SECOND));
++    CHECK(!dm_rl_watchdog_poll(&watch,now+86520*SECOND,360,1,120*SECOND));
++    CHECK(dm_rl_watchdog_poll(&watch,now+86521*SECOND,360,1,120*SECOND));
++    CHECK(!dm_rl_watchdog_poll(&watch,now+86522*SECOND,361,1,120*SECOND));
++    printf("rl-watchdog: %d checks, 0 failed\n",checks);return 0;
 +}
 diff --git a/dm/host/tests/t_spl3_gear.c b/dm/host/tests/t_spl3_gear.c
 new file mode 100644

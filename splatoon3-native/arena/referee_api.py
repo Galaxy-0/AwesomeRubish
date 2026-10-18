@@ -7,10 +7,10 @@ from .visibility import PolicyProjector
 
 class RefereeAPI:
     def __init__(self,match_id,initial_infos,weapons,teams,collision_path:Path,
-                 vision_config=VisionConfig(),splash_suppressed=()):
+                 vision_config=VisionConfig(),splash_suppressed=(),stage_id=None):
         self._adapter=NativeRefereeAdapter(match_id,initial_infos,weapons,teams,splash_suppressed)
         self._vision=GeometricVision(CollisionMesh.load(collision_path),vision_config)
-        self._projector=PolicyProjector(match_id)
+        self._projector=PolicyProjector(match_id,stage_id=stage_id)
         self._truth=None;self._policy_cache={}
 
     def update(self,infos):

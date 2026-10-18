@@ -17,6 +17,14 @@ class Client:
         self.expected = 0
         self.pending = deque([(0, 0)])
 
+    def use_progress_watchdog(self):
+        """After fixed60 attachment, native present progress governs waits.
+
+        A long STEP can take arbitrarily long while still making progress.
+        Native watchdog abort closes the socket on a real execution stall.
+        """
+        self.socket.settimeout(None)
+
     def receive(self):
         if not self.pending: raise RuntimeError('no pending native acknowledgement')
         sequence, expected = self.pending[0]

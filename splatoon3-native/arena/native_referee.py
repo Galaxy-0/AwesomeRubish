@@ -58,9 +58,13 @@ class NativeRefereeAdapter:
                     speed = math.hypot(position[0]-previous[1][0], position[2]-previous[1][2])/(sample-previous[0])
                     splash = (submerged is True and speed >= .045 and player_id not in self.splash_suppressed)
                 if previous is None or sample > previous[0]:self._previous[player_id] = (sample, position, splash)
+            view=i.get('own_view',{})
+            def view_scalar(key):
+                value=view.get(key)
+                return float(value) if sampled and view.get('valid') and isinstance(value,(int,float)) and math.isfinite(value) else None
             players.append(PlayerTruth(player_id, self.teams[player_id], self.weapons[player_id],
                                        alive, position, scalar('heading'), scalar('hp'), scalar('ink'),
-                                       submerged, sample if sampled else None, squid, splash))
+                                       submerged, sample if sampled else None, squid, splash, view_scalar('yaw'), view_scalar('pitch')))
             if i.get('time_valid') and math.isfinite(i.get('remaining_time', float('nan'))):
                 timers.append(float(i['remaining_time']))
             slots = i.get('hud_slot_agents', {})

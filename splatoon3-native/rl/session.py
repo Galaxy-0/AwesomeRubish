@@ -2,6 +2,7 @@
 import datetime
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -31,9 +32,11 @@ def catalogs():
 
 
 class Session:
-    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False, clock_mode='fixed60', loadouts=None):
+    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False, clock_mode='fixed60', loadouts=None, stall_timeout=120):
         if players not in (2,8): raise ValueError('M6 supports 2 or 8 players')
         if clock_mode not in ('realtime','fixed60'):raise ValueError('clock_mode must be realtime or fixed60')
+        if not math.isfinite(stall_timeout) or not 0<stall_timeout<=86400:raise ValueError('stall_timeout must be in (0,86400]')
+        self.stall_timeout=stall_timeout
         self.clock_mode=clock_mode
         if loadouts is not None and len(loadouts)!=players:raise ValueError('one loadout required per player')
         self.loadouts=None if loadouts is None else [None if v is None else encode_loadout(v) for v in loadouts]
@@ -52,6 +55,7 @@ class Session:
         self.clock=SharedClock(self.socket_dir/'clock.bin')
         self.patched=Path(patched) if patched else ROOT/'work/build/patched_v720896'
         self.hosts=[];self.streams=[];self.fifos={};self.air=None;self.closed=False
+        self._log_offsets={};self._log_tails={};self._log_frames={};self._log_failures={}
         self.monitor=Monitor(self.out)
         self.seed=ROOT/'work/save_ref/save.dat'
         self.original=ROOT.parent/'splatoon-rl-lab/saves/bis/user/save/0000000000000001/0/save.dat'
@@ -64,15 +68,25 @@ class Session:
 
     def text(self, player): return (self.out/f'player-{player}/host.log').read_text(errors='replace')
 
+    def scan_log(self, player):
+        with (self.out/f'player-{player}/host.log').open('r',errors='replace') as stream:
+            stream.seek(self._log_offsets.get(player,0));chunk=stream.read();self._log_offsets[player]=stream.tell()
+        chunk=self._log_tails.get(player,'')+chunk
+        rows=re.findall(r'RESOURCE_FRAME frame=(\d+)',chunk)
+        if rows:self._log_frames[player]=int(rows[-1])
+        self._log_tails[player]=chunk[-256:]
+        self._log_failures[player]=self._log_failures.get(player) or FAILURE.search(chunk)
+        return self._log_failures[player]
+
     def frame(self, player):
-        rows=re.findall(r'RESOURCE_FRAME frame=(\d+)',self.text(player))
-        return int(rows[-1]) if rows else 0
+        self.scan_log(player)
+        return self._log_frames.get(player,0)
 
     def tick(self, sleep=True):
         if time.monotonic()-self.started>self.timeout: raise TimeoutError('M6 session deadline exceeded')
         if self.air and self.air.poll() is not None: raise RuntimeError('local air service exited')
         for player,process,_ in self.hosts:
-            if process.poll() is not None or FAILURE.search(self.text(player)):
+            if process.poll() is not None or self.scan_log(player):
                 raise RuntimeError(f'player-{player}: early exit/runtime failure {process.poll()}')
         now=time.monotonic()
         if now-self.last_sample>2:
@@ -103,7 +117,7 @@ class Session:
         os.mkfifo(directory/'controller.fifo',0o600)
         env=host_environment(ROOT,self.out,directory,player,self.players,self.air_socket,self.weapons)
         env.update(DM_RL_SOCKET=str(self.socket_dir/f'player-{player}.sock'),DM_RL_CLOCK_FILE=str(self.clock.path),DM_HID_TRACE='1',
-                   DM_RL_CLOCK_MODE=self.clock_mode,
+                   DM_RL_CLOCK_MODE=self.clock_mode,DM_RL_STALL_SECONDS=str(self.stall_timeout),
                    DM_PROBE='main:3db55d0,main:3dcc710,main:3dd9370,main:3571e24@x21+e8')
         env.update(self.host_options(player))
         if self.state_dump:

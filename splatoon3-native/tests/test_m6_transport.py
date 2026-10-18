@@ -74,6 +74,18 @@ class TransportTest(unittest.TestCase):
             self.client.send_step(neutral(),1);observation,info=self.client.receive()
             self.assertEqual(info['referee_motion'],dict(form_squid=squid,ground_contact=contact))
 
+    def test_own_view_metadata_is_validated_and_separate(self):
+        observation,info=self.start()
+        self.assertNotIn('own_view',observation)
+        self.assertEqual(info['own_view']['valid'],1)
+        self.assertAlmostEqual(info['own_view']['yaw'],np.pi/2,places=6)
+        self.assertAlmostEqual(info['own_view']['pitch'],.2,places=6)
+
+    def test_invalid_own_view_is_unknown_without_breaking_body_heading(self):
+        observation,info=self.start(mode='invalid-view')
+        self.assertEqual(info['own_view']['valid'],0)
+        self.assertEqual(observation['heading_valid'],1)
+
     def test_referee_map_pulse_preserves_sequence_and_frame_budget(self):
         _,initial=self.start();self.client.send_referee_map_pulse(7);obs,info=self.client.receive()
         self.assertEqual(info['frame']-initial['frame'],7)

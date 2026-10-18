@@ -1,5 +1,6 @@
 """PettingZoo ParallelEnv with exact per-agent present-frame acknowledgements."""
 from functools import lru_cache
+import math
 import numpy as np
 from gymnasium import spaces
 from pettingzoo import ParallelEnv
@@ -32,13 +33,15 @@ class NativeParallelEnv(ParallelEnv):
     metadata={'name':'splatoon3_native_v1','render_modes':['rgb_array'],'is_parallelizable':True}
 
     def __init__(self, players=8, frame_skip=15, mode=0, stage_id=1, weapons=None,
-                 timeout=2400, step_timeout=60, patched=None, render_mode=None, state_dump=False, reward_fn=turf_kill_reward, clock_mode='fixed60', loadouts=None):
+                 timeout=2400, step_timeout=None, patched=None, render_mode=None, state_dump=False, reward_fn=turf_kill_reward, clock_mode='fixed60', loadouts=None, stall_timeout=120):
         if players not in (2,8):raise ValueError('players must be 2 or 8')
         if clock_mode not in ('realtime','fixed60'):raise ValueError('clock_mode must be realtime or fixed60')
         if not isinstance(frame_skip,int) or not 1<=frame_skip<=3600:raise ValueError('frame_skip must be 1..3600')
         if render_mode not in (None,'rgb_array'):raise ValueError('unsupported render_mode')
+        if not math.isfinite(stall_timeout) or not 0<stall_timeout<=86400:raise ValueError('stall_timeout must be in (0,86400]')
+        if step_timeout is None:step_timeout=stall_timeout+30
         self.possible_agents=[f'player_{n}' for n in range(players)];self.agents=[]
-        self.config=dict(players=players,mode=mode,stage_id=stage_id,weapons=weapons or [0]*players,timeout=timeout,patched=patched,state_dump=state_dump,clock_mode=clock_mode,loadouts=loadouts)
+        self.config=dict(players=players,mode=mode,stage_id=stage_id,weapons=weapons or [0]*players,timeout=timeout,patched=patched,state_dump=state_dump,clock_mode=clock_mode,loadouts=loadouts,stall_timeout=stall_timeout)
         if reward_fn is not None and not callable(reward_fn):raise ValueError('reward_fn must be callable or None')
         self.reward_fn=reward_fn
         self.frame_skip=frame_skip;self.step_timeout=step_timeout;self.render_mode=render_mode
@@ -83,6 +86,7 @@ class NativeParallelEnv(ParallelEnv):
             observations={};infos={}
             for agent,client in self.clients.items():
                 observations[agent],infos[agent]=client.receive()
+                if self.config['clock_mode']=='fixed60':client.use_progress_watchdog()
                 if infos[agent]['phase']!=1:raise RuntimeError(f'{agent}: attached outside InGame')
                 if (infos[agent]['source_width'],infos[agent]['source_height'])!=(1280,720):raise RuntimeError('M6 requires native 720p crop')
                 if seed is not None:self.action_space(agent).seed(seed+self.possible_agents.index(agent))
