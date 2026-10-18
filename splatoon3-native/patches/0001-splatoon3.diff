@@ -1958,7 +1958,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..d30f5a1 100644
+index fda33ac..41f130a 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1966,7 +1966,7 @@ index fda33ac..d30f5a1 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_MAX = 25 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_MAX = 26 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -3094,10 +3094,10 @@ index 61cf410..e5e894c 100644
  // pictures that depend on absolute time (such as the liquid level of the life / mana orbs) still differ at the same tick (measured: at tick E + 2 frames two passes differ by about 18,000 pixels, concentrated at the two orb positions).
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..1547c0e
+index 0000000..4d1e7dd
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,255 @@
+@@ -0,0 +1,272 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
@@ -3132,6 +3132,7 @@ index 0000000..1547c0e
 +static float rl_position[3], rl_ink, rl_heading;
 +static uint64_t rl_position_frame, rl_state_sequence;
 +static int rl_position_seen, rl_ink_seen, rl_heading_seen, rl_state_dump;
++static float rl_time;static int rl_time_seen;static uint64_t rl_time_frame;
 +
 +int dm_rl_active(void) { return atomic_load(&rl_controlled); }
 +int dm_rl_capture_needed(void) {
@@ -3145,7 +3146,7 @@ index 0000000..1547c0e
 +}
 +static void phase_ingame(const uint64_t *r) {
 +    (void)r;
-+    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = 0; pthread_mutex_unlock(&rl_state_mu);
++    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_time_seen = 0; pthread_mutex_unlock(&rl_state_mu);
 +    atomic_store(&rl_phase, 1);
 +}
 +static void phase_judge(const uint64_t *r) {
@@ -3187,6 +3188,18 @@ index 0000000..1547c0e
 +    }
 +}
 +
++static void timer_state(const uint64_t *r) {
++    if (atomic_load(&rl_phase)!=1) return;
++    // SplUITimerCtrl's live update consumes a countdown in native 1/60 s units.
++    // Ready-room HUDs finish before InGame; never retain/dereference the object.
++    const uint8_t *source=(const uint8_t *)(uintptr_t)r[0];
++    float raw;int scale;memcpy(&raw,source+0x140,4);memcpy(&scale,source+0x14c,4);
++    int valid=source[0x148] && scale==60 && isfinite(raw) && raw>=0 && raw<=36000;
++    pthread_mutex_lock(&rl_state_mu);
++    rl_time_seen=valid;rl_time=valid ? raw/60.0f : 0;rl_time_frame=dm_guest_frame();
++    pthread_mutex_unlock(&rl_state_mu);
++}
++
 +void dm_rl_init(void) {
 +    const char *path = getenv("DM_RL_SOCKET");
 +    if (!path) return;
@@ -3206,6 +3219,8 @@ index 0000000..1547c0e
 +    gate_obs_set(OBS_SPL3_JUDGE, phase_judge);
 +    gate_obs_set(OBS_SPL3_WINNERS, phase_winners);
 +    if (gate_obs_present(OBS_SPL3_LOCAL_STATE)) gate_obs_set(OBS_SPL3_LOCAL_STATE, local_state);
++    if (!gate_obs_present(OBS_SPL3_TIMER)) die("DM_RL_SOCKET requires rewritten timer gate");
++    gate_obs_set(OBS_SPL3_TIMER,timer_state);
 +    rl_state_dump = getenv("DM_RL_STATE_DUMP") && !strcmp(getenv("DM_RL_STATE_DUMP"),"1");
 +    const char *clock_path=getenv("DM_RL_CLOCK_FILE");
 +    if (clock_path) {
@@ -3243,9 +3258,11 @@ index 0000000..1547c0e
 +}
 +static int rl_observation(void) {
 +    char header[1024];
-+    float position[3]={0},ink=0,heading=0;uint64_t sample=0;int valid=0,ink_valid=0,heading_valid=0;
++    float position[3]={0},ink=0,heading=0,remaining_time=0;uint64_t sample=0,time_sample=0;int valid=0,ink_valid=0,heading_valid=0,time_valid=0;
 +    pthread_mutex_lock(&rl_state_mu);
-+    sample=rl_position_frame;
++    sample=rl_position_frame;time_sample=rl_time_frame;
++    time_valid=rl_time_seen && atomic_load(&rl_phase)==1 && time_sample<=rl_frame && rl_frame-time_sample<=120;
++    if (time_valid) remaining_time=rl_time;
 +    int fresh=atomic_load(&rl_phase)==1 && sample<=rl_frame && rl_frame-sample<=120;
 +    valid=rl_position_seen && fresh;ink_valid=rl_ink_seen && fresh;
 +    heading_valid=rl_heading_seen && fresh;
@@ -3258,9 +3275,9 @@ index 0000000..1547c0e
 +    int n = snprintf(header, sizeof header,
 +        "{\"version\":1,\"request\":%llu,\"frame\":%llu,\"advanced\":%llu,\"phase\":%d,"
 +        "\"width\":128,\"height\":72,\"channels\":3,\"bytes\":%d,\"source_width\":%u,\"source_height\":%u,"
-+        "\"position\":[%.9g,%.9g,%.9g],\"position_valid\":%d,\"position_sample_frame\":%llu,\"ink\":%.9g,\"ink_valid\":%d,\"heading\":%.9g,\"heading_valid\":%d,\"frames_without_input\":%llu,\"action_ignored\":%d,\"input_repeats\":%llu,\"guest_time_ns\":%llu}\n",
++        "\"position\":[%.9g,%.9g,%.9g],\"position_valid\":%d,\"position_sample_frame\":%llu,\"ink\":%.9g,\"ink_valid\":%d,\"heading\":%.9g,\"heading_valid\":%d,\"remaining_time\":%.9g,\"time_valid\":%d,\"time_sample_frame\":%llu,\"frames_without_input\":%llu,\"action_ignored\":%d,\"input_repeats\":%llu,\"guest_time_ns\":%llu}\n",
 +        rl_request, rl_frame, rl_frame - rl_step_start, atomic_load(&rl_phase), DM_RL_BYTES, rl_source_width, rl_source_height,
-+        position[0],position[1],position[2],valid,sample,ink,ink_valid,heading,heading_valid,rl_without_input,atomic_load(&rl_phase)>=2,atomic_load(&rl_input_repeats),guest_ns());
++        position[0],position[1],position[2],valid,sample,ink,ink_valid,heading,heading_valid,remaining_time,time_valid,time_sample,rl_without_input,atomic_load(&rl_phase)>=2,atomic_load(&rl_input_repeats),guest_ns());
 +    int ok = n > 0 && n < sizeof header && rl_write(header, (size_t)n) && rl_write(rl_image, sizeof rl_image);
 +    pthread_mutex_unlock(&rl_pixels_mu);
 +    return ok;
@@ -4050,10 +4067,10 @@ index 0000000..acde13d
 +}
 diff --git a/dm/host/tests/t_rl.c b/dm/host/tests/t_rl.c
 new file mode 100644
-index 0000000..61b6d08
+index 0000000..dc0f0cd
 --- /dev/null
 +++ b/dm/host/tests/t_rl.c
-@@ -0,0 +1,61 @@
+@@ -0,0 +1,64 @@
 +// Production transport with independent present and HID scheduling; no game.
 +#include "../dm.h"
 +#include "../dm_rl.h"
@@ -4067,7 +4084,7 @@ index 0000000..61b6d08
 +void dm_guest_clock_share(struct dm_rl_clock *clock) {(void)clock;}
 +uint64_t guest_ns(void){return test_frame*16666667ull;}
 +uint64_t dm_guest_frame(void) { return test_frame; }
-+int gate_obs_present(int n) { return n>=21 && n<=24; }
++int gate_obs_present(int n) { return n>=21 && n<=25; }
 +void gate_obs_set(int n,void (*fn)(const uint64_t *)) { callbacks[n]=fn; }
 +void guest_clock_freeze_for(int reason,int on) { if(reason!=3)abort();frozen=on; }
 +void dm_hid_rl_action(uint64_t b,const int32_t a[4],const float g[3]) { (void)g;apply_count++;buttons=b;memcpy(sticks,a,sizeof sticks); }
@@ -4109,6 +4126,9 @@ index 0000000..61b6d08
 +        }
 +        memset(rgb,buttons?191:(sticks[0]?113:17),sizeof rgb);
 +        test_frame=frame;callbacks[OBS_SPL3_LOCAL_STATE](regs);
++        uint8_t timer[0x150]={0};float raw=!strcmp(mode,"invalid") ? NAN : 10800-frame;int scale=60;
++        memcpy(timer+0x140,&raw,4);memcpy(timer+0x14c,&scale,4);timer[0x148]=1;
++        uint64_t timer_regs[31]={(uint64_t)(uintptr_t)timer};callbacks[OBS_SPL3_TIMER](timer_regs);
 +        dm_rl_pixels(rgb,frame,1280,720);dm_rl_present(frame);
 +        if(boundary_started) { pthread_join(boundary_thread,NULL);boundary_started=0; }
 +        if(frozen)abort();
@@ -4332,10 +4352,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..2db921e 100644
+index 837700c..fa69637 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,14 @@ CUTS = {
+@@ -162,6 +162,15 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -4346,11 +4366,12 @@ index 837700c..2db921e 100644
 +    (0x3dcc714, 22, 'a9117bfd', 'Splatoon 3 native ResultJudge prologue; read-only RL phase'),
 +    (0x3dd9374, 23, 'fd0023e8', 'Splatoon 3 native ResultWinners prologue; read-only RL phase'),
 +    (0x27fca14, 24, '6d022beb', 'Splatoon 3 local PlayerNetState encoder prologue; read-only packet position'),
++    (0x3ef6934, 25, 'a9027bfd', 'Splatoon 3 live timer HUD update; read-only countdown'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +640,7 @@ for fa, fb in funcs:
+@@ -632,7 +641,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -4359,12 +4380,12 @@ index 837700c..2db921e 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +734,8 @@ for off, oid, ow, why in obs:
+@@ -726,7 +735,8 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25
 -    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8), f'private obs point not approved {off:#x}'
-+    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24))
++    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25))
 +    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8) or spl3_prologue, f'private obs point not approved {off:#x}'
      assert off < TEXT_END and off not in kinds and not any(lo <= off < hi for wseg in windows for lo, hi in [(wseg[0].address, wseg[-1].address + 4)]), f'观测门与改写点冲突 {off:#x}'
      put_branch(off, site_obs(off, oid, w)); stat('obs')

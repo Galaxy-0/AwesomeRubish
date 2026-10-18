@@ -27,7 +27,7 @@ def difference(a,b):
 def main(args):
     out=ROOT/'work/tests'/datetime.datetime.now().strftime(f'm6-check-{args.players}p-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
     result=dict(milestone='M6-B-position-ink',players=args.players,passed=False,full_m6_passed=False,errors=[],episodes=[],
-                internal_state='local_packet_position_ink',unavailable_fields=['hp','special','score','turf','time','visible_peers','kills'],artifacts=str(out))
+                internal_state='local_packet_position_ink',unavailable_fields=['hp','special','score','turf','visible_peers','kills'],artifacts=str(out))
     env=NativeParallelEnv(players=args.players,frame_skip=args.frame_skip,mode=args.mode,stage_id=args.stage_id,
                          weapons=args.weapons or [0]*args.players,timeout=args.timeout,patched=args.patched,state_dump=args.state_dump)
     rng=np.random.default_rng(args.seed);last_print=time.monotonic();step_number=0
@@ -68,6 +68,8 @@ def main(args):
             if any(not o['position_valid'] or not o['ink_valid'] for o in observations.values()):raise AssertionError('local native position is unavailable after warmup')
             if any(float(o['pixels'].var())<25 for o in observations.values()):raise AssertionError('black/flat in-game pixel observation')
             for a,o in observations.items():Image.fromarray(o['pixels']).save(out/f'{a}-initial.png')
+            if any(not o['time_valid'] or not 0<float(o['remaining_time'][0])<=300 for o in observations.values()):raise AssertionError('invalid native in-game countdown')
+            initial_times={a:float(o['remaining_time'][0]) for a,o in observations.items()}
             idle=[];moving=[];last=observations['player_0']['pixels']
             for _ in range(6):
                 observations,_,_=step(actions);current=observations['player_0']['pixels'];idle.append(difference(last,current));last=current
@@ -92,6 +94,8 @@ def main(args):
             own_turn=max(r['player_0'] for r in heading_samples);peer_turn=max(r['player_1'] for r in heading_samples)
             record['heading_effect']=dict(own_turn=own_turn,neutral_peer_turn=peer_turn,passed=own_turn>.2 and peer_turn<.01)
             if not record['heading_effect']['passed']:raise AssertionError('heading failed own vs peer movement correlation')
+            record['time_effect']={a:dict(before=initial_times[a],after=float(o['remaining_time'][0])) for a,o in observations.items()}
+            if any(not o['time_valid'] or float(o['remaining_time'][0])>=initial_times[a]-1 for a,o in observations.items()):raise AssertionError('countdown did not decrease with native frames')
             # Clean counter-survey windows. Logs retain exact byte ranges, so
             # additional native fields can be studied without guessing labels.
             record['field_epochs']=[];record['ink_effect']=[]
@@ -134,6 +138,7 @@ def main(args):
         result['position_layer_passed']=True
         result['ink_layer_passed']=True
         result['heading_layer_passed']=True
+        result['time_layer_passed']=True
     except BaseException as error:
         result['errors'].append(f'{type(error).__name__}: {error}')
         (out/'exception.txt').write_text(traceback.format_exc())

@@ -19,7 +19,7 @@ from rl import NativeParallelEnv
 def neutral():return dict(sticks=np.zeros(4,np.float32),gyro=np.zeros(3,np.float32),buttons=np.zeros(6,np.int8))
 
 
-def main(args):
+def main(args, survey_callback=None):
     out=ROOT/'work/tests'/datetime.datetime.now().strftime('m6-fields-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
     result=dict(passed=False,heading_passed=False,errors=[],epochs=[],artifacts=str(out))
     env=NativeParallelEnv(players=2,frame_skip=15,state_dump=args.survey,timeout=args.timeout)
@@ -38,6 +38,8 @@ def main(args):
     try:
         observations,_=env.reset(seed=173);result['session']=str(env.session.out)
         for _ in range(30):observations=step({a:neutral() for a in env.agents},'warmup')
+        if any(not o['time_valid'] for o in observations.values()):raise AssertionError('countdown unavailable in InGame')
+        initial_times={a:float(o['remaining_time'][0]) for a,o in observations.items()}
         effects=[]
         for owner in env.possible_agents:
             # Let the previous owner's final movement/packet sample settle.
@@ -55,9 +57,15 @@ def main(args):
             effects.append(effect)
             if not effect['passed']:raise AssertionError(f'{owner}: heading did not follow its owning controller')
         result['heading_effects']=effects;result['heading_passed']=True
+        final_times={a:float(o['remaining_time'][0]) for a,o in observations.items()}
+        result['time_effect']=dict(before=initial_times,after=final_times,passed=all(0<final_times[a]<initial_times[a]-1 for a in final_times) and max(final_times.values())-min(final_times.values())<.25)
+        if not result['time_effect']['passed']:raise AssertionError('countdown did not decrease consistently across peers')
+        result['time_passed']=True
         (out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
         # Unnamed bytes are only development evidence, never training fields.
-        if args.survey:
+        if args.survey and survey_callback:
+            survey_callback(env,out,result,step,observations)
+        elif args.survey:
             epochs=[('look-down-0',0,'down',4),('paint-move-0',0,'paint',48),('recover-0',0,'swim',16),
                     ('special-0',0,'special',1),('after-special',0,'idle',12),('fall-left-0',0,'left',48),
                     ('recover-after-fall',0,'idle',16),('look-down-1',1,'down',4),('paint-move-1',1,'paint',48)]

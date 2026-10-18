@@ -207,7 +207,7 @@ uv pip install --python .venv/bin/python -r tests/requirements.txt -r rl/require
 bash tests/run_all.sh --milestone m6 --players 2 --timeout 2400
 ```
 
-入口先确认本地改写 main 带有三个已验证的原生比赛阶段 gate 和当前 B 草稿的本地状态采样 gate；旧 M5 改写产物会由 `tools/prepare_rl.py` 在本地重新生成 main，不重解 RomFS / shader，不下载游戏数据。
+入口先确认本地改写 main 带有三个已验证的原生比赛阶段 gate、本地状态采样 gate 和实时 Timer HUD gate；旧 M5 改写产物会由 `tools/prepare_rl.py` 在本地重新生成 main，不重解 RomFS / shader，不下载游戏数据。
 随后构建宿主并执行 GPU、NVN、HID、账号 / 解锁、文件系统、本地 LDN、资源停止规则及新的 RL 传输组件检查。
 
 真实测试要求所有进程使用 headless 和有效 1280×720 crop，从游戏内部纹理导出区域平均的 128×72 RGB，且宿主不增加 screen submit / composite。
@@ -239,3 +239,5 @@ GPU 普通 **148** / headless **152**，NVN **79**，HID **73**，LDN frontend *
 B 签收覆盖位置和墨量，不代表其余内部字段或完整 M6 通过。字段验证和八端整局待后续推进；全部证据与历史失败 / 已移除方案见 PROGRESS.md。
 
 朝向短实机检查：`.venv/bin/python tests/test_m6_fields.py`。2026-10-18 双端归属对照通过，自身分别转1.992 / 1.946弧度，中立对端均0；`--survey` 追加的候选窗口不算其它字段通过。完整主入口也已加入朝向范围 / 移动相关性检查，待后续整局再验证。
+
+实时倒计时已接入；短字段检查也检查双方时间下降且一致。当前验证为默认Turf模式的自然3分钟计时；其它模式 / 加时显示仍待实机覆盖。

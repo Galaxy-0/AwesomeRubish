@@ -41,6 +41,7 @@ class TransportTest(unittest.TestCase):
     def test_exact_steps_and_policy_delay(self):
         observation,initial=self.start();frame=initial['frame']
         self.assertEqual(observation['position_valid'],1)
+        self.assertEqual(observation['time_valid'],1);self.assertGreater(observation['remaining_time'][0],179)
         self.assertEqual(observation['heading_valid'],1);self.assertAlmostEqual(float(observation['heading'][0]),np.pi,places=6)
         np.testing.assert_array_equal(observation['position'],[13.25,-2,7])
         np.testing.assert_array_equal(observation['ink'],[.625]);self.assertEqual(observation['ink_valid'],1)
@@ -62,6 +63,7 @@ class TransportTest(unittest.TestCase):
     def test_invalid_native_position_is_masked(self):
         observation,info=self.start(invalid=True)
         self.assertEqual(observation['position_valid'],0)
+        self.assertEqual(observation['time_valid'],0);self.assertEqual(observation['remaining_time'][0],0)
         self.assertEqual(observation['heading_valid'],0);self.assertEqual(observation['heading'][0],0)
         self.assertEqual(observation['ink_valid'],0);self.assertEqual(observation['ink'][0],0)
         self.assertTrue(np.isfinite(observation['position']).all())
