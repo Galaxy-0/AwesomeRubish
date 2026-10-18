@@ -72,8 +72,12 @@ def survey(env,out,result,step,observations):
         a['player_0']=drive(0,target,paint=True)
         if i%12==0:a['player_0']['buttons'][4]=1
         return a
-    initial=[charge(n) for n in range(2)]
+    initial=[charge(n) for n in range(2)];initial_special={a:i["special"] for a,i in env.process_infos.items()}
     epoch('paint-route-0',paint_route,110);result['charge_after_own_paint']=dict(before=initial,after=[charge(n) for n in range(2)])
+    final_special={a:i['special'] for a,i in env.process_infos.items()}
+    result['special_effect']=dict(before=initial_special,after=final_special,passed=final_special['player_0']-initial_special['player_0']>.1 and abs(final_special['player_1']-initial_special['player_1'])<.01)
+    if not result['special_effect']['passed']:raise AssertionError('official special did not follow own painting with neutral peer')
+    result['special_passed']=True
     def use_special(i):
         a=actions();a['player_0']['buttons'][3]=int(i==0);return a
     epoch('use-special-0',use_special,8)

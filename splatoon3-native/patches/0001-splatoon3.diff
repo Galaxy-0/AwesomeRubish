@@ -3094,10 +3094,10 @@ index 61cf410..e5e894c 100644
  // pictures that depend on absolute time (such as the liquid level of the life / mana orbs) still differ at the same tick (measured: at tick E + 2 frames two passes differ by about 18,000 pixels, concentrated at the two orb positions).
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..b5e0437
+index 0000000..a9d34ca
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,277 @@
+@@ -0,0 +1,282 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
@@ -3129,9 +3129,9 @@ index 0000000..b5e0437
 +static int rl_have_image;
 +static dm_rl_clock *rl_clock;
 +static pthread_mutex_t rl_state_mu = PTHREAD_MUTEX_INITIALIZER;
-+static float rl_position[3], rl_ink, rl_heading, rl_hp;
++static float rl_position[3], rl_ink, rl_heading, rl_hp, rl_special;
 +static uint64_t rl_position_frame, rl_state_sequence;
-+static int rl_position_seen, rl_ink_seen, rl_heading_seen, rl_hp_seen, rl_state_dump;
++static int rl_position_seen, rl_ink_seen, rl_heading_seen, rl_hp_seen, rl_special_seen, rl_state_dump;
 +static float rl_time;static int rl_time_seen;static uint64_t rl_time_frame;
 +
 +int dm_rl_active(void) { return atomic_load(&rl_controlled); }
@@ -3146,7 +3146,7 @@ index 0000000..b5e0437
 +}
 +static void phase_ingame(const uint64_t *r) {
 +    (void)r;
-+    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_time_seen = 0; pthread_mutex_unlock(&rl_state_mu);
++    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_special_seen = rl_time_seen = 0; pthread_mutex_unlock(&rl_state_mu);
 +    atomic_store(&rl_phase, 1);
 +}
 +static void phase_judge(const uint64_t *r) {
@@ -3170,13 +3170,16 @@ index 0000000..b5e0437
 +    // Normalized ink: verified with separate own/peer fire and recovery windows.
 +    memcpy(&ink,source+0x84,sizeof ink);
 +    // Verified against the live PlayerDamage update through hits and recovery.
-+    uint32_t health;memcpy(&health,source+0x70,sizeof health);
++    uint32_t health,special;memcpy(&health,source+0x70,sizeof health);
++    // Integer percent; matched against the local special HUD (75 display units).
++    memcpy(&special,source+0x80,sizeof special);
 +    int valid = 1;
 +    for (int i=0;i<3;i++) if (!isfinite(position[i]) || fabsf(position[i]) > 256) valid = 0;
 +    uint64_t frame = dm_guest_frame();
 +    pthread_mutex_lock(&rl_state_mu);
 +    memcpy(rl_position,position,sizeof position);rl_position_frame=frame;rl_position_seen=valid;
 +    rl_ink=ink;rl_ink_seen=isfinite(ink) && ink>=0 && ink<=1;
++    rl_special_seen=special<=100;rl_special=rl_special_seen ? special/100.0f : 0;
 +    rl_hp_seen=health<=1000;rl_hp=rl_hp_seen ? health/1000.0f : 0;
 +    rl_heading_seen=heading_valid;rl_heading=heading_valid ? atan2f(facing[0],facing[2]) : 0;
 +    uint64_t sequence=++rl_state_sequence;
@@ -3261,13 +3264,15 @@ index 0000000..b5e0437
 +}
 +static int rl_observation(void) {
 +    char header[1024];
-+    float position[3]={0},ink=0,heading=0,remaining_time=0,hp=0;uint64_t sample=0,time_sample=0;int valid=0,ink_valid=0,heading_valid=0,time_valid=0,hp_valid=0;
++    float position[3]={0},ink=0,heading=0,remaining_time=0,hp=0,special=0;uint64_t sample=0,time_sample=0;int valid=0,ink_valid=0,heading_valid=0,time_valid=0,hp_valid=0,special_valid=0;
 +    pthread_mutex_lock(&rl_state_mu);
 +    sample=rl_position_frame;time_sample=rl_time_frame;
 +    time_valid=rl_time_seen && atomic_load(&rl_phase)==1 && time_sample<=rl_frame && rl_frame-time_sample<=120;
 +    if (time_valid) remaining_time=rl_time;
 +    int fresh=atomic_load(&rl_phase)==1 && sample<=rl_frame && rl_frame-sample<=120;
 +    valid=rl_position_seen && fresh;ink_valid=rl_ink_seen && fresh;
++    special_valid=rl_special_seen && fresh;
++    if (special_valid) special=rl_special;
 +    hp_valid=rl_hp_seen && fresh;
 +    if (hp_valid) hp=rl_hp;
 +    heading_valid=rl_heading_seen && fresh;
@@ -3280,9 +3285,9 @@ index 0000000..b5e0437
 +    int n = snprintf(header, sizeof header,
 +        "{\"version\":1,\"request\":%llu,\"frame\":%llu,\"advanced\":%llu,\"phase\":%d,"
 +        "\"width\":128,\"height\":72,\"channels\":3,\"bytes\":%d,\"source_width\":%u,\"source_height\":%u,"
-+        "\"position\":[%.9g,%.9g,%.9g],\"position_valid\":%d,\"position_sample_frame\":%llu,\"ink\":%.9g,\"ink_valid\":%d,\"heading\":%.9g,\"heading_valid\":%d,\"hp\":%.9g,\"hp_valid\":%d,\"remaining_time\":%.9g,\"time_valid\":%d,\"time_sample_frame\":%llu,\"frames_without_input\":%llu,\"action_ignored\":%d,\"input_repeats\":%llu,\"guest_time_ns\":%llu}\n",
++        "\"position\":[%.9g,%.9g,%.9g],\"position_valid\":%d,\"position_sample_frame\":%llu,\"ink\":%.9g,\"ink_valid\":%d,\"heading\":%.9g,\"heading_valid\":%d,\"hp\":%.9g,\"hp_valid\":%d,\"special\":%.9g,\"special_valid\":%d,\"remaining_time\":%.9g,\"time_valid\":%d,\"time_sample_frame\":%llu,\"frames_without_input\":%llu,\"action_ignored\":%d,\"input_repeats\":%llu,\"guest_time_ns\":%llu}\n",
 +        rl_request, rl_frame, rl_frame - rl_step_start, atomic_load(&rl_phase), DM_RL_BYTES, rl_source_width, rl_source_height,
-+        position[0],position[1],position[2],valid,sample,ink,ink_valid,heading,heading_valid,hp,hp_valid,remaining_time,time_valid,time_sample,rl_without_input,atomic_load(&rl_phase)>=2,atomic_load(&rl_input_repeats),guest_ns());
++        position[0],position[1],position[2],valid,sample,ink,ink_valid,heading,heading_valid,hp,hp_valid,special,special_valid,remaining_time,time_valid,time_sample,rl_without_input,atomic_load(&rl_phase)>=2,atomic_load(&rl_input_repeats),guest_ns());
 +    int ok = n > 0 && n < sizeof header && rl_write(header, (size_t)n) && rl_write(rl_image, sizeof rl_image);
 +    pthread_mutex_unlock(&rl_pixels_mu);
 +    return ok;
@@ -4072,10 +4077,10 @@ index 0000000..acde13d
 +}
 diff --git a/dm/host/tests/t_rl.c b/dm/host/tests/t_rl.c
 new file mode 100644
-index 0000000..fe36249
+index 0000000..29b45f9
 --- /dev/null
 +++ b/dm/host/tests/t_rl.c
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,68 @@
 +// Production transport with independent present and HID scheduling; no game.
 +#include "../dm.h"
 +#include "../dm_rl.h"
@@ -4132,7 +4137,9 @@ index 0000000..fe36249
 +        memset(rgb,buttons?191:(sticks[0]?113:17),sizeof rgb);
 +        uint32_t damage_sequence[]={1000,570,0,1000};
 +        uint32_t health=!strcmp(mode,"invalid") ? 1001 : !strcmp(mode,"damage") ? damage_sequence[controlled%4] : 1000;
-+        memcpy(state+0x70,&health,4);test_frame=frame;callbacks[OBS_SPL3_LOCAL_STATE](regs);
++        uint32_t charge_sequence[]={0,49,100,0};
++        uint32_t special=!strcmp(mode,"invalid") ? 101 : !strcmp(mode,"charge") ? charge_sequence[controlled%4] : 0;
++        memcpy(state+0x80,&special,4);memcpy(state+0x70,&health,4);test_frame=frame;callbacks[OBS_SPL3_LOCAL_STATE](regs);
 +        uint8_t timer[0x150]={0};float raw=!strcmp(mode,"invalid") ? NAN : 10800-frame;int scale=60;
 +        memcpy(timer+0x140,&raw,4);memcpy(timer+0x14c,&scale,4);timer[0x148]=1;
 +        uint64_t timer_regs[31]={(uint64_t)(uintptr_t)timer};callbacks[OBS_SPL3_TIMER](timer_regs);
