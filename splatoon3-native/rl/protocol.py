@@ -16,8 +16,8 @@ class Client:
         self.expected = 0
 
     def receive(self):
-        line = self.stream.readline(1025)
-        if not line.endswith(b'\n') or len(line) > 1024:
+        line = self.stream.readline(4097)
+        if not line.endswith(b'\n') or len(line) > 4096:
             raise RuntimeError('native RL connection closed or invalid observation header')
         info = json.loads(line)
         if (info.get('version'), info.get('width'), info.get('height'), info.get('channels'), info.get('bytes')) != (1,128,72,3,27648):
@@ -40,7 +40,9 @@ class Client:
                            heading=np.array([info.get('heading',0)],np.float32),heading_valid=int(info.get('heading_valid',0)),
                            remaining_time=np.array([info.get('remaining_time',0)],np.float32),time_valid=int(info.get('time_valid',0)),
                            hp=np.array([info.get('hp',0)],np.float32),hp_valid=int(info.get('hp_valid',0)),
-                           special=np.array([info.get('special',0)],np.float32),special_valid=int(info.get('special_valid',0)))
+                           special=np.array([info.get('special',0)],np.float32),special_valid=int(info.get('special_valid',0)),
+                           score=np.array(info.get('score',[0,0]),np.float32),score_valid=int(info.get('score_valid',0)),
+                           score_units=int(info.get('score_units',0)),turf_ratio=np.array(info.get('turf_ratio',[0,0]),np.float32),turf_valid=int(info.get('turf_valid',0)))
         if observation['position'].shape!=(3,) or not np.isfinite(observation['position']).all() or observation['position_valid'] not in (0,1):
             raise RuntimeError('invalid native position observation')
         if not np.isfinite(observation['ink']).all() or not 0<=observation['ink'][0]<=1 or observation['ink_valid'] not in (0,1):
@@ -53,6 +55,10 @@ class Client:
             raise RuntimeError('invalid native HP observation')
         if not np.isfinite(observation['special']).all() or not 0<=observation['special'][0]<=1 or observation['special_valid'] not in (0,1):
             raise RuntimeError('invalid native special observation')
+        for key,maximum in (('score',100),('turf_ratio',1)):
+            value=observation[key]
+            if value.shape!=(2,) or not np.isfinite(value).all() or (value<0).any() or (value>maximum).any():raise RuntimeError('invalid native '+key)
+        if observation['score_valid'] not in (0,1) or observation['turf_valid'] not in (0,1) or observation['score_units'] not in (0,1,2):raise RuntimeError('invalid native score flags')
         return observation, info
 
     def send_step(self, action, frames):

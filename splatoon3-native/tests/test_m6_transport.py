@@ -74,6 +74,28 @@ class TransportTest(unittest.TestCase):
             self.assertEqual(observation['special_valid'],1)
             self.assertAlmostEqual(float(observation['special'][0]),charge,places=6)
 
+    def test_turf_result_units_and_own_enemy_order(self):
+        observation,_=self.start(mode='score');self.assertEqual(observation['score_valid'],0)
+        self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['score_units'],1);self.assertEqual(observation['turf_valid'],1)
+        np.testing.assert_allclose(observation['score'],[4.2,1.8]);np.testing.assert_allclose(observation['turf_ratio'],[.042,.018])
+
+    def test_rule_score_preserves_counts_and_masks_turf(self):
+        self.start(mode='rule-score');self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['score_units'],2);self.assertEqual(observation['turf_valid'],0)
+        np.testing.assert_array_equal(observation['score'],[100,30])
+
+    def test_invalid_result_score_stays_unavailable(self):
+        self.start(mode='invalid-score');self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['score_valid'],0)
+
+    def test_new_ingame_clears_previous_result(self):
+        self.start(mode='score-reset');self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['score_valid'],1)
+        self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['phase'],1);self.assertEqual(observation['score_valid'],0)
+        np.testing.assert_array_equal(observation['score'],[0,0])
+
     def test_reject_invalid_client_action(self):
         self.start();action=neutral();action['sticks'][0]=float('nan')
         with self.assertRaises(ValueError):self.client.send_step(action,3)
