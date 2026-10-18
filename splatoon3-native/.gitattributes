@@ -1,0 +1,2 @@
+# Unified patch context has mandatory space prefixes before blank/tabbed lines.
+patches/*.diff -whitespace

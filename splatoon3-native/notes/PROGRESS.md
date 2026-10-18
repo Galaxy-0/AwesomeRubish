@@ -1398,3 +1398,116 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 - `rl/`提供PettingZoo ParallelEnv、reset复用M5启动/配置/分队、同步step、正式动作/观测spaces、逐agent终止及结算推进、可关闭/自定义的reward示例。Unix socket + POSIX mmap时钟接口不依赖macOS专有IPC；实际原生游戏仍在当前macOS/Metal宿主验收。
 - 自身包字段约10Hz，120 presents过期，HUD/时间也有采样帧/有效位；不把每帧导出等同于每帧物理状态采样。结果比分/涂地比例在Judge/Winners有效，局内不提供实时涂地图。当前实机字段范围为默认Turf War / Scorch Gorge；其它模式/地图/武器可沿M5配置，但非Turf比分及加时未各自实机签收。
 - reward示例是“充能增量涂地塑形 + 敌队公共HUD倒下事件”，包括环境死亡，没有个人最后一击归属或真实paint_points/kills计数；这些缺项在文档/结果中明确标记，未用零伪装。目标所需公开队友/敌人基本状态由公共HUD提供，不承诺世界空间FOV可见位置列表。
+
+## 2026-10-18：第二阶段启动，A1 进行中（尚未签收）
+
+- 按 A1 → A2 → A3 → A4 → A5 顺序推进；M6 最终签收保持有效。A1 前置问题是 M6 的共享时钟只扣除了策略等待，执行期间仍跟随墙钟，因此 present 数不等于物理时间。
+- 所有 1v1 统一使用本地 `WeaponInfoMain` 的 `Saber_Normal_00` / **8000**（工作刮水刀 / Splatana Stamper）。不使用 8001 的异配装版本或其它刮水刀。
+- 首批选择占地地图 **1 / Vss_Yunohana（温泉峡谷）**、**2 / Vss_District00**、**3 / Vss_Yagara**。选择目的分别为中央高差攻防、桥梁及窄路连通、中央遮挡与两侧绕行，形成高差、通道、遮挡三类对照；均已有本地 Versus 目录项，不新增外部数据。这里是实验选图及研究理由，碰撞几何、可行走性、命名区域与实机路线将在 A4 验证后签收，不把目录可选写成已验证寻路。
+- A3 必须提供独立的裁判真值接口与经遮挡 / 潜墨裁剪的策略接口；策略进程只能接收后者。A5 基线限定直冲 / 占高台，不开展 T1 策略调强。
+- A1 新增 `clock_mode='fixed60'` 实验选项，RL 接管前继续使用原来的启动 / 建房时钟；接管后每个宿主按自身 present 数累计 `floor(N*1e9/60)` ns，并唤醒以客体时间等待的线程。M6 默认仍为 `realtime`，不将实验模式默认启用。
+- 原生时钟组件已通过 fixed60 **3604**、原共享时钟 **13**、原手动时钟 **5** 项检查。组件只证明计时实现；实机倒计时、位移、伤害的时间一致性尚未证明。
+- 第一轮双端实机诊断：`work/a1/probe-fixed.log`、`work/a1/probe-fixed.json`；会话 `work/tests/m6-2p-20261018-170048-723919/`。所有游戏数据、画面与原始证据仍仅留在忽略的 `work/`。
+
+### A1 当前卡点：fixed60 接管后首个 STEP 无 ACK（停止，未签收）
+
+**A1 未 PASS，按本轮“卡住时记录现象和假设然后停下”的要求停止。A2–A5 未开始；没有请求其它模型，没有 commit / push。**
+
+- 已试方案：保留 M6 原来的启动 / 建房路线与默认 `realtime`；只在 RL_ATTACH 时将显式 `fixed60` 宿主切换到自身 present 计数时钟，同时使原有 `dm_detclock_enabled()` 的定时等待分支生效，由 present 回调唤醒等待线程。不在协调器中替游戏补帧，不让快端推进慢端的时钟。
+- 实机配置：两端、占地、stage_id=1 / Vss_Yunohana、武器 `[8000,8000]`、frame_skip=15、STEP socket 超时30秒；命令 `.venv/bin/python work/a1/probe_fixed.py`。诊断脚本、输入、结果与日志均在 `work/a1/`。该临时诊断脚本自身退出0，但 JSON明确 `passed=false`，**不能把外层退出码当成验收通过**。
+- 两端成功同房、原生 InGame 后接管；初始 ACK 的 `(frame, phase, remaining_time)` 分别为 **(14523,1,179.933334)** 与 **(9917,1,179.883331)**，公开 native slot 为0 / 1。两个配置文件均确认 `DM_WEAPON=8000`、`DM_RL_CLOCK_MODE=fixed60`、headless=1。
+- 首次向两端发送15帧中立 STEP 后，等待 player_0 响应时 `rl/protocol.py` 的 `stream.readline(4097)` 在30秒触发 `TimeoutError('timed out')`；**已完成 STEP 样本数0**，尚无首个 STEP ACK。没有逐present日志，不能断言卡在接管后的第几帧，也没有分别读取 player_1 的响应来断言两端都未 ACK。位置、伤害及与实时模式的脚本对照均未开展。
+- 证据：`work/a1/probe-fixed.json`（初始ACK、异常栈、samples=[]）、`work/a1/probe-fixed.log`；原生日志为 `work/tests/m6-2p-20261018-170048-723919/player-{0,1}/host.log`，接管记录 `RL_ATTACH frame=14523` / `9917`。宿主二进制、受测计时源码、Python环境代码与诊断脚本固定在 `work/a1/probe-code.sha256`，结束后逐项复核匹配。
+- **假设，尚未证实**：客体时间仅在 present 后推进，而产生下一个 present 的某条 SleepThread / 定时 WaitSynchronization / 游戏内部轮询路径可能先等待客体时间达到下一 deadline，形成“等时间→等present→等时间”的环。接管前已经创建的墙钟等待与接管后的离散时间等待之间也可能有衔接问题。组件测试没有真实客体线程调度，不能排除这些循环；需要后续明确指示后采集线程等待栈，定位第一个阻塞依赖。没有用自动补时间或回退墙钟掩盖失败。
+- 已通过的窄证据：fixed60时钟3604项、原共享时钟13项、原手动时钟5项；Python传输 / 生命周期24项、原生HID11项。它们不证明真实游戏60Hz物理，也不替代A1。`tests/run_all.sh --milestone a1` 的完整验收尚未接入，未将时钟组件冒充整个A1。
+- 清理：两宿主均 SIGTERM **优雅退出完成**，无 CRASH / FATAL；本轮 dmhost / air / 诊断进程均已退出。190次资源采样 pressure最大1、新增swapout **0**、footprint合计峰值 **7170 MiB**。原件与只读参考档结束后SHA256均仍为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。
+- 实验代码与说明保留为未提交改动，M6默认仍为realtime；`patches/0001-splatoon3.diff` 已按既有排除规则重新生成并通过反向应用检查。没有将游戏数据或游戏画面加入版本库，没有修改其它实验目录。
+
+## 2026-10-18：按指挥方恢复 A1，先确认 realtime 的游戏时间
+
+- 本节恢复前一节已记录的 fixed60 卡点。先在默认 realtime 模式用两端工作刮水刀测量 present、Timer HUD、客体 / 墙钟时间与位移；只有测量确认漂移后才修改 fixed60 的等待与推进时机。
+- 新增 `tests/probe_a1_time.py`：逐step记录1/7/31/15帧预算、策略短暂停顿、原生Timer采样帧、位置与动作。该诊断始终 `full_a1_passed=false`，不能替代位移/伤害对照及正式A1入口。发生异常时，清理前逐宿主执行 `/usr/bin/sample <pid> 1 10 -file ...`，每次采样调用上限10秒，记录成功或失败。
+- 新一轮命令 `.venv/bin/python tests/probe_a1_time.py --clock-mode realtime`，日志 `work/a1/realtime-probe.log`，输出 `work/tests/a1-time-realtime-20261018-171043-293516/`，原生会话 `work/tests/m6-2p-20261018-171043-316196/`。受测代码清单 `work/a1/realtime-probe-code.sha256`；运行中不改宿主。当前尚未把进行中的诊断记作通过。
+- 原M6八端逐步原始证据补查：`work/tests/m6-check-8p-20261018-153022-895155/steps.jsonl` 的第1/61条记录，0号 native Timer采样帧47846→48754（908 present），剩余时间179.866669→105.416664（74.450005秒），对应60Hz理应15.133333秒。此为历史原始日志佐证；本轮仍按指示补新的双端实时测量。
+
+### A1 realtime 新测量完成：确有漂移，进入 fixed60 等待栈诊断
+
+- 上述新双端诊断退出0，`probe_completed=true, full_a1_passed=false, errors=[]`，完成80个step。计时窗口使用各端原生HUD采样帧，均为 **845 present**，60Hz应为 **14.083333秒**；实测HUD分别减少 **30.216675 / 30.266677秒**（比值 **2.145563 / 2.149113**），墙钟33.218361秒（其中包含显式策略等待）。因此本轮也证实：默认realtime不能按每present=1/60秒直接签收A1。
+- 同窗口0号移动最大位移 **11.514735**，中立1号 **0**；逐step原始位置、Timer与动作在该诊断steps.jsonl。这里只证明动作相关性，未证明同脚本的跨模式物理一致或伤害一致。
+- 206次资源采样pressure最大1、新swapout0、footprint合计峰值7102MiB；两宿主清理正常，受测源码hash逐项一致。保持完整原始证据。
+- 已启动相同宿主的fixed60复现：`.venv/bin/python tests/probe_a1_time.py --clock-mode fixed60`，总日志 `work/a1/fixed60-sample-probe.log`；原生会话 `work/tests/m6-2p-20261018-171807-188371/`。本次先保留原失败实现，超时由脚本在清理前采集两个宿主的macOS sample；尚不改受测时钟或推进点。
+
+### A1 等待栈证据与第一版帧入口修复（实机待验）
+
+- 原失败实现的新复现退出1，`work/tests/a1-time-fixed60-20261018-171807-167045/result.json`：completed_steps=0、TimeoutError。清理前对PID77668 /93143分别运行macOS sample，**两份采样均退出0**，完整线程栈及命令结果保存在该目录的 `sample-player-{0,1}.txt` / `samples.json`。不再仅凭socket超时推断原因。
+- 0号sample主线程70/70次采样均在 `svc_thread → block_inner (hle_thread.c:168) → pthread_cond_wait`；多个任务工作线程相同等待，另有工作线程在 `svc_thread → nanosleep`。主线程客体栈包含 `main+0x452cf98`、`main+0x4ad64b8`、`main+0x4ad19b8`、`main+0x4ad1ebc`；反汇编后者可见任务等待循环。另一个工作线程栈包含 `main+0x47ae94c`，其上层属于任务调用；没有把无名称函数猜成已确认的专用vsync函数。
+- 第一版修复：fixed60在主线程进入阻塞SVC（睡眠/同步对象/条件变量/地址等待）及NVN纹理acquire入口尝试开始下一帧。按present区间CAS保证只推进一次，并在RL输入锁下检查当前STEP预算；完成present本身不再叠加推进。此方案仍待实机验证，不把组件通过写成循环已经解除。
+- fixed60客体阻塞/睡眠增加60秒墙钟硬上限，记录线程、种类、帧号、调用LR及完成/超时；RL输入预算等待与命令socket同样有60秒上限。Python STEP接收30秒先触发sample，每个sample命令最多10秒。realtime原等待语义保留。
+- 组件：fixed60 **10804项**（含预算禁止推进、同帧重复推进及3600帧精确累计）、原共享13项 / 手动5项、条件变量顺序1项、Python传输24项通过。条件变量目标此前缺少GAME profile include目录，已在该目标Makefile补充既有GINC；新增API补齐测试stub后重新编译通过。
+- 新宿主命令 `.venv/bin/python tests/probe_a1_time.py --clock-mode fixed60`，总日志 `work/a1/frame-begin-probe.log`；原生会话 `work/tests/m6-2p-20261018-172949-616501/`，冻结清单 `work/a1/frame-begin-probe-code.sha256`。运行中不修改受测宿主。
+
+### A1 第一版实机未通过：识别帧内任务轮询，继续修复
+
+- 第一版诊断 `work/tests/a1-time-fixed60-20261018-172949-593871/` 退出1，completed_steps=0，仍未完成15帧预算。与原失败不同，0号已经从RL_ATTACH开始完成约12个present，最后记录 `RL_FRAME_BEGIN present=14532 tick=13`；1号最后tick=10。不能将已开始tick数当成已完成present数。
+- 两端再次在清理前sample成功；0号主线程67/67次采样变为 `svc_thread → nanosleep`，客体任务栈包含 `main+0x47ae94c`。新RL_SLEEP日志显示短睡眠 **989ns** 与常规 **15,000,000ns** / **500,000,000ns**。`main+0x4690290` 反汇编可见：调用短睡眠后回到任务状态轮询，而不是完成一个新present。SDK的1000ns请求经19.2MHz tick换算约为989ns；旧固定时钟把这种帧内轮询也挂到未来游戏时间，仍会阻断本帧任务完成。
+- 窄修复：仅fixed60下 **0 < SleepThread ns ≤ 1000** 使用宿主nanosleep完成微等待，不推进客体时间；其它正常睡眠/阻塞的固定时间规则保留。没有把整帧/跨帧游戏计时回退墙钟，没有为未完成present额外补tick。
+- 新原生 `t_rl_sleep` 通过真实svc_thread调用检查1/989/1000ns：客体时间故意冻结，三次调用均及时返回且不改客体时间；测试自身alarm上限2秒，防止再次挂死。条件变量顺序回归仍通过。该窄证据不代表实机帧内轮询已经恢复。
+- 第三轮fixed60实机诊断日志 `work/a1/short-sleep-probe.log`，冻结清单 `work/a1/short-sleep-probe-code.sha256`；仍按30秒STEP→逐端sample→清理的上限执行，结果待定。
+
+### A1 fixed60 计时与原realtime行走对照完成，正式伤害/暂停验收启动
+
+- 第三轮诊断 `work/tests/a1-time-fixed60-20261018-173950-776881/result.json` 退出0：probe_completed=true、errors=[]、80个完整STEP；full_a1_passed仍为false。845个present对应HUD **14.083328 /14.083329秒**，与 **14.083333秒** 的差仅浮点量化；全端、所有ACK相对初始ACK的guest_time_ns均严格等于 `floor(累计帧数*1e9/60)`，错误0。计时窗口墙钟39.385216秒，未把慢帧或策略等待计入游戏时间。
+- 相同120帧全推前行输入，等待惯性/采样稳定后的位移：原realtime **11.514733536**、fixed60 **11.514744543**（差0.000011006）；中立对端均0。比较窗口总240 present，fixed60 HUD正好4秒，原realtime约8.233322秒；后者正是已确认的旧计时缺陷，不能谎称旧模式HUD用时已与修复模式一致。此次没有对手受伤，伤害仍待正式实机测量。
+- A1正式验收明确分开：原M6 `clock_mode=realtime` 保留为兼容/漂移诊断；修复后的fixed60时钟同时用于连续运行参考（预先排队全部输入，无逐步策略等待）和受控运行（同脚本逐步注入等待）。比较二者原生HUD用时、实际位移及工作刮水刀的真实对手HP损伤，验证暂停不改变修复后的游戏行为；没有把旧墙钟计时错误作为正确用时基准。
+- 为真实连续参考增加Client有序待收ACK队列；协议字节格式不变，仍逐条验证request/frame/advanced。预先排队1/7/31/15帧的生产传输夹具通过，现有合计25项通过。
+- 已接入 `tests/run_all.sh --milestone a1`（尚未PASS）。正式入口通过共享时钟13/5/10804、短睡眠3、条件变量1、HID73/11、GPU148/headless152、NVN79、LDN10/air59与资源停止规则，进入实机。命令 `bash tests/run_all.sh --milestone a1 --timeout 2400`，总日志 `work/a1/acceptance.log`，原生会话 `work/tests/m6-2p-20261018-175235-778315/`，冻结清单 `work/a1/acceptance-code.sha256`。
+- `tests/test_a1.py` 的移动/伤害脚本在相同修复时钟下使用混合帧预算，连续版预先排队、受控版每段等待0.2秒。命中准备是有上限的裁判诊断导航/瞄准，不作为A4技能库或T1策略交付；读取自身原始camera包与双方真值仅在该测试，不向策略接口承诺新字段。正式A1、commit/push及A2–A5仍待实机结果。
+
+### A1 正式入口第1轮：移动/用时一致，新增等待上限误杀空闲线程（已修，重新验收）
+
+- `work/tests/a1-20261018-175235-756433/result.json` **passed=false / full_a1_passed=false**，完成93个STEP。连续与暂停脚本HUD用时均 **1.5秒**，0号位移 **0.360044503683 /0.360044500001**，中立1号位移均0；移动/计时窄证据保留。
+- 伤害准备尚未完成时，两端都因我新增的过宽上限退出：`FATAL RL_WAIT wall limit thread=0x1015 kind=3 timeout_ns=-1`。这是正常无期限地址事件等待超过60秒，彼时主对局仍持续推进；不是原来的fixed60首步死锁。两端SIGABRT/-6，Python看到socket关闭；清理因此报告非优雅退出，未将其改判为通过。
+- 该轮异常时仍执行sample，但进程已退出，两个sample均255并记录“cannot examine process”错误；未把它当作已抓到线程栈，也未请求sudo。原生日志已有精确FATAL等待种类、线程与帧号。93步末尾0号在(-14.49,3.32,38.37)、1号在(12.88,6,-20.74)，HP均1；没有真实伤害验收。
+- 修正：有限客体等待/睡眠保留60秒硬上限；原生请求ns<0的合法空闲等待，宿主每次只等待最多1秒并检查/记录，保持原有“等事件”语义。整体对局停止推进仍由STEP30秒上限触发sample与清理，不再因某个正常空闲线程长时间未收到事件终止健康对局。
+- 新原生 `t_rl_idle` 把有限等待硬上限缩至100ms，实际无期限事件等待经历两次有界宿主轮询，在2.1秒后真实SignalEvent才返回，测试alarm上限5秒，已通过；短睡眠3项与其它正式入口组件继续通过。该测试接入A1入口。
+- 新正式命令同前，总日志 `work/a1/acceptance-idle-fixed.log`，会话 `work/tests/m6-2p-20261018-180253-871311/`，冻结清单 `work/a1/acceptance-idle-fixed-code.sha256`。A1完整签收仍待真实伤害/清理结果，尚未commit/push。
+- 新增idea内 `.gitattributes` 仅对生成的patch关闭文本空白诊断：统一diff的上下文行必须含空格前缀，会被外层git误认为空行尾空白/空格缩进tab。实际upstream源码仍由update-patch.sh的diff --check检查，补丁保持反向应用检查。
+
+### A1 正式入口第2轮：健康越过空闲上限，裁判准备条件过严（修订后重跑）
+
+- `work/tests/a1-20261018-180253-848365/result.json` 退出1、passed=false，完成293个STEP；没有再次发生60秒空闲线程误杀，原生对局仍健康推进。移动位移 **0.360044503280 /0.360044500000**、中立对端0、HUD均1.5秒；这些窄证据再次成立。
+- 失败是测试自己附加的平面条件：0号停在约(17.3575,0,17.2752)，1号约(14.1641,3,12.1342)，水平距离约6.05但地面相差3个坐标单位；双方同期跳跃也不满足 `abs(dy)<1`。裁判按既定60游戏秒导航上限报错 `could not establish a flat 6..12 unit ... duel`，尚无伤害对照，不将已有移动证据升级为A1通过。
+- 修订只在裁判测试：按真实三维距离选6..12单位的近距准备（限制高差），中立3秒待落地后确认仍在射程，选择地面较高一侧为射击者，另一侧先涂自己的脚下并恢复满HP。增加最多180帧的单帧视角微调，核对自身camera实际yaw误差<0.04rad、pitch误差<0.04，准备阶段不算入连续/暂停脚本比较。没有改游戏位置/HP/配装，也没有伪造命中或越过A4签收。
+- 新正式命令 `bash tests/run_all.sh --milestone a1 --timeout 2400`，总日志 `work/a1/acceptance-3d-duel.log`；原生会话 `work/tests/m6-2p-20261018-181442-679357/`，冻结清单 `work/a1/acceptance-3d-duel-code.sha256`。组件再次通过，实机结果待定。
+- 只读核对本地Params.pack中的WeaponSaberNormal：普通横挥弹体伤害350（HP总量1000）、弱挥弹体生成在动画第9帧；该弹体GoStraight状态5帧、初速度2.82、BurstFrame6。它们帮助确认60帧采样足够覆盖动作延迟，**不替代实机伤害验证**。提取的原始参数JSON仅在忽略的 `work/a1/stamper-gameparams.json`，未加入版本库；没有将UI Range值直接认作测得的物理射程。
+
+### A1 当前新卡点：实际横挥未命中，伤害对照无法验收（停止，未签收）
+
+**按本轮“真正的新卡点才停下”的规则，停止在此。原fixed60首步等待环已跨过并取得80步计时证据；当前新卡点是真实命中校准，不能把计时/移动一致当作完整A1。A2–A5未开始；没有commit/push，没有请求其它模型。**
+
+- 正式入口 `bash tests/run_all.sh --milestone a1 --timeout 2400` 第3轮 **退出1**，`work/tests/a1-20261018-181442-654524/result.json`：passed=false、full_a1_passed=false、steps=205，错误 `Stamper pulse did not produce measurable partial opponent damage`。命令总日志 `work/a1/acceptance-3d-duel.log`，原生会话181442-679357。原始逐STEP、主机日志、两份sample和命令结果均保留；整理证据 `work/a1/3d-duel-evidence.json`。
+- 已通过的本轮窄证据：连续参考 / 暂停脚本均 **1.5秒HUD时间**，自身位移 **0.360044503403 /0.360044500001**，中立对端均0；所有已记录ACK严格满足客体纳秒=累计present/60。此前短诊断845present→14.083328秒、80步通过的原始证据仍保留。没有再次发生首步死锁或空闲等待误杀。
+- 裁判准备在有界导航后完成落地：0号约 **(17.362408,0,17.268560)**，1号约 **(11.928095,3.000002,8.402325)**。选择高处1号为射击者，低处0号为目标；两端都先恢复HP=1且存活。按目前相机字段解释，yaw误差 **0.01757336rad**、pitch模型误差 **1.17e-8**；这些只是观测包与自写几何模型的一致性，**尚未独立验证该pitch标量到世界射线的转换，也没有验证发射点/弹体射线对齐目标**。
+- 实际脚本向1号发送 **1帧ZR +7/7/15/15/15帧中立**，共60present；连续参考全部命令先排队，再按顺序读取每个ACK，没有逐步策略停顿。1号墨量 **1→0.956356585**，随后恢复到 **0.979689896**，说明射击输入确有消耗响应；未将耗墨本身当作命中。0号所有六次ACK **HP=1**，其position_sample_frame持续更新，位置保持静止，观测不是整段陈旧缓存。HUD时间双方均走过约1秒。
+- 因连续参考未产生真实部分损伤，测试在第一次命中验证就失败，**未执行暂停版伤害脚本**，不能比较伤害一致性，不能报告“伤害相同=0”并签收。没有放宽损伤门槛、改写HP或位置、增加任意隐式攻击来改判通过。
+- **假设，均未证实**：①高差/台沿或其它地图几何遮挡了实际弹体；②包内pitch标量的世界角转换、相机原点与枪口原点之间的几何尚未标定，当前模型“对准”不能代表游戏实际射线对准；③单次横挥弹体/网络命中时序尚未用独立弹体或伤害事件探针闭环。局部Params中HitDamage=350与动画第9帧出弹是静态事实，无法排除上述问题。下一步需要独立可视/原生射线或伤害事件校准证据，不能继续仅按自写模型误差调参猜命中。
+- 两个宿主在失败时仍存活，清理前macOS sample均 **退出0**，随后均 **优雅退出完成**，无CRASH/FATAL；所属dmhost/air/test_a1进程已退出。247次资源采样pressure最大1、新swapout **0**、footprint合计峰值 **7289MiB**。原件/参考档SHA256均仍为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。
+- `work/a1/acceptance-3d-duel-code.sha256` 在结束后逐项复核一致。A1已接入自动入口但当前真实失败，源码、测试、文档与生成补丁保持未提交；游戏原始数据/参数JSON/画面/原始栈均只在忽略的work。M6默认仍为realtime，本轮新增预排队协议回归25项通过；未声称本轮重新完成了M6整局验收。
+
+## 2026-10-18：指挥方修订 A1 签收范围，恢复推进
+
+- 本节覆盖上一节“命中阻塞 A1”的状态：伤害打不中归属 A4 的 `aim_at`，不再阻塞 A1。A1 按 fixed60 精确计时 + 连续/暂停移动一致验收；受控默认改为 fixed60，realtime 作为可选旧模式保留。
+- GOAL / README / 自动测试同步该范围；原未命中的瞄准诊断保留在 `tests/diagnose_stamper_aim.py`，不作为 A1 门槛。**待办：A4 完成 aim_at 后补测 A1 伤害一致性，双方放平地近距离正对，排除台沿遮挡。** 未声称伤害已通过。
+- A2 按新的两项实测要求推进：同距离潜游用时、满罐原地对空挥刀次数；A3 可见性仍须裁判真值/策略裁剪两个接口，策略进程只接策略版；A5 示例仅直冲/占高台。
+- 新默认的正式入口即将重跑；只有正式结果与清理均通过后才记录 A1 PASS 并 commit/push。
+
+### A1 最终签收 PASS（指挥方修订范围）
+
+**A1 PASS：fixed60 已成为受控默认；伤害一致性明确待 A4 的 aim_at 完成后补测。** 本节覆盖此前“A1 未签收/停止”的状态，不更改历史失败产物。
+
+- 正式命令 `bash tests/run_all.sh --milestone a1 --timeout 2400` **退出0**。新结果 `work/tests/a1-20261018-183019-181472/result.json`：passed=true、full_a1_passed=true、errors=[]、50步；damage_passed=null、damage_status=deferred_to_a4_aim_at。总日志 `work/a1/acceptance-final-scope.log`，双端会话 `work/tests/m6-2p-20261018-183019-203310/`。
+- 测试未显式传 clock_mode，断言 Python 环境与宿主会话默认均为fixed60。所有端、所有ACK的客体时间差严格等于 `floor(累计present*1e9/60)`，混合1/7/31/21帧脚本的原生Timer采样换算符合0.04秒容差。
+- 相同90帧移动/稳定脚本：连续参考位移 **0.360044503683226**，逐步暂停位移 **0.3600445000013895**（差约3.68e-9）；两者HUD均 **1.5秒**，中立对端位移均 **0**。连续参考预先排队全部命令；暂停版每段有0.2秒真实策略等待。旧realtime仍有已记录的HUD漂移，保留可选但不宣称它是60Hz。
+- 时钟组件fixed60 **10804**、旧共享 **13** / 手动 **5**、短睡眠 **3**、空闲事件有界轮询 / 条件变量回归、传输 **25**、GPU **148** / headless **152**、NVN **79**、HID **73** / RL **11**、LDN frontend **10** / air **59** 与资源规则全部通过。
+- 两宿主均 **优雅退出0**，无CRASH/FATAL。206次资源采样pressure最大 **1**，新增swapout **0**，footprint合计峰值 **7313MiB**；原件及参考档SHA256仍为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。受测宿主/Python/入口冻结清单 `work/a1/acceptance-final-scope-code.sha256` 复核全通过。
+- 待办保留在GOAL的A1/A4：平地、近距离正对目标，用公共aim_at排除瞄准/台沿问题后，对比连续/暂停真实伤害；本次签收不包含该证据。只提交本项目源码、测试、文档和可重放补丁；游戏数据/画面/参数原件/运行栈不入库。下一步A2。

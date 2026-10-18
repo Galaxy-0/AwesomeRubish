@@ -30,8 +30,10 @@ def catalogs():
 
 
 class Session:
-    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False):
+    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False, clock_mode='fixed60'):
         if players not in (2,8): raise ValueError('M6 supports 2 or 8 players')
+        if clock_mode not in ('realtime','fixed60'):raise ValueError('clock_mode must be realtime or fixed60')
+        self.clock_mode=clock_mode
         if mode not in range(5): raise ValueError('mode must be 0..4')
         stages, weapon_ids = catalogs()
         matches = [i for i,r in enumerate(stages) if r['Id'] == stage_id]
@@ -94,6 +96,7 @@ class Session:
         os.mkfifo(directory/'controller.fifo',0o600)
         env=host_environment(ROOT,self.out,directory,player,self.players,self.air_socket,self.weapons)
         env.update(DM_RL_SOCKET=str(self.socket_dir/f'player-{player}.sock'),DM_RL_CLOCK_FILE=str(self.clock.path),DM_HID_TRACE='1',
+                   DM_RL_CLOCK_MODE=self.clock_mode,
                    DM_PROBE='main:3db55d0,main:3dcc710,main:3dd9370,main:3571e24@x21+e8')
         if self.state_dump:
             env['DM_RL_STATE_DUMP']='1'

@@ -259,3 +259,15 @@ HP字段来自已与PlayerDamage更新独立比对的自身包；生产传输检
 
 
 **M6最终签收 PASS（2026-10-18）**：八端上述正式命令退出0，work/tests/m6-check-8p-20261018-153022-895155/result.json为passed=true、full_m6_passed=true、errors=[]。186步，所有agent第156步Judge、第186步Winners；本次实际同时结算，异步逐agent终止由生产生命周期夹具覆盖。八个原生slot0..7全部有效，同帧重复输入最多62次正常锁存，帧差错误0；本次无输入帧数0，缺读场景由原生夹具覆盖。正式比分Alpha[4.4,4.0]、Bravo[4.0,4.4]，同队一致/对队反序。八宿主优雅退出0，无新增swapout，pressure最大1，footprint合计峰值28728MiB。双端字段/回血/倒下动作相关性及reset的独立证据见前述151321-599465结果。完整记录见PROGRESS.md最后签收节。
+
+## A1 时间一致性
+
+```sh
+bash tests/run_all.sh --milestone a1 --timeout 2400
+```
+
+受控默认 `clock_mode='fixed60'`，`realtime` 保留为兼容/漂移诊断选项。正式测试对比预排队全部输入的连续运行和相同脚本每步加入0.2秒策略等待的运行。每个 ACK 的客体纳秒值必须与累计 present 数精确对应；原生 Timer HUD 按自身采样帧换算的时间差容差0.04秒；混合1/7/31/21帧预算的行走位移差不超过 max(0.15,5%)，中立对端位移不超过0.05。
+
+按指挥方决定，伤害一致性移到 A4 完成 `aim_at` 后补测，使用平地、近距离正对目标并排除台沿遮挡。`tests/diagnose_stamper_aim.py` 保留此前未命中的诊断，不接入 A1 通过条件。
+
+`tests/probe_a1_time.py --clock-mode realtime|fixed60` 逐步记录 present、Timer、位置、动作，始终输出 `full_a1_passed=false`，不能单独替代正式验收。STEP 接收超时30秒，异常时清理前逐宿主执行macOS `sample`（每次调用最多10秒）。有限客体等待上限60秒；无期限空闲等待每次宿主轮询最多1秒，整体由STEP无进展上限负责采样停止。所有原始产物只留忽略的 `work/tests/`。

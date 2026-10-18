@@ -85,19 +85,20 @@ index 0000000..8539a5d
 +# 预热种子清单（随包，与 shader_map.tsv 同目录）。行：S<TAB>着色器键<TAB>阶段 / R<TAB>渲染管线键（pso_skey 十六进制）/ C<TAB>计算着色器键。
 +# 本作尚未录制（DM_PSO_RECORD）：空表 = 不预热。行序 = 首次使用顺序，不要排序。
 diff --git a/dm/gfx/nvn/hle_nvn.c b/dm/gfx/nvn/hle_nvn.c
-index d4c3531..3e0350c 100644
+index d4c3531..0ea753b 100644
 --- a/dm/gfx/nvn/hle_nvn.c
 +++ b/dm/gfx/nvn/hle_nvn.c
-@@ -9,6 +9,8 @@
+@@ -9,6 +9,9 @@
  // Every implementation gets a compile-time signature check against the prototypes in nvn_protos.h (NVNboolean parameters are received as uint32_t, only the low 8 bits are looked at).
  // Environment switches: DM_NVN_FRAMES=N prints the call table per frame for the first N frames (default 3); DM_NVN_TSV=path writes the per-frame call table and timing to a TSV (DM_NVN_TSV_CALLS=0 writes timing only); DM_SLOWFRAME=1 writes only the per-frame breakdown of dropped frames to the log; DM_NVN_LOG=1 logs object creation.
  #include "../../host/hle.h"
 +#include "../../host/dm_rl.h"
 +__attribute__((weak)) void dm_rl_present(uint64_t frame) { (void)frame; }
++__attribute__((weak)) void dm_guest_frame_begin(void) {}
  #include "nvn_protos.h"
  #include "nvn_count.h"
  #include "nvn_tex.h"
-@@ -16,6 +18,7 @@
+@@ -16,6 +19,7 @@
  #include "nvn_pace.h"
  #include "../../host/front.h"
  #include "nvn_dirty.h"
@@ -105,7 +106,7 @@ index d4c3531..3e0350c 100644
  #include <mach/mach_time.h>
  #include <CommonCrypto/CommonDigest.h>
  #include <CoreFoundation/CoreFoundation.h>
-@@ -479,13 +482,56 @@ static void cs_dump(void) {   // Called once per frame (at present)
+@@ -479,13 +483,56 @@ static void cs_dump(void) {   // Called once per frame (at present)
          (unsigned long long)f, g_cs.bytes / n / 1024.0, g_cs.recs / n, g_cs.grants / n, g_cs.grants ? g_cs.grant_bytes / (double)g_cs.grants / 1024.0 : 0, g_cs.grant_min / 1024.0, g_cs.grant_max / 1024.0, g_cs.cbs / n, g_cs.hostseg / n, g_cs.waste / n / 1024.0, top);
      int on = g_cs.on; memset(&g_cs, 0, sizeof g_cs); g_cs.on = on; g_cs.frame0 = f; pthread_mutex_unlock(&g_cs_mu);
  }
@@ -166,7 +167,7 @@ index d4c3531..3e0350c 100644
  }
  // Host-supplied segment when the game's own command memory runs out: when the game's out-of-memory callback cannot allocate from its command memory pool, it calls AddCommandMemory with an empty pool (p = NULL, n = 0)
  // (opening the advanced stats page on the level 88 sorceress save: many list items in one frame, and the original implementation segfaulted here reading NULL+8). Our records are larger than real-device NVN commands, so the budget the game reserved for real-device usage is not necessarily enough,
-@@ -496,32 +542,41 @@ static void cmd_new_segment(cmd_t *o, uint8_t *mem, size_t n) {
+@@ -496,32 +543,41 @@ static void cmd_new_segment(cmd_t *o, uint8_t *mem, size_t n) {
  // A segment hangs off one recording through the JUMP at the end of its guest part: that recording occupies [BEGIN, end of JUMP) in guest memory, and the game only gives those bytes out again once they are dead
  // (when it re-records that material in place; packing the next recording right behind by used never touches them, since used includes the JUMP). So a segment remembers that guest range and is reclaimed when the game gives out memory
  // overlapping it; segments overflowing from a host segment keep the same range.
@@ -220,7 +221,7 @@ index d4c3531..3e0350c 100644
      return m;
  }
  // The game gives out [lo, hi): segments whose recording's guest bytes overlap it are dead, reclaim them
-@@ -531,47 +586,103 @@ static void hostseg_release(uintptr_t lo, uintptr_t hi) {
+@@ -531,47 +587,103 @@ static void hostseg_release(uintptr_t lo, uintptr_t hi) {
      pthread_mutex_unlock(&g_hostseg_mu);
  }
  NVN(nvnCommandBufferAddCommandMemory, void, NVNcommandBuffer *c, const NVNmemoryPool *p, ptrdiff_t off, size_t n) {
@@ -337,7 +338,7 @@ index d4c3531..3e0350c 100644
  }
  NVN(nvnCommandBufferSignalEvent, void, NVNcommandBuffer *c, const NVNevent *e, NVNeventSignalMode m, NVNeventSignalLocation loc, int flags, uint32_t v) {
      (void)loc; (void)flags;
-@@ -841,10 +952,12 @@ NVN(nvnQueueSubmitCommands, void, NVNqueue *q, int n, const NVNcommandHandle *h)
+@@ -841,10 +953,12 @@ NVN(nvnQueueSubmitCommands, void, NVNqueue *q, int n, const NVNcommandHandle *h)
      gfx_enter();
      uint64_t t0 = now_ns(), c0 = clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID), i0, y0, s0 = thr_sys_ns(); thr_counts(&i0, &y0);
      ((queue_t *)q)->submits++;
@@ -350,7 +351,15 @@ index d4c3531..3e0350c 100644
      mtl_sub_commit();
      uint64_t dw = now_ns() - t0;
      atomic_fetch_add(&g_nvn_ns, dw); atomic_fetch_add(&g_sub_wall_ns, dw);
-@@ -1283,6 +1396,7 @@ NVN(nvnQueuePresentTexture, void, NVNqueue *q, NVNwindow *w, int idx) {
+@@ -942,6 +1056,7 @@ static uint64_t g_acq_wait_ns, g_pq_wait_ns;   // Accumulated display-link wait
+ uint64_t dm_nvn_frame_count(void) { return g_frame; }
+ extern uint64_t g_t0_ns;   // Host process start point (main.c; same base as the UIMSG timestamps)
+ NVN(nvnWindowAcquireTexture, NVNwindowAcquireTextureResult, NVNwindow *w, NVNsync *s, int *idx) {
++    dm_guest_frame_begin();
+     win_t *o = (win_t *)w;
+     *idx = o->ntex ? o->next++ % o->ntex : 0;
+     // Vsync blocks here (real-device NVN: when all textures in the swapchain are waiting for display, wait for the next one to be released), not in present -- the game often calls present while holding a lock
+@@ -1283,6 +1398,7 @@ NVN(nvnQueuePresentTexture, void, NVNqueue *q, NVNwindow *w, int idx) {
          if (a_ > 0) trow(f - 8, "@pres_at_ms", a_ * 1e3 - g_t0_ns / 1e6); }   // on-screen present time (ms since process start; presentedTime shares a time base with mach_absolute_time)
      if (f >= 8 && slow_on()) slow_emit(f - 8);
      prev_out = now_ns();
@@ -358,7 +367,7 @@ index d4c3531..3e0350c 100644
  }
  
  // ---------- State-only interfaces used by newer-SDK games (SMBW) that D2R did not use: buffer objects, pool / sampler / texture queries, views, color state, device and window ----------
-@@ -1412,13 +1526,17 @@ NVN(nvnDeviceRegisterFastClearColor, NVNboolean, NVNdevice *d, const float *c, N
+@@ -1412,13 +1528,17 @@ NVN(nvnDeviceRegisterFastClearColor, NVNboolean, NVNdevice *d, const float *c, N
  NVN_NOPROTO(nvnWindowBuilderSetNumActiveTextures, void, NVNwindowBuilder *b, int n) { (void)b; ONCE_LOG("WindowBuilderSetNumActiveTextures %d（宿主按 SetTextures 的张数轮转）", n); }
  NVN_NOPROTO(nvnWindowSetNumActiveTextures, void, NVNwindow *w, int n) { (void)w; ONCE_LOG("WindowSetNumActiveTextures %d（宿主按 SetTextures 的张数轮转）", n); }
  
@@ -382,7 +391,7 @@ index d4c3531..3e0350c 100644
  NVN_NOPROTO(nvnCommandBufferSetCommandMemoryCallbackEnabled, void, NVNcommandBuffer *c, uint32_t on) { (void)c; (void)on; }
  
  // nvnProgramSetShadersExt (NVN 55): each stage is 0x18 bytes = NVNshaderData{data, control} + one 8-byte extension field (filled from SMBW main 0x1074ff0).
-@@ -1435,7 +1553,9 @@ NVN_NOPROTO(nvnProgramSetShadersExt, NVNboolean, NVNprogram *p, int n, const sha
+@@ -1435,7 +1555,9 @@ NVN_NOPROTO(nvnProgramSetShadersExt, NVNboolean, NVNprogram *p, int n, const sha
  // Singular / combined forms → plural / separate forms; state the replay layer does not have yet (conditional render, depth bounds, ...) is logged once and drawing continues (better to over-draw than to drop).
  #include "../tex/nvn_deswizzle.h"
  
@@ -393,7 +402,7 @@ index d4c3531..3e0350c 100644
  // Combined texture handle (texture id | sampler id << 20) is recorded into the texture slot as is: the replay layer takes the texture from the low 20 bits and the sampler from the high bits (nvn_mtl.m NVN_RB_SAMPT)
  NVN(nvnCommandBufferBindTexture, void, NVNcommandBuffer *c, NVNshaderStage st, int i, NVNtextureHandle h) { uint64_t v = (uint64_t)h; bind_handles(c, OP_BIND_TEX, st, i, 1, &v); }
  // "Deferred" binding: the GPU reads the handles h points to when it executes this command, not at recording. The per-texture binding of The Legend of Zelda: Breath of the Wild's engine (main+0xec2e64) always uses it,
-@@ -1478,9 +1598,10 @@ NVN(nvnCommandBufferReportValue, void, NVNcommandBuffer *c, uint32_t v, NVNbuffe
+@@ -1478,9 +1600,10 @@ NVN(nvnCommandBufferReportValue, void, NVNcommandBuffer *c, uint32_t v, NVNbuffe
  // Clear a buffer to a 32-bit value: one OP_CLEAR_BUF record, filled in order within the submission at replay (fillBuffer when all bytes match, otherwise copied from a pattern buffer)
  NVN(nvnCommandBufferClearBuffer, void, NVNcommandBuffer *c, NVNbufferAddress a, size_t n, uint32_t v) { *REC(c, OP_CLEAR_BUF, p_clear_buf) = (p_clear_buf){a, n, v, 0}; }
  
@@ -1958,7 +1967,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..02cfff3 100644
+index fda33ac..91ee4ba 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1970,7 +1979,17 @@ index fda33ac..02cfff3 100644
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
-@@ -94,6 +94,7 @@ void dm_prof_mark(const char *seg);
+@@ -67,6 +67,9 @@ int gate_svc_present(int num);   // Whether the build output has a gate for this
+ uint64_t now_ns(void);
+ uint64_t guest_ns(void);              // Guest clock (hle_os.c; does not advance while DM_TICK_HOLD is frozen)
+ int dm_detclock_enabled(void);
++int dm_guest_fixed60(void);
++void dm_guest_frame_begin(void);
++uint64_t dm_guest_frame(void);
+ void dm_guest_clock_advanced(void);
+ void guest_clock_freeze(int on);
+ void guest_clock_freeze_for(int reason, int on);   // Freeze by reason (1 background, 2 system keyboard); see hle_os.c
+@@ -94,6 +97,7 @@ void dm_prof_mark(const char *seg);
  uint64_t dm_prof_ribbon_ns(void);   // The now_ns time at which OpenPanel MainMenuButtonRibbon first appeared (0 = not yet; needs DM_BOOTPROF=1)
  void *objmap_get(const void *guest); void objmap_put(const void *guest, void *host); void *objmap_del(const void *guest);
  void hle_signal_system_event(void *g);   // hle_thread.c: signal a service-layer SystemEvent (any thread)
@@ -1980,10 +1999,10 @@ index fda33ac..02cfff3 100644
  void dm_fault_hook_register(int (*fn)(void *addr, int is_write, void *uc));
 diff --git a/dm/host/dm_rl.h b/dm/host/dm_rl.h
 new file mode 100644
-index 0000000..c865a42
+index 0000000..ef67241
 --- /dev/null
 +++ b/dm/host/dm_rl.h
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,17 @@
 +// Local RL transport: no platform graphics or IPC types cross this interface.
 +#pragma once
 +#include <stdint.h>
@@ -1997,6 +2016,7 @@ index 0000000..c865a42
 +void dm_rl_before_input(uint64_t present_frame);
 +void dm_rl_present(uint64_t completed_frame);
 +int dm_rl_active(void);
++int dm_rl_frame_allowed(uint64_t frame);
 +int dm_rl_capture_needed(void);
 +void dm_rl_pixels(const uint8_t *rgb, uint64_t frame, unsigned width, unsigned height);
 +void dm_hid_rl_action(uint64_t buttons, const int32_t axes[4], const float gyro[3]);
@@ -2070,13 +2090,15 @@ index c7559ca..d3b7360 100644
      @autoreleasepool {
          [NSApplication sharedApplication];
 diff --git a/dm/host/hle.h b/dm/host/hle.h
-index 79fda3d..c742520 100644
+index 79fda3d..1b49bbb 100644
 --- a/dm/host/hle.h
 +++ b/dm/host/hle.h
-@@ -22,6 +22,8 @@ uint64_t now_ns(void);
+@@ -22,6 +22,10 @@ uint64_t now_ns(void);
  extern __thread _Atomic int dm_host_work;
  uint64_t guest_ns(void);              // Guest clock (hle_os.c; does not advance while DM_TICK_HOLD is frozen)
  int dm_detclock_enabled(void);
++int dm_guest_fixed60(void);
++void dm_guest_frame_begin(void);
 +struct dm_rl_clock;
 +void dm_guest_clock_share(struct dm_rl_clock *clock);
  void dm_guest_clock_advanced(void);
@@ -3066,7 +3088,7 @@ index 367779a..f05c688 100644
  HLE_FORCE("_ZN2nn3err39ShowUnacceptableApplicationVersionErrorEv", "游戏版本不符错误小程序；宿主只记日志", void, h_err_AppVer, void) { LOG("游戏请求显示错误：游戏版本不符"); }
  
 diff --git a/dm/host/hle_os.c b/dm/host/hle_os.c
-index 61cf410..e5e894c 100644
+index 61cf410..631520d 100644
 --- a/dm/host/hle_os.c
 +++ b/dm/host/hle_os.c
 @@ -2,6 +2,7 @@
@@ -3077,27 +3099,64 @@ index 61cf410..e5e894c 100644
  #include <mach/mach_time.h>
  #include <stdatomic.h>
  
-@@ -53,7 +54,13 @@ static int detclock_cfg(void) {
+@@ -53,8 +54,41 @@ static int detclock_cfg(void) {
      return c;
  }
  static uint64_t wall_guest_ns(void) { return atomic_load(&g_gfz) ? atomic_load(&g_gfrozen) : now_ns() - atomic_load(&g_glag); }
 -uint64_t guest_ns(void) { return atomic_load(&g_gdet_on) ? atomic_load(&g_gdet) : wall_guest_ns(); }
+-int dm_detclock_enabled(void) { return detclock_cfg() && atomic_load(&g_gdet_on); }
 +static _Atomic(dm_rl_clock *) g_shared_clock;
-+void dm_guest_clock_share(dm_rl_clock *clock) { atomic_store(&g_shared_clock,clock); }
++static _Atomic int g_rl_fixed;
++static _Atomic uint64_t g_rl_base, g_rl_frames, g_rl_origin;
++__attribute__((weak)) int dm_rl_frame_allowed(uint64_t frame) { (void)frame;return 1; }
++int dm_guest_fixed60(void) { return atomic_load(&g_rl_fixed); }
++void dm_guest_frame_begin(void) {
++    if (!dm_guest_fixed60()) return;
++    uint64_t frame=dm_guest_frame(),origin=atomic_load(&g_rl_origin);
++    if (frame<origin || !dm_rl_frame_allowed(frame)) return;
++    uint64_t target=frame-origin+1,previous=atomic_load(&g_rl_frames);
++    while (previous<target) {
++        if (atomic_compare_exchange_weak(&g_rl_frames,&previous,target)) {
++            LOG("RL_FRAME_BEGIN present=%llu tick=%llu guest_ns=%llu",frame,target,guest_ns());
++            dm_guest_clock_advanced();return;
++        }
++    }
++}
++void dm_guest_clock_share(dm_rl_clock *clock) {
++    // Activate only at RL attachment, after the wall-clock loading/menu route.
++    // Each peer advances its own clock; a faster peer cannot advance a slower
++    // peer's physics or timed waits. Integer division retains the 1/60 remainder.
++    const char *mode=getenv("DM_RL_CLOCK_MODE");
++    if (clock && mode && !strcmp(mode,"fixed60")) {
++        atomic_store(&g_rl_base,guest_ns());atomic_store(&g_rl_frames,0);
++        atomic_store(&g_rl_origin,dm_guest_frame());
++        atomic_store(&g_rl_fixed,1);
++    } else atomic_store(&g_shared_clock,clock);
++}
 +uint64_t guest_ns(void) {
++    if (atomic_load(&g_rl_fixed)) return atomic_load(&g_rl_base)+atomic_load(&g_rl_frames)*UINT64_C(1000000000)/60;
 +    dm_rl_clock *clock=atomic_load(&g_shared_clock);
 +    if (clock) return dm_rl_clock_read(clock);
 +    return atomic_load(&g_gdet_on) ? atomic_load(&g_gdet) : wall_guest_ns();
 +}
- int dm_detclock_enabled(void) { return detclock_cfg() && atomic_load(&g_gdet_on); }
++int dm_detclock_enabled(void) { return atomic_load(&g_rl_fixed) || (detclock_cfg() && atomic_load(&g_gdet_on)); }
  // Run entry alignment: the number of presented frames in the front end / character select phase varies with real time (loading advances on a background thread by wall clock), so the guest clock value accumulated since the first frame differs every run --
  // pictures that depend on absolute time (such as the liquid level of the life / mana orbs) still differ at the same tick (measured: at tick E + 2 frames two passes differ by about 18,000 pixels, concentrated at the two orb positions).
+ // On seeing the UI message FrontEndNavigation:ToGame (before the run is created and the server tick deadline is initialized) the guest clock is set to the fixed value 2^52 ns (forward jumps only),
+@@ -70,6 +104,7 @@ static void det_on_uimsg(const char *cat, const char *act, const char *arg) {
+ void dm_guest_frame_tick(void) {
+     crash_watch_frame();
+     atomic_fetch_add(&g_guest_frame, 1);
++    if (atomic_load(&g_rl_fixed)) return; // The next tick starts at a frame wait/acquire, within the STEP budget.
+     if (!detclock_cfg()) return;
+     if (!atomic_load(&g_gdet_on)) {
+         atomic_store(&g_gdet, wall_guest_ns()); atomic_store(&g_gdet_on, 1);
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..b45b404
+index 0000000..7005496
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,396 @@
+@@ -0,0 +1,423 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
@@ -3107,6 +3166,7 @@ index 0000000..b45b404
 +#include <sys/socket.h>
 +#include <sys/un.h>
 +#include <sys/stat.h>
++#include <sys/time.h>
 +#include <fcntl.h>
 +#include <unistd.h>
 +#include <errno.h>
@@ -3129,6 +3189,7 @@ index 0000000..b45b404
 +static unsigned rl_source_width, rl_source_height;
 +static int rl_have_image;
 +static dm_rl_clock *rl_clock;
++static int rl_fixed_clock;
 +static pthread_mutex_t rl_state_mu = PTHREAD_MUTEX_INITIALIZER;
 +static float rl_position[3], rl_ink, rl_heading, rl_hp, rl_special;
 +static uint64_t rl_position_frame, rl_state_sequence;
@@ -3141,6 +3202,13 @@ index 0000000..b45b404
 +static float rl_score[2],rl_turf[2];static int rl_score_seen,rl_score_units;static uint64_t rl_score_frame;
 +
 +int dm_rl_active(void) { return atomic_load(&rl_controlled); }
++int dm_rl_frame_allowed(uint64_t frame) {
++    if (!dm_rl_active()) return 1;
++    pthread_mutex_lock(&rl_input_mu);
++    int allowed=frame<rl_budget_end;
++    pthread_mutex_unlock(&rl_input_mu);
++    return allowed;
++}
 +int dm_rl_capture_needed(void) {
 +    return atomic_load(&rl_enabled) && (!dm_rl_active() || atomic_load(&rl_remaining) <= 1);
 +}
@@ -3326,6 +3394,9 @@ index 0000000..b45b404
 +        if (rl_clock==MAP_FAILED || rl_clock->magic!=DM_RL_CLOCK_MAGIC ||
 +            !atomic_is_lock_free(&rl_clock->state) || !atomic_is_lock_free(&rl_clock->last)) die("RL incompatible shared clock");
 +    }
++    const char *clock_mode=getenv("DM_RL_CLOCK_MODE");
++    rl_fixed_clock=clock_mode && !strcmp(clock_mode,"fixed60");
++    if(rl_fixed_clock && !rl_clock) die("RL fixed60 requires a shared clock file for attachment");
 +    atomic_store(&rl_enabled, 1);
 +    LOG("RL_SOCKET version=1 path=%s pixels=%dx%dx3", path, DM_RL_WIDTH, DM_RL_HEIGHT);
 +}
@@ -3408,11 +3479,19 @@ index 0000000..b45b404
 +    pthread_mutex_lock(&rl_input_mu);
 +    int auto_frame=frame==UINT64_MAX;
 +    if (auto_frame) frame=dm_guest_frame();
++    int limit_set=0;struct timespec input_limit;
 +    // A query at the completed budget endpoint belongs to the next frame.
 +    // It waits for the next STEP, just like the present thread, rather than
 +    // inventing an action or rejecting normal concurrent SDK polling.
 +    while (dm_rl_active() && frame==rl_budget_end) {
-+        pthread_cond_wait(&rl_input_cv,&rl_input_mu);
++        if(rl_fixed_clock) {
++            if(!limit_set) {
++                clock_gettime(CLOCK_REALTIME,&input_limit);input_limit.tv_sec+=60;limit_set=1;
++                LOG("RL_INPUT_WAIT frame=%llu budget_end=%llu wall_limit_s=60",frame,rl_budget_end);
++            }
++            if(pthread_cond_timedwait(&rl_input_cv,&rl_input_mu,&input_limit)==ETIMEDOUT)
++                die("RL_INPUT_WAIT timeout frame=%llu budget_end=%llu",frame,rl_budget_end);
++        } else pthread_cond_wait(&rl_input_cv,&rl_input_mu);
 +        if(auto_frame)frame=dm_guest_frame();
 +    }
 +    if (!dm_rl_active()) { pthread_mutex_unlock(&rl_input_mu);return 0; }
@@ -3443,6 +3522,10 @@ index 0000000..b45b404
 +            return;
 +        }
 +        if (fcntl(rl_peer, F_SETFL, 0) < 0) die("RL connected socket flags");
++        if(rl_fixed_clock) {
++            struct timeval limit={60,0};
++            if(setsockopt(rl_peer,SOL_SOCKET,SO_RCVTIMEO,&limit,sizeof limit)) die("RL command wait limit");
++        }
 +#ifdef SO_NOSIGPIPE
 +        int one = 1; setsockopt(rl_peer, SOL_SOCKET, SO_NOSIGPIPE, &one, sizeof one);
 +#endif
@@ -3468,7 +3551,10 @@ index 0000000..b45b404
 +    for (;;) {
 +        char c; ssize_t n = recv(rl_peer, &c, 1, 0);
 +        if (n < 0 && errno == EINTR) continue;
-+        if (n <= 0) { rl_release(); return; }
++        if (n <= 0) {
++            if(rl_fixed_clock) LOG("RL_COMMAND_WAIT closed_or_timeout result=%zd errno=%d frame=%llu",n,errno,frame);
++            rl_release(); return;
++        }
 +        if (c == '\n') break;
 +        if (used + 1 >= sizeof line) die("RL command too long");
 +        line[used++] = c;
@@ -3660,10 +3746,101 @@ index 7683095..e02b848 100644
          case I_DebuggerAttached: v = 0; break;
          case I_RandomEntropy: { uint64_t dm_entropy64(void); v = dm_entropy64(); break; }   // a deterministic stream when DM_DETCLOCK is on (hle_os.c)
 diff --git a/dm/host/hle_thread.c b/dm/host/hle_thread.c
-index 96d2674..df3adad 100644
+index 96d2674..19b5a26 100644
 --- a/dm/host/hle_thread.c
 +++ b/dm/host/hle_thread.c
-@@ -788,6 +788,13 @@ void hle_bind_system_event(void *ev, int autoclear) {      // Must be called on
+@@ -27,6 +27,9 @@
+ #define R_OUT_OF_RES  0xCE01u   // 103
+ #define WAITERS_BIT   0x40000000u
+ #define H_CUR_THREAD  0xFFFF8000u
++#ifndef DM_RL_WAIT_LIMIT_NS
++#define DM_RL_WAIT_LIMIT_NS UINT64_C(60000000000)
++#endif
+ 
+ enum { O_FREE, O_THREAD, O_EVENT_R, O_EVENT_W };
+ typedef struct event { int signaled; int refs; } event_t;
+@@ -153,6 +156,8 @@ static int64_t block(thr_t *t, int kind, int64_t ns) {   // Boot timeline: accum
+ static int64_t block_inner(thr_t *t, int kind, int64_t ns) {
+     t->wkind = kind; t->woke = 0; t->next = g_wait; g_wait = t; t->wseq = ++g_wseq;
+     if (ns == 0) { wait_unlink(t); t->wkind = 0; return R_TIMEOUT; }
++    uint64_t fixed_start=dm_guest_fixed60() ? now_ns() : 0;
++    if(fixed_start) LOG("RL_WAIT begin thread=%#x kind=%d timeout_ns=%lld frame=%llu lr=%#llx",t->handle,kind,ns,dm_guest_frame(),t->last_lr);
+     struct timespec dl;
+     int det_wait = ns > 0 && dm_detclock_enabled();
+     uint64_t guest_deadline = det_wait ? guest_ns() + (uint64_t)ns : 0;
+@@ -162,12 +167,29 @@ static int64_t block_inner(thr_t *t, int kind, int64_t ns) {
+         int rc;
+         if (det_wait) {
+             uint64_t now = guest_ns();
+-            if (now >= guest_deadline) { wait_unlink(t); t->wkind = 0; return R_TIMEOUT; }
++            if (now >= guest_deadline) {
++                if(fixed_start) LOG("RL_WAIT timeout thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
++                wait_unlink(t); t->wkind = 0; return R_TIMEOUT;
++            }
+             (void)(guest_deadline - now);
+-            rc = pthread_cond_wait(&t->cv, &G);
++            if(fixed_start) {
++                struct timespec poll;clock_gettime(CLOCK_REALTIME,&poll);poll.tv_sec++;
++                rc=pthread_cond_timedwait(&t->cv,&G,&poll);
++            } else rc = pthread_cond_wait(&t->cv, &G);
++        } else if(fixed_start) {
++            struct timespec poll;clock_gettime(CLOCK_REALTIME,&poll);poll.tv_sec++;
++            rc=pthread_cond_timedwait(&t->cv,&G,&poll);
+         } else rc = ns > 0 ? pthread_cond_timedwait(&t->cv, &G, &dl) : pthread_cond_wait(&t->cv, &G);
+-        if (rc == ETIMEDOUT && !t->woke && (!det_wait || guest_ns() >= guest_deadline)) { wait_unlink(t); t->wkind = 0; return R_TIMEOUT; }
++        if(fixed_start && ns>0 && now_ns()-fixed_start>DM_RL_WAIT_LIMIT_NS)
++            die("RL_WAIT wall limit thread=%#x kind=%d timeout_ns=%lld frame=%llu lr=%#llx",t->handle,kind,ns,dm_guest_frame(),t->last_lr);
++        if(fixed_start && ns<0 && rc==ETIMEDOUT && !t->woke)
++            LOG("RL_IDLE_WAIT poll thread=%#x kind=%d frame=%llu wall_ns=%llu",t->handle,kind,dm_guest_frame(),now_ns()-fixed_start);
++        if (rc == ETIMEDOUT && !t->woke && (fixed_start ? ns>0 && guest_ns()>=guest_deadline : !det_wait || guest_ns() >= guest_deadline)) {
++            if(fixed_start) LOG("RL_WAIT timeout thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
++            wait_unlink(t); t->wkind = 0; return R_TIMEOUT;
++        }
+     }
++    if(fixed_start) LOG("RL_WAIT end thread=%#x kind=%d wall_ns=%llu",t->handle,kind,now_ns()-fixed_start);
+     return t->wres;
+ }
+ 
+@@ -535,6 +557,13 @@ int svc_thread(int num, uint64_t *regs) {
+ }
+ static int svc_thread_impl(int num, uint64_t *regs) {
+     { thr_t *me = pthread_getspecific(g_keythr); if (me) { me->last_svc = num; me->last_lr = regs[30]; me->nsvc++; } }
++    // The sampled main thread waits for frame jobs here; advance before that
++    // dependency can require a future guest deadline, outside the wait lock.
++    if(dm_guest_fixed60()) {
++        thr_t *me=pthread_getspecific(g_keythr);
++        if(me && me->handle==0x1001 && ((num==0x0B && (int64_t)regs[0]>0) || num==0x18 || num==0x1C || num==0x34))
++            dm_guest_frame_begin();
++    }
+     if (g_flag.thr && num != 0x0B) { thr_t *me = pthread_getspecific(g_keythr); LOG("[%#x] svc %#x x0=%#llx x1=%#llx x2=%#llx x3=%#llx", me ? me->handle : 0, num, regs[0], regs[1], regs[2], regs[3]); }
+     switch (num) {
+     case 0x08: {  // CreateThread(→w1 handle; x1 entry, x2 argument, x3 stack top, w4 priority, w5 core)
+@@ -564,9 +593,22 @@ static int svc_thread_impl(int num, uint64_t *regs) {
+     case 0x0B: {  // SleepThread(x0 ns); 0/-1/-2 = the various kinds of yield
+         int64_t ns = (int64_t)regs[0];
+         uint64_t t0 = g_flag.bootprof ? now_ns() : 0;
+-        if (ns > 0 && dm_detclock_enabled()) {
++        if (ns>0 && ns<=1000 && dm_guest_fixed60()) {
++            // Native frame-job polling uses a 1000 ns SleepThread (19 ticks =
++            // 989 ns after SDK conversion). It must yield inside this frame,
++            // not wait for a future simulation tick which depends on the job.
++            LOG("RL_SHORT_SLEEP ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
++            struct timespec poll={0,(long)ns};nanosleep(&poll,NULL);
++        } else if (ns > 0 && dm_detclock_enabled()) {
+             uint64_t deadline = guest_ns() + (uint64_t)ns;
+-            while (guest_ns() < deadline) { struct timespec ts = {0, 1000000}; nanosleep(&ts, 0); }
++            uint64_t fixed_start=dm_guest_fixed60() ? now_ns() : 0;
++            if(fixed_start) LOG("RL_SLEEP begin ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
++            while (guest_ns() < deadline) {
++                if(fixed_start && now_ns()-fixed_start>DM_RL_WAIT_LIMIT_NS)
++                    die("RL_SLEEP wall limit ns=%lld frame=%llu lr=%#llx",ns,dm_guest_frame(),regs[30]);
++                struct timespec ts = {0, 1000000}; nanosleep(&ts, 0);
++            }
++            if(fixed_start) LOG("RL_SLEEP end ns=%lld frame=%llu wall_ns=%llu",ns,dm_guest_frame(),now_ns()-fixed_start);
+         } else if (ns > 0) { thr_t *me = pthread_getspecific(g_keythr); if (me) me->sleeping = 1; sleep_precise(now_ns() + (uint64_t)ns); if (me) me->sleeping = 0; }
+         else {   // Yield (0 / -1 / -2). Count and time of the main thread's yields are recorded: the game's render task graph "wait for everything to finish" is pure polling + yield (main+0x15ee898); measure how much of a frame it takes
+             thr_t *me = pthread_getspecific(g_keythr);
+@@ -788,6 +830,13 @@ void hle_bind_system_event(void *ev, int autoclear) {      // Must be called on
      g_se[g_nse].ev = ev; g_se[g_nse++].wh = wh;
      pthread_mutex_unlock(&g_se_lock);
  }
@@ -3862,10 +4039,28 @@ index d1bd89b..7ca2611 100644
  }
  
 diff --git a/dm/host/tests/Makefile b/dm/host/tests/Makefile
-index 50c9e9b..d9608e9 100644
+index 50c9e9b..041b430 100644
 --- a/dm/host/tests/Makefile
 +++ b/dm/host/tests/Makefile
-@@ -103,7 +103,29 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
+@@ -86,9 +86,15 @@ $(B):
+ tsan: $(B)/t_audio_spsc_tsan
+ 	$(B)/t_audio_spsc_tsan
+ $(B)/t_condvar: t_condvar.c t_condvar_stub.c ../hle_thread.c ../dm.h | $(B)
+-	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -I.. -o $@ t_condvar.c t_condvar_stub.c ../hle_thread.c
++	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -I.. $(GINC) -o $@ t_condvar.c t_condvar_stub.c ../hle_thread.c
+ $(B)/t_condvar_old: t_condvar.c t_condvar_stub.c ../hle_thread.c ../dm.h | $(B)
+-	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -DDM_TEST_CV_OLD_ORDER -I.. -o $@ t_condvar.c t_condvar_stub.c ../hle_thread.c
++	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -DDM_TEST_CV_OLD_ORDER -I.. $(GINC) -o $@ t_condvar.c t_condvar_stub.c ../hle_thread.c
++
++$(B)/t_rl_sleep: t_rl_sleep.c t_condvar_stub.c ../hle_thread.c ../dm.h | $(B)
++	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -I.. $(GINC) -o $@ t_rl_sleep.c t_condvar_stub.c ../hle_thread.c
++
++$(B)/t_rl_idle: t_rl_idle.c t_condvar_stub.c ../hle_thread.c ../dm.h | $(B)
++	clang -O1 -Wno-unused-function -DDM_TEST_HOOKS -DDM_RL_WAIT_LIMIT_NS=100000000 -I.. $(GINC) -o $@ t_rl_idle.c t_condvar_stub.c ../hle_thread.c
+ 
+ $(B)/t_fs_case: t_fs_case.c ../hle_fs.c ../hle.h ../dm.h ../dm_i18n.c | $(B)
+ 	clang -O1 -Wno-unused-function -I.. $(GINC) -o $@ t_fs_case.c ../dm_i18n.c
+@@ -103,7 +109,29 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
  
  $(B)/t_hid_receipt: t_hid_receipt.c t_touch_tick_stub.c ../hle_hid.c ../dm_cursor.c ../dm_hud.c ../dm_hud.h ../touch_mac.c ../../ios/Sources/dm_touch_controls.c ../hle.h ../dm.h ../dm_input.h ../front.h | $(B)
  	clang -O1 -Wno-unused-function -I.. -I../../ios/Sources -o $@ t_hid_receipt.c t_touch_tick_stub.c ../dm_cursor.c ../dm_hud.c ../touch_mac.c ../../ios/Sources/dm_touch_controls.c -lm
@@ -3931,6 +4126,23 @@ index 0000000..7a3d75c
 +    printf("account-player: %d checks, %d failed uid=%016llx:%016llx nickname=%s\n", checks, failures, u.v[0], u.v[1], nick);
 +    return failures != 0;
 +}
+diff --git a/dm/host/tests/t_condvar_stub.c b/dm/host/tests/t_condvar_stub.c
+index 48f0a9a..d363cd3 100644
+--- a/dm/host/tests/t_condvar_stub.c
++++ b/dm/host/tests/t_condvar_stub.c
+@@ -10,6 +10,10 @@ module_t *module_of(const void *p) { (void)p; return NULL; }
+ void dm_prof_add(int id, uint64_t ns, uint64_t bytes) { (void)id; (void)ns; (void)bytes; }
+ #include <mach/mach_time.h>
+ uint64_t now_ns(void) { static mach_timebase_info_data_t tb; if (!tb.denom) mach_timebase_info(&tb); return mach_absolute_time() * tb.numer / tb.denom; }
+-uint64_t guest_ns(void) { return now_ns(); }
+-int dm_detclock_enabled(void) { return 0; }
++int test_fixed60;
++uint64_t guest_ns(void) { return test_fixed60 ? UINT64_C(1000000000) : now_ns(); }
++int dm_detclock_enabled(void) { return test_fixed60; }
++int dm_guest_fixed60(void) { return test_fixed60; }
++void dm_guest_frame_begin(void) {}
++uint64_t dm_guest_frame(void) { return 0; }
+ __thread _Atomic int dm_host_work;   // referenced by hle_thread.c; in the host it is defined in hle_nvn.c
 diff --git a/dm/host/tests/t_fs.c b/dm/host/tests/t_fs.c
 index 33a28f5..597cf62 100644
 --- a/dm/host/tests/t_fs.c
@@ -4285,10 +4497,10 @@ index 0000000..dee2047
 +}
 diff --git a/dm/host/tests/t_rl_clock.c b/dm/host/tests/t_rl_clock.c
 new file mode 100644
-index 0000000..ce40ff3
+index 0000000..af37b58
 --- /dev/null
 +++ b/dm/host/tests/t_rl_clock.c
-@@ -0,0 +1,42 @@
+@@ -0,0 +1,57 @@
 +// Production clock: wall-time execution, common policy pause and manual replay.
 +#include "../hle.h"
 +#include "../dm_rl_clock.h"
@@ -4302,10 +4514,25 @@ index 0000000..ce40ff3
 +void dm_guest_clock_advanced(void){}
 +void uimsg_subscribe(void (*fn)(const char *,const char *,const char *)){(void)fn;}
 +static int checks,failed;
++static int frame_allowed=1;
++int dm_rl_frame_allowed(uint64_t frame) { (void)frame;return frame_allowed; }
 +#define CHECK(x) do{checks++;if(!(x)){failed++;fprintf(stderr,"FAIL %d\n",__LINE__);}}while(0)
 +int main(int argc,char **argv){
-+    (void)argv;
-+    if(argc>1){
++    if(argc>1 && !strcmp(argv[1],"fixed60")){
++        unsetenv("DM_DETCLOCK");setenv("DM_RL_CLOCK_MODE","fixed60",1);
++        dm_rl_clock clock={0};uint64_t before=guest_ns();
++        dm_guest_clock_share(&clock);uint64_t initial=guest_ns();
++        CHECK(initial>=before);CHECK(dm_detclock_enabled());
++        for(uint64_t n=1;n<=3600;n++) {
++            frame_allowed=0;dm_guest_frame_begin();CHECK(guest_ns()-initial==(n-1)*UINT64_C(1000000000)/60);
++            frame_allowed=1;dm_guest_frame_begin();
++            uint64_t begun=guest_ns();dm_guest_frame_begin();CHECK(guest_ns()==begun);
++            usleep(n%97==0 ? 1000 : 0);dm_guest_frame_tick();
++            CHECK(guest_ns()-initial==n*UINT64_C(1000000000)/60);
++        }
++        uint64_t held=guest_ns();usleep(30000);CHECK(guest_ns()==held);
++        CHECK(held-initial==UINT64_C(60000000000));
++    }else if(argc>1){
 +        setenv("DM_DETCLOCK","10",1);dm_guest_frame_tick();uint64_t initial=guest_ns();
 +        dm_guest_frame_tick();CHECK(guest_ns()==initial+10);CHECK(dm_detclock_enabled());
 +        uint64_t held=guest_ns();guest_clock_freeze_for(3,1);dm_guest_frame_tick();CHECK(guest_ns()==held);
@@ -4330,6 +4557,58 @@ index 0000000..ce40ff3
 +        dm_guest_clock_share(NULL);munmap(clock,sizeof *clock);
 +    }
 +    printf("rl-clock: %d checks, %d failed\n",checks,failed);return failed!=0;
++}
+diff --git a/dm/host/tests/t_rl_idle.c b/dm/host/tests/t_rl_idle.c
+new file mode 100644
+index 0000000..29bd4a7
+--- /dev/null
++++ b/dm/host/tests/t_rl_idle.c
+@@ -0,0 +1,22 @@
++// An idle native event wait may outlive the timed-wait guard while frames run.
++#include "../dm.h"
++#include <unistd.h>
++int svc_thread(int num,uint64_t *regs);
++uint32_t svc_thread_main_init(void);
++extern int test_fixed60;
++void (*dm_test_cv_after_release)(void);
++static uint32_t write_handle;
++static void *signal_later(void *arg) {
++    (void)arg;struct timespec delay={2,100000000};nanosleep(&delay,NULL);
++    uint64_t regs[32]={write_handle};svc_thread(0x11,regs);return NULL;
++}
++int main(void) {
++    alarm(5);svc_thread_main_init();test_fixed60=1;
++    uint64_t event[32]={0};svc_thread(0x45,event);
++    write_handle=(uint32_t)event[1];uint32_t read_handle=(uint32_t)event[2];
++    pthread_t signaler;pthread_create(&signaler,NULL,signal_later,NULL);
++    uint64_t wait[32]={0};wait[1]=(uint64_t)(uintptr_t)&read_handle;wait[2]=1;wait[3]=UINT64_MAX;
++    uint64_t start=now_ns();svc_thread(0x18,wait);pthread_join(signaler,NULL);
++    if(wait[0]!=0 || now_ns()-start<UINT64_C(2000000000)) return 1;
++    puts("rl-idle: indefinite event wait survived 100ms guard and two bounded polls");return 0;
++}
+diff --git a/dm/host/tests/t_rl_sleep.c b/dm/host/tests/t_rl_sleep.c
+new file mode 100644
+index 0000000..97cece9
+--- /dev/null
++++ b/dm/host/tests/t_rl_sleep.c
+@@ -0,0 +1,18 @@
++// Actual SVC SleepThread must service frame-job polling with a frozen guest clock.
++#include "../dm.h"
++#include <unistd.h>
++int svc_thread(int num,uint64_t *regs);
++uint32_t svc_thread_main_init(void);
++extern int test_fixed60;
++void (*dm_test_cv_after_release)(void);
++int main(void) {
++    alarm(2);svc_thread_main_init();test_fixed60=1;
++    uint64_t start=now_ns(),held=guest_ns();
++    const uint64_t sleeps[]={1,989,1000};
++    for(unsigned i=0;i<sizeof sleeps/sizeof sleeps[0];i++) {
++        uint64_t regs[32]={0};regs[0]=sleeps[i];
++        if(!svc_thread(0x0B,regs) || guest_ns()!=held) return 1;
++    }
++    if(now_ns()-start>UINT64_C(1000000000)) return 1;
++    puts("rl-short-sleep: 3 frozen-clock SVC checks passed");return 0;
 +}
 diff --git a/dm/host/tests/t_spl3_unlock.c b/dm/host/tests/t_spl3_unlock.c
 new file mode 100644

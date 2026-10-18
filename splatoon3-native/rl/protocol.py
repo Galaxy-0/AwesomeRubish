@@ -1,6 +1,7 @@
 """POSIX local socket client; independent of the native host graphics API."""
 import json
 import socket
+from collections import deque
 
 import numpy as np
 
@@ -14,24 +15,28 @@ class Client:
         self.sequence = 0
         self.frame = None
         self.expected = 0
+        self.pending = deque([(0, 0)])
 
     def receive(self):
+        if not self.pending: raise RuntimeError('no pending native acknowledgement')
+        sequence, expected = self.pending[0]
         line = self.stream.readline(4097)
         if not line.endswith(b'\n') or len(line) > 4096:
             raise RuntimeError('native RL connection closed or invalid observation header')
         info = json.loads(line)
         if (info.get('version'), info.get('width'), info.get('height'), info.get('channels'), info.get('bytes')) != (1,128,72,3,27648):
             raise RuntimeError(f'invalid observation shape/version: {info}')
-        if info['request'] != self.sequence or info['advanced'] != self.expected:
+        if info['request'] != sequence or info['advanced'] != expected:
             raise RuntimeError(f'RL step acknowledgement mismatch: {info}')
-        if self.frame is not None and info['frame'] != self.frame + self.expected:
+        if self.frame is not None and info['frame'] != self.frame + expected:
             raise RuntimeError(f'RL frame skip mismatch: {self.frame} -> {info}')
         data = self.stream.read(27648)
         if len(data) != 27648: raise RuntimeError('truncated RL image')
         if not 0 <= info['phase'] <= 3: raise RuntimeError('invalid match phase')
-        if not 0<=info.get('frames_without_input',0)<=self.expected:
+        if not 0<=info.get('frames_without_input',0)<=expected:
             raise RuntimeError('invalid frames_without_input')
         self.frame = info['frame']
+        self.pending.popleft()
         observation = dict(pixels=np.frombuffer(data, dtype=np.uint8).reshape(72,128,3).copy(),
                            frame=np.array([info['frame']], dtype=np.int64), phase=info['phase'],
                            position=np.asarray(info.get('position',[0,0,0]),dtype=np.float32),
@@ -84,6 +89,7 @@ class Client:
         mask = sum(int(v) << bit for v, bit in zip(buttons, (9,8,7,5,1,3)))
         sticks = np.rint(axes*32767).astype(np.int32)
         self.sequence += 1; self.expected = frames
+        self.pending.append((self.sequence, frames))
         line = f'STEP {self.sequence} {frames} {mask:x} ' + ' '.join(map(str, sticks)) + ' ' + ' '.join(map(str, gyro)) + '\n'
         self.socket.sendall(line.encode('ascii'))
 

@@ -66,6 +66,13 @@ class TransportTest(unittest.TestCase):
             self.assertEqual(observation['hp_valid'],1)
             self.assertAlmostEqual(float(observation['hp'][0]),health,places=6)
 
+    def test_prequeued_script_preserves_each_ack_budget(self):
+        _, initial=self.start();frame=initial['frame']
+        for frames in (1,7,31,15):self.client.send_step(neutral(),frames)
+        for sequence,frames in enumerate((1,7,31,15),1):
+            _,info=self.client.receive();frame+=frames
+            self.assertEqual((info['request'],info['advanced'],info['frame']),(sequence,frames,frame))
+
     def test_special_charge_and_reset_wire_fraction(self):
         observation,_=self.start(mode='charge')
         self.assertEqual(observation['special'][0],0)
