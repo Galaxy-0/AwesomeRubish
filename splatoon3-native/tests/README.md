@@ -197,3 +197,5 @@ M5 默认 `--players 8`；1 / 2 / 4 只是中间阶段，返回 0 表示该阶�
 资源数据、系统采样覆盖和适用范围见 [PROGRESS.md 的 M5 签收](../notes/PROGRESS.md)。最高采样压力 warning，新增 swapout 0；没有将旧 warning 失败记录改写。
 GPU runtime binary archive 按设备 / OS / 翻译链 / shader 内容及 PSO 状态分键，flock 防并发重复编译并原子替换；严格命中与实际共享 clean backing 页均有证据。
 MSL source-to-IR 仍经系统缓存，MTLLibrary / pipeline 宿主对象仍为每端独立。进入分队后额外等待 600 帧，身份从实际 GetUid / GetNickname 输出读回，OCR 只检查模式 / 队伍人数。
+
+八端验收固定版本为 `2006a98`。随后 scoped-pool 错误返回生存期修复经普通渲染 136 / headless 140 / NVN 79 检查和宿主重编译验证，详见进度末尾；未再次运行八端整局。

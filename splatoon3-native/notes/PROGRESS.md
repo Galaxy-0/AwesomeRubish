@@ -984,3 +984,19 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 
 - 通过的是本次指定武器、Turf War / Scorch Gorge 的全自动 4v4 自然结算与资源门槛；沿用 M4 已验证的五模式 / 25 地图可选接口，没有声称全部组合逐一完成八端整局。控制脚本负责建房 / 设置 / 分队 / 准备，比赛期间没有策略训练动作；M6 的随机策略与同步 RL 接口尚未开始。
 - 原始截图、NSO / RomFS / shader 数据、存档、日志和采样全部保留 work/ 且不入库。最终测试结束后冻结 SHA256 校验仍全通过；源码补丁将按规则再次检查正向 / 反向应用，仅提交 splatoon3-native。
+
+### M5 交付后的定向错误路径收口
+
+- 八端完整验收版本为已推送的 **2006a98**；阶段提交 **81a2edf** 同样已推送。八端结束时的二进制 / 入口 / 资源采样器 / 补丁冻结校验全通过。
+- 收尾审查发现新增 scoped pool 的错误返回需要额外持有：C 函数中的 `NSError **` 在 ARC 下推导为 `__autoreleasing`，
+  直接把错误写入外层调用者的 writeback temporary 后就销毁内层 pool，可能在调用者保留错误前释放它。
+  library loader 与 pipeline builder 现在在内层 pool 之外用 strong 局部变量保留错误，再交给调用者。
+- 定向用例覆盖缺失 library 文件的真实 POSIX 错误，以及模拟设备返回的 pipeline 创建错误；都验证错误对象越过 pool 后的 domain / code / description。
+  最新普通渲染 **136** / headless **140**、NVN **79** 检查通过，宿主重新编译成功。
+  本后续修复的验证层为错误路径 / GPU 组件及编译；未重新跑八端整局。完整八端签收证据仍明确归属于 **2006a98**。
+- 八端 player 0 最后一个 InGame GPU inventory 样本：unique texture backing **2,201,457,536 bytes（约 2.05 GiB）**，
+  buffer **908,951,712 bytes（约 866.84 MiB）**、命令 allocator **174,784,576 bytes（约 166.69 MiB）**，
+  733 个 shader、1,772 个渲染 PSO / 6 个计算 PSO、C1 **4,325,376 bytes（4.125 MiB）**；
+  shader 源文件累计读入 **25,667,401 bytes（约 24.48 MiB）**，不是编译库实际物理字节。
+  当时 Metal allocated **3,949,215,744 bytes（约 3.68 GiB）**、upload live 为 0、upload peak 96 MiB。
+  buffer 包含 guest no-copy，以上口径不相加。此样本再次说明命令内存 / 暂存不是主要常驻大头，GPU 贴图与 guest 工作集仍是主体。

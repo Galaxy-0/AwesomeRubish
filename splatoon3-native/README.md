@@ -19,5 +19,5 @@ M3 已打通本机两进程 LDN；M4 已通过 25 张普通私房地图、全部
 **M5 已 PASS**：八端独立身份 / 指定武器，Turf War / Scorch Gorge 的离线 4v4 自然结算；八端优雅退出 0。
 headless / 720p、代码与文件 mmap、GPU binary archive 共享、上传暂存 / 退役 private 内存回收和两端一批开局均已实测。
 八端 footprint 合计峰值 28.38 GiB，单端全程峰值均 <6 GiB，对战共同窗口约 13.4–14.0 fps / 端；最高采样压力 warning，新增 swapout 0。
-阶段提交为 `81a2edf`；M6 尚未开始。
+阶段提交 `81a2edf`，完整八端验收提交 `2006a98`；M6 尚未开始。
 详见 [进度与卡点](notes/PROGRESS.md) 和 [验收说明](tests/README.md)。

@@ -624,7 +624,7 @@ index 0000000..a3e9e45
 +void nvn_cmdwatch_publish(uint64_t fence, int kind, uint64_t address);
 +void nvn_cmdwatch_end(void);
 diff --git a/dm/gfx/nvn/nvn_mtl.m b/dm/gfx/nvn/nvn_mtl.m
-index 10c5eac..6689f6d 100644
+index 10c5eac..1396e04 100644
 --- a/dm/gfx/nvn/nvn_mtl.m
 +++ b/dm/gfx/nvn/nvn_mtl.m
 @@ -1,11 +1,13 @@
@@ -1049,7 +1049,7 @@ index 10c5eac..6689f6d 100644
          if (!src) { if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:EILSEQ userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"既不是编好的库也不是源码 %@", path]}]; return nil; }
          static _Atomic int n; static _Atomic long long us; CFAbsoluteTime t0 = CFAbsoluteTimeGetCurrent();
          id<MTLLibrary> l = [g_dev newLibraryWithSource:src options:nil error:err]; long long dt = (long long)((CFAbsoluteTimeGetCurrent() - t0) * 1e6);
-@@ -2220,10 +2396,13 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
+@@ -2220,10 +2396,16 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
          if (k == 1 || k % 100 == 0 || dt >= 300000) MLOG("着色器现编：第 %d 个 %.0f ms，累计 %.1f 秒", k, dt / 1e3, tot / 1e6);
          return l; }
  #endif
@@ -1059,13 +1059,16 @@ index 10c5eac..6689f6d 100644
  }
 -static NvShader *shader_load(NSString *pc, int stage) {
 +static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
-+    @autoreleasepool { return lib_from_file_body(path,err); }
++    NSError *failure=nil; id<MTLLibrary> result;
++    @autoreleasepool { result=lib_from_file_body(path,&failure); }
++    if(err) *err=failure;
++    return result;
 +}
 +static NvShader *shader_load_body(NSString *pc, int stage) {
      NSError *e = nil;
      NSString *lp = [NSString stringWithFormat:@"%@/%@.metallib", g_msl_dir, pc];
      id<MTLLibrary> lib = lib_from_file(lp, &e);
-@@ -2248,6 +2427,13 @@ static NvShader *shader_load(NSString *pc, int stage) {
+@@ -2248,6 +2430,13 @@ static NvShader *shader_load(NSString *pc, int stage) {
      return o;
  }
  
@@ -1079,7 +1082,7 @@ index 10c5eac..6689f6d 100644
  static int stage_of(NSString *zh) {
      if ([zh isEqualToString:@"顶点"]) return 0; if ([zh isEqualToString:@"像素"]) return 1; if ([zh isEqualToString:@"计算"]) return 5;
      if ([zh isEqualToString:@"外壳"]) return 3; if ([zh isEqualToString:@"域"]) return 4; return -1;
-@@ -2628,6 +2814,7 @@ static const prog_t *bind_stages(const prog_t *p, int stages) {
+@@ -2628,6 +2817,7 @@ static const prog_t *bind_stages(const prog_t *p, int stages) {
  }
  static void state_reset(void) {
      memset(&S, 0, sizeof S);
@@ -1087,7 +1090,7 @@ index 10c5eac..6689f6d 100644
      g_pso_dirty = g_dss_dirty = 1;
      for (int i = 0; i < 8; i++) S.blend[i] = (blend_st){i, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_EQUATION_ADD, NVN_BLEND_EQUATION_ADD};
      S.color = (color_st){0, NVN_LOGIC_OP_COPY, NVN_ALPHA_FUNC_ALWAYS}; S.chmask.mask = 0xffffffffu;
-@@ -2748,6 +2935,8 @@ static MTLRenderPipelineDescriptor *pso_desc(const pso_key *k, NvShader *vs, NvS
+@@ -2748,6 +2938,8 @@ static MTLRenderPipelineDescriptor *pso_desc(const pso_key *k, NvShader *vs, NvS
      d.vertexDescriptor = vd;
      return d;
  }
@@ -1096,7 +1099,7 @@ index 10c5eac..6689f6d 100644
  // Pipeline key: current state S + pass formats (normal pass; a merged pass additionally carries lmap / specialized function, filled in by pso_get)
  static void pso_key_fill(pso_key *k, NvShader *vs, NvShader *fs, const uint32_t cfmt[8], uint32_t dfmt, uint32_t sfmt, uint32_t samples, int lmap) {
      memset(k, 0, sizeof *k);
-@@ -2768,7 +2957,7 @@ static uint64_t g_pp_submit_mark, g_pp_kicked, g_pp_taken;   // Whether this sub
+@@ -2768,7 +2960,7 @@ static uint64_t g_pp_submit_mark, g_pp_kicked, g_pp_taken;   // Whether this sub
  static void pso_predict_rest(void);
  static int pso_pend_find(const pso_key *k) { for (int i = 0; i < PSO_PEND_MAX; i++) if (g_pp[i].used && !memcmp(&g_pp[i].k, k, sizeof *k)) return i; return -1; }
  static void pso_pend_kick(const pso_key *k, NvShader *vs, NvShader *fs) {   // Called by the submit thread: kick only if it is neither in the cache nor in the table
@@ -1105,7 +1108,7 @@ index 10c5eac..6689f6d 100644
      pthread_mutex_lock(&g_pp_mu);
      int at = pso_pend_find(k), slot = -1;
      if (at < 0) for (int i = 0; i < PSO_PEND_MAX; i++) if (!g_pp[i].used) { slot = i; break; }
-@@ -2776,8 +2965,9 @@ static void pso_pend_kick(const pso_key *k, NvShader *vs, NvShader *fs) {   // C
+@@ -2776,8 +2968,9 @@ static void pso_pend_kick(const pso_key *k, NvShader *vs, NvShader *fs) {   // C
      pthread_mutex_unlock(&g_pp_mu);
      if (at >= 0 || slot < 0) return;
      MTLRenderPipelineDescriptor *d = pso_desc(k, vs, fs, nil, 0); g_pp_kicked++;
@@ -1116,7 +1119,7 @@ index 10c5eac..6689f6d 100644
          pthread_mutex_lock(&g_pp_mu); g_pp[slot].ps = ps; g_pp[slot].done = 1; pthread_cond_broadcast(&g_pp_cv); pthread_mutex_unlock(&g_pp_mu);
      });
  }
-@@ -2808,14 +2998,15 @@ static __unsafe_unretained id<MTLRenderPipelineState> pso_get_(NvProg *pr, MTLRe
+@@ -2808,14 +3001,15 @@ static __unsafe_unretained id<MTLRenderPipelineState> pso_get_(NvProg *pr, MTLRe
      else {
          if (g_pp_submit_mark != g_sub_serial) { g_pp_submit_mark = g_sub_serial; pso_predict_rest(); }   // First miss in this submission: first kick the later ones out to compile in parallel, then synchronously compile the one at hand
          MTLRenderPipelineDescriptor *d = pso_desc(&k, vs, fs, ms_fn ? ms_fn : g_pso_fsfn, g_pso_lmap != NULL);
@@ -1134,7 +1137,7 @@ index 10c5eac..6689f6d 100644
      return ps;
  }
  static NSString *warm_key(const char *s, size_t n) {
-@@ -2864,7 +3055,7 @@ static void warm_worker(NSArray<NSString *> *paths) {
+@@ -2864,7 +3058,7 @@ static void warm_worker(NSArray<NSString *> *paths) {
                                                  if (!fsfn) { g_warm_skip_fz++; continue; }
                      }
                      pso_key k = sk.k; k.vs = (__bridge void *)vs; k.fs = (__bridge void *)fs; k.fsfn = (__bridge void *)fsfn;
@@ -1143,7 +1146,7 @@ index 10c5eac..6689f6d 100644
                      if (!ps) { MLOG("【红】后台建渲染管线失败：%s", e.localizedDescription.UTF8String); continue; }
                      WarmItem *item = [WarmItem new]; item->kind = 1; item->vs_key = vkey; item->fs_key = fkey; item->vs = vs; item->fs = fs; item->fsfn = fsfn; item->pso = k; item->object = ps;
                      warm_enqueue(item); g_warm_rps++;
-@@ -2872,7 +3063,7 @@ static void warm_worker(NSArray<NSString *> *paths) {
+@@ -2872,7 +3066,7 @@ static void warm_worker(NSArray<NSString *> *paths) {
                      NSString *key = c[1]; if (!key.length) continue;
                      NvShader *cs = warm_shader(dict, key, 5);
                      if (!cs) continue;
@@ -1152,7 +1155,7 @@ index 10c5eac..6689f6d 100644
                      if (!ps) { MLOG("【红】后台建计算管线失败：%s", e.localizedDescription.UTF8String); continue; }
                      WarmItem *item = [WarmItem new]; item->kind = 2; item->key = key; item->shader = cs; item->object = ps;
                      warm_enqueue(item); g_warm_cps++;
-@@ -5074,12 +5265,12 @@ static void warm_claim(void) {
+@@ -5074,12 +5268,12 @@ static void warm_claim(void) {
              if (!vs) { vs = item->vs; g_shcache[item->vs_key] = vs; }
              if (item->fs_key.length && !fs) { fs = item->fs; g_shcache[item->fs_key] = fs; }
              item->pso.vs = (__bridge void *)vs; item->pso.fs = (__bridge void *)fs;
@@ -1167,7 +1170,7 @@ index 10c5eac..6689f6d 100644
          }
      }
  }
-@@ -5132,12 +5323,12 @@ static void dispatch(const p_dispatch *dp) {
+@@ -5132,12 +5326,12 @@ static void dispatch(const p_dispatch *dp) {
      const void *k = (__bridge const void *)cs;
      id<MTLComputePipelineState> ps = hm_get_id(&g_cps, &k);
      if (!ps) {
@@ -1182,7 +1185,7 @@ index 10c5eac..6689f6d 100644
      }
      if (cs->builtin) {   // Built-in compute kernel: n = uniform buffer 0, src = storage buffer 0, dst = storage buffer 1
          const p_bind_buf *u = &S.ubo[5][0], *a0 = &S.ssbo[5][0], *a1 = &S.ssbo[5][1];
-@@ -5712,11 +5903,16 @@ static void sub_cut(void) {
+@@ -5712,11 +5906,16 @@ static void sub_cut(void) {
  }
  
  void mtl_exec(const uint8_t *p) {
@@ -1199,7 +1202,7 @@ index 10c5eac..6689f6d 100644
          g_exec_cur = p;   // Scan start point of the store lookahead: the operation that ends the render pass (inclusive)
          if (p == g_defer_pend) { for (int gi = 0; gi < 4; gi++) if (g_defer_slots[gi].active && g_defer_slots[gi].p_end_op == p) g_defer_slots[gi].in_p = 0; g_defer_pend = NULL; }
          sdx_seq(p);
-@@ -5728,7 +5924,32 @@ void mtl_exec(const uint8_t *p) {
+@@ -5728,7 +5927,32 @@ void mtl_exec(const uint8_t *p) {
          if (g_allocprof) { static uint64_t last; static int prev = -1; uint64_t now = g_dev.currentAllocatedSize; if (prev >= 0 && prev < 64 && now > last) g_ap_bytes[prev] += now - last; last = now; prev = h.op; }
          if (g_hoist_n && hoist_take(p)) { if (g_fz.active && p == g_fz.rt2_op) { g_fz.phase = 2; g_rt_merged = 0; PD("F %llu 合并通道进入后一个通道的绘制", g_stat_pass); } p += h.size; continue; }   // A pure-clear render pass already executed early / the start of a later pass already merged in   // Entering the later pass: the same-target continuation of the earlier pass ends here; the later pass reading the earlier pass's attachment is proven to be same-pixel by fz_p2_draw, and is no longer split by the continuation rule
          const void *a = p + 8;
@@ -1232,7 +1235,7 @@ index 10c5eac..6689f6d 100644
              case OP_END: g_exec_cur = NULL;
                  if (g_hoist_n && !g_ret_n && !g_nrest) {
                      if (g_fz.active) fz_unskip();
-@@ -5824,6 +6045,7 @@ void mtl_exec(const uint8_t *p) {
+@@ -5824,6 +6048,7 @@ void mtl_exec(const uint8_t *p) {
  static id<MTLRenderPipelineState> g_blit_pso; static MTLPixelFormat g_blit_fmt;
  static id<MTLSamplerState> g_blit_samp;
  static uint64_t g_present_n;
@@ -1240,7 +1243,7 @@ index 10c5eac..6689f6d 100644
  uint64_t mtl_present_count(void) { return g_present_n; }   // Actual present count (heat attribution DM_HEAT computes the present frame rate)
  void mtl_res_snapshot(mtl_res_count *out) {
      memset(out, 0, sizeof *out);
-@@ -5901,7 +6123,7 @@ static void shot(id<MTLTexture> src, const char *path, int screen, const int cro
+@@ -5901,7 +6126,7 @@ static void shot(id<MTLTexture> src, const char *path, int screen, const int cro
          if (e && sscanf(e, "%d%c%d%c", &w, &sep, &h, &extra) == 3 && sep == 'x' && w > 0 && h > 0) { out_w = w; out_h = h; }
      }
      id<MTLTexture> read = src;
@@ -1249,7 +1252,7 @@ index 10c5eac..6689f6d 100644
          MTLTextureDescriptor *d = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:out_w height:out_h mipmapped:NO];
          d.usage = MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead; d.storageMode = MTLStorageModePrivate;
          id<MTLTexture> out = [g_dev newTextureWithDescriptor:d];
-@@ -6129,6 +6351,7 @@ static id<MTLTexture> present_raw_src(id<MTLTexture> src) {
+@@ -6129,6 +6354,7 @@ static id<MTLTexture> present_raw_src(id<MTLTexture> src) {
      return v;
  }
  static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTexture> dst, const int crop[4]) {
@@ -1257,7 +1260,7 @@ index 10c5eac..6689f6d 100644
      NSUInteger cx = 0, cy = 0, cw = src.width, ch = src.height;
      if (crop && (crop[2] || crop[3])) {
          if (crop[0] < 0 || crop[1] < 0 || crop[2] <= 0 || crop[3] <= 0 ||
-@@ -6167,6 +6390,7 @@ static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTex
+@@ -6167,6 +6393,7 @@ static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTex
      return 1;
  }
  static int present_encode_m4(id<MTL4CommandBuffer> cb, id<MTLTexture> src, id<MTLTexture> dst, const int crop[4], int uv_i) {
@@ -1265,7 +1268,7 @@ index 10c5eac..6689f6d 100644
      NSUInteger cx = 0, cy = 0, cw = src.width, ch = src.height;
      if (crop && (crop[2] || crop[3])) {
          if (crop[0] < 0 || crop[1] < 0 || crop[2] <= 0 || crop[3] <= 0 ||
-@@ -6205,6 +6429,8 @@ static double g_link_it_tin;   // Enqueue time of the frame the display-link cal
+@@ -6205,6 +6432,8 @@ static double g_link_it_tin;   // Enqueue time of the frame the display-link cal
  static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t ticket, const int crop[4], id<CAMetalDrawable> supplied, double target_ts) {
      if (g_present_stall_ns) { struct timespec ts = {0, (long)g_present_stall_ns}; nanosleep(&ts, NULL); }
      g_present_n++;
@@ -1274,7 +1277,7 @@ index 10c5eac..6689f6d 100644
      if (g_use != USE_OFF && g_use != USE_DONE) use_tick();
      if (bootprof() && (g_present_n == 1 || g_present_n % 120 == 0)) {
          if (g_present_n == 1) g_bp_first_present = bp_now() - g_bp_t0;
-@@ -6250,6 +6476,12 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
+@@ -6250,6 +6479,12 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
      for (int i = 0; i < g_nshotq;) if (g_present_n >= g_shotq[i].frame) { mtl_finish_gpu(); shot(src, g_shotq[i].path, 1, crop); g_shotq[i] = g_shotq[--g_nshotq]; } else i++;
      pthread_mutex_unlock(&g_shotq_mu);
  
@@ -1287,7 +1290,7 @@ index 10c5eac..6689f6d 100644
      CAMetalLayer *layer = (__bridge CAMetalLayer *)front_metal_layer();
      if (!layer) return 0;
      if (g_present_layer_resident != layer) { [g_q4 addResidencySet:layer.residencySet]; g_present_layer_resident = layer; }
-@@ -6281,6 +6513,7 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
+@@ -6281,6 +6516,7 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
      }];
      id<MTL4CommandBuffer> buffers[] = {cb};
      pthread_mutex_lock(&g_pq_mu); g_pq_inflight++; pthread_mutex_unlock(&g_pq_mu);
@@ -1325,10 +1328,10 @@ index fa314c4..2c69798 100644
  typedef struct { int32_t index, mask; float rgba[4]; } p_clear_color;
 diff --git a/dm/gfx/nvn/nvn_pipeline_cache.inc b/dm/gfx/nvn/nvn_pipeline_cache.inc
 new file mode 100644
-index 0000000..0a1f341
+index 0000000..3585f92
 --- /dev/null
 +++ b/dm/gfx/nvn/nvn_pipeline_cache.inc
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,78 @@
 +// Device-built GPU binaries. Cache entries are immutable after atomic rename;
 +// an advisory per-key lock prevents simultaneous compilation by local hosts.
 +// MTLLibrary source-to-IR still uses Metal's system cache: no public library
@@ -1352,45 +1355,51 @@ index 0000000..0a1f341
 +    if (![NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil]) return nil;
 +    return [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%s.metalar",hex]];
 +}
-+static id pipeline_disk_build(id descriptor, NSData *key, NSArray<NSString *> *shaders, int compute, NSError **error) {
-+    @autoreleasepool {
-+        NSString *path = pipeline_disk_path(key,shaders);
-+        if (!path) return compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:0 reflection:nil error:error]
-+                                  : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor error:error];
-+        int fd = open([[path stringByAppendingString:@".lock"] fileSystemRepresentation],O_CREAT|O_RDWR,0600);
-+        if (fd < 0 || flock(fd,LOCK_EX)) { if(fd>=0)close(fd); atomic_fetch_add(&g_disk_error,1);
-+            return compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:0 reflection:nil error:error]
-+                           : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor error:error]; }
-+        NSError *e=nil; MTLBinaryArchiveDescriptor *ad=[MTLBinaryArchiveDescriptor new];
-+        if ([NSFileManager.defaultManager fileExistsAtPath:path]) ad.url=[NSURL fileURLWithPath:path];
-+        id<MTLBinaryArchive> archive=[g_dev newBinaryArchiveWithDescriptor:ad error:&e];
-+        id pipeline=nil;
-+        if (archive && ad.url) {
-+            [descriptor setBinaryArchives:@[archive]];
-+            pipeline=compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:MTLPipelineOptionFailOnBinaryArchiveMiss reflection:nil error:&e]
-+                             : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor options:MTLPipelineOptionFailOnBinaryArchiveMiss reflection:nil error:&e];
-+        }
-+        if(pipeline) atomic_fetch_add(&g_disk_hit,1);
-+        else {
-+            atomic_fetch_add(&g_disk_miss,1);
-+            ad.url=nil; archive=[g_dev newBinaryArchiveWithDescriptor:ad error:&e];
-+            [descriptor setBinaryArchives:nil];
-+            BOOL added=archive && (compute ? [archive addComputePipelineFunctionsWithDescriptor:descriptor error:&e]
-+                                           : [archive addRenderPipelineFunctionsWithDescriptor:descriptor error:&e]);
-+            if(added) [descriptor setBinaryArchives:@[archive]];
-+            pipeline=compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:0 reflection:nil error:error]
-+                             : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor error:error];
-+            if(pipeline && added) {
-+                NSString *tmp=[path stringByAppendingFormat:@".%d.tmp",getpid()];
-+                if([archive serializeToURL:[NSURL fileURLWithPath:tmp] error:&e] && !rename(tmp.fileSystemRepresentation,path.fileSystemRepresentation)) atomic_fetch_add(&g_disk_write,1);
-+                else { atomic_fetch_add(&g_disk_error,1); unlink(tmp.fileSystemRepresentation); }
-+            } else atomic_fetch_add(&g_disk_error,1);
-+        }
-+        [descriptor setBinaryArchives:nil]; flock(fd,LOCK_UN);close(fd);
-+        uint64_t hits=atomic_load(&g_disk_hit), misses=atomic_load(&g_disk_miss);
-+        if((hits+misses)%100==1) MLOG("PIPELINE_DISK hit=%llu miss=%llu write=%llu error=%llu",(unsigned long long)hits,(unsigned long long)misses,(unsigned long long)atomic_load(&g_disk_write),(unsigned long long)atomic_load(&g_disk_error));
-+        return pipeline;
++static id pipeline_disk_build_body(id descriptor, NSData *key, NSArray<NSString *> *shaders, int compute, NSError **error) {
++    NSString *path = pipeline_disk_path(key,shaders);
++    if (!path) return compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:0 reflection:nil error:error]
++                              : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor error:error];
++    int fd = open([[path stringByAppendingString:@".lock"] fileSystemRepresentation],O_CREAT|O_RDWR,0600);
++    if (fd < 0 || flock(fd,LOCK_EX)) { if(fd>=0)close(fd); atomic_fetch_add(&g_disk_error,1);
++        return compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:0 reflection:nil error:error]
++                       : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor error:error]; }
++    NSError *e=nil; MTLBinaryArchiveDescriptor *ad=[MTLBinaryArchiveDescriptor new];
++    if ([NSFileManager.defaultManager fileExistsAtPath:path]) ad.url=[NSURL fileURLWithPath:path];
++    id<MTLBinaryArchive> archive=[g_dev newBinaryArchiveWithDescriptor:ad error:&e];
++    id pipeline=nil;
++    if (archive && ad.url) {
++        [descriptor setBinaryArchives:@[archive]];
++        pipeline=compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:MTLPipelineOptionFailOnBinaryArchiveMiss reflection:nil error:&e]
++                         : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor options:MTLPipelineOptionFailOnBinaryArchiveMiss reflection:nil error:&e];
 +    }
++    if(pipeline) atomic_fetch_add(&g_disk_hit,1);
++    else {
++        atomic_fetch_add(&g_disk_miss,1);
++        ad.url=nil; archive=[g_dev newBinaryArchiveWithDescriptor:ad error:&e];
++        [descriptor setBinaryArchives:nil];
++        BOOL added=archive && (compute ? [archive addComputePipelineFunctionsWithDescriptor:descriptor error:&e]
++                                       : [archive addRenderPipelineFunctionsWithDescriptor:descriptor error:&e]);
++        if(added) [descriptor setBinaryArchives:@[archive]];
++        pipeline=compute ? (id)[g_dev newComputePipelineStateWithDescriptor:descriptor options:0 reflection:nil error:error]
++                         : (id)[g_dev newRenderPipelineStateWithDescriptor:descriptor error:error];
++        if(pipeline && added) {
++            NSString *tmp=[path stringByAppendingFormat:@".%d.tmp",getpid()];
++            if([archive serializeToURL:[NSURL fileURLWithPath:tmp] error:&e] && !rename(tmp.fileSystemRepresentation,path.fileSystemRepresentation)) atomic_fetch_add(&g_disk_write,1);
++            else { atomic_fetch_add(&g_disk_error,1); unlink(tmp.fileSystemRepresentation); }
++        } else atomic_fetch_add(&g_disk_error,1);
++    }
++    [descriptor setBinaryArchives:nil]; flock(fd,LOCK_UN);close(fd);
++    uint64_t hits=atomic_load(&g_disk_hit), misses=atomic_load(&g_disk_miss);
++    if((hits+misses)%100==1) MLOG("PIPELINE_DISK hit=%llu miss=%llu write=%llu error=%llu",(unsigned long long)hits,(unsigned long long)misses,(unsigned long long)atomic_load(&g_disk_write),(unsigned long long)atomic_load(&g_disk_error));
++    return pipeline;
++}
++static id pipeline_disk_build(id descriptor, NSData *key, NSArray<NSString *> *shaders, int compute, NSError **error) {
++    // NSError** is autoreleasing under ARC. Own it outside the inner pool
++    // before publishing it into the caller's writeback temporary.
++    NSError *failure=nil; id result;
++    @autoreleasepool { result=pipeline_disk_build_body(descriptor,key,shaders,compute,&failure); }
++    if(error) *error=failure;
++    return result;
 +}
 +static id<MTLRenderPipelineState> render_cached(MTLRenderPipelineDescriptor *d, const pso_skey *key, NSError **e) {
 +    NSMutableArray *shaders=[NSMutableArray array];
@@ -1578,10 +1587,10 @@ index d21874c..c4f2da3 100644
      //     the CPU rewrites src only after the fence wait returns. If the wait is released early, that last copy reads the rewritten src.
 diff --git a/dm/gfx/tests/t_render_enable.m b/dm/gfx/tests/t_render_enable.m
 new file mode 100644
-index 0000000..7324db4
+index 0000000..453835e
 --- /dev/null
 +++ b/dm/gfx/tests/t_render_enable.m
-@@ -0,0 +1,179 @@
+@@ -0,0 +1,196 @@
 +// Real NVN recording -> Metal replay -> pixel readback. No game assets.
 +#define nvn_game_fps nvn_game_fps_mtl_default
 +#include "../nvn/nvn_mtl.m"
@@ -1644,6 +1653,24 @@ index 0000000..7324db4
 +        mtl_tex_release(&t);
 +    }
 +}
++@interface FailureDevice : NSObject @end
++@implementation FailureDevice
++- (id<MTLComputePipelineState>)newComputePipelineStateWithDescriptor:(MTLComputePipelineDescriptor *)descriptor
++    options:(MTLPipelineOption)options reflection:(MTLComputePipelineReflection *__autoreleasing *)reflection error:(NSError *__autoreleasing *)error {
++    (void)descriptor;(void)options;(void)reflection;
++    if(error)*error=[NSError errorWithDomain:@"pipeline-fixture" code:42 userInfo:@{NSLocalizedDescriptionKey:@"expected failure"}];
++    return nil;
++}
++@end
++static void pool_error_case(void) {
++    NSError *error=nil;
++    NSString *missing=[NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
++    CHECK("missing library error survives the loader pool",!lib_from_file(missing,&error) && [error.domain isEqualToString:NSPOSIXErrorDomain] && error.code==ENOENT);
++    id<MTLDevice> device=g_dev;g_dev=(id)[FailureDevice new];error=nil;
++    id result=pipeline_disk_build([MTLComputePipelineDescriptor new],[NSData data],@[],1,&error);
++    g_dev=device;
++    CHECK("pipeline failure survives the compiler pool",!result && [error.domain isEqualToString:@"pipeline-fixture"] && error.code==42 && error.localizedDescription.length);
++}
 +static void private_discard_case(void) {
 +    id<MTLBuffer> private=[g_dev newBufferWithLength:16384 options:MTLResourceStorageModePrivate];
 +    id<MTLBuffer> shared=[g_dev newBufferWithLength:16384 options:MTLResourceStorageModeShared];
@@ -1663,7 +1690,6 @@ index 0000000..7324db4
 +    uint64_t writes=atomic_load(&g_disk_write),hits=atomic_load(&g_disk_hit);
 +    CHECK("cold pipeline writes GPU binary archive",compute_cached(cs,&e)!=nil && atomic_load(&g_disk_write)==writes+1);
 +    CHECK("warm pipeline uses archive with fail-on-miss",compute_cached(cs,&e)!=nil && atomic_load(&g_disk_hit)==hits+1);
-+    MTLComputePipelineDescriptor *desc=[MTLComputePipelineDescriptor new];desc.computeFunction=cs->fn;
 +    NSString *entry=pipeline_disk_path([@"cache_test" dataUsingEncoding:NSUTF8StringEncoding],@[@"cache_test"]);
 +    [@"corrupt" writeToFile:entry atomically:YES encoding:NSUTF8StringEncoding error:nil];
 +    CHECK("corrupt archive recompiles and atomically replaces",compute_cached(cs,&e)!=nil && atomic_load(&g_disk_write)==writes+2);
@@ -1739,7 +1765,7 @@ index 0000000..7324db4
 +    mtl_tex_release(&t); mtl_pool_del(mem); free(mem);
 +}
 +int main(void) { @autoreleasepool {
-+    mtl_init(); pipeline_disk_case(); private_discard_case();
++    mtl_init(); pipeline_disk_case(); pool_error_case(); private_discard_case();
 +    setenv("DM_NVN_TBDR","0",1); mtl_init(); NSError *e=nil;
 +    id<MTLLibrary> lib=[g_dev newLibraryWithSource:@"#include <metal_stdlib>\nusing namespace metal;\n"
 +        "vertex float4 v(uint n[[vertex_id]]){float2 p[3]={float2(-1,-1),float2(3,-1),float2(-1,3)};return float4(p[n],0,1);}\n"
