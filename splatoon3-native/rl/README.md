@@ -75,3 +75,19 @@ The two-player main test runs one random match through both Winners, then resets
 M6-B passed 447 synchronized first-match steps plus ten after reset. The expanded HUD/score regression passed 426 first-match steps plus ten after reset, four graceful exits and no new swapouts. Both native slots were public to both observers; both had one Down event, including positive-HP Down samples. Final Turf scores were [4.0,2.0] and [2.0,4.0]. Missing-input presents are covered by the production fixture; no missing-input frame was observed in the M6-B real match. The separate eight-player formal run passed 186 synchronized steps through all native Winners, with all eight public HUD slots valid, matching own/enemy result scores [4.4,4.0] / [4.0,4.4], eight graceful exits and no new swapouts. Artifacts, pixels and independent save copies remain under ignored `work/tests/m6-*`.
 
 Run A1 with `bash tests/run_all.sh --milestone a1`. Its acceptance scope is exact fixed60 time, native HUD agreement and matching movement between prequeued continuous input and the same script with policy pauses. Damage consistency is deferred to A4 after `aim_at`, on flat ground at close range facing the target. `tests/diagnose_stamper_aim.py` preserves the earlier unsuccessful aiming diagnostic; it is not an A1 gate. See `notes/PROGRESS.md` for current acceptance evidence.
+
+A2 adds optional `loadouts=[kit_for_player_0, kit_for_player_1, ...]` at construction or reset. Each kit is a dictionary with `head`, `clothes`, `shoes`; each piece declares `main` and exactly three `subs` by names in `rl/loadout.py`. A `None` kit preserves that player's save-selected equipment. Custom kits fill all twelve slots with legal skills. Exclusive main skills are restricted to their native gear category and cannot be subskills. The `none` enum is reserved for development diagnostics and is rejected in a declared custom kit.
+
+```python
+from rl.loadout import uniform_loadout
+kit = uniform_loadout('quick_super_jump')
+kit['head'] = {'main': 'swim_speed_up', 'subs': ['swim_speed_up'] * 3}
+kit['clothes'] = {'main': 'ink_saver_main', 'subs': ['ink_saver_main'] * 3}
+env = parallel_env(players=2, weapons=[8000, 8000], loadouts=[kit, uniform_loadout()])
+```
+
+`uniform_loadout()` defaults to quick super jump, a complete legal control kit for tests that neither jump nor die. It does not clear skills. The mapping is native enum **index**, with `none=0`, `ink_saver_main=1`, `swim_speed_up=5`; it is not the catalog's numeric ability ID. Main slots contribute 10 AP and subslots 3 AP under ordinary native gear rules.
+
+The host adapts the local constructor's successful owned-gear lookup read: it retains the already owned/selected item ID and experience, supplies a thread-local legal row view with the declared skills, and lets the native game copy/setters construct the entire kit. The underlying owned row, save object and remote kit are untouched. `SPL3_GEAR ... backend=owned_read` logs actual equipped-field readback; mismatches fail. No direct speed or ink multiplier is injected. `DM_GEAR=original` and explicit `DM_GEAR_LEGACY=1` are bisection diagnostics, described in PROGRESS.
+
+The earlier all-none/empty-subslot setup disconnected before InGame. The startup bisection and native-construction repair are recorded in `notes/PROGRESS.md`. A2 passed the two native swapped-loadout rounds: complete full-tank slashes 19 versus 31, with lower ordinary ink cost; a six-unit flat swim took about 0.5310 versus 0.4681 seconds, then 0.5370 versus 0.4658 after swapping. Tail partial deductions and recovery do not count as complete full-tank slashes. See PROGRESS for exact evidence and remaining root-cause attribution limits.

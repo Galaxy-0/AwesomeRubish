@@ -10,7 +10,7 @@ import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
 BUILD='28c4287aee36f7499da60f3e68b54c70'
-EXPECTED={(0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27),(0x2920760,28),(0x4011c64,29),(0x4011e28,30)}
+EXPECTED={(0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27),(0x2920760,28),(0x4011c64,29),(0x4011e28,30),(0x3572094,31),(0x3572074,32)}
 
 
 def ready(directory):

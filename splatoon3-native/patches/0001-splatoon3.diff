@@ -1967,7 +1967,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..91ee4ba 100644
+index fda33ac..0145620 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1975,7 +1975,7 @@ index fda33ac..91ee4ba 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_MAX = 31 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_MAX = 33 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -3631,6 +3631,103 @@ index 0000000..6a0067c
 +
 +// Play statistics (pdm): none recorded
 +HLE_FORCE("_ZN2nn3pdm30QueryApplicationPlayStatisticsEPNS0_25ApplicationPlayStatisticsERKNS_7account3UidEPKNS_13ApplicationIdEi", "pdm；没有游玩记录：0 条", int, h_pdm_Query, void *o, const void *u, const void *ids, int n) { (void)o; (void)u; (void)ids; (void)n; return 0; }
+diff --git a/dm/host/hle_spl3_gear.c b/dm/host/hle_spl3_gear.c
+new file mode 100644
+index 0000000..0877bf7
+--- /dev/null
++++ b/dm/host/hle_spl3_gear.c
+@@ -0,0 +1,91 @@
++// Build-gated read adapter for an already owned, selected local gear item.
++// The game constructs/equips its kit normally from the adapted owned-row read.
++// Save objects, remote kits and the native ownership checks stay untouched.
++#include "dm.h"
++#include <errno.h>
++
++// 1 = owned-row read, 2 = identity diagnostic, 3 = old-field diagnostic.
++static int gear_mode, gear_wanted[3][4];
++static _Thread_local struct { unsigned char row[0x68]; int subs[3]; } gear_views[3];
++static int gear_get(const void *p,unsigned offset) { int value;memcpy(&value,(const char *)p+offset,4);return value; }
++static void gear_put(void *p,unsigned offset,int value) { memcpy((char *)p+offset,&value,4); }
++static int gear_main_allowed(int piece,int skill) {
++    return skill<=14 || (piece==0 && skill<=18) || (piece==1 && skill>=19 && skill<=23) || (piece==2 && skill>=24);
++}
++static void gear_owned_read(const uint64_t *r) {
++    int piece=(int)r[23];if(piece<0 || piece>2)return;
++    const void *owned=(const void *)(uintptr_t)r[0];
++    // At main+3572074 the selected ID has already been found in this local
++    // save's owned-gear tree. Native 34b1e00 reads only +40..+60 from this row
++    // and never retains its pointer. Give that read a thread-local view, with
++    // the same ID/experience and three legal skills, then let its normal copy
++    // and enum setters build the complete transmitted/equipped parameters.
++    int capacity=gear_get(owned,0x58),begin=gear_get(owned,0x5c),count=gear_get(owned,0x60);
++    if(capacity<3 || capacity>16 || begin<0 || begin>=capacity || count<0 || count>capacity)
++        die("DM_GEAR owned row container mismatch piece=%d capacity=%d begin=%d count=%d",piece,capacity,begin,count);
++    memcpy(gear_views[piece].row,owned,0x64);
++    int rarity=gear_get(owned,0x48);
++    if(rarity<0 || rarity>5)die("DM_GEAR invalid owned gear rarity");
++    gear_put(gear_views[piece].row,0x48,rarity<2 ? 2 : rarity);
++    gear_put(gear_views[piece].row,0x4c,gear_wanted[piece][0]);
++    uintptr_t subs=(uintptr_t)gear_views[piece].subs;
++    memcpy(gear_views[piece].row+0x50,&subs,8);
++    gear_put(gear_views[piece].row,0x58,3);gear_put(gear_views[piece].row,0x5c,0);gear_put(gear_views[piece].row,0x60,3);
++    for(int i=0;i<3;i++)gear_views[piece].subs[i]=gear_wanted[piece][i+1];
++    // dm_gate writes x0..x8 back from this saved register block. Redirect x0
++    // only; the underlying owned row and its ring allocation are immutable.
++    ((uint64_t *)(void *)r)[0]=(uintptr_t)gear_views[piece].row;
++}
++static void gear_constructed(const uint64_t *r) {
++    int piece=(int)r[23];if(piece<0 || piece>2)return;
++    void *gear=(void *)(uintptr_t)(piece==0 ? r[22] : piece==1 ? r[28] : r[22]+0x410);
++    int capacity=gear_get(gear,0x90),begin=gear_get(gear,0x94),count=gear_get(gear,0x98);
++    uintptr_t entries;memcpy(&entries,(char *)gear+0x88,8);
++    if(capacity!=3 || !entries || begin<0 || begin>=3 || count<0 || count>3)
++        die("DM_GEAR native subskill container mismatch piece=%d capacity=%d begin=%d count=%d",piece,capacity,begin,count);
++    if(gear_mode==3) {
++        // Retained only to reproduce the pre-fix bisection, explicitly opted
++        // into by diagnostics. Production loadouts use the owned-row adapter.
++        gear_put(gear,0x84,gear_wanted[piece][0]);gear_put(gear,0x80,3);
++        gear_put(gear,0x94,0);gear_put(gear,0x98,3);begin=0;count=3;
++        for(int i=0;i<3;i++)gear_put((void *)entries,0x78*i+0x70,gear_wanted[piece][i+1]);
++    } else if(gear_mode==2) {
++        unsigned char before[0x208];memcpy(before,gear,sizeof before);
++        *(volatile int *)((char *)gear+0x84)=gear_get(gear,0x84);
++        for(int i=0;i<count;i++) {
++            unsigned offset=0x78*((begin+i)%capacity)+0x70;
++            *(volatile int *)(entries+offset)=gear_get((void *)entries,offset);
++        }
++        if(memcmp(before,gear,sizeof before))die("DM_GEAR original writeback changed native kit");
++    }
++    int sub[3]={-1,-1,-1};
++    for(int i=0;i<count;i++)sub[i]=gear_get((void *)entries,0x78*((begin+i)%capacity)+0x70);
++    if(gear_mode==1 && (count!=3 || gear_get(gear,0x84)!=gear_wanted[piece][0] || memcmp(sub,&gear_wanted[piece][1],sizeof sub)))
++        die("DM_GEAR native equipped readback mismatch piece=%d",piece);
++    LOG("SPL3_GEAR piece=%d id=%d main=%d subs=%d,%d,%d count=%d override=%d save_writes=0 backend=%s",
++        piece,gear_get(gear,0x70),gear_get(gear,0x84),sub[0],sub[1],sub[2],count,gear_mode!=0,
++        gear_mode==1 ? "owned_read" : gear_mode==2 ? "original" : gear_mode==3 ? "legacy" : "survey");
++}
++void spl3_gear_install(void) {
++    const char *e=getenv("DM_GEAR");if(!e && !getenv("DM_GEAR_SURVEY"))return;
++    if(strcmp(dm_main_build(),"28c4287aee36f7499da60f3e68b54c70"))die("DM_GEAR requires verified Splatoon 3 11.3.0 main");
++    if(!gate_obs_present(OBS_SPL3_GEAR))die("DM_GEAR requires rewritten local kit gate");
++    if(e && !strcmp(e,"original"))gear_mode=2;
++    else if(e) {
++        const char *legacy=getenv("DM_GEAR_LEGACY");
++        if(legacy && strcmp(legacy,"0") && strcmp(legacy,"1"))die("DM_GEAR_LEGACY must be 0 or 1");
++        gear_mode=legacy && !strcmp(legacy,"1") ? 3 : 1;
++        const char *p=e;
++        for(int i=0;i<12;i++) {
++            errno=0;char *end;long skill=strtol(p,&end,10);
++            if(end==p || errno || skill<(gear_mode==3 ? 0 : 1) || skill>26 || (i%4 && skill>14) || (!(i%4) && ((!skill && gear_mode!=3) || !gear_main_allowed(i/4,(int)skill))) || (*end!=(i==11 ? '\0' : ',')))
++                die("DM_GEAR requires 12 legal native skill indexes; all declared slots must be filled");
++            gear_wanted[i/4][i%4]=(int)skill;p=end+(*end!=0);
++        }
++    }
++    if(gear_mode==1) {
++        if(!gate_obs_present(OBS_SPL3_GEAR_READ))die("DM_GEAR requires rewritten owned gear read gate");
++        gate_obs_set(OBS_SPL3_GEAR_READ,gear_owned_read);
++    }
++    gate_obs_set(OBS_SPL3_GEAR,gear_constructed);
++}
 diff --git a/dm/host/hle_spl3_unlock.c b/dm/host/hle_spl3_unlock.c
 new file mode 100644
 index 0000000..78dc541
@@ -3914,14 +4011,14 @@ index e237a24..b54baa3 100644
  #endif
  
 diff --git a/dm/host/main.c b/dm/host/main.c
-index 6ff3a44..b0c305a 100644
+index 6ff3a44..02a7167 100644
 --- a/dm/host/main.c
 +++ b/dm/host/main.c
 @@ -86,7 +86,9 @@ static void host_preload(int argc, char **argv) {
      if (!n) { static const char *def[] = DM_GAME_MODULES; for (int k = 0; k < DM_GAME_NMOD && n < MAX_MOD; k++) names[n++] = def[k]; }   // default module list from the game profile's modules (Mario: main sdk)
      load_modules(argv[1], names, n);
      uint64_t ta = now_ns();
-+    { void spl3_unlock_install(void); void spl3_weapon_install(void); spl3_unlock_install(); spl3_weapon_install(); }
++    { void spl3_unlock_install(void); void spl3_weapon_install(void); void spl3_gear_install(void); spl3_unlock_install(); spl3_weapon_install(); spl3_gear_install(); }
      probe_install();   // DM_PROBE probes (for diagnostics)
 +    { void dm_rl_init(void); dm_rl_init(); }
      ticks_install();   // DM_TICKS per-tick state hash (tick-entry observation gate)
@@ -4039,7 +4136,7 @@ index d1bd89b..7ca2611 100644
  }
  
 diff --git a/dm/host/tests/Makefile b/dm/host/tests/Makefile
-index 50c9e9b..041b430 100644
+index 50c9e9b..8e65905 100644
 --- a/dm/host/tests/Makefile
 +++ b/dm/host/tests/Makefile
 @@ -86,9 +86,15 @@ $(B):
@@ -4060,7 +4157,7 @@ index 50c9e9b..041b430 100644
  
  $(B)/t_fs_case: t_fs_case.c ../hle_fs.c ../hle.h ../dm.h ../dm_i18n.c | $(B)
  	clang -O1 -Wno-unused-function -I.. $(GINC) -o $@ t_fs_case.c ../dm_i18n.c
-@@ -103,7 +109,29 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
+@@ -103,7 +109,32 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
  
  $(B)/t_hid_receipt: t_hid_receipt.c t_touch_tick_stub.c ../hle_hid.c ../dm_cursor.c ../dm_hud.c ../dm_hud.h ../touch_mac.c ../../ios/Sources/dm_touch_controls.c ../hle.h ../dm.h ../dm_input.h ../front.h | $(B)
  	clang -O1 -Wno-unused-function -I.. -I../../ios/Sources -o $@ t_hid_receipt.c t_touch_tick_stub.c ../dm_cursor.c ../dm_hud.c ../touch_mac.c ../../ios/Sources/dm_touch_controls.c -lm
@@ -4090,6 +4187,9 @@ index 50c9e9b..041b430 100644
 +
 +$(B)/t_rl_clock: t_rl_clock.c ../hle_os.c ../hle.h ../dm.h ../dm_rl_clock.h | $(B)
 +	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_rl_clock.c ../hle_os.c
++
++$(B)/t_spl3_gear: t_spl3_gear.c ../hle_spl3_gear.c ../dm.h | $(B)
++	clang -O1 -g -Wall -Wextra -Werror -I.. $(GINC) -o $@ t_spl3_gear.c
 diff --git a/dm/host/tests/t_account_player.c b/dm/host/tests/t_account_player.c
 new file mode 100644
 index 0000000..7a3d75c
@@ -4610,6 +4710,61 @@ index 0000000..97cece9
 +    if(now_ns()-start>UINT64_C(1000000000)) return 1;
 +    puts("rl-short-sleep: 3 frozen-clock SVC checks passed");return 0;
 +}
+diff --git a/dm/host/tests/t_spl3_gear.c b/dm/host/tests/t_spl3_gear.c
+new file mode 100644
+index 0000000..bf88ab5
+--- /dev/null
++++ b/dm/host/tests/t_spl3_gear.c
+@@ -0,0 +1,49 @@
++// Test owned-read isolation, register redirection and equipped readback guards.
++#include "../hle_spl3_gear.c"
++module_t g_mod[MAX_MOD];int g_nmod;
++static void (*callbacks[33])(const uint64_t *);
++static int missing;
++int gate_obs_present(int id) { return (id==OBS_SPL3_GEAR || id==OBS_SPL3_GEAR_READ) && !missing; }
++void gate_obs_set(int id,void (*fn)(const uint64_t *)) { if(id<1 || id>=33)abort();callbacks[id]=fn; }
++static int check(int condition,const char *label) { if(!condition)fprintf(stderr,"FAIL %s\n",label);return !condition; }
++// Contract model of the documented native copy, not a game implementation.
++// Real invocation and gear effects are required by the A2 integration test.
++static void copy_contract(void *dest,const void *source) {
++    for(unsigned i=0;i<4;i++)gear_put(dest,0x78+4*i,gear_get(source,0x40+4*i));
++    int capacity=gear_get(source,0x58),begin=gear_get(source,0x5c),count=gear_get(source,0x60);
++    uintptr_t src,dst;memcpy(&src,(const char *)source+0x50,8);memcpy(&dst,(char *)dest+0x88,8);
++    gear_put(dest,0x94,0);gear_put(dest,0x98,count);
++    for(int i=0;i<count;i++)gear_put((void *)dst,0x78*i+0x70,gear_get((void *)src,4*((begin+i)%capacity)));
++}
++int main(int argc,char **argv) {
++    g_nmod=1;strcpy(g_mod[0].name,"main");strcpy(g_mod[0].build_id,argc>1 && !strcmp(argv[1],"unknown") ? "unknown" : "28c4287aee36f7499da60f3e68b54c70");
++    missing=argc>1 && !strcmp(argv[1],"missing");spl3_gear_install();
++    unsigned char root[0x800],owned[3][0x80],saved[3][0x80];memset(root,0xa5,sizeof root);memset(owned,0x5a,sizeof owned);
++    uint64_t r[31]={0};unsigned offsets[]={0x100,0x308,0x510};int failed=0;
++    for(int piece=0;piece<3;piece++) {
++        unsigned char *row=owned[piece],*gear=root+offsets[piece];uintptr_t entries=(uintptr_t)(gear+0xa0),source=(uintptr_t)(row+0x68);
++        memcpy(gear+0x88,&entries,8);gear_put(gear,0x90,3);gear_put(gear,0x94,0);gear_put(gear,0x98,0);gear_put(gear,0x70,123+piece);
++        gear_put(row,0x40,101);gear_put(row,0x44,202);gear_put(row,0x48,2);gear_put(row,0x4c,7);
++        memcpy(row+0x50,&source,8);gear_put(row,0x58,3);gear_put(row,0x5c,1);gear_put(row,0x60,2);
++        for(int j=0;j<3;j++)gear_put(row,0x68+4*j,6+j);
++    }
++    if(argc>1 && !strcmp(argv[1],"container"))gear_put(owned[0],0x58,2);
++    memcpy(saved,owned,sizeof owned);r[22]=(uintptr_t)(root+0x100);r[28]=(uintptr_t)(root+0x308);
++    for(int piece=0;piece<3;piece++) {
++        r[23]=piece;r[0]=(uintptr_t)owned[piece];
++        if(callbacks[OBS_SPL3_GEAR_READ])callbacks[OBS_SPL3_GEAR_READ](r);
++        const void *source=(const void *)(uintptr_t)r[0];
++        failed+=check(!memcmp(owned,saved,sizeof owned),"owned rows and allocations untouched");
++        failed+=check(!memcmp(source,owned[piece],0x48),"ID and experience metadata retained");
++        failed+=check((source!=owned[piece])==(gear_mode==1),"only owned backend redirects x0");
++        unsigned char *gear=root+offsets[piece];copy_contract(gear,source);
++        unsigned char before[0x208];memcpy(before,gear,sizeof before);
++        if(callbacks[OBS_SPL3_GEAR])callbacks[OBS_SPL3_GEAR](r);
++        if(gear_mode==1 || gear_mode==3) {
++            failed+=check(gear_get(gear,0x84)==gear_wanted[piece][0] && gear_get(gear,0x98)==3,"native equipped main and slots");
++            for(int j=0;j<3;j++)failed+=check(gear_get(gear+0xa0,0x78*j+0x70)==gear_wanted[piece][j+1],"native equipped subskill");
++        } else failed+=check(!memcmp(before,gear,sizeof before),"identity/survey changes no byte");
++        failed+=check(gear_get(gear,0x70)==123+piece && gear_get(gear,0x78)==101 && gear_get(gear,0x7c)==202,"equipped ID/experience retained");
++    }
++    printf("spl3-gear: owned read, identity and adjacent-field contracts %s\n",failed ? "FAILED" : "passed");return failed!=0;
++}
 diff --git a/dm/host/tests/t_spl3_unlock.c b/dm/host/tests/t_spl3_unlock.c
 new file mode 100644
 index 0000000..8f41733
@@ -4779,10 +4934,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..d643903 100644
+index 837700c..122454b 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,20 @@ CUTS = {
+@@ -162,6 +162,22 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -4799,11 +4954,13 @@ index 837700c..d643903 100644
 +    (0x2920760, 28, 'a9014ff4', 'Splatoon 3 local PlayerDamage live update; read-only own slot'),
 +    (0x4011c64, 29, 'f9408689', 'Splatoon 3 TGPlayerIcon after Player RTTI call and test; read-only live actor'),
 +    (0x4011e28, 30, 'fd4013e8', 'Splatoon 3 TGPlayerIcon update epilogue; read-only displayed HUD state'),
++    (0x3572094, 31, '52800068', 'Splatoon 3 local kit gear copy return; equipped readback'),
++    (0x3572074, 32, 'b9404c1f', 'Splatoon 3 successful owned gear lookup; local constructor read adapter'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +646,7 @@ for fa, fb in funcs:
+@@ -632,7 +648,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -4812,7 +4969,7 @@ index 837700c..d643903 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +740,12 @@ for off, oid, ow, why in obs:
+@@ -726,7 +742,14 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25
@@ -4821,7 +4978,9 @@ index 837700c..d643903 100644
 +    # x9-x17 remain call-clobbered there; the original LDR defines x9 next.
 +    # 0x4011e28 is the common UI epilogue: x19 still owns the live widget,
 +    # x9-x17 are dead; the original LDR restores d8 before the native return.
-+    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27),(0x2920760,28),(0x4011c64,29),(0x4011e28,30))
++    # 0x3572074 precedes the native gear-copy BL: x0 is its owned-row arg;
++    # x9-x17 and w8 are dead, x1 is assigned next from callee-saved roots.
++    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27),(0x2920760,28),(0x4011c64,29),(0x4011e28,30),(0x3572074,32))
 +    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8) or spl3_prologue, f'private obs point not approved {off:#x}'
      assert off < TEXT_END and off not in kinds and not any(lo <= off < hi for wseg in windows for lo, hi in [(wseg[0].address, wseg[-1].address + 4)]), f'观测门与改写点冲突 {off:#x}'
      put_branch(off, site_obs(off, oid, w)); stat('obs')

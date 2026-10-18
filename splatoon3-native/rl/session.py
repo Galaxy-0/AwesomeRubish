@@ -14,6 +14,7 @@ import time
 from tools.private_battle import BUTTONS, host_environment, configure_room, prepare_match
 from tools.m5_resources import Monitor
 from .clock import SharedClock
+from .loadout import encode_loadout
 
 ROOT = Path(__file__).resolve().parents[1]
 SAVE_HASH = '89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd'
@@ -30,10 +31,12 @@ def catalogs():
 
 
 class Session:
-    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False, clock_mode='fixed60'):
+    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False, clock_mode='fixed60', loadouts=None):
         if players not in (2,8): raise ValueError('M6 supports 2 or 8 players')
         if clock_mode not in ('realtime','fixed60'):raise ValueError('clock_mode must be realtime or fixed60')
         self.clock_mode=clock_mode
+        if loadouts is not None and len(loadouts)!=players:raise ValueError('one loadout required per player')
+        self.loadouts=None if loadouts is None else [None if v is None else encode_loadout(v) for v in loadouts]
         if mode not in range(5): raise ValueError('mode must be 0..4')
         stages, weapon_ids = catalogs()
         matches = [i for i,r in enumerate(stages) if r['Id'] == stage_id]
@@ -89,6 +92,10 @@ class Session:
 
     def press(self, player, button):self.send(player,button);self.frames(player)
 
+    def host_options(self, player):
+        if self.loadouts is None or self.loadouts[player] is None:return {}
+        return {'DM_GEAR':self.loadouts[player]}
+
     def spawn(self, player):
         directory=self.out/f'player-{player}';directory.mkdir()
         for name in ('save','temp'):(directory/name).mkdir()
@@ -98,6 +105,7 @@ class Session:
         env.update(DM_RL_SOCKET=str(self.socket_dir/f'player-{player}.sock'),DM_RL_CLOCK_FILE=str(self.clock.path),DM_HID_TRACE='1',
                    DM_RL_CLOCK_MODE=self.clock_mode,
                    DM_PROBE='main:3db55d0,main:3dcc710,main:3dd9370,main:3571e24@x21+e8')
+        env.update(self.host_options(player))
         if self.state_dump:
             env['DM_RL_STATE_DUMP']='1'
             env['DM_PROBE']+=',main:3f71a6c@x19+c10,main:3f6c6bc,main:3f6cdd8'

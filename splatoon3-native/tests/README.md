@@ -271,3 +271,13 @@ bash tests/run_all.sh --milestone a1 --timeout 2400
 按指挥方决定，伤害一致性移到 A4 完成 `aim_at` 后补测，使用平地、近距离正对目标并排除台沿遮挡。`tests/diagnose_stamper_aim.py` 保留此前未命中的诊断，不接入 A1 通过条件。
 
 `tests/probe_a1_time.py --clock-mode realtime|fixed60` 逐步记录 present、Timer、位置、动作，始终输出 `full_a1_passed=false`，不能单独替代正式验收。STEP 接收超时30秒，异常时清理前逐宿主执行macOS `sample`（每次调用最多10秒）。有限客体等待上限60秒；无期限空闲等待每次宿主轮询最多1秒，整体由STEP无进展上限负责采样停止。所有原始产物只留忽略的 `work/tests/`。
+
+## A2 配装
+
+`bash tests/run_all.sh --milestone a2 --timeout 2400` 先验证合法配置、拥有条目读取视图隔离、原生构造读回组件，再跑两个真实双端会话，交换完整基线和实验配装。基线十二槽均快速超级跳跃（不跳跃/不死亡），相关游速/墨效AP为0；实验为头19AP游速、衣鞋38AP主武器墨效，双方武器8000。
+
+原地抬头对空横挥，以前三次正常墨量下降的中位数定义一次完整耗墨；只计余墨足够时连续完整扣墨的前缀，余墨不足一次及后续回墨的尾段单列，不增加满罐次数。移出出生点落差后涂平坦直线通道，潜游前进3→9单位，用位置包自身采样帧插值计时；检查平坦、直线和达到潜游速度，实验端同距离至少快3%。两轮均须读回和两项效果通过，并正常清理。
+
+`tests/probe_a2_startup.py --case off|host_only|guest_only|original|host_main_valid` 只做开局二分，不签收效果。`off --repeats 2` 重复关闭覆写；单端组显式使用旧后写字段诊断后端；`original` 对原装备技能写回原值并检查整个对象逐字节不变。已签收时钟仍只在InGame后RL_ATTACH接管，断房时诊断立即逐宿主sample后清理。完整现象和追加最小对照在PROGRESS；原始游戏产物只留忽略的work。
+
+A2已通过双端交换配装实测，完整耗墨计数和单次耗墨可用 `tests/a2_metrics.py work/tests/<a2-run>/result.json` 从原始记录自动复核，不改原始结果。正式签收及统计口径变更见PROGRESS。
