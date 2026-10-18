@@ -254,3 +254,8 @@ HP字段来自已与PlayerDamage更新独立比对的自身包；生产传输检
 后续集成回归 `tests/test_m6_combat.py --reset-check` 使用正式字段，检查原生HUD存活/倒下、玩家槽位与公开状态、受伤后正HP连续区间恢复、涂地充能、双方结果百分比相反顺序，并用新进程再开一局。`--inspect-results` 仅在所有agent终止后释放RL控制并查看结果菜单。该回归于2026-10-18通过：首局426步，reset新进程第二局10步，正式比分4.0%/2.0%与2.0%/4.0%；四宿主优雅退出，无新增swapout。结果work/tests/m6-fields-20261018-151321-599465/result.json。
 
 当前默认reward示例以自身特殊充能正增量做涂地塑形，并奖励公开HUD的敌队倒下事件（包括环境死亡、不含个人最后一击归属）；可传reward_fn=None关闭。真实paint_points / kills计数尚未导出，不把该示例写成精确个人击杀或涂地面积。
+
+八端最终验收入口：`bash tests/run_all.sh --milestone m6 --players 8 --timeout 7200`。先逐端加载/准入，八端每次STEP先全发后全收，各端独立Judge终止并中立推进到全部Winners；要求八个公开HUD槽位、各字段空间/有效位、动作相关性、有限reward，以及同队比分一致/对队反序。八端只运行一局；reset和HP/存活/充能的详细动作对照由上述双端集成回归提供。只有八端正式入口成功才报告full_m6_passed=true；不表示所有模式/地图均逐一实机覆盖。
+
+
+**M6最终签收 PASS（2026-10-18）**：八端上述正式命令退出0，work/tests/m6-check-8p-20261018-153022-895155/result.json为passed=true、full_m6_passed=true、errors=[]。186步，所有agent第156步Judge、第186步Winners；本次实际同时结算，异步逐agent终止由生产生命周期夹具覆盖。八个原生slot0..7全部有效，同帧重复输入最多62次正常锁存，帧差错误0；本次无输入帧数0，缺读场景由原生夹具覆盖。正式比分Alpha[4.4,4.0]、Bravo[4.0,4.4]，同队一致/对队反序。八宿主优雅退出0，无新增swapout，pressure最大1，footprint合计峰值28728MiB。双端字段/回血/倒下动作相关性及reset的独立证据见前述151321-599465结果。完整记录见PROGRESS.md最后签收节。

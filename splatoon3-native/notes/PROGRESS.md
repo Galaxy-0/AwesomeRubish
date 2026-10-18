@@ -1369,3 +1369,32 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 - reward累计1.062 /1.031，均有限，来自公开敌方倒下事件各1次加充能塑形；其中包含环境死亡，不能称为个人kills。生产传输/生命周期/reward **24项通过**，独立HUD/HP、缺席、就绪位、原生slot元数据映射均有组件覆盖。
 - 四宿主均优雅退出0，无FATAL；两局footprint合计峰值 **8226 /7943 MiB**，pressure最大1，新swapout均0；原件/参考档hash不变。hud-score-code.sha256全部匹配；源码/门控构建与补丁正反向检查通过。游戏数据和画面仅在忽略work/。
 - 本次提交公开HUD/存活与reward集成，下一步正式入口八端随机策略整局；**完整M6尚未签收**。没有新的卡点，没有调用其它模型。
+
+### M6-C 八端正式验收启动（待结果）
+
+- HUD/存活集成已提交推送 **c422fb9bfe60b0eeffb997cced538a257c743c5e**，已核对远端同SHA。
+- 正式命令 `bash tests/run_all.sh --milestone m6 --players 8 --timeout 7200`；日志 `work/m6/eight-player/acceptance.log`，会话 `work/tests/m6-8p-20261018-153022-915232/`，冻结清单acceptance-code.sha256。资源准入/停止规则沿用M5，warning继续，critical或新增swapout超门槛停止，不用额外磁盘换出硬撑。
+- 入口组件GPU148/headless152、NVN79、HID73/真实RL11、RL传输生命周期reward24、共享时钟13/手动模式5、LDN frontend10/air59全部通过，正在逐端加载入房。
+- 主测试补齐当前HUD采样的槽位检查（使用warmup后的infos），八端中立归属对照取对方队伍玩家以避开出生点友方身体碰撞，逐步检查reward有限并记录累计，最终要求同队比分一致、对队比分反序。八端单局PASS后才设置full_m6_passed；双端字段动作相关性和reset证据由前述独立集成回归提供。
+- 运行中的测试不计为已通过；完整M6仍待真实八端自然结算与清理结果。
+
+## 2026-10-18：M6 最终签收 PASS，双端字段 / reset + 八端随机策略自然结算
+
+**M6 PASS。** 本节覆盖前文“八端待验 / 完整M6尚未签收”的状态，保留所有历史失败及已移除的试验。没有新卡点，没有调用其它模型。
+
+- 正式命令 `bash tests/run_all.sh --milestone m6 --players 8 --timeout 7200` **退出0**；`work/tests/m6-check-8p-20261018-153022-895155/result.json`：passed=true、full_m6_passed=true、eight_player_layer_passed=true、errors=[]。会话 `work/tests/m6-8p-20261018-153022-915232/`；总日志 `work/m6/eight-player/acceptance.log`；额外ACK/资源核对evidence-summary.json与各步原始steps.jsonl均留在work/。
+- **186** 次同步step，八端均第 **156** 步Judge、**186** 步Winners；各agent独立terminated后，中立推进到所有Winners。实际本轮恰好同一步结算，不宣称实机命中异步终止；异步情形由生产生命周期夹具覆盖。没有把时间到 / socket关闭 / 通信错误当结算。
+- 1 /7 /31帧跳、策略等待和常规15帧跳，**所有端ACK帧差错误0**；每端同帧重复HID最多62次正常锁存，未重复施加或FATAL。每端本次frames_without_input合计0；缺读present正常计帧由原生组件夹具覆盖。采用全端公共策略暂停时钟，不是固定物理dt，也不宣称确定性。
+- 八端own native slot唯一 **0..7**，每个观察者都读到八个有效公共HUD槽位；配置队伍/武器按这些真实slot关联。自身位置/heading/HP/ink/special、HUD存活、时间和final score均符合空间/有效位范围。公开HUD数据来自各端本地HUD，不合并视野外敌方位置/HP。
+- 八端实机动作对照：静止像素MAD **3.107–3.266**，推杆/视角MAD **44.335–64.979**（阈值4.764）；0号自身位移 **7.230554**，中立敌方0；自身转向 **1.991809rad**，中立敌方0。0号射击墨量 **1→.926142**、下潜恢复1；1号独立射击 **1→.758284**，0号保持1。低帧率/运行时间不同会改变固定present预算内的耗墨幅度，本测试只断言实际动作相关性，不假定固定physics tick。
+- 倒计时所有端约 **148.03–148.12→134.52–134.60秒**；比分在结果为Alpha四端 **[4.4,4.0]**、Bravo四端 **[4.0,4.4]**，对应turf_ratio [.044,.04] /反序，全部score/turf有效。同队一致、对队反序门槛通过。每端reward累计有限；本局只有充能塑形正奖励，没有宣称击杀事件已发生。
+- HP损伤/普通回血、特殊量自身涂地对照、独立HUD倒下与正HP共存、正式比分及reset由上一节双端集成实机再次验证：**426+10=436步**、四宿主优雅退出；0号特殊0→.44、静止对端0，两端各一次HUD倒下事件，正式结果4.0%/2.0%及反序。M6-B随机整局+reset、像素/位置/墨量正式入口447+10步证据亦保留。没有把八端随机局未出现的受伤/缺读场景写成该局覆盖。
+- 八宿主均优雅退出 **0**，无CRASH/FATAL/GPU执行错误，所有进程最终有headless screen_submits=0/composite=0；内置720p游戏纹理导出128×72RGB，未向屏幕提交。参考档/原件hash未变，临时socket与空气服务由环境清理。
+- 970次资源采样：最高pressure **1 / normal**，新增swapout **0**，footprint合计峰值 **28728 MiB（28.05 GiB）**、RSS合计峰值 **11932 MiB**；两者含共享页口径不同，不将RSS/Metal allocated简单叠加。共同InGame采样窗口206.05秒，当前带像素读回/屏障的墙钟帧率约 **10.77–11.07 fps/端**，包括策略/协调开销，不作为同场景M5性能或加速比。
+- 组件回归GPU148/headless152、NVN79、HID73/真实RL11、RL传输生命周期reward24、共享时钟13/原手动模式5、LDN frontend10/air59及资源停止规则通过。宿主和全部受测源码acceptance-code.sha256逐项匹配，补丁正/反向检查通过；仅提交splatoon3-native源码/文档/补丁，游戏数据、游戏画面、NSO/RomFS/shader/prod.keys均未入库。
+
+### 可用接口与签收边界
+
+- `rl/`提供PettingZoo ParallelEnv、reset复用M5启动/配置/分队、同步step、正式动作/观测spaces、逐agent终止及结算推进、可关闭/自定义的reward示例。Unix socket + POSIX mmap时钟接口不依赖macOS专有IPC；实际原生游戏仍在当前macOS/Metal宿主验收。
+- 自身包字段约10Hz，120 presents过期，HUD/时间也有采样帧/有效位；不把每帧导出等同于每帧物理状态采样。结果比分/涂地比例在Judge/Winners有效，局内不提供实时涂地图。当前实机字段范围为默认Turf War / Scorch Gorge；其它模式/地图/武器可沿M5配置，但非Turf比分及加时未各自实机签收。
+- reward示例是“充能增量涂地塑形 + 敌队公共HUD倒下事件”，包括环境死亡，没有个人最后一击归属或真实paint_points/kills计数；这些缺项在文档/结果中明确标记，未用零伪装。目标所需公开队友/敌人基本状态由公共HUD提供，不承诺世界空间FOV可见位置列表。

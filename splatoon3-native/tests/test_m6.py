@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""M6 pixel/control layer: real random match, action effect, exact steps, reset."""
+"""M6 native multi-agent acceptance: fields, exact steps, random match and reset."""
 import argparse
 import datetime
 import json
@@ -26,22 +26,27 @@ def difference(a,b):
 
 def main(args):
     out=ROOT/'work/tests'/datetime.datetime.now().strftime(f'm6-check-{args.players}p-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
-    result=dict(milestone='M6-B-position-ink',players=args.players,passed=False,full_m6_passed=False,errors=[],episodes=[],
-                internal_state='local_packet_position_ink',unavailable_fields=['last_hit_kills'],artifacts=str(out))
+    result=dict(milestone='M6-native-multi-agent',players=args.players,passed=False,full_m6_passed=False,errors=[],episodes=[],
+                internal_state='verified_own_packet_and_live_hud',unavailable_fields=['last_hit_kills'],artifacts=str(out))
     env=NativeParallelEnv(players=args.players,frame_skip=args.frame_skip,mode=args.mode,stage_id=args.stage_id,
                          weapons=args.weapons or [0]*args.players,timeout=args.timeout,patched=args.patched,state_dump=args.state_dump)
     rng=np.random.default_rng(args.seed);last_print=time.monotonic();step_number=0
     log=(out/'steps.jsonl').open('w')
     def step(actions):
         nonlocal step_number,last_print
+        rewards={}
         if actions is None:
             observations,infos=env.advance_settlement();truncated={a:env.timed_out for a in env.possible_agents}
         else:observations,rewards,terminated,truncated,infos=env.step(actions)
         infos=env.process_infos;step_number+=1
+        totals=result.setdefault('reward_totals',{a:0.0 for a in env.possible_agents})
+        for agent,value in rewards.items():
+            if not np.isfinite(value):raise AssertionError('non-finite example reward')
+            totals[agent]+=value
         if any(truncated.values()):raise AssertionError('unexpected truncated match')
         for agent,observation in observations.items():
             if not env.observation_space(agent).contains(observation):raise AssertionError(f'{agent}: out-of-space observation')
-        log.write(json.dumps(dict(step=step_number,episode=env.episode,infos=infos))+'\n');log.flush()
+        log.write(json.dumps(dict(step=step_number,episode=env.episode,rewards=rewards,infos=infos))+'\n');log.flush()
         if time.monotonic()-last_print>30:
             print(f'M6 episode={env.episode} step={step_number} phase='+str({a:i['phase'] for a,i in infos.items()}),flush=True);last_print=time.monotonic()
         return observations,not env.agents,infos
@@ -68,6 +73,7 @@ def main(args):
             if any(not o['position_valid'] or not o['ink_valid'] for o in observations.values()):raise AssertionError('local native position is unavailable after warmup')
             if any(float(o['pixels'].var())<25 for o in observations.values()):raise AssertionError('black/flat in-game pixel observation')
             for a,o in observations.items():Image.fromarray(o['pixels']).save(out/f'{a}-initial.png')
+            infos=env.process_infos
             slots={i['self_slot'] for i in infos.values() if i['self_slot_valid']}
             if len(slots)!=args.players or any(not o['alive_valid'] or not all(o['hud_valid'][s] for s in slots) for o in observations.values()):raise AssertionError('native public HUD player state unavailable after warmup')
             if any(not o['special_valid'] for o in observations.values()):raise AssertionError('own special gauge unavailable after warmup')
@@ -92,10 +98,11 @@ def main(args):
             record['action_effect']=dict(idle_mad=idle,moving_mad=moving,threshold=threshold,passed=float(np.mean(moving))>threshold)
             if not record['action_effect']['passed']:raise AssertionError('moving/camera image change not greater than idle baseline')
             own=max(row['player_0'] for row in position_samples)
-            remote=max(row['player_1'] for row in position_samples)
+            neutral_peer=f'player_{args.players//2}'
+            remote=max(row[neutral_peer] for row in position_samples)
             record['position_effect']=dict(own_displacement=own,neutral_peer_drift=remote,passed=own>.1 and remote<.05)
             if not record['position_effect']['passed']:raise AssertionError('local position did not follow the owning controller')
-            own_turn=max(r['player_0'] for r in heading_samples);peer_turn=max(r['player_1'] for r in heading_samples)
+            own_turn=max(r['player_0'] for r in heading_samples);peer_turn=max(r[neutral_peer] for r in heading_samples)
             record['heading_effect']=dict(own_turn=own_turn,neutral_peer_turn=peer_turn,passed=own_turn>.2 and peer_turn<.01)
             if not record['heading_effect']['passed']:raise AssertionError('heading failed own vs peer movement correlation')
             record['time_effect']={a:dict(before=initial_times[a],after=float(o['remaining_time'][0])) for a,o in observations.items()}
@@ -134,6 +141,12 @@ def main(args):
             record['individual_termination_complete']=True;record['judge_infos']=env.process_infos.copy()
             while not all(i['phase']==3 for i in env.process_infos.values()):observations,_,infos=step(None)
             if not all(i['score_valid'] for i in env.process_infos.values()):raise AssertionError('native result score unavailable')
+            if args.mode==0:
+                first=env.process_infos['player_0']['turf_ratio']
+                for n,agent in enumerate(env.possible_agents):
+                    info=env.process_infos[agent]
+                    expected=first if n<args.players//2 else first[::-1]
+                    if not info['turf_valid'] or not np.allclose(info['turf_ratio'],expected,atol=.002):raise AssertionError('observer-relative team turf result mismatch')
             record['score_infos']={a:{k:i[k] for k in ('score','score_units','turf_ratio','turf_valid')} for a,i in env.process_infos.items()}
             record['random_match_complete']=True;record['terminal_infos']=env.process_infos
             for n,_,_ in env.session.hosts:
@@ -145,6 +158,8 @@ def main(args):
         result['ink_layer_passed']=True
         result['heading_layer_passed']=True
         result['time_layer_passed']=True
+        result['public_hud_layer_passed']=True
+        result['score_layer_passed']=True
     except BaseException as error:
         result['errors'].append(f'{type(error).__name__}: {error}')
         (out/'exception.txt').write_text(traceback.format_exc())
@@ -155,6 +170,8 @@ def main(args):
         except BaseException as error:result['errors'].append(f'cleanup: {type(error).__name__}: {error}')
         log.close()
     result['passed']=bool(result.get('pixel_control_layer_passed')) and not result['errors']
+    result['eight_player_layer_passed']=result['passed'] and args.players==8
+    result['full_m6_passed']=result['eight_player_layer_passed']
     result['sessions']=list(map(str,env.artifacts));result['steps']=step_number
     (out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result,indent=2),flush=True)
