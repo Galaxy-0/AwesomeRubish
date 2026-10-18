@@ -41,6 +41,7 @@ class TransportTest(unittest.TestCase):
     def test_exact_steps_and_policy_delay(self):
         observation,initial=self.start();frame=initial['frame']
         self.assertEqual(observation['position_valid'],1)
+        self.assertEqual(observation['hp_valid'],1);self.assertEqual(observation['hp'][0],1)
         self.assertEqual(observation['time_valid'],1);self.assertGreater(observation['remaining_time'][0],179)
         self.assertEqual(observation['heading_valid'],1);self.assertAlmostEqual(float(observation['heading'][0]),np.pi,places=6)
         np.testing.assert_array_equal(observation['position'],[13.25,-2,7])
@@ -56,6 +57,14 @@ class TransportTest(unittest.TestCase):
         # assertion only. Actual game action effects are checked in test_m6.py.
         self.assertTrue(np.all(obs['pixels']==191))
 
+    def test_damage_and_recovery_reach_official_observation(self):
+        observation,_=self.start(mode='damage')
+        self.assertEqual(observation['hp'][0],1)
+        for health in (.57,0,1):
+            self.client.send_step(neutral(),1);observation,_=self.client.receive()
+            self.assertEqual(observation['hp_valid'],1)
+            self.assertAlmostEqual(float(observation['hp'][0]),health,places=6)
+
     def test_reject_invalid_client_action(self):
         self.start();action=neutral();action['sticks'][0]=float('nan')
         with self.assertRaises(ValueError):self.client.send_step(action,3)
@@ -63,6 +72,7 @@ class TransportTest(unittest.TestCase):
     def test_invalid_native_position_is_masked(self):
         observation,info=self.start(invalid=True)
         self.assertEqual(observation['position_valid'],0)
+        self.assertEqual(observation['hp_valid'],0);self.assertEqual(observation['hp'][0],0)
         self.assertEqual(observation['time_valid'],0);self.assertEqual(observation['remaining_time'][0],0)
         self.assertEqual(observation['heading_valid'],0);self.assertEqual(observation['heading'][0],0)
         self.assertEqual(observation['ink_valid'],0);self.assertEqual(observation['ink'][0],0)

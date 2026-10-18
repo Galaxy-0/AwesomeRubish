@@ -38,7 +38,8 @@ class Client:
                            position_valid=int(info.get('position_valid',0)),
                            ink=np.array([info.get('ink',0)],np.float32),ink_valid=int(info.get('ink_valid',0)),
                            heading=np.array([info.get('heading',0)],np.float32),heading_valid=int(info.get('heading_valid',0)),
-                           remaining_time=np.array([info.get('remaining_time',0)],np.float32),time_valid=int(info.get('time_valid',0)))
+                           remaining_time=np.array([info.get('remaining_time',0)],np.float32),time_valid=int(info.get('time_valid',0)),
+                           hp=np.array([info.get('hp',0)],np.float32),hp_valid=int(info.get('hp_valid',0)))
         if observation['position'].shape!=(3,) or not np.isfinite(observation['position']).all() or observation['position_valid'] not in (0,1):
             raise RuntimeError('invalid native position observation')
         if not np.isfinite(observation['ink']).all() or not 0<=observation['ink'][0]<=1 or observation['ink_valid'] not in (0,1):
@@ -47,6 +48,8 @@ class Client:
             raise RuntimeError('invalid native heading observation')
         if not np.isfinite(observation['remaining_time']).all() or not 0<=observation['remaining_time'][0]<=600 or observation['time_valid'] not in (0,1):
             raise RuntimeError('invalid native countdown observation')
+        if not np.isfinite(observation['hp']).all() or not 0<=observation['hp'][0]<=1 or observation['hp_valid'] not in (0,1):
+            raise RuntimeError('invalid native HP observation')
         return observation, info
 
     def send_step(self, action, frames):

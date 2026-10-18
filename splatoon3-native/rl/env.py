@@ -37,6 +37,7 @@ class NativeParallelEnv(ParallelEnv):
                             'position':spaces.Box(-256,256,(3,),np.float32),'position_valid':spaces.Discrete(2),
                             'ink':spaces.Box(0,1,(1,),np.float32),'ink_valid':spaces.Discrete(2),
                             'heading':spaces.Box(-np.pi,np.pi,(1,),np.float32),'heading_valid':spaces.Discrete(2),
+                            'hp':spaces.Box(0,1,(1,),np.float32),'hp_valid':spaces.Discrete(2),
                             'remaining_time':spaces.Box(0,600,(1,),np.float32),'time_valid':spaces.Discrete(2)})
 
     @lru_cache(None)
