@@ -36,11 +36,14 @@ class Client:
                            frame=np.array([info['frame']], dtype=np.int64), phase=info['phase'],
                            position=np.asarray(info.get('position',[0,0,0]),dtype=np.float32),
                            position_valid=int(info.get('position_valid',0)),
-                           ink=np.array([info.get('ink',0)],np.float32),ink_valid=int(info.get('ink_valid',0)))
+                           ink=np.array([info.get('ink',0)],np.float32),ink_valid=int(info.get('ink_valid',0)),
+                           heading=np.array([info.get('heading',0)],np.float32),heading_valid=int(info.get('heading_valid',0)))
         if observation['position'].shape!=(3,) or not np.isfinite(observation['position']).all() or observation['position_valid'] not in (0,1):
             raise RuntimeError('invalid native position observation')
         if not np.isfinite(observation['ink']).all() or not 0<=observation['ink'][0]<=1 or observation['ink_valid'] not in (0,1):
             raise RuntimeError('invalid native ink observation')
+        if not np.isfinite(observation['heading']).all() or abs(observation['heading'][0])>np.pi+1e-6 or observation['heading_valid'] not in (0,1):
+            raise RuntimeError('invalid native heading observation')
         return observation, info
 
     def send_step(self, action, frames):

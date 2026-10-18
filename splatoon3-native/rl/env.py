@@ -35,7 +35,8 @@ class NativeParallelEnv(ParallelEnv):
         return spaces.Dict({'pixels':spaces.Box(0,255,(72,128,3),np.uint8),
                             'frame':spaces.Box(0,np.iinfo(np.int64).max,(1,),np.int64),'phase':spaces.Discrete(4),
                             'position':spaces.Box(-256,256,(3,),np.float32),'position_valid':spaces.Discrete(2),
-                            'ink':spaces.Box(0,1,(1,),np.float32),'ink_valid':spaces.Discrete(2)})
+                            'ink':spaces.Box(0,1,(1,),np.float32),'ink_valid':spaces.Discrete(2),
+                            'heading':spaces.Box(-np.pi,np.pi,(1,),np.float32),'heading_valid':spaces.Discrete(2)})
 
     @lru_cache(None)
     def action_space(self, agent):

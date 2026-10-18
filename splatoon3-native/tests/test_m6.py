@@ -27,7 +27,7 @@ def difference(a,b):
 def main(args):
     out=ROOT/'work/tests'/datetime.datetime.now().strftime(f'm6-check-{args.players}p-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
     result=dict(milestone='M6-B-position-ink',players=args.players,passed=False,full_m6_passed=False,errors=[],episodes=[],
-                internal_state='local_packet_position_ink',unavailable_fields=['heading','hp','special','score','turf','time','visible_peers','kills'],artifacts=str(out))
+                internal_state='local_packet_position_ink',unavailable_fields=['hp','special','score','turf','time','visible_peers','kills'],artifacts=str(out))
     env=NativeParallelEnv(players=args.players,frame_skip=args.frame_skip,mode=args.mode,stage_id=args.stage_id,
                          weapons=args.weapons or [0]*args.players,timeout=args.timeout,patched=args.patched,state_dump=args.state_dump)
     rng=np.random.default_rng(args.seed);last_print=time.monotonic();step_number=0
@@ -72,11 +72,14 @@ def main(args):
             for _ in range(6):
                 observations,_,_=step(actions);current=observations['player_0']['pixels'];idle.append(difference(last,current));last=current
             initial_positions={a:o['position'].copy() for a,o in observations.items()};position_samples=[]
+            initial_headings={a:float(o['heading'][0]) for a,o in observations.items()};heading_samples=[]
             move=neutral();move['sticks']=np.array([0,1,.8,0],np.float32)
             actions['player_0']=move
             for _ in range(6):
                 observations,_,_=step(actions);current=observations['player_0']['pixels'];moving.append(difference(last,current));last=current
                 if any(not o['position_valid'] or not o['ink_valid'] for o in observations.values()):raise AssertionError('position became invalid during movement')
+                if any(not o['heading_valid'] for o in observations.values()):raise AssertionError('heading unavailable during movement')
+                heading_samples.append({a:abs(float(np.angle(np.exp(1j*(float(o['heading'][0])-initial_headings[a]))))) for a,o in observations.items()})
                 position_samples.append({a:float(np.linalg.norm(o['position']-initial_positions[a])) for a,o in observations.items()})
             Image.fromarray(last).save(out/'player_0-moving.png')
             threshold=max(3.0,float(np.mean(idle))*1.5)
@@ -86,6 +89,9 @@ def main(args):
             remote=max(row['player_1'] for row in position_samples)
             record['position_effect']=dict(own_displacement=own,neutral_peer_drift=remote,passed=own>.1 and remote<.05)
             if not record['position_effect']['passed']:raise AssertionError('local position did not follow the owning controller')
+            own_turn=max(r['player_0'] for r in heading_samples);peer_turn=max(r['player_1'] for r in heading_samples)
+            record['heading_effect']=dict(own_turn=own_turn,neutral_peer_turn=peer_turn,passed=own_turn>.2 and peer_turn<.01)
+            if not record['heading_effect']['passed']:raise AssertionError('heading failed own vs peer movement correlation')
             # Clean counter-survey windows. Logs retain exact byte ranges, so
             # additional native fields can be studied without guessing labels.
             record['field_epochs']=[];record['ink_effect']=[]
@@ -127,6 +133,7 @@ def main(args):
         result['pixel_control_layer_passed']=True
         result['position_layer_passed']=True
         result['ink_layer_passed']=True
+        result['heading_layer_passed']=True
     except BaseException as error:
         result['errors'].append(f'{type(error).__name__}: {error}')
         (out/'exception.txt').write_text(traceback.format_exc())
