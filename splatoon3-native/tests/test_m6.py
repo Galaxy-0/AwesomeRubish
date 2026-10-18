@@ -26,24 +26,28 @@ def difference(a,b):
 
 def main(args):
     out=ROOT/'work/tests'/datetime.datetime.now().strftime(f'm6-check-{args.players}p-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
-    result=dict(milestone='M6-A' if args.players==2 else 'M6-C',passed=False,errors=[],episodes=[],internal_state='not_implemented',artifacts=str(out))
+    result=dict(milestone='M6-B-position-ink',players=args.players,passed=False,full_m6_passed=False,errors=[],episodes=[],
+                internal_state='local_packet_position_ink',unavailable_fields=['heading','hp','special','score','turf','time','visible_peers','kills'],artifacts=str(out))
     env=NativeParallelEnv(players=args.players,frame_skip=args.frame_skip,mode=args.mode,stage_id=args.stage_id,
-                         weapons=args.weapons or [0]*args.players,timeout=args.timeout,patched=args.patched)
+                         weapons=args.weapons or [0]*args.players,timeout=args.timeout,patched=args.patched,state_dump=args.state_dump)
     rng=np.random.default_rng(args.seed);last_print=time.monotonic();step_number=0
     log=(out/'steps.jsonl').open('w')
     def step(actions):
         nonlocal step_number,last_print
-        observations,rewards,terminated,truncated,infos=env.step(actions);step_number+=1
+        if actions is None:
+            observations,infos=env.advance_settlement();truncated={a:env.timed_out for a in env.possible_agents}
+        else:observations,rewards,terminated,truncated,infos=env.step(actions)
+        infos=env.process_infos;step_number+=1
         if any(truncated.values()):raise AssertionError('unexpected truncated match')
         for agent,observation in observations.items():
             if not env.observation_space(agent).contains(observation):raise AssertionError(f'{agent}: out-of-space observation')
         log.write(json.dumps(dict(step=step_number,episode=env.episode,infos=infos))+'\n');log.flush()
         if time.monotonic()-last_print>30:
             print(f'M6 episode={env.episode} step={step_number} phase='+str({a:i['phase'] for a,i in infos.items()}),flush=True);last_print=time.monotonic()
-        return observations,all(terminated.values()),infos
+        return observations,not env.agents,infos
     try:
         previous_pids=set()
-        for episode in range(2):
+        for episode in range(2 if args.players==2 else 1):
             observations,infos=env.reset(seed=args.seed+episode)
             pids={p.pid for _,p,_ in env.session.hosts}
             if pids & previous_pids:raise AssertionError('reset reused an old live process')
@@ -61,19 +65,51 @@ def main(args):
                 env.frame_skip=k;time.sleep(.2);observations,_,_=step(actions)
             env.frame_skip=args.frame_skip
             for _ in range(max(1,360//args.frame_skip)):observations,_,_=step(actions)
+            if any(not o['position_valid'] or not o['ink_valid'] for o in observations.values()):raise AssertionError('local native position is unavailable after warmup')
             if any(float(o['pixels'].var())<25 for o in observations.values()):raise AssertionError('black/flat in-game pixel observation')
             for a,o in observations.items():Image.fromarray(o['pixels']).save(out/f'{a}-initial.png')
             idle=[];moving=[];last=observations['player_0']['pixels']
             for _ in range(6):
                 observations,_,_=step(actions);current=observations['player_0']['pixels'];idle.append(difference(last,current));last=current
+            initial_positions={a:o['position'].copy() for a,o in observations.items()};position_samples=[]
             move=neutral();move['sticks']=np.array([0,1,.8,0],np.float32)
             actions['player_0']=move
             for _ in range(6):
                 observations,_,_=step(actions);current=observations['player_0']['pixels'];moving.append(difference(last,current));last=current
+                if any(not o['position_valid'] or not o['ink_valid'] for o in observations.values()):raise AssertionError('position became invalid during movement')
+                position_samples.append({a:float(np.linalg.norm(o['position']-initial_positions[a])) for a,o in observations.items()})
             Image.fromarray(last).save(out/'player_0-moving.png')
             threshold=max(3.0,float(np.mean(idle))*1.5)
             record['action_effect']=dict(idle_mad=idle,moving_mad=moving,threshold=threshold,passed=float(np.mean(moving))>threshold)
             if not record['action_effect']['passed']:raise AssertionError('moving/camera image change not greater than idle baseline')
+            own=max(row['player_0'] for row in position_samples)
+            remote=max(row['player_1'] for row in position_samples)
+            record['position_effect']=dict(own_displacement=own,neutral_peer_drift=remote,passed=own>.1 and remote<.05)
+            if not record['position_effect']['passed']:raise AssertionError('local position did not follow the owning controller')
+            # Clean counter-survey windows. Logs retain exact byte ranges, so
+            # additional native fields can be studied without guessing labels.
+            record['field_epochs']=[];record['ink_effect']=[]
+            for label,player,kind,count in [('idle',0,'idle',6),('fire-0',0,'fire',12),('recover-0',0,'swim',16),('fire-1',1,'fire',12),('look-0',0,'look',12)]:
+                actions={a:neutral() for a in env.agents};action=actions[f'player_{player}']
+                if kind=='fire':action['buttons'][0]=1
+                if kind=='swim':action['buttons'][1]=1
+                if kind=='look':action['sticks'][2]=.8
+                starts={str(n):(d/'host.log').stat().st_size for n,_,d in env.session.hosts}
+                before={a:float(o['ink'][0]) for a,o in observations.items()};samples=[]
+                for _ in range(count):
+                    observations,_,infos=step(actions)
+                    if any(not o['ink_valid'] for o in observations.values()):raise AssertionError('ink unavailable in controlled window')
+                    samples.append({a:float(o['ink'][0]) for a,o in observations.items()})
+                if kind in ('fire','swim'):
+                    owner=f'player_{player}';other='player_1' if player==0 else 'player_0'
+                    delta=samples[-1][owner]-before[owner]
+                    peer_drift=max(abs(row[other]-before[other]) for row in samples)
+                    passed=(delta<-.05 if kind=='fire' else delta>.05) and (peer_drift<.02 if label!='fire-1' else True)
+                    record['ink_effect'].append(dict(label=label,before=before,after=samples[-1],delta=delta,peer_drift=peer_drift,passed=passed))
+                    if not passed:raise AssertionError(f'{label}: ink failed own fire/recovery correlation')
+                ends={str(n):(d/'host.log').stat().st_size for n,_,d in env.session.hosts}
+                record['field_epochs'].append(dict(label=label,log_starts=starts,log_ends=ends,infos=infos))
+                Image.fromarray(observations[f'player_{player}']['pixels']).save(out/f'{label}.png')
             done=False
             while not done:
                 actions={}
@@ -81,16 +117,22 @@ def main(args):
                     buttons=(rng.random(6)<np.array([.55,.20,.05,.05,.12,0])).astype(np.int8)
                     actions[agent]=dict(sticks=rng.uniform(-1,1,4).astype(np.float32),gyro=np.zeros(3,np.float32),buttons=buttons)
                 observations,done,infos=step(actions)
-            record['random_match_complete']=True;record['terminal_infos']=infos
+            record['individual_termination_complete']=True;record['judge_infos']=env.process_infos.copy()
+            while not all(i['phase']==3 for i in env.process_infos.values()):observations,_,infos=step(None)
+            record['random_match_complete']=True;record['terminal_infos']=env.process_infos
             for n,_,_ in env.session.hosts:
                 text=env.session.text(n)
                 if any(f'PROBE main+0x{a}' not in text for a in ('3db55d0','3dcc710','3dd9370')):raise AssertionError('native result sequence missing')
                 if 'screen_submits=0 composite=0' not in text or FAILURE.search(text):raise AssertionError('headless/runtime evidence failed')
         result['pixel_control_layer_passed']=True
+        result['position_layer_passed']=True
+        result['ink_layer_passed']=True
     except BaseException as error:
         result['errors'].append(f'{type(error).__name__}: {error}')
         (out/'exception.txt').write_text(traceback.format_exc())
     finally:
+        for agent,observation in env.observations.items():
+            Image.fromarray(observation['pixels']).save(out/f'{agent}-last.png')
         try:env.close()
         except BaseException as error:result['errors'].append(f'cleanup: {type(error).__name__}: {error}')
         log.close()
@@ -111,4 +153,5 @@ if __name__=='__main__':
     parser.add_argument('--seed',type=int,default=137)
     parser.add_argument('--timeout',type=float,default=2400)
     parser.add_argument('--patched',type=Path)
+    parser.add_argument('--state-dump',action='store_true',help='local development-only raw state survey in work logs')
     raise SystemExit(main(parser.parse_args()))

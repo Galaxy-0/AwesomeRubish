@@ -85,10 +85,19 @@ index 0000000..8539a5d
 +# 预热种子清单（随包，与 shader_map.tsv 同目录）。行：S<TAB>着色器键<TAB>阶段 / R<TAB>渲染管线键（pso_skey 十六进制）/ C<TAB>计算着色器键。
 +# 本作尚未录制（DM_PSO_RECORD）：空表 = 不预热。行序 = 首次使用顺序，不要排序。
 diff --git a/dm/gfx/nvn/hle_nvn.c b/dm/gfx/nvn/hle_nvn.c
-index d4c3531..c04add4 100644
+index d4c3531..3e0350c 100644
 --- a/dm/gfx/nvn/hle_nvn.c
 +++ b/dm/gfx/nvn/hle_nvn.c
-@@ -16,6 +16,7 @@
+@@ -9,6 +9,8 @@
+ // Every implementation gets a compile-time signature check against the prototypes in nvn_protos.h (NVNboolean parameters are received as uint32_t, only the low 8 bits are looked at).
+ // Environment switches: DM_NVN_FRAMES=N prints the call table per frame for the first N frames (default 3); DM_NVN_TSV=path writes the per-frame call table and timing to a TSV (DM_NVN_TSV_CALLS=0 writes timing only); DM_SLOWFRAME=1 writes only the per-frame breakdown of dropped frames to the log; DM_NVN_LOG=1 logs object creation.
+ #include "../../host/hle.h"
++#include "../../host/dm_rl.h"
++__attribute__((weak)) void dm_rl_present(uint64_t frame) { (void)frame; }
+ #include "nvn_protos.h"
+ #include "nvn_count.h"
+ #include "nvn_tex.h"
+@@ -16,6 +18,7 @@
  #include "nvn_pace.h"
  #include "../../host/front.h"
  #include "nvn_dirty.h"
@@ -96,7 +105,7 @@ index d4c3531..c04add4 100644
  #include <mach/mach_time.h>
  #include <CommonCrypto/CommonDigest.h>
  #include <CoreFoundation/CoreFoundation.h>
-@@ -479,13 +480,56 @@ static void cs_dump(void) {   // Called once per frame (at present)
+@@ -479,13 +482,56 @@ static void cs_dump(void) {   // Called once per frame (at present)
          (unsigned long long)f, g_cs.bytes / n / 1024.0, g_cs.recs / n, g_cs.grants / n, g_cs.grants ? g_cs.grant_bytes / (double)g_cs.grants / 1024.0 : 0, g_cs.grant_min / 1024.0, g_cs.grant_max / 1024.0, g_cs.cbs / n, g_cs.hostseg / n, g_cs.waste / n / 1024.0, top);
      int on = g_cs.on; memset(&g_cs, 0, sizeof g_cs); g_cs.on = on; g_cs.frame0 = f; pthread_mutex_unlock(&g_cs_mu);
  }
@@ -157,7 +166,7 @@ index d4c3531..c04add4 100644
  }
  // Host-supplied segment when the game's own command memory runs out: when the game's out-of-memory callback cannot allocate from its command memory pool, it calls AddCommandMemory with an empty pool (p = NULL, n = 0)
  // (opening the advanced stats page on the level 88 sorceress save: many list items in one frame, and the original implementation segfaulted here reading NULL+8). Our records are larger than real-device NVN commands, so the budget the game reserved for real-device usage is not necessarily enough,
-@@ -496,32 +540,41 @@ static void cmd_new_segment(cmd_t *o, uint8_t *mem, size_t n) {
+@@ -496,32 +542,41 @@ static void cmd_new_segment(cmd_t *o, uint8_t *mem, size_t n) {
  // A segment hangs off one recording through the JUMP at the end of its guest part: that recording occupies [BEGIN, end of JUMP) in guest memory, and the game only gives those bytes out again once they are dead
  // (when it re-records that material in place; packing the next recording right behind by used never touches them, since used includes the JUMP). So a segment remembers that guest range and is reclaimed when the game gives out memory
  // overlapping it; segments overflowing from a host segment keep the same range.
@@ -211,7 +220,7 @@ index d4c3531..c04add4 100644
      return m;
  }
  // The game gives out [lo, hi): segments whose recording's guest bytes overlap it are dead, reclaim them
-@@ -531,47 +584,103 @@ static void hostseg_release(uintptr_t lo, uintptr_t hi) {
+@@ -531,47 +586,103 @@ static void hostseg_release(uintptr_t lo, uintptr_t hi) {
      pthread_mutex_unlock(&g_hostseg_mu);
  }
  NVN(nvnCommandBufferAddCommandMemory, void, NVNcommandBuffer *c, const NVNmemoryPool *p, ptrdiff_t off, size_t n) {
@@ -328,7 +337,7 @@ index d4c3531..c04add4 100644
  }
  NVN(nvnCommandBufferSignalEvent, void, NVNcommandBuffer *c, const NVNevent *e, NVNeventSignalMode m, NVNeventSignalLocation loc, int flags, uint32_t v) {
      (void)loc; (void)flags;
-@@ -841,10 +950,12 @@ NVN(nvnQueueSubmitCommands, void, NVNqueue *q, int n, const NVNcommandHandle *h)
+@@ -841,10 +952,12 @@ NVN(nvnQueueSubmitCommands, void, NVNqueue *q, int n, const NVNcommandHandle *h)
      gfx_enter();
      uint64_t t0 = now_ns(), c0 = clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID), i0, y0, s0 = thr_sys_ns(); thr_counts(&i0, &y0);
      ((queue_t *)q)->submits++;
@@ -341,7 +350,15 @@ index d4c3531..c04add4 100644
      mtl_sub_commit();
      uint64_t dw = now_ns() - t0;
      atomic_fetch_add(&g_nvn_ns, dw); atomic_fetch_add(&g_sub_wall_ns, dw);
-@@ -1412,13 +1523,17 @@ NVN(nvnDeviceRegisterFastClearColor, NVNboolean, NVNdevice *d, const float *c, N
+@@ -1283,6 +1396,7 @@ NVN(nvnQueuePresentTexture, void, NVNqueue *q, NVNwindow *w, int idx) {
+         if (a_ > 0) trow(f - 8, "@pres_at_ms", a_ * 1e3 - g_t0_ns / 1e6); }   // on-screen present time (ms since process start; presentedTime shares a time base with mach_absolute_time)
+     if (f >= 8 && slow_on()) slow_emit(f - 8);
+     prev_out = now_ns();
++    dm_rl_present(g_frame);
+ }
+ 
+ // ---------- State-only interfaces used by newer-SDK games (SMBW) that D2R did not use: buffer objects, pool / sampler / texture queries, views, color state, device and window ----------
+@@ -1412,13 +1526,17 @@ NVN(nvnDeviceRegisterFastClearColor, NVNboolean, NVNdevice *d, const float *c, N
  NVN_NOPROTO(nvnWindowBuilderSetNumActiveTextures, void, NVNwindowBuilder *b, int n) { (void)b; ONCE_LOG("WindowBuilderSetNumActiveTextures %d（宿主按 SetTextures 的张数轮转）", n); }
  NVN_NOPROTO(nvnWindowSetNumActiveTextures, void, NVNwindow *w, int n) { (void)w; ONCE_LOG("WindowSetNumActiveTextures %d（宿主按 SetTextures 的张数轮转）", n); }
  
@@ -365,7 +382,7 @@ index d4c3531..c04add4 100644
  NVN_NOPROTO(nvnCommandBufferSetCommandMemoryCallbackEnabled, void, NVNcommandBuffer *c, uint32_t on) { (void)c; (void)on; }
  
  // nvnProgramSetShadersExt (NVN 55): each stage is 0x18 bytes = NVNshaderData{data, control} + one 8-byte extension field (filled from SMBW main 0x1074ff0).
-@@ -1435,7 +1550,9 @@ NVN_NOPROTO(nvnProgramSetShadersExt, NVNboolean, NVNprogram *p, int n, const sha
+@@ -1435,7 +1553,9 @@ NVN_NOPROTO(nvnProgramSetShadersExt, NVNboolean, NVNprogram *p, int n, const sha
  // Singular / combined forms → plural / separate forms; state the replay layer does not have yet (conditional render, depth bounds, ...) is logged once and drawing continues (better to over-draw than to drop).
  #include "../tex/nvn_deswizzle.h"
  
@@ -376,7 +393,7 @@ index d4c3531..c04add4 100644
  // Combined texture handle (texture id | sampler id << 20) is recorded into the texture slot as is: the replay layer takes the texture from the low 20 bits and the sampler from the high bits (nvn_mtl.m NVN_RB_SAMPT)
  NVN(nvnCommandBufferBindTexture, void, NVNcommandBuffer *c, NVNshaderStage st, int i, NVNtextureHandle h) { uint64_t v = (uint64_t)h; bind_handles(c, OP_BIND_TEX, st, i, 1, &v); }
  // "Deferred" binding: the GPU reads the handles h points to when it executes this command, not at recording. The per-texture binding of The Legend of Zelda: Breath of the Wild's engine (main+0xec2e64) always uses it,
-@@ -1478,9 +1595,10 @@ NVN(nvnCommandBufferReportValue, void, NVNcommandBuffer *c, uint32_t v, NVNbuffe
+@@ -1478,9 +1598,10 @@ NVN(nvnCommandBufferReportValue, void, NVNcommandBuffer *c, uint32_t v, NVNbuffe
  // Clear a buffer to a 32-bit value: one OP_CLEAR_BUF record, filled in order within the submission at replay (fillBuffer when all bytes match, otherwise copied from a pattern buffer)
  NVN(nvnCommandBufferClearBuffer, void, NVNcommandBuffer *c, NVNbufferAddress a, size_t n, uint32_t v) { *REC(c, OP_CLEAR_BUF, p_clear_buf) = (p_clear_buf){a, n, v, 0}; }
  
@@ -1893,7 +1910,7 @@ index c925370..da5ad1e 100644
 +metal_macosx	none
 +metal_iphoneos	none
 diff --git a/dm/host/Makefile b/dm/host/Makefile
-index 31b4420..537b48b 100644
+index 31b4420..973f274 100644
 --- a/dm/host/Makefile
 +++ b/dm/host/Makefile
 @@ -14,7 +14,7 @@ SRC=main.c loader.c hle.c host_stubs.c crash.c probe.c thread.c memstat.m ../ios
@@ -1910,7 +1927,7 @@ index 31b4420..537b48b 100644
  .PHONY: FORCE
  FORCE:
 -dmhost: $(SRC) $(GFX) dm.h hle.h dm_input.h front.h touch_mac.h ../ios/Sources/dm_touch_controls.[ch] $(GFX_H) $(GAME_H) $(GAME_DIR)/dmsh_chain.h $(GAME_STAMP) $(VPX_LIB)
-+dmhost: $(SRC) $(GFX) dm.h hle.h hle_ldn.h dm_input.h dm_rl.h front.h touch_mac.h ../ios/Sources/dm_touch_controls.[ch] $(GFX_H) $(GAME_H) $(GAME_DIR)/dmsh_chain.h $(GAME_STAMP) $(VPX_LIB)
++dmhost: $(SRC) $(GFX) dm.h hle.h hle_ldn.h dm_input.h dm_rl.h dm_rl_clock.h front.h touch_mac.h ../ios/Sources/dm_touch_controls.[ch] $(GFX_H) $(GAME_H) $(GAME_DIR)/dmsh_chain.h $(GAME_STAMP) $(VPX_LIB)
  	clang $(CFLAGS) -I../gfx/nvn/include -I$(dir $(GAME_H)) -I$(GAME_DIR) -I$(VPX) -I../third_party/stb_vorbis -fobjc-arc -o $@ $(SRC) $(GFX) $(VPX_LIB) -framework Cocoa -framework QuartzCore -framework Metal -framework AudioToolbox -framework ImageIO -framework UniformTypeIdentifiers
 diff --git a/dm/host/crash.c b/dm/host/crash.c
 index f513ee3..5508a0b 100644
@@ -1941,7 +1958,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..81ba225 100644
+index fda33ac..d30f5a1 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1949,7 +1966,7 @@ index fda33ac..81ba225 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_MAX = 24 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_MAX = 25 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -1963,10 +1980,10 @@ index fda33ac..81ba225 100644
  void dm_fault_hook_register(int (*fn)(void *addr, int is_write, void *uc));
 diff --git a/dm/host/dm_rl.h b/dm/host/dm_rl.h
 new file mode 100644
-index 0000000..560c22f
+index 0000000..c865a42
 --- /dev/null
 +++ b/dm/host/dm_rl.h
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,16 @@
 +// Local RL transport: no platform graphics or IPC types cross this interface.
 +#pragma once
 +#include <stdint.h>
@@ -1974,11 +1991,70 @@ index 0000000..560c22f
 +#define DM_RL_HEIGHT 72
 +#define DM_RL_BYTES (DM_RL_WIDTH * DM_RL_HEIGHT * 3)
 +void dm_rl_init(void);
++typedef struct { uint64_t buttons; int32_t axes[4]; float gyro[3]; } dm_rl_action_t;
++// UINT64_MAX reads the live present counter while holding the input lock.
++int dm_rl_input(uint64_t present_frame, dm_rl_action_t *action);
 +void dm_rl_before_input(uint64_t present_frame);
++void dm_rl_present(uint64_t completed_frame);
 +int dm_rl_active(void);
 +int dm_rl_capture_needed(void);
 +void dm_rl_pixels(const uint8_t *rgb, uint64_t frame, unsigned width, unsigned height);
 +void dm_hid_rl_action(uint64_t buttons, const int32_t axes[4], const float gyro[3]);
+diff --git a/dm/host/dm_rl_clock.h b/dm/host/dm_rl_clock.h
+new file mode 100644
+index 0000000..ab0da90
+--- /dev/null
++++ b/dm/host/dm_rl_clock.h
+@@ -0,0 +1,49 @@
++// POSIX shared-memory clock: one coordinator pauses policy time for all peers.
++#ifndef DM_RL_CLOCK_H
++#define DM_RL_CLOCK_H
++#include <stdint.h>
++#include <stdatomic.h>
++#ifdef __APPLE__
++#include <mach/mach_time.h>
++#else
++#include <time.h>
++#endif
++#define DM_RL_CLOCK_MAGIC UINT64_C(0x5333524c434c4b31)
++#define DM_RL_CLOCK_PAUSED (UINT64_C(1)<<63)
++typedef struct dm_rl_clock {
++    uint64_t magic;
++    _Atomic uint64_t state; // paused: held time; running: elapsed policy pause
++    _Atomic uint64_t last;  // common monotonic floor across all readers
++} dm_rl_clock;
++_Static_assert(sizeof(dm_rl_clock)==24,"shared clock ABI");
++static inline uint64_t dm_rl_clock_wall(void) {
++#ifdef __APPLE__
++    mach_timebase_info_data_t tb;mach_timebase_info(&tb);
++    return mach_absolute_time()*tb.numer/tb.denom;
++#else
++    struct timespec t;clock_gettime(CLOCK_MONOTONIC,&t);
++    return (uint64_t)t.tv_sec*1000000000+t.tv_nsec;
++#endif
++}
++static inline uint64_t dm_rl_clock_read(dm_rl_clock *clock) {
++    // Read wall time before state. An in-flight pre-pause reader must not
++    // advance the held clock by its scheduling delay after the pause store.
++    uint64_t now=dm_rl_clock_wall(),state=atomic_load(&clock->state);
++    uint64_t value=state&DM_RL_CLOCK_PAUSED ? state&~DM_RL_CLOCK_PAUSED : now>state ? now-state : 0;
++    uint64_t last=atomic_load(&clock->last);
++    while (value>last && !atomic_compare_exchange_weak(&clock->last,&last,value)) {}
++    return value>last ? value : last;
++}
++static inline uint64_t dm_rl_clock_pause(dm_rl_clock *clock) {
++    uint64_t held=dm_rl_clock_read(clock);
++    atomic_store(&clock->state,DM_RL_CLOCK_PAUSED|held);
++    return dm_rl_clock_read(clock);
++}
++static inline void dm_rl_clock_resume(dm_rl_clock *clock) {
++    uint64_t state=atomic_load(&clock->state);
++    if (state&DM_RL_CLOCK_PAUSED) {
++        uint64_t held=dm_rl_clock_read(clock);
++        atomic_store(&clock->state,dm_rl_clock_wall()-held);
++    }
++}
++#endif
 diff --git a/dm/host/front_mac.m b/dm/host/front_mac.m
 index c7559ca..d3b7360 100644
 --- a/dm/host/front_mac.m
@@ -1993,6 +2069,19 @@ index c7559ca..d3b7360 100644
      if (!getenv("DM_WINDOW")) { guest(); return; }
      @autoreleasepool {
          [NSApplication sharedApplication];
+diff --git a/dm/host/hle.h b/dm/host/hle.h
+index 79fda3d..c742520 100644
+--- a/dm/host/hle.h
++++ b/dm/host/hle.h
+@@ -22,6 +22,8 @@ uint64_t now_ns(void);
+ extern __thread _Atomic int dm_host_work;
+ uint64_t guest_ns(void);              // Guest clock (hle_os.c; does not advance while DM_TICK_HOLD is frozen)
+ int dm_detclock_enabled(void);
++struct dm_rl_clock;
++void dm_guest_clock_share(struct dm_rl_clock *clock);
+ void dm_guest_clock_advanced(void);
+ uint64_t dm_guest_frame(void);        // Incremented each time the host presents a frame; unaffected by machine load
+ uint64_t dm_server_tick(void);        // In-run server tick; returns UINT64_MAX when not in a run or while DM_TICK_HOLD is frozen
 diff --git a/dm/host/hle_account.c b/dm/host/hle_account.c
 index 362a6c2..7cd8d37 100644
 --- a/dm/host/hle_account.c
@@ -2182,7 +2271,7 @@ index 074f933..1181e99 100644
      if ((int)h >= 0 && (int)h < 4096 && g_hm[(int)h]) { holemap *m = g_hm[(int)h]; g_hm[(int)h] = NULL; free(m->log); free(m->len); free(m->phys); free(m); }
      close((int)h); }
 diff --git a/dm/host/hle_hid.c b/dm/host/hle_hid.c
-index 561a3c8..861cdb4 100644
+index 561a3c8..c60fa4d 100644
 --- a/dm/host/hle_hid.c
 +++ b/dm/host/hle_hid.c
 @@ -1,13 +1,17 @@
@@ -2209,12 +2298,12 @@ index 561a3c8..861cdb4 100644
  static _Atomic uint64_t g_btn, g_axes, g_latch, g_pad_btn, g_pad_axes, g_pad_latch;
  static _Atomic int64_t g_sampling;
 +// Standalone HID tests do not link the optional RL transport.
-+__attribute__((weak)) void dm_rl_before_input(uint64_t frame) { (void)frame; }
++__attribute__((weak)) int dm_rl_input(uint64_t frame,dm_rl_action_t *action) { (void)frame;(void)action;return 0; }
 +__attribute__((weak)) int dm_rl_active(void) { return 0; }
  static uint64_t pack(int32_t lx, int32_t ly, int32_t rx, int32_t ry) {
      return (uint64_t)(uint16_t)lx | (uint64_t)(uint16_t)ly << 16 | (uint64_t)(uint16_t)rx << 32 | (uint64_t)(uint16_t)ry << 48;
  }
-@@ -32,24 +39,100 @@ void dm_pad_set(uint64_t buttons, int32_t lx, int32_t ly, int32_t rx, int32_t ry
+@@ -32,24 +39,104 @@ void dm_pad_set(uint64_t buttons, int32_t lx, int32_t ly, int32_t rx, int32_t ry
      uint64_t old = atomic_exchange(&g_pad_btn, buttons); atomic_fetch_or(&g_pad_latch, buttons & ~old); atomic_store(&g_pad_axes, pack(lx, ly, rx, ry));
  }
  uint64_t dm_input_samples(void) { return (uint64_t)atomic_load(&g_sampling); }
@@ -2276,7 +2365,10 @@ index 561a3c8..861cdb4 100644
 +}
 +static int motion_fill(SixState *s,int n,void *caller){
 +    if(n<=0||!g_motion_enabled||!g_motion_started)return 0;
-+    pthread_mutex_lock(&g_motion_mu);motion_update(motion_now());
++    dm_rl_action_t action;int controlled=dm_rl_input(UINT64_MAX,&action);
++    pthread_mutex_lock(&g_motion_mu);
++    static uint64_t latched_frame=UINT64_MAX;
++    if (!controlled || latched_frame!=dm_guest_frame()) { motion_update(motion_now());latched_frame=dm_guest_frame(); }
 +    int count=n<g_motion_count?n:g_motion_count;
 +    memcpy(s,g_motion_history,count*sizeof *s);
 +    if(getenv("DM_HID_TRACE")) {
@@ -2294,13 +2386,14 @@ index 561a3c8..861cdb4 100644
  #define KEY_STEPS 1024
  static key_step g_steps[KEY_STEPS]; static int g_nsteps;
 +static void keys_apply(const key_step *s,int pressed){
++    if(dm_rl_active())return;
 +    dm_pad_set(pressed?s->btn:0,pressed?s->lx:0,pressed?s->ly:0,pressed?s->rx:0,pressed?s->ry:0);
 +    motion_rate(pressed?s->gx:0,pressed?s->gy:0,pressed?s->gz:0);
 +}
 +void dm_hid_rl_action(uint64_t buttons, const int32_t axes[4], const float gyro[3]) {
-+    key_step s = {.btn=buttons,.lx=axes[0],.ly=axes[1],.rx=axes[2],.ry=axes[3],.gx=gyro[0],.gy=gyro[1],.gz=gyro[2]};
 +    g_motion_enabled = 1;
-+    keys_apply(&s, 1);
++    dm_pad_set(buttons,axes[0],axes[1],axes[2],axes[3]);
++    motion_rate(gyro[0],gyro[1],gyro[2]);
 +}
  static void *keys_main(void *arg) {
      (void)arg; struct timespec t0; clock_gettime(CLOCK_MONOTONIC, &t0);
@@ -2320,7 +2413,7 @@ index 561a3c8..861cdb4 100644
      static const char *names[16] = {"A", "B", "X", "Y", "LS", "RS", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"};
      char buf[4096]; snprintf(buf, sizeof buf, "%s", e);
      for (char *tok = strtok(buf, ","); tok && g_nsteps < KEY_STEPS; tok = strtok(NULL, ",")) {
-@@ -64,10 +147,39 @@ void hid_keys_init(void) {
+@@ -64,10 +151,39 @@ void hid_keys_init(void) {
              static const char *const sticks[4] = {"LLeft", "LUp", "LRight", "LDown"};
              static const int sx[4] = {-32767, 0, 32767, 0}, sy[4] = {0, 32767, 0, -32767};
              for (int d = 0; d < 4; d++) if (!strcasecmp(k, sticks[d])) { if (sx[d]) st.lx = sx[d]; if (sy[d]) st.ly = sy[d]; found = 1; }
@@ -2360,18 +2453,18 @@ index 561a3c8..861cdb4 100644
      pthread_t th; if (g_nsteps && !pthread_create(&th, NULL, keys_main, NULL)) { pthread_detach(th); LOG("DM_KEYS：%d 步", g_nsteps); }
  }
  
-@@ -81,8 +193,10 @@ static void fill(NpadState *s, uint32_t id, uint32_t style) {
+@@ -81,8 +197,10 @@ static void fill(NpadState *s, uint32_t id, uint32_t style) {
      memset(s, 0, sizeof *s);
      s->sampling = atomic_fetch_add(&g_sampling, 1) + 1;
      if (!(style_of(id) & style)) return;   // no controller of this id / style: attributes = 0
-+    dm_rl_before_input(dm_guest_frame());
++    dm_rl_action_t action;int controlled=dm_rl_input(UINT64_MAX,&action);
      uint64_t b = atomic_load(&g_btn) | atomic_exchange(&g_latch, 0) | atomic_load(&g_pad_btn) | atomic_exchange(&g_pad_latch, 0);
      uint64_t k = atomic_load(&g_axes), p = atomic_load(&g_pad_axes);
-+    if (dm_rl_active()) { b = atomic_load(&g_pad_btn); k = p; }
++    if (controlled) { b=action.buttons;k=p=pack(action.axes[0],action.axes[1],action.axes[2],action.axes[3]); }
      s->lx = pick(ax(k, 0), ax(p, 0)); s->ly = pick(ax(k, 1), ax(p, 1)); s->rx = pick(ax(k, 2), ax(p, 2)); s->ry = pick(ax(k, 3), ax(p, 3));
      b &= 0xffffull;
      if (s->lx < -STICK_THRESH) b |= 1u << 16;
-@@ -94,6 +208,11 @@ static void fill(NpadState *s, uint32_t id, uint32_t style) {
+@@ -94,6 +212,11 @@ static void fill(NpadState *s, uint32_t id, uint32_t style) {
      if (s->rx > STICK_THRESH) b |= 1u << 22;
      if (s->ry < -STICK_THRESH) b |= 1u << 23;
      s->buttons = b;
@@ -2383,7 +2476,7 @@ index 561a3c8..861cdb4 100644
      s->attributes = ATTR_CONNECTED | (id == NPAD_HANDHELD ? ATTR_WIRED | ATTR_LEFT_CONN | ATTR_LEFT_WIRED | ATTR_RIGHT_CONN | ATTR_RIGHT_WIRED : ATTR_LEFT_CONN | ATTR_RIGHT_CONN);
  }
  // GetNpadStates(out, n, id): returns the number written, newest first. The host keeps no history: only 1 current state (callers handle the returned count)
-@@ -121,12 +240,12 @@ HLE_FORCE("_ZN2nn3hid20StopLrAssignmentModeEv", "L/R 分配模式；宿主忽略
+@@ -121,12 +244,12 @@ HLE_FORCE("_ZN2nn3hid20StopLrAssignmentModeEv", "L/R 分配模式；宿主忽略
  // Controller applet (system UI): report "1 player, current controller selected" directly. ControllerSupportResultInfo = { int playerCount; uint32_t selectedId; }
  HLE_FORCE("_ZN2nn3hid21ShowControllerSupportEPNS0_27ControllerSupportResultInfoERKNS0_20ControllerSupportArgE", "手柄小程序；宿主直接报已选好",
            Result, h_hid_ShowCtrl, int32_t *info, const void *arg) { (void)arg; if (info) { info[0] = 1; info[1] = (int32_t)connected_id(); } return RES_OK; }
@@ -2400,7 +2493,7 @@ index 561a3c8..861cdb4 100644
  // Vibration: no devices
  HLE_FORCE("_ZN2nn3hid20IsVibrationPermittedEv", "震动许可；宿主不支持", unsigned, h_hid_VibPermit, void) { return 0; }
  HLE_FORCE("_ZN2nn3hid25GetVibrationDeviceHandlesEPNS0_21VibrationDeviceHandleEiRKjNS_4util10BitFlagSetILi32ENS0_12NpadStyleTagEEE", "震动设备：0 个",
-@@ -190,10 +309,10 @@ TOUCH(1) TOUCH(2) TOUCH(3) TOUCH(4) TOUCH(5) TOUCH(6) TOUCH(7) TOUCH(8) TOUCH(9)
+@@ -190,10 +313,10 @@ TOUCH(1) TOUCH(2) TOUCH(3) TOUCH(4) TOUCH(5) TOUCH(6) TOUCH(7) TOUCH(8) TOUCH(9)
  HLE_FORCE("_ZN2nn3hid17InitializeGestureEv", "手势；宿主不提供", void, h_hid_InitGesture, void) {}
  HLE_FORCE("_ZN2nn3hid16GetGestureStatesEPNS0_12GestureStateEi", "手势状态：0 条", int, h_hid_Gestures, void *out, int n) { (void)out; (void)n; return 0; }
  
@@ -2415,7 +2508,7 @@ index 561a3c8..861cdb4 100644
  // The console's own six-axis sensor (SevenSixAxisSensor, the body's orientation in handheld mode; The Legend of Zelda: Breath of the Wild): takes a work buffer and is switched through the hid service. The host provides none: switching succeeds, 0 states
  HLE_FORCE("_ZN2nn3hid28InitializeSevenSixAxisSensorEPvm", "机身六轴初始化；宿主不提供", Result, h_hid_SevenInit, void *buf, size_t n) { (void)buf; (void)n; return RES_OK; }
  HLE_FORCE("_ZN2nn3hid26FinalizeSevenSixAxisSensorEv", "机身六轴", Result, h_hid_SevenFini, void) { return RES_OK; }
-@@ -201,8 +320,8 @@ HLE_FORCE("_ZN2nn3hid23StartSevenSixAxisSensorEv", "机身六轴；宿主不提
+@@ -201,8 +324,8 @@ HLE_FORCE("_ZN2nn3hid23StartSevenSixAxisSensorEv", "机身六轴；宿主不提
  HLE_FORCE("_ZN2nn3hid22StopSevenSixAxisSensorEv", "机身六轴", Result, h_hid_SevenStop, void) { return RES_OK; }
  HLE_FORCE("_ZN2nn3hid32ResetSevenSixAxisSensorTimestampEv", "机身六轴时间戳", void, h_hid_SevenReset, void) {}
  HLE_FORCE("_ZN2nn3hid27GetSevenSixAxisSensorStatesEPNS0_23SevenSixAxisSensorStateEi", "机身六轴状态：0 条", int, h_hid_SevenStates, void *out, int n) { (void)out; (void)n; return 0; }
@@ -2972,16 +3065,45 @@ index 367779a..f05c688 100644
  HLE_FORCE("_ZN2nn3err40ShowUnacceptableAddOnContentVersionErrorEv", "追加内容版本不符错误小程序；宿主只记日志", void, h_err_AocVer, void) { LOG("游戏请求显示错误：追加内容版本不符"); }
  HLE_FORCE("_ZN2nn3err39ShowUnacceptableApplicationVersionErrorEv", "游戏版本不符错误小程序；宿主只记日志", void, h_err_AppVer, void) { LOG("游戏请求显示错误：游戏版本不符"); }
  
+diff --git a/dm/host/hle_os.c b/dm/host/hle_os.c
+index 61cf410..e5e894c 100644
+--- a/dm/host/hle_os.c
++++ b/dm/host/hle_os.c
+@@ -2,6 +2,7 @@
+ // (The former 136 HLE entries for nn::os/mem/lmem/C++ ABI have been deleted: the SDK brings its own nn::os, and at load time not one of these entries was resolved and used.)
+ #include <pthread.h>
+ #include "hle.h"
++#include "dm_rl_clock.h"
+ #include <mach/mach_time.h>
+ #include <stdatomic.h>
+ 
+@@ -53,7 +54,13 @@ static int detclock_cfg(void) {
+     return c;
+ }
+ static uint64_t wall_guest_ns(void) { return atomic_load(&g_gfz) ? atomic_load(&g_gfrozen) : now_ns() - atomic_load(&g_glag); }
+-uint64_t guest_ns(void) { return atomic_load(&g_gdet_on) ? atomic_load(&g_gdet) : wall_guest_ns(); }
++static _Atomic(dm_rl_clock *) g_shared_clock;
++void dm_guest_clock_share(dm_rl_clock *clock) { atomic_store(&g_shared_clock,clock); }
++uint64_t guest_ns(void) {
++    dm_rl_clock *clock=atomic_load(&g_shared_clock);
++    if (clock) return dm_rl_clock_read(clock);
++    return atomic_load(&g_gdet_on) ? atomic_load(&g_gdet) : wall_guest_ns();
++}
+ int dm_detclock_enabled(void) { return detclock_cfg() && atomic_load(&g_gdet_on); }
+ // Run entry alignment: the number of presented frames in the front end / character select phase varies with real time (loading advances on a background thread by wall clock), so the guest clock value accumulated since the first frame differs every run --
+ // pictures that depend on absolute time (such as the liquid level of the life / mana orbs) still differ at the same tick (measured: at tick E + 2 frames two passes differ by about 18,000 pixels, concentrated at the two orb positions).
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..84e8c69
+index 0000000..453f700
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,148 @@
+@@ -0,0 +1,248 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
-+#include "dm.h"
++#include "hle.h"
 +#include "dm_rl.h"
++#include "dm_rl_clock.h"
++#include <sys/mman.h>
 +#include <sys/socket.h>
 +#include <sys/un.h>
 +#include <sys/stat.h>
@@ -2993,14 +3115,23 @@ index 0000000..84e8c69
 +
 +static int rl_listener = -1, rl_peer = -1;
 +static _Atomic int rl_enabled, rl_controlled, rl_remaining, rl_phase;
-+static uint64_t rl_last_input = UINT64_MAX, rl_request, rl_frame, rl_step_start;
-+static pthread_t rl_thread;
-+static int rl_have_thread;
++static _Atomic uint64_t rl_last_input = UINT64_MAX, rl_frame;
++static uint64_t rl_request, rl_step_start, rl_without_input, rl_budget_end, rl_input_floor;
++static _Atomic uint64_t rl_input_repeats;
++static pthread_mutex_t rl_input_mu = PTHREAD_MUTEX_INITIALIZER;
++static pthread_cond_t rl_input_cv = PTHREAD_COND_INITIALIZER;
++static _Atomic uint64_t rl_input_seen[4096];
++static dm_rl_action_t rl_pending, rl_latched;
 +static pthread_mutex_t rl_pixels_mu = PTHREAD_MUTEX_INITIALIZER;
 +static uint8_t rl_image[DM_RL_BYTES];
 +static uint64_t rl_image_frame;
 +static unsigned rl_source_width, rl_source_height;
 +static int rl_have_image;
++static dm_rl_clock *rl_clock;
++static pthread_mutex_t rl_state_mu = PTHREAD_MUTEX_INITIALIZER;
++static float rl_position[3], rl_ink;
++static uint64_t rl_position_frame, rl_state_sequence;
++static int rl_position_seen, rl_ink_seen, rl_state_dump;
 +
 +int dm_rl_active(void) { return atomic_load(&rl_controlled); }
 +int dm_rl_capture_needed(void) {
@@ -3012,9 +3143,44 @@ index 0000000..84e8c69
 +    rl_image_frame = frame; rl_source_width = width; rl_source_height = height; rl_have_image = 1;
 +    pthread_mutex_unlock(&rl_pixels_mu);
 +}
-+static void phase_ingame(const uint64_t *r) { (void)r; atomic_store(&rl_phase, 1); }
-+static void phase_judge(const uint64_t *r) { (void)r; atomic_store(&rl_phase, 2); }
++static void phase_ingame(const uint64_t *r) {
++    (void)r;
++    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = 0; pthread_mutex_unlock(&rl_state_mu);
++    atomic_store(&rl_phase, 1);
++}
++static void phase_judge(const uint64_t *r) {
++    (void)r; atomic_store(&rl_phase, 2);
++    // Already latched input stays immutable through this present interval.
++    // Every new frame after settlement latches neutral instead.
++}
 +static void phase_winners(const uint64_t *r) { (void)r; atomic_store(&rl_phase, 3); }
++static void local_state(const uint64_t *r) {
++    if (atomic_load(&rl_phase) != 1) return;
++    // PlayerNetState's encoder reads three signed absolute coordinates here,
++    // before velocity/direction codecs. In the verified 2-peer counterexample
++    // only this process's actions move this encoder's source; remote-only
++    // movement leaves it stationary. Copy during the live call, no saved ptr.
++    const uint8_t *source = (const uint8_t *)(uintptr_t)r[0];
++    float position[3], ink; memcpy(position, source+0x20, sizeof position);
++    // Normalized ink: verified with separate own/peer fire and recovery windows.
++    memcpy(&ink,source+0x84,sizeof ink);
++    int valid = 1;
++    for (int i=0;i<3;i++) if (!isfinite(position[i]) || fabsf(position[i]) > 256) valid = 0;
++    uint64_t frame = dm_guest_frame();
++    pthread_mutex_lock(&rl_state_mu);
++    memcpy(rl_position,position,sizeof position);rl_position_frame=frame;rl_position_seen=valid;
++    rl_ink=ink;rl_ink_seen=isfinite(ink) && ink>=0 && ink<=1;
++    uint64_t sequence=++rl_state_sequence;
++    pthread_mutex_unlock(&rl_state_mu);
++    // Development-only raw scalar survey. Game data stays in the run's log;
++    // these bytes are never exposed as named training fields without a test.
++    if (rl_state_dump) {
++        char hex[0x1f0*2+1]; static const char digits[]="0123456789abcdef";
++        for (unsigned i=0;i<0x1f0;i++) { hex[i*2]=digits[source[i]>>4];hex[i*2+1]=digits[source[i]&15]; }
++        hex[sizeof hex-1]=0;
++        LOG("RL_STATE frame=%llu sequence=%llu data=%s",frame,sequence,hex);
++    }
++}
 +
 +void dm_rl_init(void) {
 +    const char *path = getenv("DM_RL_SOCKET");
@@ -3034,6 +3200,16 @@ index 0000000..84e8c69
 +    gate_obs_set(OBS_SPL3_INGAME, phase_ingame);
 +    gate_obs_set(OBS_SPL3_JUDGE, phase_judge);
 +    gate_obs_set(OBS_SPL3_WINNERS, phase_winners);
++    if (gate_obs_present(OBS_SPL3_LOCAL_STATE)) gate_obs_set(OBS_SPL3_LOCAL_STATE, local_state);
++    rl_state_dump = getenv("DM_RL_STATE_DUMP") && !strcmp(getenv("DM_RL_STATE_DUMP"),"1");
++    const char *clock_path=getenv("DM_RL_CLOCK_FILE");
++    if (clock_path) {
++        int fd=open(clock_path,O_RDWR|O_CLOEXEC);struct stat st;
++        if (fd<0 || fstat(fd,&st) || st.st_size!=sizeof(dm_rl_clock)) die("RL invalid shared clock file");
++        rl_clock=mmap(NULL,sizeof *rl_clock,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);close(fd);
++        if (rl_clock==MAP_FAILED || rl_clock->magic!=DM_RL_CLOCK_MAGIC ||
++            !atomic_is_lock_free(&rl_clock->state) || !atomic_is_lock_free(&rl_clock->last)) die("RL incompatible shared clock");
++    }
 +    atomic_store(&rl_enabled, 1);
 +    LOG("RL_SOCKET version=1 path=%s pixels=%dx%dx3", path, DM_RL_WIDTH, DM_RL_HEIGHT);
 +}
@@ -3055,51 +3231,88 @@ index 0000000..84e8c69
 +    const int32_t axes[4] = {0}; const float gyro[3] = {0};
 +    dm_hid_rl_action(0, axes, gyro);
 +    if (rl_peer >= 0) close(rl_peer);
-+    rl_peer = -1; atomic_store(&rl_controlled, 0); atomic_store(&rl_remaining, 0);
-+    guest_clock_freeze_for(3, 0);
++    rl_peer = -1;
++    pthread_mutex_lock(&rl_input_mu);atomic_store(&rl_controlled,0);pthread_cond_broadcast(&rl_input_cv);pthread_mutex_unlock(&rl_input_mu);
++    atomic_store(&rl_remaining, 0);
++    if (!rl_clock) guest_clock_freeze_for(3, 0);
 +}
 +static int rl_observation(void) {
-+    char header[512];
++    char header[1024];
++    float position[3]={0},ink=0;uint64_t sample=0;int valid=0,ink_valid=0;
++    pthread_mutex_lock(&rl_state_mu);
++    sample=rl_position_frame;
++    int fresh=atomic_load(&rl_phase)==1 && sample<=rl_frame && rl_frame-sample<=120;
++    valid=rl_position_seen && fresh;ink_valid=rl_ink_seen && fresh;
++    if (ink_valid) ink=rl_ink;
++    if (valid) memcpy(position,rl_position,sizeof position);
++    pthread_mutex_unlock(&rl_state_mu);
 +    pthread_mutex_lock(&rl_pixels_mu);
 +    if (!rl_have_image || rl_image_frame != rl_frame) die("RL stale pixels image=%llu input=%llu", rl_image_frame, rl_frame);
 +    int n = snprintf(header, sizeof header,
 +        "{\"version\":1,\"request\":%llu,\"frame\":%llu,\"advanced\":%llu,\"phase\":%d,"
-+        "\"width\":128,\"height\":72,\"channels\":3,\"bytes\":%d,\"source_width\":%u,\"source_height\":%u}\n",
-+        rl_request, rl_frame, rl_frame - rl_step_start, atomic_load(&rl_phase), DM_RL_BYTES, rl_source_width, rl_source_height);
++        "\"width\":128,\"height\":72,\"channels\":3,\"bytes\":%d,\"source_width\":%u,\"source_height\":%u,"
++        "\"position\":[%.9g,%.9g,%.9g],\"position_valid\":%d,\"position_sample_frame\":%llu,\"ink\":%.9g,\"ink_valid\":%d,\"frames_without_input\":%llu,\"action_ignored\":%d,\"input_repeats\":%llu,\"guest_time_ns\":%llu}\n",
++        rl_request, rl_frame, rl_frame - rl_step_start, atomic_load(&rl_phase), DM_RL_BYTES, rl_source_width, rl_source_height,
++        position[0],position[1],position[2],valid,sample,ink,ink_valid,rl_without_input,atomic_load(&rl_phase)>=2,atomic_load(&rl_input_repeats),guest_ns());
 +    int ok = n > 0 && n < sizeof header && rl_write(header, (size_t)n) && rl_write(rl_image, sizeof rl_image);
 +    pthread_mutex_unlock(&rl_pixels_mu);
 +    return ok;
 +}
-+// Called before reading input, once per presented frame. This boundary must
-+// stay on one game thread and see exactly one completed present per iteration.
-+void dm_rl_before_input(uint64_t frame) {
-+    if (!atomic_load(&rl_enabled) || !frame || frame == rl_last_input) return;
-+    uint64_t previous = rl_last_input; rl_last_input = frame;
++// One immutable action per present interval, however many SDK callers query it.
++int dm_rl_input(uint64_t frame, dm_rl_action_t *action) {
++    if (!dm_rl_active()) return 0;
++    pthread_mutex_lock(&rl_input_mu);
++    if (frame==UINT64_MAX) frame=dm_guest_frame();
++    // A query at the completed budget endpoint belongs to the next frame.
++    // It waits for the next STEP, just like the present thread, rather than
++    // inventing an action or rejecting normal concurrent SDK polling.
++    while (dm_rl_active() && frame==rl_budget_end) pthread_cond_wait(&rl_input_cv,&rl_input_mu);
++    if (!dm_rl_active()) { pthread_mutex_unlock(&rl_input_mu);return 0; }
++    uint64_t current=atomic_load(&rl_frame), previous=atomic_load(&rl_last_input);
++    if (frame<rl_input_floor || frame>rl_budget_end)
++        die("RL input frame outside budget/backwards current=%llu actual=%llu previous=%llu end=%llu",current,frame,previous,rl_budget_end);
++    if (frame!=previous) {
++        rl_latched=rl_pending;
++        if (atomic_load(&rl_phase)>=2) memset(&rl_latched,0,sizeof rl_latched);
++        dm_hid_rl_action(rl_latched.buttons,rl_latched.axes,rl_latched.gyro);
++        atomic_store(&rl_last_input,frame);
++        atomic_store(&rl_input_seen[frame&4095],frame);
++    } else atomic_fetch_add(&rl_input_repeats,1);
++    rl_input_floor=frame;
++    *action=rl_latched;
++    pthread_mutex_unlock(&rl_input_mu);
++    return 1;
++}
++void dm_rl_before_input(uint64_t frame) { dm_rl_action_t action;dm_rl_input(frame,&action); }
++// Called after every native present, outside graphics locks. Missing HID reads
++// (loading/results) are normal frames and never bypass the step boundary.
++void dm_rl_present(uint64_t frame) {
++    if (!atomic_load(&rl_enabled) || !frame) return;
 +    if (rl_peer < 0) {
 +        rl_peer = accept(rl_listener, NULL, NULL);
 +        if (rl_peer < 0) {
 +            if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) die("RL accept: %s", strerror(errno));
 +            return;
 +        }
-+        // BSD accept can inherit O_NONBLOCK from the listener. Only accept is
-+        // polled; the connected stream deliberately blocks at the frame gate.
 +        if (fcntl(rl_peer, F_SETFL, 0) < 0) die("RL connected socket flags");
 +#ifdef SO_NOSIGPIPE
 +        int one = 1; setsockopt(rl_peer, SOL_SOCKET, SO_NOSIGPIPE, &one, sizeof one);
 +#endif
 +        fcntl(rl_peer, F_SETFD, FD_CLOEXEC);
-+        rl_thread = pthread_self(); rl_have_thread = 1;
-+        rl_request = 0; rl_step_start = frame;
++        rl_request = 0; rl_step_start = frame;rl_without_input=0;rl_input_floor=frame;rl_budget_end=frame;atomic_store(&rl_input_repeats,0);
++        atomic_store(&rl_last_input,UINT64_MAX);
 +        atomic_store(&rl_controlled, 1); atomic_store(&rl_remaining, 0);
++        if (rl_clock) dm_guest_clock_share(rl_clock);
 +        LOG("RL_ATTACH frame=%llu", frame);
 +    } else {
-+        if (!rl_have_thread || !pthread_equal(rl_thread, pthread_self()) || frame != previous + 1)
-+            die("RL input/present boundary mismatch previous=%llu frame=%llu", previous, frame);
++        uint64_t previous=atomic_load(&rl_frame);
++        if (frame!=previous+1) die("RL present frame mismatch previous=%llu frame=%llu",previous,frame);
++        if (atomic_load(&rl_input_seen[previous&4095])!=previous) rl_without_input++;
 +        if (atomic_load(&rl_remaining) > 0) atomic_fetch_sub(&rl_remaining, 1);
 +    }
-+    rl_frame = frame;
++    atomic_store(&rl_frame,frame);
 +    if (atomic_load(&rl_remaining)) return;
-+    guest_clock_freeze_for(3, 1);
++    if (!rl_clock) guest_clock_freeze_for(3, 1);
 +    if (!rl_observation()) { rl_release(); return; }
 +    // A deliberately small text command followed by a binary RGB observation.
 +    // Every command is validated before it can change a controller value.
@@ -3121,10 +3334,17 @@ index 0000000..84e8c69
 +        die("RL invalid STEP header/sequence");
 +    for (int i = 0; i < 4; i++) if (axes[i] < -32767 || axes[i] > 32767) die("RL invalid stick");
 +    for (int i = 0; i < 3; i++) if (!isfinite(gyro[i]) || fabsf(gyro[i]) > 1) die("RL invalid gyro");
-+    rl_request = sequence; rl_step_start = frame;
-+    dm_hid_rl_action(buttons, axes, gyro);
++    rl_request = sequence; rl_step_start = frame;rl_without_input=0;
++    if (atomic_load(&rl_phase)>=2) {
++        buttons=0;memset(axes,0,sizeof axes);memset(gyro,0,sizeof gyro);
++    }
++    pthread_mutex_lock(&rl_input_mu);
++    rl_pending.buttons=buttons;memcpy(rl_pending.axes,axes,sizeof axes);memcpy(rl_pending.gyro,gyro,sizeof gyro);
++    rl_budget_end=frame+frames;atomic_store(&rl_input_repeats,0);
++    pthread_cond_broadcast(&rl_input_cv);
++    pthread_mutex_unlock(&rl_input_mu);
 +    atomic_store(&rl_remaining, (int)frames);
-+    guest_clock_freeze_for(3, 0);
++    if (!rl_clock) guest_clock_freeze_for(3, 0);
 +}
 diff --git a/dm/host/hle_spl3.c b/dm/host/hle_spl3.c
 new file mode 100644
@@ -3494,10 +3714,10 @@ index d1bd89b..7ca2611 100644
  }
  
 diff --git a/dm/host/tests/Makefile b/dm/host/tests/Makefile
-index 50c9e9b..f923070 100644
+index 50c9e9b..7273292 100644
 --- a/dm/host/tests/Makefile
 +++ b/dm/host/tests/Makefile
-@@ -103,7 +103,23 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
+@@ -103,7 +103,29 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
  
  $(B)/t_hid_receipt: t_hid_receipt.c t_touch_tick_stub.c ../hle_hid.c ../dm_cursor.c ../dm_hud.c ../dm_hud.h ../touch_mac.c ../../ios/Sources/dm_touch_controls.c ../hle.h ../dm.h ../dm_input.h ../front.h | $(B)
  	clang -O1 -Wno-unused-function -I.. -I../../ios/Sources -o $@ t_hid_receipt.c t_touch_tick_stub.c ../dm_cursor.c ../dm_hud.c ../touch_mac.c ../../ios/Sources/dm_touch_controls.c -lm
@@ -3519,8 +3739,14 @@ index 50c9e9b..f923070 100644
 +$(B)/t_spl3_weapon: t_spl3_weapon.c ../hle_spl3_unlock.c ../dm.h | $(B)
 +	clang -O1 -g -I.. $(GINC) -o $@ t_spl3_weapon.c
 +
-+$(B)/t_rl: t_rl.c ../hle_rl.c ../dm_rl.h ../dm.h | $(B)
++$(B)/t_rl: t_rl.c ../hle_rl.c ../dm_rl.h ../dm_rl_clock.h ../dm.h | $(B)
 +	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_rl.c ../hle_rl.c
++
++$(B)/t_hid_rl: t_hid_rl.c ../hle_hid.c ../dm_rl.h | $(B)
++	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_hid_rl.c ../hle_hid.c -lm
++
++$(B)/t_rl_clock: t_rl_clock.c ../hle_os.c ../hle.h ../dm_rl_clock.h | $(B)
++	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_rl_clock.c ../hle_os.c
 diff --git a/dm/host/tests/t_account_player.c b/dm/host/tests/t_account_player.c
 new file mode 100644
 index 0000000..7a3d75c
@@ -3645,6 +3871,66 @@ index 0000000..0fbb3e6
 +    h_hid_SixStop(&handle);CHECK(h_hid_SixStates(&motion,1,&handle)==0);
 +    printf("hid-motion: %d checks, %d failed\n",checks,failed);return failed!=0;
 +}
+diff --git a/dm/host/tests/t_hid_rl.c b/dm/host/tests/t_hid_rl.c
+new file mode 100644
+index 0000000..e652bba
+--- /dev/null
++++ b/dm/host/tests/t_hid_rl.c
+@@ -0,0 +1,54 @@
++// Production HID, with an action provider replacing the optional socket owner.
++#include "../hle.h"
++#include <mach-o/getsect.h>
++#include <mach-o/ldsyms.h>
++#include "../dm_rl.h"
++#include <math.h>
++static uint64_t test_ns=1000000000,frame=1,applied=UINT64_MAX;
++static dm_rl_action_t action={.buttons=512,.axes={12345,-23456,3000,-4000},.gyro={.1f,0,0}};
++uint64_t now_ns(void){return test_ns;}
++uint64_t guest_ns(void){return test_ns;}
++uint64_t dm_guest_frame(void){return frame;}
++int dm_opmode(void){return 1;}
++int dm_rl_active(void){return 1;}
++int dm_rl_input(uint64_t f,dm_rl_action_t *out){
++    if(f==UINT64_MAX)f=frame;
++    if(applied!=f){dm_hid_rl_action(action.buttons,action.axes,action.gyro);applied=f;}
++    *out=action;return 1;
++}
++void hle_bind_system_event(void *p,int n){(void)p;(void)n;}
++void hle_signal_system_event(void *p){(void)p;}
++void dm_input_set(uint64_t,int32_t,int32_t,int32_t,int32_t);
++void dm_pad_set(uint64_t,int32_t,int32_t,int32_t,int32_t);
++typedef struct {int64_t sample;uint64_t buttons;int32_t axes[4];uint32_t attrs,pad;} Npad;
++static int (*h_hid_StatesFullKey)(Npad *,int,const uint32_t *);
++static void (*h_hid_SixStart)(const uint32_t *);
++// SixState's public ABI: timestamps + acceleration/angular velocity/angle + matrix.
++typedef struct {int64_t delta,sample;float accel[3],rate[3],angle[3],direction[3][3];uint32_t attrs,pad;} Six;
++static int (*h_hid_SixStates)(Six *,int,const uint32_t *);
++static void *lookup(const char *name){
++    unsigned long size;const hle_force_ent *entries=(const void *)getsectiondata(&_mh_execute_header,"__DATA","swforce",&size);
++    for(unsigned i=0;i<size/sizeof *entries;i++)if(!strcmp(entries[i].name,name))return entries[i].fn;
++    abort();
++}
++static int checks,failed;
++#define CHECK(x) do{checks++;if(!(x)){failed++;fprintf(stderr,"FAIL %d\n",__LINE__);}}while(0)
++int main(void){
++    h_hid_StatesFullKey=lookup("_ZN2nn3hid13GetNpadStatesEPNS0_16NpadFullKeyStateEiRKj");
++    h_hid_SixStart=lookup("_ZN2nn3hid18StartSixAxisSensorERKNS0_19SixAxisSensorHandleE");
++    h_hid_SixStates=lookup("_ZN2nn3hid22GetSixAxisSensorStatesEPNS0_18SixAxisSensorStateEiRKNS0_19SixAxisSensorHandleE");
++    setenv("DM_RL_SOCKET","test",1);uint32_t id=0;Npad a,b;Six first,second;
++    CHECK(h_hid_StatesFullKey(&a,1,&id)==1);
++    // Physical/keyboard changes between queries cannot override the RL payload.
++    dm_input_set(2,-32767,32767,32767,32767);dm_pad_set(4,0,0,0,0);
++    CHECK(h_hid_StatesFullKey(&b,1,&id)==1);
++    CHECK(a.buttons==b.buttons&&memcmp(a.axes,b.axes,sizeof a.axes)==0);
++    CHECK(a.axes[0]==12345&&a.axes[1]==-23456&&(a.buttons&512));
++    h_hid_SixStart(&id);CHECK(h_hid_SixStates(&first,1,&id)==1);
++    test_ns+=100000000;CHECK(h_hid_SixStates(&second,1,&id)==1);
++    CHECK(memcmp(&first,&second,sizeof first)==0);
++    frame++;test_ns+=100000000;CHECK(h_hid_SixStates(&second,1,&id)==1);
++    CHECK(second.sample>first.sample);CHECK(second.angle[0]>first.angle[0]);
++    CHECK(fabsf(second.rate[0]-.1f)<1e-6);
++    printf("hid-rl: %d checks, %d failed\n",checks,failed);return failed!=0;
++}
 diff --git a/dm/host/tests/t_ldn_frontend.c b/dm/host/tests/t_ldn_frontend.c
 new file mode 100644
 index 0000000..e839147
@@ -3757,34 +4043,118 @@ index 0000000..acde13d
 +}
 diff --git a/dm/host/tests/t_rl.c b/dm/host/tests/t_rl.c
 new file mode 100644
-index 0000000..22095d0
+index 0000000..5ce4682
 --- /dev/null
 +++ b/dm/host/tests/t_rl.c
-@@ -0,0 +1,25 @@
-+// The production socket/barrier against a synthetic input/render loop. No game.
+@@ -0,0 +1,61 @@
++// Production transport with independent present and HID scheduling; no game.
 +#include "../dm.h"
 +#include "../dm_rl.h"
++#include "../dm_rl_clock.h"
 +#include <unistd.h>
 +#include <stdatomic.h>
++#include <math.h>
 +module_t g_mod[MAX_MOD]; int g_nmod=1;
-+static uint64_t buttons; static int32_t sticks[4]; static int frozen;
-+int gate_obs_present(int n) { return n>=21 && n<=23; }
-+void gate_obs_set(int n,void (*fn)(const uint64_t *)) { (void)n;(void)fn; }
++static uint64_t buttons, test_frame, apply_count;static int32_t sticks[4];static int frozen;
++static void (*callbacks[OBS_MAX])(const uint64_t *);
++void dm_guest_clock_share(struct dm_rl_clock *clock) {(void)clock;}
++uint64_t guest_ns(void){return test_frame*16666667ull;}
++uint64_t dm_guest_frame(void) { return test_frame; }
++int gate_obs_present(int n) { return n>=21 && n<=24; }
++void gate_obs_set(int n,void (*fn)(const uint64_t *)) { callbacks[n]=fn; }
 +void guest_clock_freeze_for(int reason,int on) { if(reason!=3)abort();frozen=on; }
-+void dm_hid_rl_action(uint64_t b,const int32_t a[4],const float g[3]) { (void)g;buttons=b;memcpy(sticks,a,sizeof sticks); }
++void dm_hid_rl_action(uint64_t b,const int32_t a[4],const float g[3]) { (void)g;apply_count++;buttons=b;memcpy(sticks,a,sizeof sticks); }
++static void *boundary_query(void *arg) {
++    dm_rl_action_t action;dm_rl_input((uint64_t)(uintptr_t)arg,&action);return NULL;
++}
 +int main(int argc,char **argv) {
-+    if(argc<2)return 2;
++    if(argc<2)return 2;const char *mode=argc>2?argv[2]:"";
 +    strcpy(g_mod[0].name,"main");strcpy(g_mod[0].build_id,"28c4287aee36f7499da60f3e68b54c70");
 +    setenv("DM_RL_SOCKET",argv[1],1);dm_rl_init();
-+    uint8_t rgb[DM_RL_BYTES]={0};int skipped=0;
++    uint8_t rgb[DM_RL_BYTES]={0},state[0x1f0]={0};float position[3]={13.25f,-2,7},ink=.625f;
++    uint64_t regs[31]={(uint64_t)(uintptr_t)state};
++    if(!strcmp(mode,"invalid")){position[0]=NAN;ink=INFINITY;}
++    memcpy(state+0x20,position,sizeof position);memcpy(state+0x84,&ink,sizeof ink);callbacks[OBS_SPL3_INGAME](regs);
++    uint64_t controlled=0;pthread_t boundary_thread;int boundary_started=0;
 +    for(uint64_t frame=1;;frame++) {
-+        dm_rl_pixels(rgb,frame,1280,720);
-+        dm_rl_before_input(frame);
-+        if(frozen)abort(); // Returned input cannot leave the guest clock paused.
++        // Input for the interval from present N to N+1 uses frame N.
++        if(dm_rl_active()) {
++            controlled++;
++            if(!strcmp(mode,"settled")&&controlled==2)callbacks[OBS_SPL3_JUDGE](regs);
++            if(strcmp(mode,"no-input")) {
++                uint64_t input=test_frame;
++                if(!strcmp(mode,"early"))input--;
++                if(!strcmp(mode,"future"))input+=100;
++                dm_rl_action_t first,second;dm_rl_input(input,&first);
++                if(!strcmp(mode,"duplicate")) {
++                    uint64_t count=apply_count;
++                    // A phase callback or external controller must not change
++                    // the action returned by a second query in this frame.
++                    buttons=0;dm_rl_input(input,&second);
++                    if(memcmp(&first,&second,sizeof first)||apply_count!=count)abort();
++                    buttons=second.buttons;
++                }
++            }
++        }
++        if(!strcmp(mode,"boundary") && controlled==1) {
++            if(pthread_create(&boundary_thread,NULL,boundary_query,(void *)(uintptr_t)frame))abort();
++            boundary_started=1;
++        }
 +        memset(rgb,buttons?191:(sticks[0]?113:17),sizeof rgb);
-+        if(argc>2 && dm_rl_active() && !skipped) { frame++;skipped=1; }
++        test_frame=frame;callbacks[OBS_SPL3_LOCAL_STATE](regs);
++        dm_rl_pixels(rgb,frame,1280,720);dm_rl_present(frame);
++        if(boundary_started) { pthread_join(boundary_thread,NULL);boundary_started=0; }
++        if(frozen)abort();
 +        usleep(1000);
 +    }
++}
+diff --git a/dm/host/tests/t_rl_clock.c b/dm/host/tests/t_rl_clock.c
+new file mode 100644
+index 0000000..ce40ff3
+--- /dev/null
++++ b/dm/host/tests/t_rl_clock.c
+@@ -0,0 +1,42 @@
++// Production clock: wall-time execution, common policy pause and manual replay.
++#include "../hle.h"
++#include "../dm_rl_clock.h"
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/wait.h>
++module_t g_mod[MAX_MOD];int g_nmod;
++void *module_sym(module_t *module,const char *name){(void)module;(void)name;return NULL;}
++extern void dm_guest_frame_tick(void);
++void crash_watch_frame(void){}
++void dm_guest_clock_advanced(void){}
++void uimsg_subscribe(void (*fn)(const char *,const char *,const char *)){(void)fn;}
++static int checks,failed;
++#define CHECK(x) do{checks++;if(!(x)){failed++;fprintf(stderr,"FAIL %d\n",__LINE__);}}while(0)
++int main(int argc,char **argv){
++    (void)argv;
++    if(argc>1){
++        setenv("DM_DETCLOCK","10",1);dm_guest_frame_tick();uint64_t initial=guest_ns();
++        dm_guest_frame_tick();CHECK(guest_ns()==initial+10);CHECK(dm_detclock_enabled());
++        uint64_t held=guest_ns();guest_clock_freeze_for(3,1);dm_guest_frame_tick();CHECK(guest_ns()==held);
++        guest_clock_freeze_for(1,1);guest_clock_freeze_for(3,0);dm_guest_frame_tick();CHECK(guest_ns()==held);
++        guest_clock_freeze_for(1,0);dm_guest_frame_tick();CHECK(guest_ns()>held);
++    }else{
++        unsetenv("DM_DETCLOCK");uint64_t start=guest_ns();usleep(2000);
++        CHECK(guest_ns()>start);CHECK(!dm_detclock_enabled());
++        dm_rl_clock *clock=mmap(NULL,sizeof *clock,PROT_READ|PROT_WRITE,MAP_SHARED|MAP_ANON,-1,0);
++        CHECK(clock!=MAP_FAILED);clock->magic=DM_RL_CLOCK_MAGIC;
++        atomic_init(&clock->state,0);atomic_init(&clock->last,start);
++        CHECK(atomic_is_lock_free(&clock->state));dm_guest_clock_share(clock);
++        CHECK(!dm_detclock_enabled());uint64_t running=guest_ns();usleep(2000);CHECK(guest_ns()>running);
++        uint64_t held=dm_rl_clock_pause(clock);usleep(30000);CHECK(guest_ns()==held);
++        uint64_t frame=dm_guest_frame();for(int n=0;n<7;n++)dm_guest_frame_tick();
++        CHECK(dm_guest_frame()==frame+7);CHECK(guest_ns()==held);
++        pid_t pid=fork();
++        if(!pid){if(guest_ns()!=held)_exit(1);dm_rl_clock_resume(clock);usleep(2000);_exit(guest_ns()>held?0:2);}
++        int status;waitpid(pid,&status,0);CHECK(WIFEXITED(status)&&WEXITSTATUS(status)==0);
++        CHECK(guest_ns()>held);dm_rl_clock_pause(clock);uint64_t paused=guest_ns();
++        usleep(2000);CHECK(guest_ns()==paused);CHECK(paused>=held);
++        dm_guest_clock_share(NULL);munmap(clock,sizeof *clock);
++    }
++    printf("rl-clock: %d checks, %d failed\n",checks,failed);return failed!=0;
 +}
 diff --git a/dm/host/tests/t_spl3_unlock.c b/dm/host/tests/t_spl3_unlock.c
 new file mode 100644
@@ -3955,10 +4325,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..fc3a6c9 100644
+index 837700c..2db921e 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,13 @@ CUTS = {
+@@ -162,6 +162,14 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -3968,11 +4338,12 @@ index 837700c..fc3a6c9 100644
 +    (0x3db55d4, 21, 'a9016ffc', 'Splatoon 3 native InGame prologue; read-only RL phase'),
 +    (0x3dcc714, 22, 'a9117bfd', 'Splatoon 3 native ResultJudge prologue; read-only RL phase'),
 +    (0x3dd9374, 23, 'fd0023e8', 'Splatoon 3 native ResultWinners prologue; read-only RL phase'),
++    (0x27fca14, 24, '6d022beb', 'Splatoon 3 local PlayerNetState encoder prologue; read-only packet position'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +639,7 @@ for fa, fb in funcs:
+@@ -632,7 +640,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -3981,12 +4352,12 @@ index 837700c..fc3a6c9 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +733,8 @@ for off, oid, ow, why in obs:
+@@ -726,7 +734,8 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25
 -    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8), f'private obs point not approved {off:#x}'
-+    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23))
++    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24))
 +    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8) or spl3_prologue, f'private obs point not approved {off:#x}'
      assert off < TEXT_END and off not in kinds and not any(lo <= off < hi for wseg in windows for lo, hi in [(wseg[0].address, wseg[-1].address + 4)]), f'观测门与改写点冲突 {off:#x}'
      put_branch(off, site_obs(off, oid, w)); stat('obs')

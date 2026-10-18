@@ -13,6 +13,7 @@ import time
 
 from tools.private_battle import BUTTONS, host_environment, configure_room, prepare_match
 from tools.m5_resources import Monitor
+from .clock import SharedClock
 
 ROOT = Path(__file__).resolve().parents[1]
 SAVE_HASH = '89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd'
@@ -29,7 +30,7 @@ def catalogs():
 
 
 class Session:
-    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None):
+    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False):
         if players not in (2,8): raise ValueError('M6 supports 2 or 8 players')
         if mode not in range(5): raise ValueError('mode must be 0..4')
         stages, weapon_ids = catalogs()
@@ -38,10 +39,12 @@ class Session:
         if len(weapons) != players or any(w not in weapon_ids for w in weapons): raise ValueError('one Versus weapon ID required per player')
         self.players,self.mode,self.stage_index,self.weapons = players,mode,matches[0],weapons
         self.timeout=timeout;self.started=time.monotonic();self.last_sample=0;self.last_print=0
+        self.state_dump=state_dump
         self.out=ROOT/'work/tests'/datetime.datetime.now().strftime(f'm6-{players}p-%Y%m%d-%H%M%S-%f')
         self.out.mkdir(parents=True);(self.out/'load-slots').mkdir()
         self.tmp=tempfile.TemporaryDirectory(prefix='s3-rl-')
         self.socket_dir=Path(self.tmp.name);self.air_socket=self.socket_dir/'air.sock'
+        self.clock=SharedClock(self.socket_dir/'clock.bin')
         self.patched=Path(patched) if patched else ROOT/'work/build/patched_v720896'
         self.hosts=[];self.streams=[];self.fifos={};self.air=None;self.closed=False
         self.monitor=Monitor(self.out)
@@ -90,8 +93,11 @@ class Session:
         shutil.copyfile(self.seed,directory/'save/save.dat')
         os.mkfifo(directory/'controller.fifo',0o600)
         env=host_environment(ROOT,self.out,directory,player,self.players,self.air_socket,self.weapons)
-        env.update(DM_RL_SOCKET=str(self.socket_dir/f'player-{player}.sock'),DM_HID_TRACE='1',
+        env.update(DM_RL_SOCKET=str(self.socket_dir/f'player-{player}.sock'),DM_RL_CLOCK_FILE=str(self.clock.path),DM_HID_TRACE='1',
                    DM_PROBE='main:3db55d0,main:3dcc710,main:3dd9370,main:3571e24@x21+e8')
+        if self.state_dump:
+            env['DM_RL_STATE_DUMP']='1'
+            env['DM_PROBE']+=',main:3ef6930@x0+140'
         (directory/'input.json').write_text(json.dumps({k:v for k,v in env.items() if k.startswith('DM_')},indent=2)+'\n')
         log=(directory/'host.log').open('wb');self.streams.append(log)
         process=subprocess.Popen([str(ROOT/'upstream/dm/host/dmhost'),str(self.patched)],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
@@ -120,6 +126,7 @@ class Session:
     def close(self):
         if self.closed:return
         self.closed=True;errors=[]
+        self.clock.resume()
         for _,p,_ in self.hosts:
             if p.poll() is None:p.terminate()
         deadline=time.monotonic()+12
@@ -131,5 +138,6 @@ class Session:
         for stream in [*self.fifos.values(),*self.streams]:stream.close()
         self.check_saves()
         (self.out/'resources-summary.json').write_text(json.dumps(self.monitor.summary(),indent=2)+'\n')
+        self.clock.close()
         self.tmp.cleanup()
         if errors:raise RuntimeError('; '.join(errors))

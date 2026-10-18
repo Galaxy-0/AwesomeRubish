@@ -26,8 +26,13 @@ upstream/dm/host/tests/build/t_fs > work/tests/fs.log 2>&1
 "$python" tests/test_host_options.py
 if [[ "$milestone" == m5 || "$milestone" == m6 ]]; then "$python" tests/test_m5_resources.py; fi
 if [[ "$milestone" == m6 ]]; then
-    make -C upstream/dm/host/tests GAME=0100C2500FC20000 build/t_rl > work/tests/rl-build.log 2>&1
+    make -C upstream/dm/host/tests GAME=0100C2500FC20000 build/t_rl build/t_hid_rl build/t_rl_clock > work/tests/rl-build.log 2>&1
+    upstream/dm/host/tests/build/t_hid_rl > work/tests/hid-rl.log 2>&1
+    upstream/dm/host/tests/build/t_rl_clock > work/tests/rl-clock.log 2>&1
+    upstream/dm/host/tests/build/t_rl_clock manual >> work/tests/rl-clock.log 2>&1
     "$python" tests/test_m6_transport.py
+    tail -1 work/tests/hid-rl.log
+    cat work/tests/rl-clock.log
 fi
 tail -1 work/tests/render-enable.log
 tail -1 work/tests/render-headless.log

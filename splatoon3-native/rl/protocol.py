@@ -1,6 +1,5 @@
 """POSIX local socket client; independent of the native host graphics API."""
 import json
-import math
 import socket
 
 import numpy as np
@@ -30,9 +29,18 @@ class Client:
         data = self.stream.read(27648)
         if len(data) != 27648: raise RuntimeError('truncated RL image')
         if not 0 <= info['phase'] <= 3: raise RuntimeError('invalid match phase')
+        if not 0<=info.get('frames_without_input',0)<=self.expected:
+            raise RuntimeError('invalid frames_without_input')
         self.frame = info['frame']
         observation = dict(pixels=np.frombuffer(data, dtype=np.uint8).reshape(72,128,3).copy(),
-                           frame=np.array([info['frame']], dtype=np.int64), phase=info['phase'])
+                           frame=np.array([info['frame']], dtype=np.int64), phase=info['phase'],
+                           position=np.asarray(info.get('position',[0,0,0]),dtype=np.float32),
+                           position_valid=int(info.get('position_valid',0)),
+                           ink=np.array([info.get('ink',0)],np.float32),ink_valid=int(info.get('ink_valid',0)))
+        if observation['position'].shape!=(3,) or not np.isfinite(observation['position']).all() or observation['position_valid'] not in (0,1):
+            raise RuntimeError('invalid native position observation')
+        if not np.isfinite(observation['ink']).all() or not 0<=observation['ink'][0]<=1 or observation['ink_valid'] not in (0,1):
+            raise RuntimeError('invalid native ink observation')
         return observation, info
 
     def send_step(self, action, frames):

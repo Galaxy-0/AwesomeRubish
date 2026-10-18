@@ -207,13 +207,13 @@ uv pip install --python .venv/bin/python -r tests/requirements.txt -r rl/require
 bash tests/run_all.sh --milestone m6 --players 2 --timeout 2400
 ```
 
-入口先确认本地改写 main 带有三个已验证的原生比赛阶段 gate；旧 M5 改写产物会由 `tools/prepare_rl.py` 在本地重新生成 main，不重解 RomFS / shader，不下载游戏数据。
+入口先确认本地改写 main 带有三个已验证的原生比赛阶段 gate 和当前 B 草稿的本地状态采样 gate；旧 M5 改写产物会由 `tools/prepare_rl.py` 在本地重新生成 main，不重解 RomFS / shader，不下载游戏数据。
 随后构建宿主并执行 GPU、NVN、HID、账号 / 解锁、文件系统、本地 LDN、资源停止规则及新的 RL 传输组件检查。
 
 真实测试要求所有进程使用 headless 和有效 1280×720 crop，从游戏内部纹理导出区域平均的 128×72 RGB，且宿主不增加 screen submit / composite。
-动作在下一次输入采样前的屏障应用；每步先给全部 agent 发命令，再收全部 ACK，严格检查 sequence、前后帧号及请求帧数。
+动作在下一次输入采样时按 present 帧锁存；每步先给全部 agent 发命令，再收全部 ACK，严格检查 sequence、前后帧号及请求帧数。
 测试故意加入策略墙钟延迟并切换 1 / 7 / 31 帧跳，不能靠墙钟睡眠或事后读取帧日志凑数。
-传输组件还检查非法动作、乱序命令和漏输入帧会被拒绝；GPU 组件检查 crop、通道、上下原点和非窗口读回。
+传输组件还检查非法动作 / 乱序拒绝、同帧重复读取返回同一动作、无输入 present 正常计帧，以及越界 / 倒退输入拒绝；GPU 组件检查 crop、通道、上下原点和非窗口读回。
 
 双方实际进入 InGame 后先稳定画面，比较静止与推左摇杆 / 右摇杆时世界区域的相邻帧 MAD；
 移动均值须大于 `max(3, 1.5 × idle_mean)`（RGB 0–255），且各端图像方差、空间及阶段范围正常。
@@ -229,3 +229,11 @@ GPU 普通 **148** / headless **152**，NVN **79**，HID **73**，LDN frontend *
 `rl.env.turf_kill_reward` 只演示未来已验证计数的涂地 / 击杀增量，不代表当前已有这两个信号。
 输入 / 渲染边界的精确帧跳不证明 60 Hz 物理 tick 或 PIA 调度确定性；内部字段与八端随机对局分别留待 M6-B / C。
 所有日志、截图、动作阶段证据、独立存档和资源采样只写入忽略的 `work/`。
+
+最新 **M6-B 双端 PASS**：`work/tests/m6-check-2p-20261018-132711-458355/result.json` 为 passed=true，入口退出 0；首局 447 步到双方原生 Winners，reset 后新进程再开一局并推进 10 步，总计 457 步。像素 / 位置 / 射击耗墨 / 下潜恢复对照均通过；四个宿主均优雅退出，无新增 swapout。
+
+当前屏障以每次 present 计数；同帧多次 HID 查询复用动作，允许无 HID 帧并记录 `frames_without_input`，只拒绝预算越界 / 倒退。逐 agent 在 Judge 终止，退役进程继续中立推进。各端共享 POSIX mmap 原子单调时钟，收齐 ACK 后统一暂停，避免快慢端分别暂停造成计时分离。推进过程中保留墙钟运行，不宣称固定物理 dt。
+
+组件检查：RL 传输 / 生命周期 11 项、真实 HID 11 项、共享时钟 13 项（含跨进程暂停 / 恢复）、原有手动帧时钟 5 项，均通过；GPU / NVN / HID / LDN 等基础回归亦通过。真实本局重复查询已覆盖；无 HID 帧计数由原生夹具覆盖，本局实际计数为 0。
+
+B 签收覆盖位置和墨量，不代表其余内部字段或完整 M6 通过。字段验证和八端整局待后续推进；全部证据与历史失败 / 已移除方案见 PROGRESS.md。
