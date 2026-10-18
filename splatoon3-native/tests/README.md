@@ -1,5 +1,12 @@
 # 回归测试
 
+A3a 入口是 `bash tests/run_all.sh --milestone a3a`：先跑公共组件与
+信息边界/几何/实际策略子进程检查，再启动新的原生场景验收。
+实时墨图与真实击倒归属拆为 A3b，放在 A5 之后；A3a 测试要求这两个字段
+保持 unknown，并确认不会由比分、HUD事件或配置填成假值。
+`--native-evidence work/tests/<a3-visibility-run>/result.json` 仅重放诊断，
+不会签收为新的原生验收。画面、碰撞和状态原件只在忽略的 work。
+
 M1 的一键入口：
 
 ```sh

@@ -3153,10 +3153,10 @@ index 61cf410..631520d 100644
          atomic_store(&g_gdet, wall_guest_ns()); atomic_store(&g_gdet_on, 1);
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..7005496
+index 0000000..55c2b5d
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,423 @@
+@@ -0,0 +1,432 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
@@ -3194,6 +3194,7 @@ index 0000000..7005496
 +static float rl_position[3], rl_ink, rl_heading, rl_hp, rl_special;
 +static uint64_t rl_position_frame, rl_state_sequence;
 +static int rl_position_seen, rl_ink_seen, rl_heading_seen, rl_hp_seen, rl_special_seen, rl_state_dump;
++static int rl_form_squid=-1,rl_ground_contact=-1;
 +static float rl_time;static int rl_time_seen;static uint64_t rl_time_frame;
 +static int rl_self_slot=-1,rl_self_seen,rl_self_ambiguous,rl_self_health=-1;
 +static uintptr_t rl_hud_node[8];
@@ -3222,6 +3223,7 @@ index 0000000..7005496
 +    (void)r;
 +    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_special_seen = rl_time_seen = rl_score_seen = 0;
 +    rl_self_slot=-1;rl_self_seen=rl_self_ambiguous=0;rl_self_health=-1;
++    rl_form_squid=rl_ground_contact=-1;
 +    for(int i=0;i<8;i++){rl_hud_node[i]=0;rl_hud_status[i]=2;rl_hud_seen[i]=rl_hud_ever[i]=rl_hud_special[i]=0;rl_hud_frame[i]=rl_hud_touch[i]=rl_hud_downs[i]=0;}
 +    pthread_mutex_unlock(&rl_state_mu);
 +    atomic_store(&rl_phase, 1);
@@ -3259,6 +3261,11 @@ index 0000000..7005496
 +    rl_special_seen=special<=100;rl_special=rl_special_seen ? special/100.0f : 0;
 +    rl_hp_seen=health<=1000;rl_hp=rl_hp_seen ? health/1000.0f : 0;
 +    rl_heading_seen=heading_valid;rl_heading=heading_valid ? atan2f(facing[0],facing[2]) : 0;
++    // A3 approximation: diagnosed on both native sides, outside ink / own ink /
++    // airborne. This is form + contact, not a claim that all squid are hidden.
++    uint32_t form,contact;memcpy(&form,source+0xf8,4);memcpy(&contact,source+0x94,4);
++    rl_form_squid=form<=1 ? form==0 : -1;
++    rl_ground_contact=(contact==0 || contact==4 || contact==5) ? (int)contact : -1;
 +    uint64_t sequence=++rl_state_sequence;
 +    pthread_mutex_unlock(&rl_state_mu);
 +    // Development-only raw scalar survey. Game data stays in the run's log;
@@ -3451,8 +3458,10 @@ index 0000000..7005496
 +    if (heading_valid) heading=rl_heading;
 +    if (ink_valid) ink=rl_ink;
 +    if (valid) memcpy(position,rl_position,sizeof position);
++    int form_squid=fresh ? rl_form_squid : -1,ground_contact=fresh ? rl_ground_contact : -1;
 +    pthread_mutex_unlock(&rl_state_mu);
 +    char hud_json[1600];size_t h=0;
++    h=json_append(hud_json,h,sizeof hud_json,",\"referee_motion\":{\"form_squid\":%d,\"ground_contact\":%d}",form_squid,ground_contact);
 +    h=json_append(hud_json,h,sizeof hud_json,",\"self_slot\":%d,\"self_slot_valid\":%d,\"alive\":%d,\"alive_valid\":%d",self_slot,self_valid,alive,alive_valid);
 +    h=json_append(hud_json,h,sizeof hud_json,",\"hud_status\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%d",i?",":"",hud[i]);
 +    h=json_append(hud_json,h,sizeof hud_json,"],\"hud_valid\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%d",i?",":"",hud_valid[i]);
@@ -4503,10 +4512,10 @@ index 0000000..acde13d
 +}
 diff --git a/dm/host/tests/t_rl.c b/dm/host/tests/t_rl.c
 new file mode 100644
-index 0000000..dee2047
+index 0000000..33f0ca5
 --- /dev/null
 +++ b/dm/host/tests/t_rl.c
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,93 @@
 +// Production transport with independent present and HID scheduling; no game.
 +#include "../dm.h"
 +#include "../dm_rl.h"
@@ -4576,6 +4585,11 @@ index 0000000..dee2047
 +        uint32_t charge_sequence[]={0,49,100,0};
 +        uint32_t special=!strcmp(mode,"invalid") ? 101 : !strcmp(mode,"charge") ? charge_sequence[controlled%4] : 0;
 +        memcpy(state+0x80,&special,4);memcpy(state+0x70,&health,4);test_frame=frame;callbacks[OBS_SPL3_LOCAL_STATE](regs);
++        if(!strcmp(mode,"motion")) {
++            uint32_t forms[]={1,0,0,0},contacts[]={4,4,0,5};
++            memcpy(state+0xf8,&forms[controlled%4],4);memcpy(state+0x94,&contacts[controlled%4],4);
++            callbacks[OBS_SPL3_LOCAL_STATE](regs);
++        }
 +        uint64_t own_regs[31]={(uintptr_t)damage};callbacks[OBS_SPL3_OWN_PLAYER](own_regs);
 +        for(int i=0;i<2;i++) {
 +            int status=!i && !strcmp(mode,"hud-down") && controlled==1 ? 1 : !i && !strcmp(mode,"hud-absent") && controlled==1 ? 2 : 0;

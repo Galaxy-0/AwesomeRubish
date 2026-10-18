@@ -66,6 +66,20 @@ class TransportTest(unittest.TestCase):
             self.assertEqual(observation['hp_valid'],1)
             self.assertAlmostEqual(float(observation['hp'][0]),health,places=6)
 
+    def test_referee_motion_metadata_is_separate_from_rl_observation(self):
+        observation,info=self.start(mode='motion')
+        self.assertNotIn('referee_motion',observation)
+        self.assertEqual(info['referee_motion'],dict(form_squid=0,ground_contact=4))
+        for squid,contact in [(1,4),(1,0),(1,5)]:
+            self.client.send_step(neutral(),1);observation,info=self.client.receive()
+            self.assertEqual(info['referee_motion'],dict(form_squid=squid,ground_contact=contact))
+
+    def test_referee_map_pulse_preserves_sequence_and_frame_budget(self):
+        _,initial=self.start();self.client.send_referee_map_pulse(7);obs,info=self.client.receive()
+        self.assertEqual(info['frame']-initial['frame'],7)
+        self.assertEqual(info['request'],1)
+        self.assertTrue(np.all(obs['pixels']==191))
+
     def test_prequeued_script_preserves_each_ack_budget(self):
         _, initial=self.start();frame=initial['frame']
         for frames in (1,7,31,15):self.client.send_step(neutral(),frames)

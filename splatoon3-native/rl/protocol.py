@@ -93,6 +93,12 @@ class Client:
         line = f'STEP {self.sequence} {frames} {mask:x} ' + ' '.join(map(str, sticks)) + ' ' + ' '.join(map(str, gyro)) + '\n'
         self.socket.sendall(line.encode('ascii'))
 
+    def send_referee_map_pulse(self, frames=1):
+        """Coordinator-only native X input. Not part of the policy action space."""
+        if not isinstance(frames,int) or not 1<=frames<=3600:raise ValueError('invalid referee frame budget')
+        self.sequence+=1;self.expected=frames;self.pending.append((self.sequence,frames))
+        self.socket.sendall(f'STEP {self.sequence} {frames} 4 0 0 0 0 0 0 0\n'.encode('ascii'))
+
     def close(self):
         try: self.socket.sendall(b'RELEASE\n')
         except OSError: pass

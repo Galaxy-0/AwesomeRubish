@@ -91,3 +91,15 @@ env = parallel_env(players=2, weapons=[8000, 8000], loadouts=[kit, uniform_loado
 The host adapts the local constructor's successful owned-gear lookup read: it retains the already owned/selected item ID and experience, supplies a thread-local legal row view with the declared skills, and lets the native game copy/setters construct the entire kit. The underlying owned row, save object and remote kit are untouched. `SPL3_GEAR ... backend=owned_read` logs actual equipped-field readback; mismatches fail. No direct speed or ink multiplier is injected. `DM_GEAR=original` and explicit `DM_GEAR_LEGACY=1` are bisection diagnostics, described in PROGRESS.
 
 The earlier all-none/empty-subslot setup disconnected before InGame. The startup bisection and native-construction repair are recorded in `notes/PROGRESS.md`. A2 passed the two native swapped-loadout rounds: complete full-tank slashes 19 versus 31, with lower ordinary ink cost; a six-unit flat swim took about 0.5310 versus 0.4681 seconds, then 0.5370 versus 0.4658 after swapping. Tail partial deductions and recovery do not count as complete full-tank slashes. See PROGRESS for exact evidence and remaining root-cause attribution limits.
+
+The in-progress A3 arena uses this API only inside the coordinator/referee.
+Strategies receive `arena.referee_api.RefereeAPI.policy_observation(observer)`
+through `arena.process.PolicyProcess`, never raw observations or `process_infos`.
+Coordinator metadata `referee_motion` carries verified native form/contact samples
+for the geometric visibility filter; it is outside the RL observation space.
+`Client.send_referee_map_pulse()` is a coordinator-only X-button diagnostic with
+explicit frame accounting, not an additional strategy action or hidden frame step.
+Native geometric scenes and the actual allowlisted subprocess path were checked;
+A3a covers that boundary and geometry. Live paint mapping and native knockdown
+attribution are deferred as A3b until after A5; both private fields remain unknown.
+See `arena/README.md` and the A3 split decision in PROGRESS.

@@ -1588,3 +1588,80 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 - 入口组件时钟10804/13/5、短睡眠/空闲轮询/条件变量、传输25、GPU148/headless152、NVN79、HID73/RL11、LDN frontend10/air59与资源规则通过；统计修订后配装组件 **4组**（含原生拥有读取隔离/构造读回/拒绝非法配置及回墨计数回归）、同一原生双轮数据的严格复核、传输25再次通过。补丁反向应用和源码空白检查通过。
 - **根因证据边界：** a)关闭覆写连续两次成功、b-host旧路径全none失败、b-guest完整游速/墨效组合成功、c)原样写回成功，追加“主合法/九副槽none”仍失败，已排除fixed60大厅接管回归及“单纯挂点/相同值写回必断线”。具体原生拒绝分支尚未逐条指认，不能归结为单一空主技能；修复同时约束完整合法配装并改为拥有条目读取→原生正常构造，两轮正式验效闭环。旧后写字段只留显式LEGACY诊断复现，不作为生产默认。
 - 本次仅提交本项目源码、测试、文档和补丁；原始记录、NSO/RomFS/shader、参数表、画面、线程栈、旧二进制均只在忽略的work。伤害一致性仍按GOAL留待A4 aim_at，不挪进A2。
+
+## 2026-10-18：A2 已推送，A3 原生状态与信息边界诊断（未签收）
+
+- A2 commit `42e9fab42d3c80955a14b952ca2bca418badb0f6` 已 push；推送后远端main与本地HEAD核对相同。A1/A2已完成；当前只推进A3，A4/A5尚未开始。以下A3组件与诊断均不能替代正式里程碑验收，也没有新commit/push。
+- `arena/referee.py` 与 `arena/policy.py` 分别定义私有裁判快照和独立策略记录；后者没有referee导入或原始socket访问器。`encode_policy`只接受确切的PolicyObservation类型，并重建固定白名单，拒绝直接序列化裁判快照/任意dict。`arena/visibility.py`只在观察者、目标、比赛、当前帧、目标采样帧一致，且FOV/射线无遮挡为已确认真、目标已确认未潜墨时给坐标；未知/过期全部隐藏。隐藏时不提供当前朝向/采样时间/隐藏原因，HP/墨量/私有墨图/击倒归属不进敌方策略记录；只保留此前真正可见时的最后位置与目击帧。
+- `.venv/bin/python tests/test_a3_components.py` 最终 **8项通过**，含100组隐藏敌人位置/HP/墨量/私有存活/墨图/归属变异的逐字节输出不变检查、缺失/过期/错端/错局视线证据、潜墨未知、最后目击隔离及拒绝传裁判对象。`arena/native_referee.py`私有合并各端已验证own字段，并换算不同启动帧偏移；策略公共存活只读观察者本端HUD，不使用对端可能提前更新的私有alive。**它们只是接口/适配组件；尚无原生visibility witness后端和实际策略子进程接入，不能声称“策略进程隔离已完成”或A3通过。** 私有实时墨图/击倒事件尚未知时为None，不填0/空列表冒充实测。
+- 原生潜墨对照：`tests/probe_a3_fields.py`，结果 `work/tests/a3-fields-20261018-201431-758170/result.json`（44步、只测0号）与 `work/tests/a3-fields-20261018-202458-140416/result.json`（58步、分别控制双方），均probe_completed=true/errors=[]/full_a3_passed=false。全程fixed60、两端8000、完整quick_super_jump控制配装；对照未涂地按ZL→涂前方并走入墨带→按ZL→起跳→落地。原始状态包/128×72截图仅留work，逐字段汇总 `work/a3/fields-evidence.json` / `fields-both-evidence.json`。
+- **已证伪的简化：** 包+0xf8的0/1形态标签在“未涂地鱿鱼、墨内鱿鱼、空中鱿鱼”都是0；Squid子状态+0xe8/+0xec也没有区分这三个场景。不能将form==0当潜墨。包+0x94在双方未涂地均4、走入各自墨带均0、起跳均5；双方都为0，排除“0=固定绝对队伍色”的直接解释，仍需敌墨/墙面与原生写入语义校验后才能推广。当前不把这些候选字节作为策略字段发布。
+- 两轮有效字段诊断的四宿主均经Session.close检查优雅退出，未出现CRASH/FATAL；资源采样178/188次，pressure最大1、新swapout均0，footprint合计峰值8298/7694MiB；close检查原件/参考档hash仍未变。此前一次201021诊断在0 STEP、未开始测量时主动停止以补上“走进墨带”的必要动作；原KeyboardInterrupt结果未改写，说明在 `work/a3/probe-preparation-revision.json`，不计游戏故障或有效测量。
+- 碰撞来源取得新实证：本机 `Pack/Actor/Fld_Yunohana.pack.zs` / `Fld_District00.pack.zs` / `Fld_Yagara.pack.zs` 内各有 `Phive/Shape/Dcc/*.bphsh`。用忽略目录内的公开PhiveConverter固定提交 `03faf4be678a42d18b1786bef6321b52dfbcd10b` 转成三角面及材质组；代码只补macOS编译所需_BitScanReverse兼容头，没有重建/改写游戏碰撞。原bphsh、OBJ、材质JSON与克隆工具都只在 `work/a3/`。
+- 与本机11.3.0 `Phive/Config/PhiveConfig.byml.zs` 新鲜核对：39个material名和60个entity+sublayer碰撞层顺序与转换器一致，Sight为bit41。材质标签两处命名/保留位差异（bit34及Asplalt/Asphalt拼写）单独记录，未把外部表整体不加核对视为原生真值；`work/a3/collision-config-check.json`。Yunohana主地形竖直射线在(-23.9,63.916)命中y=7.5，在(-23.9,71.433)命中y=10.5，与实机平地/出生落差吻合。**仍未组合Scene/Banc全部道具、变换和动态物体，主地形射线不等于完整遮挡验收。**
+- 本轮另行定位原生相机世界原点/朝向/投影：包内身体forward与平面camera向量不足以证明遮挡射线。已找到PlayerCamera类型/构造/vtable和一个读取eye/at/FOV候选的函数main+0x28f9e8c；新增 `--camera-probe` 对三个原指令签名逐字节核对后，仅用既有DM_PROBE诊断读取，叶函数确认不用x16，避免破坏探针借用寄存器。相机诊断结果见下一节；未猜相机高度/FOV生产visibility witness。
+
+### A3 当前新卡点：相机候选路径局内不调用，实时视线证据不可用（停止，未签收）
+
+**按“真正的新卡点才停下”规则，在此停止。A2已PASS、commit/push并核对远端；A3未PASS，A4/A5未开始，没有请求其它模型。A3源码、接口测试和文档保留未提交，不创建未完成里程碑的签收commit。**
+
+- 复现命令 `.venv/bin/python tests/probe_a3_fields.py --owners player_0 --camera-probe` **退出0仅表示诊断完成**；`work/tests/a3-fields-20261018-203610-696597/result.json`：probe_completed=true/errors=[]，**full_a3_passed=false**、44步。原生会话 `work/tests/m6-2p-20261018-203610-718141`，日志 `work/a3/fields-camera-probe.log`；结束后 `work/a3/fields-camera-code.sha256` 的宿主、诊断driver、rewritten main逐项一致。
+- 两端均正常触发InGame，完成暖机、离开出生台、俯视、涂地、走入墨带、潜墨、起跳/落地。own包分别 **338/339** 次，原有位置/HP/墨量有持续采样；各端日志明确记录三个探针已安装，原指令为 `f9403008/2d4e0c02/bd407804`。但 **main+0x28f9e8c /0x28f9e90 /0x28f9e94 全程（包括局内）均0命中**，没有取得一份可标定的相机世界原点、at或FOV样本。原始零命中没有用默认值、身体forward或自拟眼高替代。
+- 这是新的A3原生可见性读取问题；不是A2再次断房，也不是A1旧伤害瞄准卡点。仅有三张主地形和own packet位置，无法证明“敌人处于玩家真实相机画面内且射线无遮挡”，尤其第三人称相机与玩家脚点在台沿/掩体旁可能位于不同遮挡侧。因此当前投影器在未知证据下隐藏全部敌人，**这能避免泄漏，但不能当作A3正确显示/遮挡/潜墨验收。**
+- 自动整理 `.venv/bin/python tests/analyze_a3_fields.py work/tests/a3-fields-20261018-203610-696597/result.json`，完整证据 `.../candidate-fields.json`、摘要 `work/a3/camera-candidate-summary.json`；其中installed=true、ingame_seen=true与total=0同时记录，区别于前两轮未启用相机探针的0命中。另用 `tests/probe_a3_replay.py` 重放双方字段诊断58个真实屏障：114份有效私有位置、114份HP、228条观察者本端HUD记录，生成116份策略白名单输出；visible敌人数0、full_a3_passed=false，未把安全隐藏误报成功。真实相机诊断44步亦完成适配重放，原结果未改写。
+- **假设，均未证实：** ①main+0x28f9e8c属于特殊视图/预览/其它UI相机读取，通常占地局内不走该分支；静态只找到main+0x3e6f6c4一处直接调用，不能据类型邻近就认定为每帧战斗相机。②真实view/projection可能在PlayerCamera另一更新回调或渲染常量提交点消费，需要从“本帧实际用于画面”的矩阵反向校验，而不是保存构造时指针后任意解引用。③Scene/Banc道具/变换/动态碰撞尚未完整组合，即便主地形射线命中高度正确，也不足以宣称完整LOS。这些是假设/后续定位方向，不是已经修复或测试通过的事实。
+- A3其余签收义务仍明确保留：潜墨候选需敌墨/墙面/原生语义验证；实时墨图需原生采样而非累计射击轨迹/最终比分推算；击倒归属需真实victim/attacker/weapon/time事件而非HUD Down计数。已定位PaintTextureData/ColPaintMgr及TroubleDie/PlayerDeadReason若干静态候选，但未形成实机读回，不给策略或裁判填伪数据。实际策略子进程的通道/隔离和原生“可见→遮挡→再见/潜墨”场景均未验收；a3正式run_all门槛尚未接入，接口组件通过不构成里程碑完成。
+- 本次两宿主优雅退出0，无CRASH/FATAL；175次资源采样pressure最大1、新swapout0、footprint合计峰值8402MiB。Session.close核对原件/参考档hash仍为既定值；额外SHA256核对均为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。没有修改A2已签收的宿主源码/二进制或重新生成游戏数据；所有原生内存字节、游戏画面、碰撞资产、栈与转换器均只留忽略的work。
+
+## 2026-10-18：按指挥方恢复 A3，采用几何近似可见性
+
+- 本节覆盖上一节相机读取停止线：指挥方明确放弃游戏相机探针，允许固定人形/乌贼眼高、身体朝向水平FOV与距离上限、脚/腰/头线段碰撞测试，任一点无遮挡即可见。静止潜墨隐藏，移动溅墨/跳起可见；以几类实机截图判断“大致像人眼”，无需像素级投影。已同步GOAL。旧相机探针driver冻结保留在忽略的 `work/a3/camera-probe-tested-driver.py`，开发入口删除该路线，不再将其作为A3前置。
+- `arena/geometry.py` 参数化近似默认人形眼高1.1、乌贼0.25、身体采样0.12/0.7/1.3、水平半视角60°、距离100、表面epsilon0.015；等待实机截图标定。射线双面、限定线段端点，忽略Sight-disabled材质。`tools/stage_collision.py` 从本地Scene/Banc组合Cmn/Pnt静态地形与道具的SRT，输出只在work；三图6757/4353/4774个Sight三角面、16/11/28实例。District单轨道具和Yagara漂浮装饰未含内嵌Dcc形状，manifest逐项列出；这是已授权静态近似的边界，不声称动态遮挡精确。
+- 原生own encoder新增裁判用referee_motion，读取已双端诊断的形态及接触码0/4/5，未知码仍-1；字段只加原始协调器metadata，不进入RL观测space。私有适配器组合形态/接触、样本间位移判断静止潜墨/移动溅墨，支持ninja_squid配置抑制溅墨；空中接触5按跳起例外处理。不是将ZL按钮直接当潜墨。
+- `arena/process.py` /独立 `policy_worker.py` 只通过固定白名单JSON交给act(obs)，close_fds、清除DM环境、macOS sandbox禁止读取用户/临时私有状态（仅自身策略、解释器、公共技能例外）、禁止网络含AF_UNIX及fork。实际子进程测试2项通过：拒绝裁判类型；裁判文件/对方策略/原始socket读取连接均拒绝；忙循环在0.1秒上限内终止回收。普通OS运行库可读，未声称防御OS漏洞。
+- 几何组件4项、既有边界组件8项通过；原生传输新增motion隔离/读回测试后26项通过。组件不替代实机场景签收。正在运行 `tests/probe_a3_visibility.py`（始终full_a3_passed=false），采用双端8000/fixed60、原生状态+几何判定+128×72及原生720p定帧截图，场景结果待定；冻结清单 `work/a3/geometric-probe-code.sha256`。
+
+### A3 几何可见性与白名单通道：子项实机完成，完整 A3 未签收
+
+- 最后一次场景命令 `.venv/bin/python tests/probe_a3_visibility.py` **退出0**，`work/tests/a3-visibility-20261018-212315-404190/result.json`：probe_completed=true/errors=[]、**356 STEP**，full_a3_passed仍false（该脚本只验证可见性诊断子项）。双端8000、fixed60、完整quick_super_jump配装；会话 `m6-2p-20261018-212317-669707`，总日志 `work/a3/geometric-visibility-third.log`。
+- 保持同一套参数：人形眼高1.1、乌贼眼高0.25，脚/腰/头0.12/0.7/1.3，半视角60°、距离100。七个定帧场景 **开阔正对=true、乌贼观察者开阔=true、背对=false、转回=true、静止潜墨=false、隔墙=false、隔高台=false**。全部生成原生截图并逐张查看，结果与本次“大致像人眼”的几何规则一致；没有把它写成游戏相机的像素级还原，也没有声明三图都完成同样的实机标定。截图与SHA256/逐项检查记录只在 `work/a3/geometric-visual-review.json`，是本会话截图检查，不冒称用户人工签字。
+- 额外跳起/移动溅墨均判为可见，并查看了直接来自该帧观测的截图。跳起目标位置y约3.5743、form_squid=true、submerged=false；移动时y=3、submerged=true、motion_visible=true。静止潜墨时只见墨带，不提供目标坐标；截图、状态原件和策略输出分别保留。归一化时刻来自各端独立绝对帧原点，未误把相差4740左右的宿主启动帧直接当共同比赛时间。
+- `arena/referee_api.py` 提供私有 `state()` 与独立 `policy_observation(observer)`；只有后者的PolicyObservation能进入PolicyProcess。原始真值保留HP/墨量等，敌方白名单没有这些字段；隐藏时无当前坐标/朝向/采样帧/隐藏原因，仅留曾经可见时最后位置与目击时刻。公共存活仍只读观察者本端HUD，自端或目标采样过期都会隐藏。
+- `.venv/bin/python tests/probe_a3_policy_replay.py work/tests/a3-visibility-20261018-212315-404190/result.json`：七个真实场景状态经实际sandbox子进程全部回放符合预期，裁判对象类型拒绝；结果 `.../policy-subprocess-replay.json`。这证明实际原生状态→私有适配→几何过滤→白名单JSON→独立进程链路；**未宣称已运行A5策略控制整局**。子进程文件/对手源码/AF_UNIX拒绝与超时回收由实际生产worker测试覆盖。
+- 准备过程保留了两次真实失败：首轮405步在半单位拐角摩擦，A*点位缺少角色余量而到达240步上限；增加抬高邻格净空约束后，第二轮307步走完开阔/背对/隔墙/高台，但先做3单位落差再返回，准备网格无返程路径。随后把单向落差场景放最后，第三轮356步走完全部几何场景。这些是场景准备问题，**不是fixed60等待死锁/原生断线，不作为新的停止原因**。前两轮原JSON/线程栈、受测driver/navigation副本均在work，未篡改为通过。首轮定帧截图起点余数差10帧已在 `geometric-screenshot-map-first.json` 单独记录；最终轮调正起点，七张native_image路径都真实存在。
+
+### A3 当前新卡点：实时涂地图的纹理与地图坐标关系未闭环（停止，未签收）
+
+**按“真正的新卡点才停下”规则，在此停止。旧相机停止线已被新几何方案跨过；本次停止原因是剩余A3状态读取，尤其实时涂地图。A1/A2签收和远端commit不变，A3未签收、不commit/push，A4/A5未开始；没有请求其它模型。**
+
+- 实测一：`.venv/bin/python tests/probe_a3_paint_events.py` 退出0仅表示诊断完成，`work/tests/a3-paint-events-20261018-210443-372117/result.json`，**76 STEP**，会话 `m6-2p-20261018-210443-397072`。已真实涂地、进入己墨，并在第17000个原生present导出本帧 **29** 个颜色绘制目标。存在一个1600×1600的红通道墨迹目标 `player-0/paint-targets/target-2819000.png`，红像素bbox约 **[62,1481]–[89,1553]**，另一个同尺寸目标全零。源图/目标标签/尺寸统计只在work；没有把“红色=哪一队”的假设直接发为已验证网格。
+- 当前不能从这些目标可靠给出“地图某格的墨色”：按主碰撞包AABB直接线性对应世界XZ时，已知在x≈-23.9、z≈60–63附近的落墨应落在纹理x≈480附近，实际墨迹x在62–89；简单候选对应不成立。**尚不能确定是UV打包、独立paint bounds/缩放、分面投影还是其它映射**，也没有识别可涂表面有效域。把未解释的零像素一律当中立地面，会混淆域外/未涂/不可涂，不能签收。
+- 实测二：没有止步于该纹理候选，新增协调器专用 `Client.send_referee_map_pulse()`，用现有原生X位（mask4）打开公开地图，不改变策略六键空间、不改客体代码。`.venv/bin/python tests/probe_a3_minimap.py` **29 STEP、probe_completed=true/errors=[]**，会话 `m6-2p-20261018-211125-067050`；前后原生图在 `native-15090.png /native-15570.png`，诊断 `work/tests/a3-minimap-20261018-211125-038258/`。截图确认涂地前后地图能正常显示，但其中还有角色图标、方向/光晕等UI叠层；当前尚未分离叠层、校验到世界格子的投影，不能直接按橙/紫像素统计真值。此X输入只用于显式诊断，所有帧均记入STEP；**没有给擂台加入隐式开图/中立推进来冒充无干扰实时采样**。
+- **后续假设/定位方向，未证实：** ①用不同X/Z/高度的真实落墨对照，检验是否有独立paint平面范围/缩放，不能仅凭一个墨团认定必为打包UV。②若确实走mesh UV，需要关联原生ColPaintUVMapper/面板到已提取碰撞面，再做格子采样。③公开地图可作为独立参考，但需去掉UI叠层并验证空间映射；不能把世界坐标关系留空后将截图色块直接命名为世界墨图。**目前 `RefereeSnapshot.paint=None`，不是测得零涂地。**
+- 击倒归属也仍未接通：上述76步中确有0号坠落，native HUD Down计数0→1、alive=0且HP仍1，确认不是以HP==0代替死亡。但SimpleReplay DeathEvent编码/复制的四个已安装探针均0次调用，不能把静态回放布局当作局内事件。最后几何诊断另装了TroubleDie网络编码候选main+0x27f7f9c/+0x27f7fa0；其近距离ZR诊断没有造成目标Down，计数为0 **不能证明网络候选不工作**。尚需独立实际死亡/击倒闭环。既有伤害瞄准待办继续归A4 aim_at，**不是本次新的停止理由**；未根据双方同为8000配置去伪造“谁用什么击倒谁”，`knockdowns=None`仍表示未知。
+- `tests/run_all.sh --milestone a3` 已接入组件及完整A3门槛，默认会启动新原生场景。`--native-evidence <result.json>` 仅作重放诊断，明确永不签收fresh native。入口重放第二轮的总日志 `work/a3/gate-replay.log` 退出1；随后对最终356步原件运行 `tests/test_a3.py --native-evidence ...`，`work/tests/a3-check-20261018-213559-311175/result.json` **passed=false/full_a3_passed=false**：七项geometry_cases全true、policy_process_passed=true，native_paint_samples=0、native_knockdown_samples=0、native_attributed_events=0；错误明确为两项原生字段不可用及重放非fresh。这里计数0表示“可用样本数0”，不是声称真实涂地/击倒均为0。总日志 `work/a3/gate-final-evidence.log`。
+- 边界/几何/实际子进程 **9+4+2=15项通过**，原生传输 **27项通过**；入口的固定时钟/等待、GPU/headless、HID、LDN及资源规则组件通过。最终原生场景的七项可见性与过程通道也通过，但它们没有覆盖缺失的paint/attribution，不把部分成功写成完整A3。
+- 五个新双端会话共十宿主均优雅退出，无CRASH/FATAL；各会话pressure最大1、新swapout0。最终356步269次资源采样、footprint合计峰值9049MiB。完整汇总 `work/a3/geometric-native-runs-summary.json`，原件/参考档close核对未变，截图/atlas/原始状态/栈/碰撞网格/转换器只在忽略的work。新增源代码及测试、文档、可重放补丁留在工作区供后续继续；没有提交游戏数据或游戏画面。
+
+
+## 2026-10-18：按指挥方拆分 A3a / A3b，解除 A4/A5 前置阻塞
+
+- 本节覆盖此前“完整A3未签收、停止”的推进顺序：A3a只验几何可见性、裁判/策略独立接口与白名单子进程；A3b（实时墨图、真实击倒归属）移到A5之后，不阻塞A4/A5。A1/A2签收保持有效。GOAL及README同步，正式入口改为 `--milestone a3a`。
+- A3a继续要求 `RefereeSnapshot.paint=None`、`knockdowns=None`，不是测得零。新增测试把伪paint、击倒列表、kills、paint_points、HUD Down计数及结算比分混入三次连续原生metadata；私有适配仍输出两个None，策略JSON仍无这两个字段。原生验收也逐屏障检查unknown，不再因A3b不可用阻断A3a。
+- 依指示保留A3b研究方向：①墨纹理可能按地图渲染模型第二套UV映射，纹素应关联渲染三角形再回到世界坐标，不能强套碰撞AABB平面映射；②在若干已知X/Z/高度处原地涂墨，测变化纹素，经验标定/拟合映射并留出验证点；③真实击倒归属查局内死亡网络事件。这些是候选方向，尚未验证。
+- A5先用已有结算比分判胜负，报告结算涂地率。1v1击倒统计先读观察者本端HUD敌方倒下事件；坠落/出界按位置判为环境死亡并单列，不能写成精确原生最后一击/武器归属，不能用HP==0替代Down。
+- 正在从正式入口启动新会话验收，旧356步截图/回放证据保留但不冒充新的原生运行。新日志 `work/a3/a3a-acceptance.log`，结果待定；此段待实测通过后补上签收与提交信息。
+
+- A3a首次新运行保留失败：`a3a-20261018-214821-879316`，新原生场景前五项通过，跳起可见；开始潜游12帧时仅移动约0.36单位，尚未达到固定溅墨速度阈值0.045单位/present，测试提前断言可见。未放宽阈值或改原件；改为最多6×6帧等实际稳定运动，再检查溅墨例外。同时修正同一原生样本在重复step时保留已测运动标记（新采样才重算），补回归。两端已优雅关闭，继续从正式入口重跑。
+
+
+### A3a 最终签收 PASS：几何可见性、独立接口、白名单策略子进程
+
+**A3a PASS，A3b留到A5之后；下一步A4。** 此节覆盖此前完整A3停止线，A1/A2保持已签收，未请求其它模型。
+
+- 正式命令 `bash tests/run_all.sh --milestone a3a --timeout 2400` **退出0**（第二次新运行），日志 `work/a3/a3a-acceptance-2.log`；结果 `work/tests/a3a-20261018-215718-538694/result.json`：passed=true/full_a3a_passed=true、errors=[]、replay_only=false。
+- 原生场景 `work/tests/a3-visibility-20261018-215718-655400/result.json` /会话 `m6-2p-20261018-215720-951701`，**354 STEP**。双端8000/fixed60，七项geometry_cases全true；跳起/稳定潜游溅墨例外均通过。逐张查看本轮七张原生截图，符合既定近似；核对图只在 `work/a3/a3a-native-contact-sheet.png`。本次仍为温泉峡谷实机场景；三图碰撞已提取，不冒称另两图场景也实机标定。
+- 原生状态经过独立RefereeAPI真值/策略访问器，再到白名单JSON与实际sandbox策略子进程的七场景回放通过；拒绝直接传RefereeSnapshot。边界 **10项**、几何 **4项**、实际进程 **2项**、生产传输 **27项**通过；公共时钟/等待、GPU/headless、HID、LDN、资源规则组件通过。
+- 全部屏障上paint/knockdowns均None，deferred_fields_unknown=true；可用墨图/击倒归属样本数均0，表示未知，不是真实事件为零。伪字段/比分/HUD计数注入回归确认不填假值。A3b方向和A5临时统计口径见拆分决定，A3a通过不依赖它们完成。
+- 首次重跑失败原件保留；第二次只修正运动样本重复使用与测试开始潜游的加速期取样，没有改变眼高、FOV、距离或溅墨阈值。`work/a3/a3a-acceptance-code-2.json` 受测宿主、源码和入口冻结核对无差异。
+- 两宿主均优雅退出，296次资源采样pressure最大1、新增swapout **0**、footprint合计峰值 **8171MiB**；close存档核对未变。补丁重新生成且反向应用检查、暂存差异检查通过。只暂存本项目A3a源码/测试/文档/补丁；A4准备代码不进本次commit，所有碰撞资产、NSO/RomFS/shader/画面/原始状态仍只在忽略的work。
