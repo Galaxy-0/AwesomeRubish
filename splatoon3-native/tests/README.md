@@ -199,3 +199,33 @@ GPU runtime binary archive 按设备 / OS / 翻译链 / shader 内容及 PSO 状
 MSL source-to-IR 仍经系统缓存，MTLLibrary / pipeline 宿主对象仍为每端独立。进入分队后额外等待 600 帧，身份从实际 GetUid / GetNickname 输出读回，OCR 只检查模式 / 队伍人数。
 
 八端验收固定版本为 `2006a98`。随后 scoped-pool 错误返回生存期修复经普通渲染 136 / headless 140 / NVN 79 检查和宿主重编译验证，详见进度末尾；未再次运行八端整局。
+
+## M6 分层验收：A 双端像素 / 控制层已通过
+
+```sh
+uv pip install --python .venv/bin/python -r tests/requirements.txt -r rl/requirements.txt
+bash tests/run_all.sh --milestone m6 --players 2 --timeout 2400
+```
+
+入口先确认本地改写 main 带有三个已验证的原生比赛阶段 gate；旧 M5 改写产物会由 `tools/prepare_rl.py` 在本地重新生成 main，不重解 RomFS / shader，不下载游戏数据。
+随后构建宿主并执行 GPU、NVN、HID、账号 / 解锁、文件系统、本地 LDN、资源停止规则及新的 RL 传输组件检查。
+
+真实测试要求所有进程使用 headless 和有效 1280×720 crop，从游戏内部纹理导出区域平均的 128×72 RGB，且宿主不增加 screen submit / composite。
+动作在下一次输入采样前的屏障应用；每步先给全部 agent 发命令，再收全部 ACK，严格检查 sequence、前后帧号及请求帧数。
+测试故意加入策略墙钟延迟并切换 1 / 7 / 31 帧跳，不能靠墙钟睡眠或事后读取帧日志凑数。
+传输组件还检查非法动作、乱序命令和漏输入帧会被拒绝；GPU 组件检查 crop、通道、上下原点和非窗口读回。
+
+双方实际进入 InGame 后先稳定画面，比较静止与推左摇杆 / 右摇杆时世界区域的相邻帧 MAD；
+移动均值须大于 `max(3, 1.5 × idle_mean)`（RGB 0–255），且各端图像方差、空间及阶段范围正常。
+之后所有 agent 执行随机手柄策略，双方均须进入原生 ResultJudge / ResultWinners。
+再由 `reset` 回收上一房间，用独立参考档副本重新启动 / 建房 / 设置 / 分队，双方进入第二局后继续十次同步 step。
+这里验收的是一局完整结算和第二局可运行，不声称第二局也跑到结算；reset 当前重启进程，不复用原生再战菜单。
+
+M6-A 正式结果：`work/tests/m6-check-2p-20261018-114459-277403/result.json` 为 `passed: true / errors: []`，入口退出 0。
+首局 448 次 step、reset 后 10 次，像素移动相关性和所有精确 ACK 均通过；四个宿主均优雅退出 0，原件与参考档 hash 不变。
+GPU 普通 **148** / headless **152**，NVN **79**，HID **73**，LDN frontend **10**，虚拟 LDN **59**，RL 传输 **4** 检查通过。
+
+本层仅提供 pixels / frame / phase，未知剩余时间和内部状态不填占位值，reward 为 0。
+`rl.env.turf_kill_reward` 只演示未来已验证计数的涂地 / 击杀增量，不代表当前已有这两个信号。
+输入 / 渲染边界的精确帧跳不证明 60 Hz 物理 tick 或 PIA 调度确定性；内部字段与八端随机对局分别留待 M6-B / C。
+所有日志、截图、动作阶段证据、独立存档和资源采样只写入忽略的 `work/`。

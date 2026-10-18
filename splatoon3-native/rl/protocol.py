@@ -1,0 +1,58 @@
+"""POSIX local socket client; independent of the native host graphics API."""
+import json
+import math
+import socket
+
+import numpy as np
+
+
+class Client:
+    def __init__(self, path, timeout=60):
+        self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.socket.settimeout(timeout)
+        self.socket.connect(str(path))
+        self.stream = self.socket.makefile('rb')
+        self.sequence = 0
+        self.frame = None
+        self.expected = 0
+
+    def receive(self):
+        line = self.stream.readline(1025)
+        if not line.endswith(b'\n') or len(line) > 1024:
+            raise RuntimeError('native RL connection closed or invalid observation header')
+        info = json.loads(line)
+        if (info.get('version'), info.get('width'), info.get('height'), info.get('channels'), info.get('bytes')) != (1,128,72,3,27648):
+            raise RuntimeError(f'invalid observation shape/version: {info}')
+        if info['request'] != self.sequence or info['advanced'] != self.expected:
+            raise RuntimeError(f'RL step acknowledgement mismatch: {info}')
+        if self.frame is not None and info['frame'] != self.frame + self.expected:
+            raise RuntimeError(f'RL frame skip mismatch: {self.frame} -> {info}')
+        data = self.stream.read(27648)
+        if len(data) != 27648: raise RuntimeError('truncated RL image')
+        if not 0 <= info['phase'] <= 3: raise RuntimeError('invalid match phase')
+        self.frame = info['frame']
+        observation = dict(pixels=np.frombuffer(data, dtype=np.uint8).reshape(72,128,3).copy(),
+                           frame=np.array([info['frame']], dtype=np.int64), phase=info['phase'])
+        return observation, info
+
+    def send_step(self, action, frames):
+        axes = np.asarray(action['sticks'], dtype=float)
+        gyro = np.asarray(action['gyro'], dtype=float)
+        buttons = np.asarray(action['buttons'])
+        if axes.shape != (4,) or gyro.shape != (3,) or buttons.shape != (6,):
+            raise ValueError('action requires sticks[4], gyro[3], buttons[6]')
+        if not np.isfinite(axes).all() or not np.isfinite(gyro).all() or np.abs(axes).max() > 1 or np.abs(gyro).max() > 1:
+            raise ValueError('stick and gyro values must be finite in [-1,1]')
+        if not np.isin(buttons, (0,1)).all(): raise ValueError('buttons must be binary')
+        if not isinstance(frames, int) or not 1 <= frames <= 3600: raise ValueError('frames must be in [1,3600]')
+        # ZR, ZL, R, RS (special), B, Y (camera reset).
+        mask = sum(int(v) << bit for v, bit in zip(buttons, (9,8,7,5,1,3)))
+        sticks = np.rint(axes*32767).astype(np.int32)
+        self.sequence += 1; self.expected = frames
+        line = f'STEP {self.sequence} {frames} {mask:x} ' + ' '.join(map(str, sticks)) + ' ' + ' '.join(map(str, gyro)) + '\n'
+        self.socket.sendall(line.encode('ascii'))
+
+    def close(self):
+        try: self.socket.sendall(b'RELEASE\n')
+        except OSError: pass
+        self.stream.close(); self.socket.close()

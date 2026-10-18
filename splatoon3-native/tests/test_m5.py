@@ -18,6 +18,7 @@ from test_m2 import SAVE_SHA256
 from test_m4 import enters, recognize, MODES
 sys.path.insert(0, str(ROOT/'tools'))
 from m5_resources import Monitor, system_sample
+from private_battle import host_environment, configure_room, prepare_match
 
 BUTTONS = dict(zip(('A','B','X','Y','LS','RS','L','R','ZL','ZR','Plus','Minus','Left','Up','Right','Down'),
                    (1 << n for n in range(16))))
@@ -72,20 +73,8 @@ class Run:
         for name in ('save','temp'): (d/name).mkdir()
         shutil.copyfile(self.seed,d/'save/save.dat')
         fifo=d/'controller.fifo';os.mkfifo(fifo,0o600)
-        route=(ROOT/'tools/routes/m2-local-lobby.keys').read_text().strip()
-        if self.args.players>1: route+=',f2700:A'+(',f3300:Y,f3900:A' if player==0 else ',f3900:A,f4500:A')
-        env={k:v for k,v in os.environ.items() if not k.startswith('DM_')}
-        env.update(DM_ROOT=str(ROOT/'work'), DM_ROMFS=str(ROOT/'work/data/v720896/RomFS'),
-            DM_SAVE=str(d/'save'), DM_TEMP=str(d/'temp'), DM_MSL_DIR=str(ROOT/'work/build/cache/metal_shader_cache'),
-            DM_FONT_DIR=str(ROOT/'work/build/font'), DM_PLAYER=str(player), DM_FULL_UNLOCK='1',
-            DM_HEADLESS='1', DM_WINDOW='1', DM_OPMODE='0', DM_RESOURCE_REPORT='1',
-            DM_MEM_CAP_GB='0', DM_MEMSTAT=str(d/'memory.tsv'), DM_MEMSTAT_DUMP='90', DM_KEYS=route,
-            DM_PIPELINE_CACHE=str(ROOT/'work/build/cache/runtime-pipelines'), DM_LOAD_SLOTS=str(self.out/'load-slots'), DM_HID_FIFO=str(fifo), DM_PROBE=PROBES, DM_WATCH_STALL='180', DM_WATCH_SAMPLE=str(d/'stall.txt'),
-            DM_NVN_SHOT=','.join(map(str,range(2400,180001,600)))+':'+str(d/'frame_%d.png'))
-        if self.args.visible and player==0: env['DM_HEADLESS']='0'
-        if self.args.weapons: env['DM_WEAPON']=str(self.args.weapons[player])
-        if sock: env['DM_LDN_AIR']=str(sock)
-        else: env['DM_LDN_FRONTEND']='1'
+        env=host_environment(ROOT,self.out,d,player,self.args.players,sock,self.args.weapons,self.args.visible)
+        env.update(DM_PROBE=PROBES, DM_NVN_SHOT=','.join(map(str,range(2400,180001,600)))+':'+str(d/'frame_%d.png'))
         (d/'input.json').write_text(json.dumps({k:v for k,v in env.items() if k.startswith('DM_')},indent=2)+'\n')
         log=(d/'host.log').open('wb');self.streams.append(log)
         p=subprocess.Popen([str(ROOT/'upstream/dm/host/dmhost'),str(ROOT/'work/build/patched_v720896')],
@@ -132,30 +121,10 @@ class Run:
                 membership.append(dict(player=n,state=list(states[-1])))
             self.result.update(session=session,membership=membership,same_room=True)
             if self.args.admission_only: self.result['admission_only']=True;return
-            # Native room settings: focused Mode, then Stage (4 columns x 3
-            # rows per page; Random is the extra cell to the left).
-            for _ in range(self.args.mode): self.press(0,'Right')
-            self.press(0,'Down');self.press(0,'A')
-            page,cell=divmod(self.args.stage_index,12);row,col=divmod(cell,4)
-            for _ in range(page):self.press(0,'R')
-            self.press(0,'Right')
-            for _ in range(col):self.press(0,'Right')
-            for _ in range(row):self.press(0,'Down')
-            self.press(0,'A');self.press(0,'Down');self.press(0,'A')
-            self.frames(0,600)  # The first row is not active during the team-panel transition.
-            # Team rows begin Random; Right => Alpha, another Right => Bravo.
-            for player in range(self.args.players):
-                self.press(0,'Right')
-                if player>=self.args.players//2:self.press(0,'Right')
-                self.press(0,'Down')
-            self.frames(0,600)
+            configure_room(self,self.args.players,self.args.mode,self.args.stage_index)
             team_shots=sorted((self.out/'player-0').glob('frame_*.png'),key=lambda p:int(p.stem.split('_')[1]))
             self.result['team_screenshot']=str(team_shots[-1])
-            self.press(0,'A');self.frames(0,900)
-            # Confirm all controllers together: sequential 300-frame waits for
-            # eight players can exceed the native preparation deadline.
-            (self.out/'load-slots/active').touch()
-            for player in range(self.args.players):self.send(player,'A')
+            prepare_match(self,self.args.players)
             self.frames(0,300)
             self.until(lambda:all(enters(self.text(n),'3db55d0') for n,_,_ in self.hosts))
             self.frames(0,600);self.monitor.snapshot(self.hosts,'in-game')

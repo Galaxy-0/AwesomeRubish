@@ -7,7 +7,8 @@
 - `tools/survey.py`：对 XCI 本体 + 11.3.0 更新 NSP 跑 nxnative 粗查
 - `notes/`：粗查报告与进度
 - `work/`：解包 / 构建产物（gitignore，含游戏数据，绝不入库）
-- `tests/run_all.sh`：M1 至 M5 回归与分级验收（依赖与门槛见 [tests/README.md](tests/README.md)）；M1、M2、调整后的 M2.5、M3 和 M4 已通过，当前进度见 [notes/PROGRESS.md](notes/PROGRESS.md)
+- `tests/run_all.sh`：M1 至 M6 回归与分级验收（依赖与门槛见 [tests/README.md](tests/README.md)）；M1–M5 和 M6-A 双端像素 / 控制层已通过，当前进度见 [notes/PROGRESS.md](notes/PROGRESS.md)
+- `rl/`：PettingZoo ParallelEnv，本机 Unix socket、固定输入帧跳、headless 128×72 RGB；模式 / 地图 / 武器和分队复用 M5 路线。内部状态和八端随机策略签收仍待 M6-B / C。
 - `tools/ldn/`：M3 本机虚拟 LDN 空气服务及运行说明；双真实游戏建房 / 扫描 / 加入 / 双向收包验收已通过。
 - `tools/routes/`：M2 使用已过教学的存档副本，脚本走到 The Shoal 的 Private Battle 菜单，入口后连续十分钟验收通过；旧教学路线仅保留历史记录。
 - `work/save_ref/save.dat`：指定模拟器存档的只读副本，不入库。M2 测试每次复制到独立运行目录，绝不把参考档或原件作为 `DM_SAVE`。
@@ -19,5 +20,7 @@ M3 已打通本机两进程 LDN；M4 已通过 25 张普通私房地图、全部
 **M5 已 PASS**：八端独立身份 / 指定武器，Turf War / Scorch Gorge 的离线 4v4 自然结算；八端优雅退出 0。
 headless / 720p、代码与文件 mmap、GPU binary archive 共享、上传暂存 / 退役 private 内存回收和两端一批开局均已实测。
 八端 footprint 合计峰值 28.38 GiB，单端全程峰值均 <6 GiB，对战共同窗口约 13.4–14.0 fps / 端；最高采样压力 warning，新增 swapout 0。
-阶段提交 `81a2edf`，完整八端验收提交 `2006a98`；M6 尚未开始。
+阶段提交 `81a2edf`，完整八端验收提交 `2006a98`。
+**M6-A 已 PASS**：双端随机策略自然结算、像素动作相关性、精确帧增量，以及 reset 重建第二局后继续 step 均通过。
+训练观测当前只有像素、帧号、原生比赛阶段；reward 为 0，内部计数和完整 M6 签收尚未完成。运行方式见 [rl/README.md](rl/README.md)。
 详见 [进度与卡点](notes/PROGRESS.md) 和 [验收说明](tests/README.md)。

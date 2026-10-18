@@ -1,7 +1,7 @@
 # 进度
 
-当前：M1、M2 已通过，M2 提交 `4a51b06` 已推送。M2.5 的武器 / 身份组件通过，
-地图 / 模式验收卡在 LDN Station 前置依赖；M2.5 工作区未提交，详细证据与卡点见文末。
+当前：M1–M5 已通过；完整八端 M5 签收版本为 `2006a98`，后续错误路径修复为 `b0b590c`。
+M6 按后续指示分层推进：**A 双端帧动作 / 像素环境已通过**（随机结算 + reset 第二局）；B 内部字段和 C 八端随机策略尚未验收。详见文末。
 
 ## 2026-10-17
 
@@ -1000,3 +1000,114 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
   shader 源文件累计读入 **25,667,401 bytes（约 24.48 MiB）**，不是编译库实际物理字节。
   当时 Metal allocated **3,949,215,744 bytes（约 3.68 GiB）**、upload live 为 0、upload peak 96 MiB。
   buffer 包含 guest no-copy，以上口径不相加。此样本再次说明命令内存 / 暂存不是主要常驻大头，GPU 贴图与 guest 工作集仍是主体。
+
+## 2026-10-18：M6 卡点（停止，未签收）
+
+### 范围和当前结论
+
+- 本轮按指示先读 GOAL.md、M5 最终签收及 tests/README.md；工作基线为 `b0b590c`。
+  尚未修改宿主生产代码、补丁、M5 harness 或回归入口；没有创建可供训练使用的 `rl/` 包或 `tests/test_m6.py`。
+- **卡点是内部观测的语义映射和对象归属没有闭环**。目前只有候选类 / 函数 / 字段，不能据此输出自身和可见队友 / 敌人的可信观测。
+  本轮没有证明移动后位置变化、射击后墨量下降、固定帧跳同步或 reset 重开。
+- 按用户本轮“卡住时把现象和假设写进 PROGRESS.md 卡点一节然后停下”的要求，到此停止；未请求其它模型，未启动八端，未 commit / push。
+  这不是 M6 PASS，也不是对 M5 已签收结果的否定。
+
+### 已确认的现象和定位证据
+
+- 本地 `work/data/v720896/ExeFS/main` 的 build ID 确认为 `28c4287aee36f7499da60f3e68b54c70`。
+  按 NSO 段解压并读取动态符号表，得到 82 个已定义导出符号，其中没有包含 Player / Paint / Versus / GameTime 的条目。
+  `../splatoon3-decomp/symbols/` 提供类名和参数表名，不提供可直接使用的玩家状态字段布局；其当前文档也明确游戏自身代码无 C++ 函数符号。
+- 对实际 main 的 ADRP + ADD 类名引用进行了静态定位，结果仅保存在 `work/m6/`：
+
+  | 类 | 类名字符串返回入口 | 静态可确认内容 |
+  |---|---|---|
+  | `spl::PlayerDamage` | `main+0x2920748` | 分配大小 0xf08；vtable `main+0x5d32218`；`main+0x2920834` 的初始化将 +0x34、+0x88 写为 1000 |
+  | `spl::PlayerRemote` | `main+0x2aaba50` | 分配大小 0x58；vtable `main+0x5d3da38`；初始化完成点可探测，但尚未绑定玩家 |
+  | `spl::PlayerPipeline` | `main+0x2aa7c60` | 分配大小 0x1d0；尚未确认可作为完整游戏逻辑帧采样点 |
+  | `spl::PlayerKinematics` | `main+0x2a76a8c` | 分配大小 0x40；并不直接给出可安全导出的坐标布局 |
+  | `game::ActiveTimeCounter` | `main+0x14af2c4` | +0x30 有清零 / 加一函数，不能据此认定为比赛剩余时间 |
+
+- 进一步追到 `main+0x2748390`：代码从传入对象 +0x208 的数组取组件，做类型检查，成功后将指针写入 PlayerDamage +0xf00。
+  `PlayerRemote` 初始化后续函数也读取 owner +0x208。它们提供继续追对象图的线索，但尚未确认实际局内 local / remote 索引、队伍、生命周期及可见性语义。
+  `PlayerNetState` 的构造 / 类型注册也已定位，尚未恢复各序列化字段的含义，不能把其裸字段当作训练状态。
+- 现有 `hle_hid.c` 的 `DM_HID_FIFO` 已有双摇杆、16 位按钮和六轴角速度通道；按钮 RS 对应右摇杆按下，B / ZR / ZL / R 的位定义已存在。
+  但 FIFO 线程用 `usleep(hold_seconds)` 执行动作，既没有逐 step 确认，也没有 8 端共同帧屏障。
+  `dm_guest_frame()` 在 NVN present 边界增加；它本身没有证明游戏逻辑帧 / 网络同步帧与这个计数一一对应。
+  M5 使用墙钟，不能把按墙钟发 FIFO 后等待帧日志的方式称为固定帧跳的同步 RL step。
+
+### 双端诊断（主动中止，不是里程碑回归）
+
+- 复用 M5 的启动、独立参考档副本和本次 Unix socket air，在 `work/m6/probe_m5.py` 中复制 harness，
+  只调整产物前缀并追加只读诊断探针：
+  `main:2920850@x0+88,main:2aaba44@x0+28,main:2aa7c58@x0+28`。
+  原始 `tests/test_m5.py` 没有修改；诊断使用现有宿主，没有改游戏计时、队伍或状态。
+- 命令：`.venv/bin/python work/m6/probe_m5.py --players 2 --mode 0 --stage-id 1 --weapons 0,0 --timeout 1200`。
+  总日志为 `work/m6/two-player-probe.log`；产物为 `work/tests/m6-probe-2p-20261018-112736-404123/`。
+  静态记录为 `work/m6/defined-symbols.json`、`class-xrefs.json`、`class-xrefs.txt`、`state-name-xrefs.txt` 和各反汇编文本；解压镜像只在 `work/m6/main.img`。
+- 两端各命中三个新增探针各两次，且每个入口各出现两个不同 x0 对象地址；发生在进入对战之前。
+  两端 `PlayerDamage+0x88` 初始化读回均为 `e8030000`（小端 1000），`PlayerRemote+0x28` 在构造完成点均为 0。
+  **这只证明候选组件初始化，不证明该字段就是应导出的局内 HP，也不证明哪个对象是自身。**
+  构造时抓一次指针然后永久复用，已有对象重建 / 尚未绑定的反证，不能作为接口实现。
+- 记录卡点后，向本轮唯一 harness PID 57846 发 SIGINT，让其 finish 同时终止所属两端并回收 air；
+  两端优雅退出 0，最后资源帧为 8040 / 3480，无运行时失败标记。主动停止时尚未观察到完整双端同房和 InGame，未跑完整对局。
+  诊断复制的 harness 仍将原始 result.json 标为 `milestone: M5`，并据实记录 `interrupted`、缺少完整对局及完整同房，wrapper 退出 1；未改写该结果，不将它当作新的 M5 / M6 验收。
+- 清理后核对 harness / air / 两个 dmhost 的 PID 均已不存在；本轮累计新增 swapout 为 0，清理后 pressure=normal。
+  原存档及只读参考档 SHA256 均仍为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。
+  宿主 SHA256 为 `9ef87325ff36670d217e88995798f5c1f5cada24ba49009515c616ee42db445a`；诊断脚本 SHA256 为 `867b7cace642d72b87317578da42d1d6d7e37c26c33d66ec4fac18e83f942f61`。
+
+### 待验证假设与恢复工作的切入点
+
+1. `PlayerDamage+0x88` 可能是当前 HP、+0x34 可能是上限，但必须用局内受伤 / 恢复 / 死亡对照确认，不能仅按初值 1000 命名。
+2. 可以从组件绑定的 owner 图恢复玩家对象和身份；需要在绑定后读取，并确认场景切换 / 死亡重生时指针有效性以及每进程自身与网络玩家的索引关系。
+3. `PlayerNetState` / 玩家主对象可能提供位置、方向、墨量和特殊量；相关字段、单位及更新阶段尚未确认。
+   比分 / 涂地、剩余时间、击杀累计和对端可见性也均缺少可信来源，不能用宿主时间或假定所有远端可见来补齐。
+4. 状态来源确定后，再选实际逻辑更新边界实现 POSIX Unix socket 或共享内存通道与共同 step 屏障；
+   需要证明暂停采样期间不会继续推进另一条逻辑 / PIA 更新线程。单独阻塞 present 尚无正确性证据。
+
+**停止状态：仅更新此进度文档；诊断材料和所有游戏相关数据留在忽略目录 work/，未加入版本控制。**
+
+## 2026-10-18：M6 分层恢复，A 双端验收进行中
+
+- 用户后续指示覆盖上一节的停止安排：A 先完成按帧动作、像素观测、ParallelEnv、整局及 reset，通过后先提交；B 再逐字段恢复；C 最后八端随机策略验收。
+- 新增 `hle_rl.c` / `dm_rl.h`：POSIX Unix stream socket，帧首输入屏障、严格 sequence / 帧增量确认；等待 Python 时冻结 guest clock。
+  运行时要求受控输入边界在同一游戏线程，且相邻边界恰好跨一个 present；不满足立即失败。
+  这是输入 / 渲染迭代的固定帧跳，尚未声称 60 Hz 物理 tick 或 PIA 包调度确定性。
+- NVN 在提交线程读回游戏有效 crop，经 GPU completion 后区域平均下采样为 128×72 RGB；不调用最终合成、不创建窗口、不将 RL 图像写盘。
+  比赛阶段来自 11.3.0 原生 InGame / ResultJudge / ResultWinners 的只读 OBS gate。
+  gate 放在 prologue 的第二条指令，保留 M4 / M5 原先第一条指令的 DM_PROBE 入口；构建号、原指令和安全插入位置都做校验。
+- `rl/` 为真正的 PettingZoo ParallelEnv，向所有端发送动作后再逐端收 ACK；观测先只有像素、帧号、原生阶段，未伪造剩余时间和内部字段。
+  `reset` 关闭上一房间并用独立参考档副本重启 / 重建房间，可选模式 / 地图 / 每人武器；本层不承诺复用原 PID 操作原生再战菜单。
+  `tools/private_battle.py` 提取 M5 已验证的宿主配置、模式地图 / 分队 / 准备控制器路线，M5 与 M6 共用；本地 BYML reader 同样提取到 tools 并保留 tests 的兼容导入。
+- 单端真实游戏接口冒烟：`work/m6/socket-smoke/result.json` 为 `passed: true / returncode: 0`。
+  附着帧 601，各步前故意延迟 0.2 秒，`step(1/7/31/2)` 返回 602 / 609 / 640 / 642；有效像素来源均为 1280×720。
+  只覆盖大厅输入 / 渲染接口，不作为对局或 M6-A 验收。
+- 传输组件测试 4 项通过，包含延迟策略仍精确推进、非法动作、乱序 sequence 和漏输入帧拒绝。
+  初次测试发现 BSD accept 继承 O_NONBLOCK，导致接收下一动作时遇到 EAGAIN 提前释放；已显式将已连接 socket 设为阻塞并复测通过。
+  新 GPU 用例覆盖 RGBA / BGRA、crop、下采样、上下原点及 screen / composite 计数不增加；普通渲染 **148** / headless **152** 检查通过。
+- 正式入口：`bash tests/run_all.sh --milestone m6 --players 2 --timeout 2400`，总日志 `work/m6/two-player-acceptance.log`。
+  前置 NVN **79**、HID **73**、LDN frontend **10**、host options **32**、文件系统、虚拟 LDN **59**、资源停止规则及上述新组件检查均通过。
+  首局产物 `work/tests/m6-2p-20261018-114459-299748/`；源码 / 二进制哈希固定于 `work/m6/acceptance-code.sha256`，运行中不修改这些文件。
+  **随机整局、像素动作相关性和 reset 结论待本轮实测；尚不签收、尚未提交推送。**
+
+### M6-A 签收 PASS（双端，像素 / 控制层）
+
+- 正式入口 `bash tests/run_all.sh --milestone m6 --players 2 --timeout 2400` 退出 **0**。
+  `work/tests/m6-check-2p-20261018-114459-277403/result.json` 为 `passed: true / errors: [] / pixel_control_layer_passed: true`。
+- 首局为 `work/tests/m6-2p-20261018-114459-299748/`，Turf War / Scorch Gorge、武器 0 / 0。
+  同房会话 `eab0f1ead919cbf983ad5267f436d929`；双方均实际进入 InGame → ResultJudge → ResultWinners。
+  InGame 到 Judge 的墙钟时间为 **211.5792 / 211.5423 秒**，包括策略屏障等待，未改倒计时或结算。
+  首局 **448 次**同步 step；初始帧 **14562 / 9972**，终止帧 **21276 / 16686**，两端均实际推进 **6714 帧**，终止阶段均为 3。
+  政策延迟以及 1 / 7 / 31 帧跳用例均通过严格 ACK；没有按墙钟时间推算已完成帧数。
+- 移动 / 视角像素 MAD 样本为 **50.68 / 53.66 / 58.17 / 79.62 / 54.71 / 49.51**；
+  静止样本约 **0.93–1.25**，门槛 **3**，相关性通过。原始六个静止 / 移动数值在 result.json 中；图像仅在本次 work 产物中。
+  每端像素尺寸 / uint8 范围 / 画面方差 / 阶段范围及来源 1280×720 crop 均通过。
+- 第二次 reset 完整回收首局后，创建 `work/tests/m6-2p-20261018-115504-398945/`，会话为 `3ea2fd867a0d9652531d5da01fdc160d`。
+  使用另一批 PID **44624 / 60497**，独立存档新副本，通过同一设置 / 分队路线，再实际进入 InGame 并继续 **10 次**同步 step，仍为 InGame。
+  合计 **458 次**同步 step；仅要求第二局可运行，未声称第二局也结算或复用了原 PID 的再战 UI。
+- 四个宿主均优雅退出 **0**，本轮无剩余 dmhost / air；运行前后参考档与原档 hash 通过。
+  首局资源监测最大 pressure=normal、新增 Swapouts **0**，footprint 合计采样峰值 **7,336 MiB**。
+  源码 / 宿主冻结清单 `work/m6/acceptance-code.sha256` 结束后复核仍全部一致。
+- 共用设置路线与原 M5 源码的控制器调用序列比较：2 / 8 人 × 5 模式 × 25 地图共 **250** 项严格一致，记录 `work/m6/shared-route-equivalence.json`。
+  该比较只证明代码提取后的序列一致；不把它当作 250 种配置的真实游戏验收。
+- 提交前补充 `tools/prepare_rl.py` 的入口检查和复现说明；当前派生产物检查无需重写即通过。
+  依指示先提交 / 推送 **M6 部分完成**。本层 reward=0，内部状态未实现，完整 M6 和八端随机策略仍未签收。
