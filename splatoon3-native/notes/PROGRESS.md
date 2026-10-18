@@ -665,3 +665,187 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 当前边界：本次跑完的是 **Scorch Gorge / 涂地 1v1**；25 地图及五模式的全选项已验收，
 没有声称每个地图 / 模式组合都各跑完一局。胜利动画仍可见角色模型渲染缺件（如 `frame_21000.png`），
 本轮不把流程 / 网络 PASS 扩大为完整图形正确性。**下一里程碑 M5，尚未开始 4v4、省资源改造或 RL 接口。**
+
+## 2026-10-18：M5 资源优先（进行中）
+
+起点为已推送的 M4 `e6a92c7`。本节记录 M5 的资源剖析、实现和分级准入；
+**下列单进程 / 组件结果不是 M5 的 4v4 PASS，最终结论见本节后续记录。**
+
+### 先测量，以及旧日志的口径纠正
+
+- M1 Max / 64 GiB；开始时没有 dmhost，系统已有约 **13,755.5 MiB swap**。
+  这是其它历史负载留下的基线，不作为本任务可使用的余量；本轮不关闭其它应用、不调整 swap。
+- 旧 `[nvn-mtl] 内存 ... 常驻` 字段实际来自 `TASK_VM_INFO.phys_footprint`，**不是 `resident_size` / RSS**。
+  本轮将新日志标签改为“物理占用”，`DM_MEMSTAT` 同时记录 footprint、RSS、guest / code / malloc / GPU VM 分类、
+  Metal 分配、压缩页。Metal no-copy pool 与 guest 内存重叠，不能将 Metal allocated 与 RSS 相加。
+- M4 宿主基线剖析：`work/m5/baseline-20261018-033142-737848/`。
+  房主先单独启动，建房后才启动一个对端；大厅与对战按焦点进程分别计量，不能把这称为单机独自开始的 1 人比赛。
+  仅为取对战样本，双方入图约 40 秒后主动正常退出；其 `result.json` 按 M4 整局门槛为 false，**不代替 M4 / M5 正式验收**。
+  最初将基线可执行文件移到 `work/m5/`，相对 shader 表路径失效，产生一次 FATAL；
+  失败保存在 `baseline-20261018-033122-202870/`，改用 host 目录中的独立基线副本后重新测量。
+- 基线焦点宿主 footprint 峰值 **12,477 MiB**。大厅稳定时约 **4,648 MiB**；
+  对战 InGame+10..35 秒平均 **5,004 MiB**，该窗末样本为 4,899 MiB、Metal allocated 4,110 MiB、
+  guest 分类常驻 1,799 MiB、code 148 MiB、malloc 186 MiB。
+  `work/m5/baseline-vmmap.txt` 的大厅快照中，GPU owned/unmapped 约 2.2 GiB、guest/Metal 共用映射约 1.5 GiB。
+  这些分类存在重叠；未将 VM region 常驻之和当成唯一物理内存。
+- 命令分配器约 0.15–0.17 GiB；命令 spill 只有数 MiB，均不是几 GiB 占用的大头。
+  低分辨率仍保留原游戏贴图、原生渲染和 GPU 状态。启动时存在远高于稳定值的 Metal/driver 分配峰值，
+  不能用稳定值乘 8 后同时冷启动。
+
+### 当前实现与已通过的独立检查
+
+- `DM_HEADLESS=1` 抑制 `DM_WINDOW` 建窗，跳过最终 host composition / drawable / screen present；
+  保留游戏 NVN / Metal 命令执行、交换链推进及显式原始截图诊断。记录真实内部 pass / draw / frame 与 host 提交计数。
+  headless 未显式指定 `DM_OPMODE` 时默认 handheld；多开入口显式传入 `DM_OPMODE=0`。
+- 掌机有效区域实际为 **`WindowCrop 0,0 1280x720`**。原始交换链仍由游戏分配为 1920×1080，
+  因而原始截图尺寸本身不能证明是否使用 720p；未用宿主缩放伪装降低内部渲染分辨率。
+- Mac loader 从同一 `.patched.bin` 做 file-backed `MAP_PRIVATE` 映射，text / patch 为 RX；
+  relocation / data / key 与显式运行时覆盖按 COW 私有化，不把地址相关重定位写回磁盘。
+  RomFS 的只读打开使用 `PROT_READ|MAP_SHARED`，关闭时 unmap；guest 的 ReadFile 输出仍须复制，因为游戏可修改输出缓冲。
+  shader 文件加载已有 mmap，本轮显式使用 `PROT_READ|MAP_SHARED`。
+  本机无 Xcode，shader 文件包含 MSL 源码并由 Metal 运行时编译；**没有声称 Metal 内部编译对象 / 管线也成为跨进程共享页**。
+- 宿主派生渲染管线缓存上限 2,048、计算管线上限 512；退役对象保留到 GPU fence 完成。
+  headless 主命令 allocator 上限从 8 限到 3，不分配最终呈现专用 allocator / buffer；命令 spill 硬上限从 1 GiB 降至 128 MiB。
+  不按年龄丢弃可能含有效 GPU 状态的渲染目标 / 贴图。
+- 新增 `DM_WEAPON=<Versus ID>`：在已验证 11.3.0 本地玩家参数构造路径的两次武器读取处给出请求值，
+  由原生目录生成 main/sub/special kit；不修改参考存档，不覆盖远端 PIA 参数。
+  构建号与两条原指令均验证后才修改；测试入口从本地 Versus 目录验证参数是否合法，并读取 native kit 证明实际取值。
+- 已通过：Metal 条件渲染 116 项（普通与 headless）、NVN 79、文件系统 74（含 mmap offset / EOF / 负偏移 / close/reopen）、
+  身份 / 解锁 / 武器 32 个独立进程用例、虚拟 LDN 59 项。
+- `tests/test_m5.py` / `tools/m5_resources.py` 保存每两秒系统与逐进程样本、controller 输入、VM / footprint 快照；
+  每个新进程入房并度过启动峰值后才启动下一个。新增 swapout、swap 比启动基线增长超过 16 MiB、
+  内存压力非 normal 或本任务 footprint 合计超过 44 GiB 即停止并回收本次宿主。
+  只读项目文件的共享页另按 backing inode + file offset、实际 PRESENT/EXTERNAL、非 DIRTY/COPIED 的页查询去重；
+  不把所有 external_pager 映射（其中包括 Metal guest pool）都当成可跨进程共享的文件页。
+
+### 单进程低资源大厅验收
+
+- `work/tests/m5-1p-20261018-033802-977810/`：`--players 1`，`phase_passed: true`、`passed: false`（未完成 4v4）。
+  同时设置 `DM_WINDOW=1` 与 `DM_HEADLESS=1`，确认不建窗；720p 有效 crop、内部 pass / draw 持续增长、
+  screen submit / composite 为 0，达到第 6,000 帧后优雅退出 0，参考档与原件 hash 不变。
+- 4,200 帧后的采样区间约 **52.09 fps**；最大 footprint **4,126 MiB**、最大 RSS **2,028 MiB**，
+  最后 footprint **3,880 MiB**、Metal allocated **3,282 MiB**、guest 常驻 **1,629 MiB**。
+  冷启动 footprint 峰值仍为 **10,039 MiB**，因此 ≤6 GiB 目前指稳定运行，不能扩大为冷启动全程峰值。
+  大厅 `footprint` 快照为 3,849 MiB，GPU owned/unmapped 1,790 MiB、guest 1,628 MiB、malloc small 162 MiB。
+- 第一版 memstat 的 `clean_file_resident` 仅按 external_pager 统计，误包含 Metal 映射；
+  该旧字段约 1.1 GiB **不能作为共享节省量**。后续已要求真实 backing pathname，并增加按页去重的项目文件快照。
+
+当前正在运行两进程完整对战验证；4 / 8 进程尚未签收。所有游戏数据、存档、截图与日志只在 work/，本轮暂不 commit / push。
+
+### 两进程低资源整局通过
+
+- `work/tests/m5-2p-20261018-034011-814855/`：`--players 2 --weapons 8001,2040 --timeout 1000`，
+  **`phase_passed: true`、`errors: []`、`passed: false`（尚不是八端 M5）**。
+  固定初始 DM_KEYS 加已记录的自动 FIFO 控制器脚本，完成 Scorch Gorge / Turf War 的 1v1。
+- 原生 kit 多次读回：RL-0 均为 **8001**、RL-1 均为 **2040**；实际对战截图 `player-0/frame_16200.png`
+  可见 Splatana、双方武器 HUD 及运行中的倒计时。不是仅打印请求参数。
+- A 的 InGame / ResultJudge / ResultWinners 为 **312.6198 / 498.5976 / 509.2032 秒**；
+  B 为 **220.6556 / 406.6102 / 417.1031 秒**。入图到判定分别 **185.9778 / 185.9546 秒**，自然走完整局。
+  两端最终帧 **21,600 / 17,400**，都优雅退出 0，参考档与原件 hash 不变，无运行 / GPU 失败标记。
+- 对战阶段 FPS **33.83 / 36.57**；单进程低资源大厅参考 **52.09 fps**，场景 / 人数不同，
+  这个比值不是严格同负载的并行加速比。双端大厅为 **42.66 / 41.17 fps**。
+- 对战稳定 footprint 最大 **4,470 / 3,843 MiB**，RSS 最大 **2,208 / 2,223 MiB**。
+  入图快照 group footprint **8,335 MiB**；全阶段采样最高 footprint 合计 **9,418 MiB**，RSS 合计 **4,494 MiB**。
+  全阶段 GPU 利用率平均 **82.57%**（AGX 全机指标）；swap 增长 **0**，压力始终 normal。
+- 本轮的旧 `clean_file_resident` 字段仍包含 Metal 映射，不能用它推导共享量。
+  新版宿主在随后四进程准入的两端快照中，通过实际页查询确认：两端各 **99.46875 MiB** clean project file 页，
+  inode + offset 去重后合计 **99.46875 MiB**，重复部分 **99.46875 MiB**。
+  产物 `work/tests/m5-4p-20261018-034929-733670/joined-2-shared.json`；没有将 guest / GPU 私有页算入共享。
+
+四进程正按顺序加入，仅验收同房和资源；通过后才启动八端整局。当前未签收 M5，未 commit / push。
+
+### 四进程资源准入通过；正式八端入口已启动
+
+- `work/tests/m5-4p-20261018-034929-733670/`：`--players 4 --admission-only --weapons 8001,2040,10,3000`，
+  `phase_passed: true`、`errors: []`、`passed: false`。四个真实宿主依次加入会话
+  **`e3eaa0bfd758312e81699e2d3ac68fd8`**，此阶段只检查同房 / 资源，没有开始 2v2 或将其当作 4v4。
+- 四端实际 native kit 分别为 **8001 / 2040 / 10 / 3000**；最终帧 **29,100 / 24,360 / 15,360 / 6,060**，
+  全部优雅退出 0。第三 / 四个进程各经历了约 73 / 84 秒运行时 shader 源码冷编译，
+  长帧主要花在 library / PSO 创建，实际 GPU 执行仅十几毫秒；不是内存压力或 LDN 假成功。
+- 大厅阶段 FPS **39.60 / 38.64 / 37.31 / 36.01**；这些阶段均值包含逐个加入的过程，不全部是四端稳定窗口。
+  对应稳定 footprint 最大 **4,020 / 3,390 / 3,386 / 3,264 MiB**，RSS 最大 **2,035 / 2,027 / 2,046 / 2,038 MiB**。
+  全阶段 footprint 合计峰值 **15,112 MiB**；AGX GPU 利用率全阶段平均 **86.86%**，无新增 swap，压力始终 normal。
+- 最终 project clean file 页每端 **96.21875 MiB**，映射合计 **384.875 MiB**，唯一物理文件页 **96.21875 MiB**，
+  重复部分 **288.65625 MiB**；见 `lobby-shared.json`。这是明确限定的项目文件页统计，非全机 PSS。
+- **wrapper 失败保留**：在该 shell 等待四端 Python 子进程期间修改了 `tests/run_all.sh`，
+  子进程已保存通过结果并退出后，shell 用旧文件偏移继续读取新内容，产生末尾引号解析错误、退出非零。
+  因此不把本次四端 wrapper 整体称为退出 0；四端 native / 资源数据与通过的独立组件仍有效。
+  修正后重新通过 `bash -n`，随后从完整入口开始八端验收；该运行期间冻结入口和被执行源码。
+- 正式八端命令为 `bash tests/run_all.sh --milestone m5 --players 8 --mode 0 --stage-id 1 --weapons 8001,2040,10,3000,0,1000,6000,7010 --timeout 3000`。
+  总日志 `work/m5/eight.log`，产物 `work/tests/m5-8p-20261018-040151-632282/`。
+  前置普通渲染 **128**、headless 渲染 / 呈现旁路 **131**、NVN **79**、HID **73**、LDN frontend **10**、
+  host options **32**、文件系统 **74**、虚拟 LDN **59** 全通过。
+  八端实际整局结果待下文，当前仍不签收 M5、不 commit / push。
+
+### M5 最终停止位置：八端同房通过，开局加载触发内存压力，整局未通过
+
+**M5 未 PASS；按“不用 swap 硬撑”的约束停止。没有 commit / push，没有进入 M6。**
+本节是本轮最终结论，覆盖上文“八端结果待下文”的进行中状态。
+
+- 完整入口 `work/m5/eight.log` 退出 **1**；最终产物
+  `work/tests/m5-8p-20261018-040151-632282/result.json` 为 `passed: false`、`phase_passed: false`。
+  原始失败、controller、逐秒 memstat、两秒资源采样和全部截图保留，没有以重跑覆盖。
+- 八端真实加入同一完整会话 **`603153bc1d223be4015e3cee86072093`**。
+  服务最后一次 join 为 `player=7 / host=0 / nodes=8`；全部 HLE 端都读到正确 state / node / nodes=8 和同一 session 前缀。
+  八端 UID / 昵称不同，原生 kit 多次读回分别为 **8001 / 2040 / 10 / 3000 / 0 / 1000 / 6000 / 7010**，无回落 ID。
+- 八个进程均 `DM_HEADLESS=1`、`DM_OPMODE=0`、原生有效 crop 1280×720；内部 pass / draw 与 frame 持续增长，
+  真实 host `screen_submits=0`、`composite=0`。原始截图仅是显式诊断，不上屏。
+- 已由固定控制器脚本选 **Turf War / Scorch Gorge（stage ID 1）** 并进入分队 / 准备流程。
+  最终准备 A 于启动后约 **1,981.295 秒**对八端同时发送。约 **1,995.315 秒**的开局加载期间，
+  `kern.memorystatus_vm_pressure_level` 从 **1 / normal** 变为 **2 / warning**，采样器立即结束实验。
+  **所有八端的 InGame / ResultJudge / ResultWinners 均为空**；因此没有 4v4 入图、完整三分钟或结算证据。
+  未延长压力窗口、未关闭其它应用、未调整 swap、未再次启动八端。
+
+八端同房后的共同稳定窗口约 **36.23 秒**（所有客户端至少到 5,000 帧，且在第一个设置输入之前）。
+以下八行来自同一个八端并发窗口，避免拿早先两端 / 四端时的较高 FPS 当成八端 FPS。
+单进程参考为上文 **52.09 fps 的低资源大厅入口**；私房菜单、武器和人数不同，比例仅供资源比较，不是严格同场景加速比。
+
+| 玩家 | 武器 ID | 八端大厅 fps | 单进程参考的比例 | footprint 最大 MiB | RSS 最大 MiB | compressed 最大 MiB |
+|---|---:|---:|---:|---:|---:|---:|
+| RL-0 | 8001 | 20.91 | 40.13% | 4293 | 1074 | 969 |
+| RL-1 | 2040 | 21.24 | 40.77% | 3434 | 1080 | 961 |
+| RL-2 | 10 | 21.02 | 40.34% | 3448 | 1071 | 972 |
+| RL-3 | 3000 | 21.05 | 40.41% | 3431 | 1065 | 965 |
+| RL-4 | 0 | 20.96 | 40.24% | 3213 | 1072 | 955 |
+| RL-5 | 1000 | 21.11 | 40.52% | 3114 | 1058 | 970 |
+| RL-6 | 6000 | 21.18 | 40.66% | 3101 | 1238 | 977 |
+| RL-7 | 7010 | 21.09 | 40.49% | 3141 | 1549 | 591 |
+
+- 该窗口 footprint 合计最大 **27,153 MiB（26.52 GiB）**，RSS 合计最大 **9,205 MiB（8.99 GiB）**；
+  GPU 全机利用率平均 **98.92%**、最大 **99%**。每端稳定 footprint 小于 6 GiB，但这不足以证明开局峰值也可接受。
+- `joined-8-shared.json` / `lobby-shared.json`：每端项目 clean file 页 **96.21875 MiB**，映射合计 **769.75 MiB**，
+  去重后唯一页 **96.21875 MiB**，重复部分 **673.53125 MiB**。统计只含实际 resident、clean、external 且非 copied 的项目文件页；
+  不含 mutable guest、GPU private、Metal 编译对象或全部系统 shared libraries，不能当成完整 PSS。
+- 资源停止时（**2026-10-18 04:35:06.978 +08**）：任务 footprint 合计 **28,669 MiB（28.00 GiB）**，
+  RSS 合计 **9,918 MiB（9.69 GiB）**，八端 compressed 记账合计 **7,710 MiB（7.53 GiB）**。
+  因而触发的是系统 warning，**不是 44 GiB 任务上限**。
+- 系统 compressor 从本阶段基线 **9,794.05 MiB（9.56 GiB）** 增至 **19,298.52 MiB（18.85 GiB）**。
+  同一时刻 AGX `Alloc system memory` 为 **42,207,199,232 bytes（39.31 GiB）**，
+  `In use system memory` 为 **24,291,115,008 bytes（22.62 GiB）**。
+  这些是全机 driver / kernel / VM 指标，互有重叠，**不得与任务 footprint / RSS 直接相加**。
+  仅看约 1 GiB / 端的低 RSS 会漏掉 GPU owned/unmapped、driver 分配、被压缩的 guest 页和其它应用负载。
+- 本阶段 swap used 从 **13,747.5 MiB** 降至 **13,739.5 MiB**，最大增长 **0 MiB**；
+  `Swapouts` 始终为 **6,864,757**，增量 **0**。Pageouts 增加不等于新增 swapout；本轮没有用磁盘换出撑过门槛。
+- 八端最终采样帧 **60,480 / 56,100 / 49,860 / 43,980 / 34,980 / 26,520 / 18,600 / 11,100**，
+  全部 SIGTERM 优雅退出 **0**，无 CRASH / FATAL / GPU 执行失败；原件和参考档 hash 不变。
+  停止后核对 dmhost / 本次 air 均已退出，系统压力恢复 normal，`memory_pressure -Q` 约 70% free。
+- 详细结构化汇总：同目录 **`resource-stop-summary.json`**。2 / 4 端结果、八端失败日志与截图均保留在 work/，不入库。
+
+#### 资源瓶颈与验收边界
+
+1. 大头是 **guest working set + GPU 贴图 / buffer / driver 工作集，以及冷启动 / 入图瞬时分配**。
+   代码文件共享确实有效，但八端只去掉约 0.66 GiB 的重复 clean 项目文件映射，无法单靠它解决全机压力。
+   一条典型八端大厅资源记录：贴图分配约 2.15 GiB、buffer 约 0.70 GiB、命令 allocator 约 167 MiB，
+   618 个 shader、1,386 个渲染 PSO、2 个计算 PSO、C1 分配约 4.13 MiB；这些分配口径也不能直接与 guest 相加。
+   本机 nometal shader 源文件累计读入约 20.76 MiB，稳定时 file mapping live=0；Metal 内部编译对象无法用公开 API 单独精确记账。
+   没有把源码输入大小 / shader 数量当成 Metal 编译代码的实际物理占用，也没有声称它们已完全跨进程共享。
+2. **在当前机器其它应用仍运行的会话条件下，八端大厅可维持，但开局加载没有通过无内存压力的准入门槛。**
+   本次数据不能推出“任何干净的 64 GiB 环境都绝对无法八开”，也不能推出“只要每端稳定小于 6 GiB 就一定可跑完八端整局”。
+   不为了通过实验关闭用户应用或放宽压力 / swap 停止条件；后续资源优化 / 更干净的实机环境应另行验收。
+3. 还发现独立的控制 / OCR 卡点，未用补按或改判掩盖：八端分队 UI 中 **RL-0 仍为 Either**，
+   RL-1..3 为 Alpha，RL-4..7 为 Bravo；首个队伍 Right 输入未形成预期显式分配。
+   本机 Vision 把 RL-0 / RL-1 读作 **RL-O / RL-I**，触发昵称检查失败。
+   即使后续解决资源问题，也需补足进入分队后的等待与 OCR 歧义处理，再重新验证原生 4v4 人数；
+   当前没有把 Either 的潜在自动补齐当成已经证明的 4v4。
+
+**停在这里，保留未提交的 M5 实现 / 测试 / 补丁与证据。下一步仍是 M5，不是 M6。**

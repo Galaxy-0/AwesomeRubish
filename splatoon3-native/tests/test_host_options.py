@@ -37,6 +37,13 @@ def main():
     run('unlock-build-guard', 't_spl3_unlock', {'DM_FULL_UNLOCK': '1'}, 'unknown', reject=True)
     run('unlock-signature-guard', 't_spl3_unlock', {'DM_FULL_UNLOCK': '1'}, 'mismatch', reject=True)
     run('unlock-option-guard', 't_spl3_unlock', {'DM_FULL_UNLOCK': 'yes'}, reject=True)
+    run('weapon-default', 't_spl3_weapon')
+    for weapon in ('0', '2040', '8001', '65535'):
+        run('weapon-'+weapon, 't_spl3_weapon', {'DM_WEAPON': weapon})
+    for weapon in ('-1', '65536', 'x', ''):
+        run('weapon-reject-'+(weapon or 'empty'), 't_spl3_weapon', {'DM_WEAPON': weapon}, reject=True)
+    for guard in ('unknown','mismatch'):
+        run('weapon-'+guard, 't_spl3_weapon', {'DM_WEAPON': '8001'}, guard, reject=True)
     (out / 'result.json').write_text(json.dumps(dict(passed=True, cases=cases, identities=identities), indent=2) + '\n')
     print(f'host-options: {len(cases)} process cases passed')
 

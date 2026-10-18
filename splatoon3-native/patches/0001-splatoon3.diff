@@ -85,7 +85,7 @@ index 0000000..8539a5d
 +# 预热种子清单（随包，与 shader_map.tsv 同目录）。行：S<TAB>着色器键<TAB>阶段 / R<TAB>渲染管线键（pso_skey 十六进制）/ C<TAB>计算着色器键。
 +# 本作尚未录制（DM_PSO_RECORD）：空表 = 不预热。行序 = 首次使用顺序，不要排序。
 diff --git a/dm/gfx/nvn/hle_nvn.c b/dm/gfx/nvn/hle_nvn.c
-index d4c3531..cabb946 100644
+index d4c3531..c04add4 100644
 --- a/dm/gfx/nvn/hle_nvn.c
 +++ b/dm/gfx/nvn/hle_nvn.c
 @@ -16,6 +16,7 @@
@@ -163,13 +163,14 @@ index d4c3531..cabb946 100644
  // overlapping it; segments overflowing from a host segment keep the same range.
 -// The segment pool grows on demand (SMBW opening course: many small command buffers each overflow once per frame, and the old fixed 64 segments × 1 MB ran out within 8 frames); abort only beyond HOSTSEG_CAP in total.
 -#define HOSTSEG_SZ (256u << 10)
+-#define HOSTSEG_CAP (1u << 30)
 +// Size each spill for the requested record, with a 256-byte minimum. Splatoon
 +// caches thousands of distinct material lists on its first plaza frame; each
 +// list's last BindUniformBuffer + END needs only 40 spill bytes. A fixed 256 KiB
 +// allocation per list exhausted 1 GiB while storing just 160 KiB of tail data.
 +// Large records still get a segment which holds the entire record + reserve.
 +#define HOSTSEG_MIN 256u
- #define HOSTSEG_CAP (1u << 30)
++#define HOSTSEG_CAP (128u << 20)
  uint64_t dm_nvn_frame_count(void);
 -typedef struct { uint8_t *mem; uint64_t frame; int busy; uintptr_t org_lo, org_hi; } hostseg_t;   // org: the guest range of the recording it hangs off (0 = unknown, never reclaimed)
 +typedef struct { uint8_t *mem; size_t capacity; uint64_t frame; int busy; uintptr_t org_lo, org_hi; } hostseg_t;   // org: the guest range of the recording it hangs off (0 = unknown, never reclaimed)
@@ -623,10 +624,18 @@ index 0000000..a3e9e45
 +void nvn_cmdwatch_publish(uint64_t fence, int kind, uint64_t address);
 +void nvn_cmdwatch_end(void);
 diff --git a/dm/gfx/nvn/nvn_mtl.m b/dm/gfx/nvn/nvn_mtl.m
-index 10c5eac..397bb78 100644
+index 10c5eac..6ca9aaf 100644
 --- a/dm/gfx/nvn/nvn_mtl.m
 +++ b/dm/gfx/nvn/nvn_mtl.m
-@@ -14,6 +14,7 @@
+@@ -1,6 +1,7 @@
+ // Metal execution layer of the NVN null device, see nvn_mtl.h.
+ #import <Metal/Metal.h>
+ #import <QuartzCore/CAMetalLayer.h>
++
+ #import <QuartzCore/CAMetalDisplayLink.h>
+ #import <ImageIO/ImageIO.h>
+ #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+@@ -14,6 +15,7 @@
  #endif
  #include "nvn_mtl.h"
  #include "nvn_obj.h"
@@ -634,7 +643,27 @@ index 10c5eac..397bb78 100644
  #include "../tex/nvn_fmt_mtl.h"
  #include "../tex/nvn_deswizzle.h"
  #include "../tex/nvn_deswizzle_gpu.h"
-@@ -160,7 +161,7 @@ static void defer_obj_release_ex(id obj, int keep_resident) {
+@@ -40,6 +42,11 @@ _Static_assert(DM_GAME_NVN_TEX_SLOTS <= 128 && DM_GAME_NVN_IMG_SLOTS <= 32 && DM
+ #include <stdatomic.h>
+ #include <errno.h>
+ #include <execinfo.h>
++static int headless_on(void) {
++    static int value = -1;
++    if (value < 0) { const char *e = getenv("DM_HEADLESS"); value = e && !strcmp(e, "1"); }
++    return value;
++}
+ #include <os/lock.h>
+ // Function parameters in this file are never retained again in the callee (the caller / global tables already hold them, and lifetime is guaranteed by defer_obj_release): saves a retain / release pair per call on the hot path
+ #pragma clang attribute push(__attribute__((objc_externally_retained)), apply_to = function)
+@@ -97,6 +104,7 @@ static pthread_cond_t g_cv = PTHREAD_COND_INITIALIZER;
+ static uint64_t g_done;                         // Highest completed fence value (written by the completion callback)
+ static uint64_t g_arena_made;
+ static int g_allocprof = -1; static uint64_t g_ap_bytes[64], g_ap_fn[8];
++static _Atomic uint64_t g_library_maps_live, g_library_file_bytes;
+ #define AP_B uint64_t _ap0 = g_allocprof > 0 ? g_dev.currentAllocatedSize : 0
+ #define AP_E(i) do { if (g_allocprof > 0) { uint64_t _n = g_dev.currentAllocatedSize; if (_n > _ap0) g_ap_fn[i] += _n - _ap0; } } while (0)   // Per-frame arenas created so far (4 MiB each; for the memory report)
+ static _Atomic int g_last_commit_error;
+@@ -160,7 +168,7 @@ static void defer_obj_release_ex(id obj, int keep_resident) {
  }
  static void defer_obj_release(id obj) { defer_obj_release_ex(obj, 0); }
  static void defer_obj_unref(id obj) { defer_obj_release_ex(obj, 1); }
@@ -643,7 +672,7 @@ index 10c5eac..397bb78 100644
      NSMutableArray<NvDeferredRelease *> *ready = [NSMutableArray array];
      pthread_mutex_lock(&g_deferred_mu);
      for (NSInteger i = g_deferred.count - 1; i >= 0; i--) {
-@@ -179,6 +180,10 @@ static void defer_drain(void) {
+@@ -179,6 +187,10 @@ static void defer_drain(void) {
          d->object = nil;
      }
  }
@@ -654,7 +683,52 @@ index 10c5eac..397bb78 100644
  
  static pthread_mutex_t g_bf_want_mu = PTHREAD_MUTEX_INITIALIZER;
  static char **g_bf_want_keys; static size_t g_bf_want_n, g_bf_want_cap; static int g_bf_want_loaded;
-@@ -753,15 +758,22 @@ uint64_t mtl_sub_commit(void) {
+@@ -279,12 +291,14 @@ void mtl_init(void) {
+         if (!g_alloc4[i]) MDIE("建立 MTL4CommandAllocator[%d] 失败：%s", i, ae.localizedDescription.UTF8String);
+         g_up_alloc4[i] = [g_dev newCommandAllocatorWithDescriptor:ad error:&ae];
+         if (!g_up_alloc4[i]) MDIE("建立上传 MTL4CommandAllocator[%d] 失败：%s", i, ae.localizedDescription.UTF8String);
++        if (!headless_on()) {
+         MTL4CommandAllocatorDescriptor *pad = [MTL4CommandAllocatorDescriptor new];
+         pad.label = [NSString stringWithFormat:@"nvn-mtl present allocator %d", i];
+         g_present_alloc4[i] = [g_dev newCommandAllocatorWithDescriptor:pad error:&ae];
+         if (!g_present_alloc4[i]) MDIE("建立出图 MTL4CommandAllocator[%d] 失败：%s", i, ae.localizedDescription.UTF8String);
+         g_present_cb[i] = [g_dev newCommandBuffer];
+         if (!g_present_cb[i]) MDIE("建立出图 MTL4CommandBuffer[%d] 失败", i);
++        }
+     }
+     MTL4ArgumentTableDescriptor *atd = [MTL4ArgumentTableDescriptor new];
+     atd.maxBufferBindCount = 31; atd.maxTextureBindCount = 1;
+@@ -295,14 +309,18 @@ void mtl_init(void) {
+     g_up_ct = [g_dev newArgumentTableWithDescriptor:atd error:&ate]; if (!g_up_ct) MDIE("建立上传 compute argument table 失败：%s", ate.localizedDescription.UTF8String);
+     MTL4ArgumentTableDescriptor *pad = [MTL4ArgumentTableDescriptor new];
+     pad.maxTextureBindCount = 1; pad.maxSamplerStateBindCount = 1; pad.maxBufferBindCount = 1;
+-    g_present_args = [g_dev newArgumentTableWithDescriptor:pad error:&ate];
+-    if (!g_present_args) MDIE("建立出图 argument table 失败：%s", ate.localizedDescription.UTF8String);
++    if (!headless_on()) {
++        g_present_args = [g_dev newArgumentTableWithDescriptor:pad error:&ate];
++        if (!g_present_args) MDIE("建立出图 argument table 失败：%s", ate.localizedDescription.UTF8String);
++    }
+     g_bloomq_args = [g_dev newArgumentTableWithDescriptor:pad error:&ate];
+     if (!g_bloomq_args) MDIE("建立泛光 1/4 argument table 失败：%s", ate.localizedDescription.UTF8String);
+     for (int i = 0; i < 3; i++) {
++        if (!headless_on()) {
+         g_present_uv[i] = [g_dev newBufferWithLength:sizeof(float) * 8 options:MTLResourceStorageModeShared];
+         if (!g_present_uv[i]) MDIE("建立出图 UV 缓冲[%d] 失败", i);
+         res_add(g_present_uv[i]);
++        }
+         g_bloomq_const[i] = [g_dev newBufferWithLength:sizeof(float) * 8 options:MTLResourceStorageModeShared];
+         if (!g_bloomq_const[i]) MDIE("建立泛光 1/4 常量缓冲[%d] 失败", i);
+         res_add(g_bloomq_const[i]);
+@@ -482,7 +500,7 @@ void mtl_sub_begin(void) {
+     // pick an allocator the GPU has finished with; if all are in use create a new one; only at the cap wait for the oldest one. How far ahead it runs is bounded by the wait where the game acquires the swapchain texture, same as the old interface.
+     int alloc_i = -1; uint64_t done = g_done;
+     for (int i = 0; i < g_alloc_n; i++) if (g_alloc_fence[i] <= done) { alloc_i = i; break; }
+-    if (alloc_i < 0 && g_alloc_n < ALLOC_MAX) { NSError *ae = nil; MTL4CommandAllocatorDescriptor *ad = [MTL4CommandAllocatorDescriptor new];
++    if (alloc_i < 0 && g_alloc_n < (headless_on() ? 3 : ALLOC_MAX)) { NSError *ae = nil; MTL4CommandAllocatorDescriptor *ad = [MTL4CommandAllocatorDescriptor new];
+         g_alloc4[g_alloc_n] = [g_dev newCommandAllocatorWithDescriptor:ad error:&ae]; if (!g_alloc4[g_alloc_n]) MDIE("新建 MTL4CommandAllocator 失败：%s", ae.localizedDescription.UTF8String);
+         alloc_i = g_alloc_n++; g_alloc_grown++; }
+     if (alloc_i < 0) { alloc_i = 0; for (int i = 1; i < g_alloc_n; i++) if (g_alloc_fence[i] < g_alloc_fence[alloc_i]) alloc_i = i; g_alloc_waits++; mtl_wait(g_alloc_fence[alloc_i], UINT64_MAX); }
+@@ -753,15 +771,22 @@ uint64_t mtl_sub_commit(void) {
          gpu_tag_done(gpu_f, cb.GPUStartTime, cb.GPUEndTime);
          if (cb.error) { atomic_store(&g_last_commit_error, 1); static int n, nv; int victim = [cb.error.description containsString:@"InnocentVictim"]; if (victim ? nv++ < 1 : n++ < 8) MLOG("【红】命令缓冲错误详情 fence=%llu：%s | GPU %.3f→%.3f", (unsigned long long)fence, cb.error.description.UTF8String, cb.GPUStartTime, cb.GPUEndTime); if (!victim) MLOG("【红】出错那次提交的现场 fence=%llu：%s", (unsigned long long)fence, cctx.UTF8String); MLOG("【红】命令缓冲执行出错：%s", cb.error.localizedDescription.UTF8String); }
          for (int i = 0; i < n; i++) {
@@ -678,7 +752,23 @@ index 10c5eac..397bb78 100644
          pthread_mutex_lock(&g_mu); if (fence > g_done) g_done = fence; pthread_cond_broadcast(&g_cv); pthread_mutex_unlock(&g_mu);
          defer_drain();
      }];
-@@ -839,12 +851,48 @@ static pthread_mutex_t g_smu = PTHREAD_MUTEX_INITIALIZER;
+@@ -833,18 +858,64 @@ static void hm_rel(void *v) { CFRelease(v); }
+ static __unsafe_unretained id hm_get_id(const nvn_hmap *m, const void *k) { return (__bridge id)nvn_hm_get(m, k); }
+ static void hm_put_id(nvn_hmap *m, const void *k, id o) { void *old = nvn_hm_put(m, k, (void *)CFBridgingRetain(o)); if (old) CFRelease(old); }
+ static void hm_del_id(nvn_hmap *m, const void *k) { void *old = nvn_hm_del(m, k); if (old) CFRelease(old); }
++// Only derived pipeline objects are evictable. Textures may contain live GPU
++// state, even when their NVN descriptor is absent: never cap those by age.
++// Keep evicted pipelines through the submission fence (Metal 4 retains none).
++static void pipeline_room(nvn_hmap *m, uint32_t limit) {
++    if (m->n < limit) return;
++    for (uint32_t i = 0; i < m->cap; i++) if (m->vals[i]) {
++        uint8_t key[m->klen]; memcpy(key, m->keys + (size_t)i * m->klen, m->klen);
++        id obj = CFBridgingRelease(nvn_hm_del(m, key)); defer_obj_unref(obj); return;
++    }
++}
+ static nvn_hmap g_by_serial = {.klen = 8};     // Serial → MTLTexture / NvPkg / NvProg
+ static pthread_mutex_t g_smu = PTHREAD_MUTEX_INITIALIZER;
+ // Serial table generation: +1 when entries are added / removed or a packaged texture is replaced. Downstream caches (texture views, programs) record the generation at fetch time; if it is unchanged they can be used directly without another table lookup
  static _Atomic uint64_t g_ser_gen = 1;
  // Textures shared by storage (non-packaged): key = memory pool + offset + texture description. An NVN texture object is only a descriptor; an object rebuilt over the same storage with the same description is the same texture;
  // SMBW rebuilds its transient render targets on new objects every frame and never Finalizes them, so building one per serial leaked about 13 MB of GPU memory per frame. Textures here are kept resident by the sharing table,
@@ -728,7 +818,7 @@ index 10c5eac..397bb78 100644
  // On memory pool Finalize, evict the textures built on that pool from the sharing table (collect the keys first, then delete: deletion shifts entries back). The sharing table used not to evict: Mario's pools stay for good, so entries are bounded;
  // Engage frees pools on scene changes and rebuilds on new ones, so the old pools' render targets and other private textures stayed in the table forever (about 0.8 GB more GPU memory over 850 s of the title demo), and linear textures built directly on a pool also kept the whole pool buffer alive.
  // Also, when a pool object's address is reused, old entries would hand a texture on the old storage to the new pool's texture at the same offset and description. Evicted textures go through deferred release; if the serial table still holds one, that is just one more reference
-@@ -1397,7 +1445,9 @@ static id<MTLTexture> tex_mtl_(const tex_t *ct) {
+@@ -1397,7 +1468,9 @@ static id<MTLTexture> tex_mtl_(const tex_t *ct) {
          return mt;
      }
      alias_key ak; memset(&ak, 0, sizeof ak); ak.pool = (uint64_t)(uintptr_t)t->pool; ak.off = t->off; ak.d = t->d;
@@ -739,34 +829,40 @@ index 10c5eac..397bb78 100644
      if (shared) { serial_put(t->serial, shared); return shared; }
      id<MTLTexture> mt = tex_linear(t);
      if (!mt) {
-@@ -1436,11 +1486,23 @@ void mtl_mem_stat(unsigned long long frame, unsigned long long rss_mb) {
+@@ -1436,11 +1509,29 @@ void mtl_mem_stat(unsigned long long frame, unsigned long long rss_mb) {
  #if TARGET_OS_IPHONE
      snprintf(avail, sizeof avail, "%llu MB", (unsigned long long)(os_proc_available_memory() >> 20));
  #endif
 -    MLOG("内存 至帧 %llu：常驻 %llu MB，显卡已分配 %llu MB，延迟释放队列 %lu，驻留集 %lu 个，序号对象 %u 个，内存池 %d 个（其中已驻留 %d；峰值 %d / 跟踪表容量 %d；已释放仍活 %lu 个 %llu MB），共用贴图 %u 张（随池淘汰累计 %llu），贴图重传累计 %llu 次，每帧竞技场累计新建 %llu 块；离系统内存上限还有 %s", frame, rss_mb, gpu, nd, nr, ns, live, pres, peak, cap, dead_n, dead_mb, ashared, (unsigned long long)g_alias_evicted, (unsigned long long)g_pkg_reuploads, (unsigned long long)g_arena_made, avail);
 -    if (g_allocprof > 0) { char ab[256]; int o = 0; for (int i = 0; i < g_alloc_n && o < 200; i++) o += snprintf(ab + o, sizeof ab - o, " #%d %llu MB", i, (unsigned long long)(g_alloc4[i].allocatedSize >> 20));
-+    MLOG("内存 至帧 %llu：常驻 %llu MB，显卡已分配 %llu MB，延迟释放队列 %lu，驻留集 %lu 个，序号对象 %u 个，内存池 %d 个（其中已驻留 %d；峰值 %d / 跟踪表容量 %d；已释放仍活 %lu 个 %llu MB），共用贴图 %u 张（淘汰累计 %llu），贴图重传累计 %llu 次，每帧竞技场累计新建 %llu 块；离系统内存上限还有 %s", frame, rss_mb, gpu, nd, nr, ns, live, pres, peak, cap, dead_n, dead_mb, ashared, (unsigned long long)g_alias_evicted, (unsigned long long)g_pkg_reuploads, (unsigned long long)g_arena_made, avail);
-+    if (g_allocprof > 0) { @autoreleasepool { char ab[256]; int o = 0; for (int i = 0; i < g_alloc_n && o < 200; i++) o += snprintf(ab + o, sizeof ab - o, " #%d %llu MB", i, (unsigned long long)(g_alloc4[i].allocatedSize >> 20));
++    MLOG("内存 至帧 %llu：物理占用 %llu MB，显卡已分配 %llu MB，延迟释放队列 %lu，驻留集 %lu 个，序号对象 %u 个，内存池 %d 个（其中已驻留 %d；峰值 %d / 跟踪表容量 %d；已释放仍活 %lu 个 %llu MB），共用贴图 %u 张（淘汰累计 %llu），贴图重传累计 %llu 次，每帧竞技场累计新建 %llu 块；离系统内存上限还有 %s", frame, rss_mb, gpu, nd, nr, ns, live, pres, peak, cap, dead_n, dead_mb, ashared, (unsigned long long)g_alias_evicted, (unsigned long long)g_pkg_reuploads, (unsigned long long)g_arena_made, avail);
++    if (g_allocprof > 0 || getenv("DM_RESOURCE_REPORT")) { @autoreleasepool { char ab[256]; int o = 0; for (int i = 0; i < g_alloc_n && o < 200; i++) o += snprintf(ab + o, sizeof ab - o, " #%d %llu MB", i, (unsigned long long)(g_alloc4[i].allocatedSize >> 20));
          for (int i = 0; i < 3 && o < 240; i++) o += snprintf(ab + o, sizeof ab - o, " 传%d %llu 出%d %llu", i, (unsigned long long)(g_up_alloc4[i].allocatedSize >> 20), i, (unsigned long long)(g_present_alloc4[i].allocatedSize >> 20));
          MLOG("命令分配器占用：%s", ab);
 -        MLOG("显卡分配增长按函数：结束通道 %llu MB，开通道 %llu MB，取管线 %llu MB，参数缓冲 %llu MB，取贴图 %llu MB", g_ap_fn[0] >> 20, g_ap_fn[1] >> 20, g_ap_fn[2] >> 20, g_ap_fn[3] >> 20, g_ap_fn[4] >> 20); }
 +        pthread_mutex_lock(&g_res_mu); NSArray *resources = g_res_objects.allObjects; pthread_mutex_unlock(&g_res_mu);
 +        NSMutableDictionary<NSString *, NSMutableArray<NSNumber *> *> *groups = [NSMutableDictionary dictionary];
++        uint64_t tex_bytes = 0, buf_bytes = 0, command_bytes = 0;
++        for (int i = 0; i < g_alloc_n; i++) command_bytes += g_alloc4[i].allocatedSize;
++        for (int i = 0; i < 3; i++) command_bytes += g_up_alloc4[i].allocatedSize + g_present_alloc4[i].allocatedSize;
 +        for (id<MTLResource> r in resources) {
 +            NSString *key;
-+            if ([(id)r conformsToProtocol:@protocol(MTLTexture)]) { id<MTLTexture> t = (id)r; key = [NSString stringWithFormat:@"tex:%lux%lu:f%lu", t.width, t.height, t.pixelFormat]; }
-+            else if ([(id)r conformsToProtocol:@protocol(MTLBuffer)]) key = [NSString stringWithFormat:@"buf:%lu", ((id<MTLBuffer>)r).length];
++            if ([(id)r conformsToProtocol:@protocol(MTLTexture)]) { id<MTLTexture> t = (id)r; tex_bytes += r.allocatedSize; key = [NSString stringWithFormat:@"tex:%lux%lu:f%lu", t.width, t.height, t.pixelFormat]; }
++            else if ([(id)r conformsToProtocol:@protocol(MTLBuffer)]) { buf_bytes += r.allocatedSize; key = [NSString stringWithFormat:@"buf:%lu", ((id<MTLBuffer>)r).length]; }
 +            else continue;
 +            NSMutableArray *v = groups[key]; if (!v) { v = [NSMutableArray arrayWithObjects:@0, @0, nil]; groups[key] = v; }
 +            v[0] = @([v[0] unsignedLongLongValue] + 1); v[1] = @([v[1] unsignedLongLongValue] + r.allocatedSize);
 +        }
 +        NSArray *keys = [groups.allKeys sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) { return [groups[b][1] compare:groups[a][1]]; }];
 +        for (NSUInteger i = 0; i < MIN(keys.count, 8u); i++) { NSArray *v = groups[keys[i]]; MLOG("RESGROUP %s count=%llu bytes=%llu", [keys[i] UTF8String], [v[0] unsignedLongLongValue], [v[1] unsignedLongLongValue]); }
++        mtl_res_count rc; mtl_res_snapshot(&rc);
++        MLOG("RESOURCE_GPU textures=%llu buffers=%llu commands=%llu shaders=%u render_pipelines=%u compute_pipelines=%u c1_bytes=%llu library_maps_live=%llu library_file_bytes=%llu", tex_bytes, buf_bytes, command_bytes, rc.shaders, rc.pso, rc.cps, (unsigned long long)rc.c1_alloc,
++             (unsigned long long)atomic_load(&g_library_maps_live), (unsigned long long)atomic_load(&g_library_file_bytes));
 +        MLOG("显卡分配增长按函数：结束通道 %llu MB，开通道 %llu MB，取管线 %llu MB，参数缓冲 %llu MB，取贴图 %llu MB", g_ap_fn[0] >> 20, g_ap_fn[1] >> 20, g_ap_fn[2] >> 20, g_ap_fn[3] >> 20, g_ap_fn[4] >> 20); } }
      if (g_allocprof > 0) { int top[4] = {-1, -1, -1, -1}; for (int o = 0; o < 64; o++) for (int k = 0; k < 4; k++) if (top[k] < 0 || g_ap_bytes[o] > g_ap_bytes[top[k]]) { for (int j = 3; j > k; j--) top[j] = top[j - 1]; top[k] = o; break; }
          MLOG("显卡分配增长按操作：op%d %llu MB，op%d %llu MB，op%d %llu MB，op%d %llu MB", top[0], g_ap_bytes[top[0]] >> 20, top[1], g_ap_bytes[top[1]] >> 20, top[2], g_ap_bytes[top[2]] >> 20, top[3], g_ap_bytes[top[3]] >> 20); }
  }
-@@ -1455,6 +1517,7 @@ static struct {
+@@ -1455,6 +1546,7 @@ static struct {
      uint8_t clear_d, clear_s; double cd; uint32_t cs;
      p_scissor sc; int has_sc;
  } R;
@@ -774,16 +870,34 @@ index 10c5eac..397bb78 100644
  
  // ---------- Zero-source skip ----------
  // Shader fact table (statically proven keys): 'the textures it samples are all 0 and the coefficient is finite ⇒ the output is all 0'. Coefficient = component comp of vector vec of fragment-stage constant buffer register ubo_slot.
-@@ -2208,7 +2271,7 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
+@@ -2206,13 +2298,14 @@ static void pso_user_record(const char *fmt, ...) {
+ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
+     int fd = open(path.fileSystemRepresentation, O_RDONLY); struct stat st;
      if (fd < 0 || fstat(fd, &st) || st.st_size <= 0) { if (fd >= 0) close(fd); if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"打不开 %@", path]}]; return nil; }
-     size_t len = (size_t)st.st_size; void *m = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
+-    size_t len = (size_t)st.st_size; void *m = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
++    size_t len = (size_t)st.st_size; void *m = mmap(NULL, len, PROT_READ, MAP_SHARED, fd, 0); close(fd);
      if (m == MAP_FAILED) { if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"映射失败 %@", path]}]; return nil; }
 -#ifdef DM_SHELL
++    g_library_maps_live += len; g_library_file_bytes += len;
 +#if defined(DM_SHELL) || !TARGET_OS_IPHONE   // Mac host too: a Mac without Xcode builds the chain through nometal_run.py (source "libraries")
      // Shell: when the user's computer has no Apple shader compiler (the no-compiler mode of tools/d2rm_pack.py, gfx/tools/nometal_run.py), the "library files" contain
      // shader source rather than compiled libraries (a compiled library starts with MTLB). They are compiled here on the spot; the system caches the compiled result, and from the second launch on the same shader no longer costs this time.
      // Measured on a real device (cold): about 80 ms each on average, about 450 ms for the longest single one; one session uses several hundred.
-@@ -2628,6 +2691,7 @@ static const prog_t *bind_stages(const prog_t *p, int stages) {
+-    if (len < 4 || memcmp(m, "MTLB", 4)) { NSString *src = [[NSString alloc] initWithBytes:m length:len encoding:NSUTF8StringEncoding]; munmap(m, len);
++    if (len < 4 || memcmp(m, "MTLB", 4)) { NSString *src = [[NSString alloc] initWithBytes:m length:len encoding:NSUTF8StringEncoding]; munmap(m, len); g_library_maps_live -= len;
+         if (!src) { if (err) *err = [NSError errorWithDomain:NSPOSIXErrorDomain code:EILSEQ userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"既不是编好的库也不是源码 %@", path]}]; return nil; }
+         static _Atomic int n; static _Atomic long long us; CFAbsoluteTime t0 = CFAbsoluteTimeGetCurrent();
+         id<MTLLibrary> l = [g_dev newLibraryWithSource:src options:nil error:err]; long long dt = (long long)((CFAbsoluteTimeGetCurrent() - t0) * 1e6);
+@@ -2220,7 +2313,7 @@ static id<MTLLibrary> lib_from_file(NSString *path, NSError **err) {
+         if (k == 1 || k % 100 == 0 || dt >= 300000) MLOG("着色器现编：第 %d 个 %.0f ms，累计 %.1f 秒", k, dt / 1e3, tot / 1e6);
+         return l; }
+ #endif
+-    dispatch_data_t d = dispatch_data_create(m, len, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{ munmap(m, len); });
++    dispatch_data_t d = dispatch_data_create(m, len, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{ munmap(m, len); g_library_maps_live -= len; });
+     return [g_dev newLibraryWithData:d error:err];
+ }
+ static NvShader *shader_load(NSString *pc, int stage) {
+@@ -2628,6 +2721,7 @@ static const prog_t *bind_stages(const prog_t *p, int stages) {
  }
  static void state_reset(void) {
      memset(&S, 0, sizeof S);
@@ -791,7 +905,40 @@ index 10c5eac..397bb78 100644
      g_pso_dirty = g_dss_dirty = 1;
      for (int i = 0; i < 8; i++) S.blend[i] = (blend_st){i, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_FUNC_ONE, NVN_BLEND_FUNC_ZERO, NVN_BLEND_EQUATION_ADD, NVN_BLEND_EQUATION_ADD};
      S.color = (color_st){0, NVN_LOGIC_OP_COPY, NVN_ALPHA_FUNC_ALWAYS}; S.chmask.mask = 0xffffffffu;
-@@ -5712,11 +5776,16 @@ static void sub_cut(void) {
+@@ -2815,7 +2909,7 @@ static __unsafe_unretained id<MTLRenderPipelineState> pso_get_(NvProg *pr, MTLRe
+     if (!ms_fn) { pso_skey sk; char shex[sizeof sk * 2 + 1]; pso_skey_from(&k, vs, fs, g_pso_lmap != NULL, g_pso_lmap ? &g_pso_fz : NULL, &sk); pso_skey_hex(&sk, shex);
+         pso_record("R\t%s\n", shex);
+         pso_user_record("R\t%s\n", shex); }
+-    hm_put_id(&g_pso, &k, ps);
++    pipeline_room(&g_pso, 2048); hm_put_id(&g_pso, &k, ps);
+     return ps;
+ }
+ static NSString *warm_key(const char *s, size_t n) {
+@@ -5074,12 +5168,12 @@ static void warm_claim(void) {
+             if (!vs) { vs = item->vs; g_shcache[item->vs_key] = vs; }
+             if (item->fs_key.length && !fs) { fs = item->fs; g_shcache[item->fs_key] = fs; }
+             item->pso.vs = (__bridge void *)vs; item->pso.fs = (__bridge void *)fs;
+-            if (!hm_get_id(&g_pso, &item->pso)) { hm_put_id(&g_pso, &item->pso, item->object); g_warm_claim_rps++; }
++            if (!hm_get_id(&g_pso, &item->pso)) { pipeline_room(&g_pso, 2048); hm_put_id(&g_pso, &item->pso, item->object); g_warm_claim_rps++; }
+         } else {
+             NvShader *cs = g_shcache[item->key];
+             if (!cs) { cs = item->shader; if (!g_shcache) g_shcache = [NSMutableDictionary dictionary]; g_shcache[item->key] = cs; }
+             const void *key = (__bridge const void *)cs;
+-            if (!hm_get_id(&g_cps, &key)) { hm_put_id(&g_cps, &key, item->object); g_warm_claim_cps++; }
++            if (!hm_get_id(&g_cps, &key)) { pipeline_room(&g_cps, 512); hm_put_id(&g_cps, &key, item->object); g_warm_claim_cps++; }
+         }
+     }
+ }
+@@ -5137,7 +5231,7 @@ static void dispatch(const p_dispatch *dp) {
+         if (!ps) { MLOG("【红】建计算管线失败：%s", e.localizedDescription.UTF8String); return; }
+         pso_record("C\t%s\n", cs->key);
+         if (cs->key[0]) pso_user_record("C\t%s\n", cs->key);
+-        hm_put_id(&g_cps, &k, ps);
++        pipeline_room(&g_cps, 512); hm_put_id(&g_cps, &k, ps);
+     }
+     if (cs->builtin) {   // Built-in compute kernel: n = uniform buffer 0, src = storage buffer 0, dst = storage buffer 1
+         const p_bind_buf *u = &S.ubo[5][0], *a0 = &S.ssbo[5][0], *a1 = &S.ssbo[5][1];
+@@ -5712,11 +5806,16 @@ static void sub_cut(void) {
  }
  
  void mtl_exec(const uint8_t *p) {
@@ -808,7 +955,7 @@ index 10c5eac..397bb78 100644
          g_exec_cur = p;   // Scan start point of the store lookahead: the operation that ends the render pass (inclusive)
          if (p == g_defer_pend) { for (int gi = 0; gi < 4; gi++) if (g_defer_slots[gi].active && g_defer_slots[gi].p_end_op == p) g_defer_slots[gi].in_p = 0; g_defer_pend = NULL; }
          sdx_seq(p);
-@@ -5728,7 +5797,32 @@ void mtl_exec(const uint8_t *p) {
+@@ -5728,7 +5827,32 @@ void mtl_exec(const uint8_t *p) {
          if (g_allocprof) { static uint64_t last; static int prev = -1; uint64_t now = g_dev.currentAllocatedSize; if (prev >= 0 && prev < 64 && now > last) g_ap_bytes[prev] += now - last; last = now; prev = h.op; }
          if (g_hoist_n && hoist_take(p)) { if (g_fz.active && p == g_fz.rt2_op) { g_fz.phase = 2; g_rt_merged = 0; PD("F %llu 合并通道进入后一个通道的绘制", g_stat_pass); } p += h.size; continue; }   // A pure-clear render pass already executed early / the start of a later pass already merged in   // Entering the later pass: the same-target continuation of the earlier pass ends here; the later pass reading the earlier pass's attachment is proven to be same-pixel by fz_p2_draw, and is no longer split by the continuation rule
          const void *a = p + 8;
@@ -841,6 +988,69 @@ index 10c5eac..397bb78 100644
              case OP_END: g_exec_cur = NULL;
                  if (g_hoist_n && !g_ret_n && !g_nrest) {
                      if (g_fz.active) fz_unskip();
+@@ -5824,6 +5948,7 @@ void mtl_exec(const uint8_t *p) {
+ static id<MTLRenderPipelineState> g_blit_pso; static MTLPixelFormat g_blit_fmt;
+ static id<MTLSamplerState> g_blit_samp;
+ static uint64_t g_present_n;
++static _Atomic uint64_t g_screen_submits, g_host_composites;
+ uint64_t mtl_present_count(void) { return g_present_n; }   // Actual present count (heat attribution DM_HEAT computes the present frame rate)
+ void mtl_res_snapshot(mtl_res_count *out) {
+     memset(out, 0, sizeof *out);
+@@ -5901,7 +6026,7 @@ static void shot(id<MTLTexture> src, const char *path, int screen, const int cro
+         if (e && sscanf(e, "%d%c%d%c", &w, &sep, &h, &extra) == 3 && sep == 'x' && w > 0 && h > 0) { out_w = w; out_h = h; }
+     }
+     id<MTLTexture> read = src;
+-    if (out_w && screen) {
++    if (out_w && screen && !headless_on()) {
+         MTLTextureDescriptor *d = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:out_w height:out_h mipmapped:NO];
+         d.usage = MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead; d.storageMode = MTLStorageModePrivate;
+         id<MTLTexture> out = [g_dev newTextureWithDescriptor:d];
+@@ -6129,6 +6254,7 @@ static id<MTLTexture> present_raw_src(id<MTLTexture> src) {
+     return v;
+ }
+ static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTexture> dst, const int crop[4]) {
++    g_host_composites++;
+     NSUInteger cx = 0, cy = 0, cw = src.width, ch = src.height;
+     if (crop && (crop[2] || crop[3])) {
+         if (crop[0] < 0 || crop[1] < 0 || crop[2] <= 0 || crop[3] <= 0 ||
+@@ -6167,6 +6293,7 @@ static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTex
+     return 1;
+ }
+ static int present_encode_m4(id<MTL4CommandBuffer> cb, id<MTLTexture> src, id<MTLTexture> dst, const int crop[4], int uv_i) {
++    g_host_composites++;
+     NSUInteger cx = 0, cy = 0, cw = src.width, ch = src.height;
+     if (crop && (crop[2] || crop[3])) {
+         if (crop[0] < 0 || crop[1] < 0 || crop[2] <= 0 || crop[3] <= 0 ||
+@@ -6205,6 +6332,8 @@ static double g_link_it_tin;   // Enqueue time of the frame the display-link cal
+ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t ticket, const int crop[4], id<CAMetalDrawable> supplied, double target_ts) {
+     if (g_present_stall_ns) { struct timespec ts = {0, (long)g_present_stall_ns}; nanosleep(&ts, NULL); }
+     g_present_n++;
++    if (getenv("DM_RESOURCE_REPORT") && (g_present_n == 1 || g_present_n % 60 == 0))
++        MLOG("RESOURCE_FRAME frame=%llu seconds=%.6f passes=%llu draws=%llu headless=%d", g_present_n, now_ns() / 1e9, g_stat_pass, g_stat_draw, headless_on());
+     if (g_use != USE_OFF && g_use != USE_DONE) use_tick();
+     if (bootprof() && (g_present_n == 1 || g_present_n % 120 == 0)) {
+         if (g_present_n == 1) g_bp_first_present = bp_now() - g_bp_t0;
+@@ -6250,6 +6379,12 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
+     for (int i = 0; i < g_nshotq;) if (g_present_n >= g_shotq[i].frame) { mtl_finish_gpu(); shot(src, g_shotq[i].path, 1, crop); g_shotq[i] = g_shotq[--g_nshotq]; } else i++;
+     pthread_mutex_unlock(&g_shotq_mu);
+ 
++    if (headless_on()) {
++        if (g_present_n == 1 || g_present_n % 300 == 0)
++            MLOG("HEADLESS frame=%llu passes=%llu draws=%llu screen_submits=%llu composite=%llu", g_present_n, g_stat_pass, g_stat_draw,
++                 (unsigned long long)atomic_load(&g_screen_submits), (unsigned long long)atomic_load(&g_host_composites));
++        return 0;
++    }
+     CAMetalLayer *layer = (__bridge CAMetalLayer *)front_metal_layer();
+     if (!layer) return 0;
+     if (g_present_layer_resident != layer) { [g_q4 addResidencySet:layer.residencySet]; g_present_layer_resident = layer; }
+@@ -6281,6 +6416,7 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
+     }];
+     id<MTL4CommandBuffer> buffers[] = {cb};
+     pthread_mutex_lock(&g_pq_mu); g_pq_inflight++; pthread_mutex_unlock(&g_pq_mu);
++    g_screen_submits++;
+     [g_q4 commit:buffers count:1 options:o];
+     if (target_ts > 0) {
+         static double leads[300], e2e[300];   // e2e: game enqueue -> system-scheduled present (including the time waiting in the queue for the display-link callback), the full span of input latency that our side can read
 diff --git a/dm/gfx/nvn/nvn_obj.h b/dm/gfx/nvn/nvn_obj.h
 index fa314c4..2c69798 100644
 --- a/dm/gfx/nvn/nvn_obj.h
@@ -1046,10 +1256,10 @@ index d21874c..c4f2da3 100644
      //     the CPU rewrites src only after the fence wait returns. If the wait is released early, that last copy reads the rewritten src.
 diff --git a/dm/gfx/tests/t_render_enable.m b/dm/gfx/tests/t_render_enable.m
 new file mode 100644
-index 0000000..33f4a77
+index 0000000..ed82ceb
 --- /dev/null
 +++ b/dm/gfx/tests/t_render_enable.m
-@@ -0,0 +1,134 @@
+@@ -0,0 +1,153 @@
 +// Real NVN recording -> Metal replay -> pixel readback. No game assets.
 +#define nvn_game_fps nvn_game_fps_mtl_default
 +#include "../nvn/nvn_mtl.m"
@@ -1093,6 +1303,24 @@ index 0000000..33f4a77
 +    pthread_mutex_lock(&g_res_mu); resident = [g_res_objects containsObject:first]; pthread_mutex_unlock(&g_res_mu);
 +    CHECK("retired alias leaves residency after its fence", !resident);
 +    mtl_tex_release(&b); mtl_tex_release(&c); mtl_alias_drop_pool(&pool);
++}
++static void resource_limits_case(void) {
++    nvn_hmap pipelines = {.klen=8};
++    for (uint64_t i = 0; i < 12; i++) {
++        pipeline_room(&pipelines,3); hm_put_id(&pipelines,&i,[NSObject new]);
++        CHECK("derived pipeline cache stays at configured cap", pipelines.n <= 3);
++    }
++    nvn_hm_clear(&pipelines,hm_rel); free(pipelines.keys); free(pipelines.vals);
++    if (headless_on()) {
++        tex_t t = {.magic=MAGIC('T','E','X',0),.serial=99100};
++        t.d=(nvn_texdesc){.width=4,.height=4,.depth=1,.levels=1,.samples=1,.target=NVN_TEXTURE_TARGET_2D,.format=NVN_FORMAT_RGBA8};
++        nvn_tex_layout(&t.d,&t.L);
++        int crop[4]={0,0,4,4}; uint64_t before=g_present_n;
++        CHECK("headless still advances logical presentation", !present_now(&t,0,0,1,crop,nil,0) && g_present_n==before+1);
++        CHECK("headless performs no host composite or screen submission", !g_host_composites && !g_screen_submits && !g_blit_pso);
++        CHECK("headless allocates no presentation allocators or UV buffers", !g_present_alloc4[0] && !g_present_uv[0] && !g_present_args);
++        mtl_tex_release(&t);
++    }
 +}
 +static int retirement_released;
 +static void *retire_thread(void *unused) {
@@ -1177,6 +1405,7 @@ index 0000000..33f4a77
 +        run_case(1,0,0,1,copy); // same-submit timestamp producer must be resolved before comparison
 +    }
 +    alias_reuse_case();
++    resource_limits_case();
 +    pthread_t retirement;
 +    int created = pthread_create(&retirement, NULL, retire_thread, NULL);
 +    CHECK("retirement thread started", created == 0);
@@ -1247,6 +1476,20 @@ index fda33ac..8602d6e 100644
  void hle_bind_system_event(void *g, int autoclear);   // On a guest thread, bind a guest SystemEvent to a kernel event
  // Page fault hook / hook before the host writes guest memory (crash.c; used for write-protect dirty page tracking)
  void dm_fault_hook_register(int (*fn)(void *addr, int is_write, void *uc));
+diff --git a/dm/host/front_mac.m b/dm/host/front_mac.m
+index c7559ca..d3b7360 100644
+--- a/dm/host/front_mac.m
++++ b/dm/host/front_mac.m
+@@ -56,6 +56,9 @@ static void *guest_tramp(void *p) {
+ }
+ 
+ void front_run(void (*guest)(void)) {
++    const char *headless = getenv("DM_HEADLESS");
++    if (headless && strcmp(headless, "0") && strcmp(headless, "1")) die("DM_HEADLESS must be 0 or 1");
++    if (headless && !strcmp(headless, "1")) { LOG("HEADLESS window=0 internal_render=1"); guest(); return; }
+     if (!getenv("DM_WINDOW")) { guest(); return; }
+     @autoreleasepool {
+         [NSApplication sharedApplication];
 diff --git a/dm/host/hle_account.c b/dm/host/hle_account.c
 index 362a6c2..7cd8d37 100644
 --- a/dm/host/hle_account.c
@@ -1348,10 +1591,18 @@ index 362a6c2..7cd8d37 100644
  HLE_FORCE("_ZN2nn7account15ShowUserCreatorEv", "新建用户小程序；宿主已有本地用户", Result, h_acc_ShowCreator, void) { return RES_OK; }
  HLE_FORCE("_ZN2nn7account16LoadProfileImageEPmPvmRKNS0_3UidE", "用户头像；宿主没有（失败）", Result, h_acc_LoadImage, uint64_t *n, void *buf, uint64_t sz, const Uid *uid) {
 diff --git a/dm/host/hle_fs.c b/dm/host/hle_fs.c
-index 074f933..7545141 100644
+index 074f933..1181e99 100644
 --- a/dm/host/hle_fs.c
 +++ b/dm/host/hle_fs.c
-@@ -351,6 +351,14 @@ HLE_FORCE("_ZN2nn2fs9IsMountedEPKc", "fsp-srv；查宿主挂载表", int, h_fs_I
+@@ -10,6 +10,7 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <sys/stat.h>
++#include <sys/mman.h>
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdatomic.h>
+@@ -351,6 +352,14 @@ HLE_FORCE("_ZN2nn2fs9IsMountedEPKc", "fsp-srv；查宿主挂载表", int, h_fs_I
  HLE_FORCE("_ZN2nn2fs21MountTemporaryStorageEPKc", "fsp-srv；临时区 → 宿主目录", Result, h_fs_MountTemp, const char *name) {
      char b[1024]; return mount(name, envdir("DM_TEMP", "run/platform/temp", b, sizeof b), 0);
  }
@@ -1366,6 +1617,67 @@ index 074f933..7545141 100644
  HLE_FORCE("_ZN2nn2fs14EnsureSaveDataERKNS_7account3UidE", "fsp-srv；存档目录在挂载时建", Result, h_fs_EnsureSave, const void *uid) { (void)uid; return RES_OK; }
  // Settings defaults for the touch product (dropped item names shown permanently by default, can be turned off in settings): Settings/Settings.json in the save only records keys the player has changed, unrecorded ones use the game default.
  // Before mounting the save, fill in the touch product defaults for the two keys "the player has not touched yet"; existing keys are never changed (if the player changed it in the options page, the player wins):
+@@ -523,6 +532,19 @@ HLE_FORCE("_ZN2nn2fs7UnmountEPKc", "fsp-srv；挂载表常驻，卸载为空操
+ typedef struct { int64_t size; int n; int64_t *log, *len, *phys; char name[40]; } holemap;   // Kept segment: original start / length / start in the zero-stripped file
+ static _Atomic uint64_t g_hole_reads;   // Number of reads that hit a zero-filled range: should normally be 0 (zero-filled ranges are stripped cutscene videos / old-version music the game should not come to read); non-zero = stripped wrongly
+ static holemap *g_hm[4096];
++// RomFS is immutable. Share file-cache pages across hosts; destination buffers
++// remain private because the guest owns and may modify them after ReadFile.
++static struct { void *base; size_t size; } g_rommap[4096];
++static ssize_t physical_read(int fd, void *buf, size_t n, off_t off) {
++    if (off < 0) { errno = EINVAL; return -1; }
++    if (fd >= 0 && fd < 4096 && g_rommap[fd].base) {
++        size_t size = g_rommap[fd].size;
++        if ((uint64_t)off >= size) return 0;
++        if (n > size - (size_t)off) n = size - (size_t)off;
++        memcpy(buf, (const char *)g_rommap[fd].base + off, n); return (ssize_t)n;
++    }
++    return pread(fd, buf, n, off);
++}
+ static holemap *hm_load(const char *hostpath) {
+     char hp2[1100]; if (snprintf(hp2, sizeof hp2, "%s.holes", hostpath) >= (int)sizeof hp2) return NULL;
+     FILE *f = fopen(hp2, "r"); if (!f) return NULL;
+@@ -547,6 +569,14 @@ static holemap *hm_load(const char *hostpath) {
+ void dm_data_note_fd(int fd, const char *hostpath) {   // Called after opening a resource archive: register it if there is an extent table
+     if (fd < 0 || fd >= 4096) return;
+     g_hm[fd] = hm_load(hostpath);
++    const char *rom = getenv("DM_ROMFS"); struct stat st;
++    size_t rn = rom ? strlen(rom) : 0;
++    if (rn && !strncmp(hostpath, rom, rn) && hostpath[rn] == '/' &&
++        !fstat(fd, &st) && S_ISREG(st.st_mode) && st.st_size > 0) {
++        void *p = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
++        if (p == MAP_FAILED) die("RomFS read-only mmap: %s", hostpath);
++        g_rommap[fd].base = p; g_rommap[fd].size = st.st_size;
++    }
+ }
+ // Same as dm_data_logical_size, but opened relative to the directory fd: listing does not resolve the long path from the root again for every entry
+ static int64_t data_logical_size_at(int dfd, const char *name, int64_t phys_size) {
+@@ -561,7 +591,7 @@ int64_t dm_data_logical_size(const char *hostpath, int64_t phys_size) {   // For
+ }
+ ssize_t dm_data_pread(int fd, void *buf, size_t n, off_t off) {   // Same semantics as pread (may short-read); zero-stripped archives are translated through the extent table
+     holemap *m = fd >= 0 && fd < 4096 ? g_hm[fd] : NULL;
+-    if (!m) return pread(fd, buf, n, off);
++    if (!m) return physical_read(fd, buf, n, off);
+     if (off >= m->size) return 0;
+     if ((int64_t)n > m->size - off) n = (size_t)(m->size - off);
+     int lo = 0, hi = m->n;   // The first kept segment whose end point > off
+@@ -571,7 +601,7 @@ ssize_t dm_data_pread(int fd, void *buf, size_t n, off_t off) {   // Same semant
+         int64_t cur = off + (int64_t)done;
+         if (lo < m->n && cur >= m->log[lo]) {   // In a kept segment: read directly into the destination buffer
+             int64_t in = cur - m->log[lo]; size_t want = n - done; if ((int64_t)want > m->len[lo] - in) want = (size_t)(m->len[lo] - in);
+-            size_t got = 0; while (got < want) { ssize_t r = pread(fd, (uint8_t *)buf + done + got, want - got, m->phys[lo] + in + (int64_t)got); if (r < 0) { if (errno == EINTR) continue; return -1; } if (r == 0) return (ssize_t)(done + got); got += (size_t)r; }
++            size_t got = 0; while (got < want) { ssize_t r = physical_read(fd, (uint8_t *)buf + done + got, want - got, m->phys[lo] + in + (int64_t)got); if (r < 0) { if (errno == EINTR) continue; return -1; } if (r == 0) return (ssize_t)(done + got); got += (size_t)r; }
+             done += want; if (in + (int64_t)want == m->len[lo]) lo++;
+         } else {                               // In a zero-filled range: fill 0 up to the start of the next kept segment
+             int64_t end = lo < m->n ? m->log[lo] : m->size; size_t z = n - done; if ((int64_t)z > end - cur) z = (size_t)(end - cur);
+@@ -664,6 +694,7 @@ HLE_FORCE("_ZN2nn2fs11SetFileSizeENS0_10FileHandleEl", "fsp-srv → ftruncate(2)
+ HLE_FORCE("_ZN2nn2fs9FlushFileENS0_10FileHandleE", "fsp-srv；宿主 write 已进页缓存，刷新为空操作", Result, h_fs_FlushFile, uint64_t h) { (void)h; return RES_OK; }
+ HLE_FORCE("_ZN2nn2fs9CloseFileENS0_10FileHandleE", "fsp-srv → close(2)", void, h_fs_CloseFile, uint64_t h) {
+     if (!h) return;   // the null handle after a failed open (see ReadFile): do not touch fd 0
++    if (h < 4096 && g_rommap[h].base) { munmap(g_rommap[h].base, g_rommap[h].size); g_rommap[h].base = NULL; g_rommap[h].size = 0; }
+     g_fmode[(int)h & 0xffff] = 0; g_fsave[(int)h & 0xffff] = 0;
+     if ((int)h >= 0 && (int)h < 4096 && g_hm[(int)h]) { holemap *m = g_hm[(int)h]; g_hm[(int)h] = NULL; free(m->log); free(m->len); free(m->phys); free(m); }
+     close((int)h); }
 diff --git a/dm/host/hle_hid.c b/dm/host/hle_hid.c
 index 561a3c8..265328c 100644
 --- a/dm/host/hle_hid.c
@@ -2021,6 +2333,19 @@ index 234d762..268a478 100644
  HLE_FORCE("nnsocketSetLastErrno", "套接字错误码由宿主记录", void, h_nsk_SetErrno, int e) { t_skerr = e; }
  
  // ---------- ssl: offline, Initialize succeeds (the network library's global initialization depends on it), everything else that contacts the service fails ----------
+diff --git a/dm/host/hle_oe.c b/dm/host/hle_oe.c
+index 180c62c..bd1cb8a 100644
+--- a/dm/host/hle_oe.c
++++ b/dm/host/hle_oe.c
+@@ -9,7 +9,7 @@
+ static _Atomic int g_opmode = -1;
+ int dm_opmode(void) {
+     int m = g_opmode;
+-    if (m < 0) { const char *e = getenv("DM_OPMODE"); int v = e ? atoi(e) : 1; int exp = -1; atomic_compare_exchange_strong(&g_opmode, &exp, v); m = g_opmode; }
++    if (m < 0) { const char *e = getenv("DM_OPMODE"); const char *h = getenv("DM_HEADLESS"); int v = e ? atoi(e) : (h && !strcmp(h, "1") ? 0 : 1); int exp = -1; atomic_compare_exchange_strong(&g_opmode, &exp, v); m = g_opmode; }
+     return m;
+ }
+ // ---------- System notification queue (AppletMessage): front end state changes → fetched by the game every frame with TryPopNotificationMessage ----------
 diff --git a/dm/host/hle_offline.c b/dm/host/hle_offline.c
 index 367779a..f05c688 100644
 --- a/dm/host/hle_offline.c
@@ -2168,10 +2493,10 @@ index 0000000..6a0067c
 +HLE_FORCE("_ZN2nn3pdm30QueryApplicationPlayStatisticsEPNS0_25ApplicationPlayStatisticsERKNS_7account3UidEPKNS_13ApplicationIdEi", "pdm；没有游玩记录：0 条", int, h_pdm_Query, void *o, const void *u, const void *ids, int n) { (void)o; (void)u; (void)ids; (void)n; return 0; }
 diff --git a/dm/host/hle_spl3_unlock.c b/dm/host/hle_spl3_unlock.c
 new file mode 100644
-index 0000000..9c87e79
+index 0000000..78dc541
 --- /dev/null
 +++ b/dm/host/hle_spl3_unlock.c
-@@ -0,0 +1,53 @@
+@@ -0,0 +1,77 @@
 +// Runtime ownership overrides for the verified Splatoon 3 build. No save edits.
 +#include "dm.h"
 +#include <sys/mman.h>
@@ -2225,6 +2550,30 @@ index 0000000..9c87e79
 +        LOG("SPL3_UNLOCK main+%x %s", c->offset, c->reason);
 +    }
 +}
++
++// The local player parameter constructor reads the selected weapon twice:
++// first to build the native main/sub/special kit at +0x78, then to look up its
++// proficiency. Override those *reads*, never the save object. Remote player
++// parameters still arrive through PIA. The harness validates Versus catalog
++// membership and observes the resulting native kit at x21+0xe8.
++void spl3_weapon_install(void) {
++    const char *e = getenv("DM_WEAPON"); if (!e) return;
++    char *end; long id = strtol(e, &end, 10);
++    if (!*e || *end || id < 0 || id > 65535) die("DM_WEAPON must be a catalog weapon ID (0..65535)");
++    if (strcmp(dm_main_build(), "28c4287aee36f7499da60f3e68b54c70")) die("DM_WEAPON requires verified Splatoon 3 11.3.0 main");
++    module_t *m = NULL;
++    for (int i = 0; i < g_nmod; i++) if (!strcmp(g_mod[i].name, "main")) m = &g_mod[i];
++    uint32_t offsets[] = {0x3571e1c, 0x3571e24};
++    uint32_t expected[] = {0xb94196e1, 0xb94196e8};
++    uint32_t replacement[] = {0x52800001 | ((uint32_t)id << 5), 0x52800008 | ((uint32_t)id << 5)};
++    for (int i = 0; i < 2; i++) if (!m || offsets[i]+4 > m->text_end || *(uint32_t *)(m->base+offsets[i]) != expected[i]) die("DM_WEAPON signature mismatch");
++    void *page = m->base + (offsets[0] & ~0x3fffu);
++    if (mprotect(page, 0x4000, PROT_READ | PROT_WRITE)) die("DM_WEAPON mprotect write");
++    for (int i = 0; i < 2; i++) *(uint32_t *)(m->base+offsets[i]) = replacement[i];
++    if (mprotect(page, 0x4000, PROT_READ | PROT_EXEC)) die("DM_WEAPON mprotect execute");
++    sys_icache_invalidate(page, 0x4000);
++    LOG("SPL3_WEAPON requested=%ld local_kit_reads=2 save_writes=0", id);
++}
 diff --git a/dm/host/hle_svc.c b/dm/host/hle_svc.c
 index 7683095..e02b848 100644
 --- a/dm/host/hle_svc.c
@@ -2274,23 +2623,193 @@ index 96d2674..df3adad 100644
  void hle_signal_system_event(void *ev) {   // An unbound one is bound on the spot as manual-clear (can only happen on a guest thread)
      pthread_mutex_lock(&g_se_lock); uint32_t wh = se_find(ev); pthread_mutex_unlock(&g_se_lock);
      if (!wh) { hle_bind_system_event(ev, 0); pthread_mutex_lock(&g_se_lock); wh = se_find(ev); pthread_mutex_unlock(&g_se_lock); }
+diff --git a/dm/host/loader.c b/dm/host/loader.c
+index e237a24..b54baa3 100644
+--- a/dm/host/loader.c
++++ b/dm/host/loader.c
+@@ -353,20 +353,14 @@ static void map_image(module_t *m, const char *dir) {
+     m->base = (uint8_t *)base; install_key_page(m);
+ }
+ #else
+-static uint8_t *slurp(const char *path, size_t *n) {
+-    int fd = open(path, O_RDONLY);
+-    if (fd < 0) die("open %s", path);
+-    struct stat st; fstat(fd, &st);
+-    uint8_t *p = malloc(st.st_size);
+-    if (read(fd, p, st.st_size) != st.st_size) die("read %s", path);
+-    close(fd); *n = st.st_size; return p;
+-}
+-
+-// Seal the code area immediately after copying into anonymous pages (16 KB pages): [0, text_end) and the patch area are read-only+execute, and from then on any write to the code area crashes on the spot;
+-// what lies between (ro and data on the same page can only go together) is writable
++// File-backed private mappings share clean code pages between processes. Only
++// relocation/data/key pages (and explicit diagnostic/runtime cuts) become COW.
++// Never use MAP_SHARED for writable guest data or store relocated code on disk.
+ static void map_image(module_t *m, const char *dir) {
+     char path[1024]; snprintf(path, sizeof path, "%s/%s.patched.bin", dir, m->name);
+-    size_t sz; uint8_t *raw = slurp(path, &sz);
++    int fd = open(path, O_RDONLY); struct stat st;
++    if (fd < 0 || fstat(fd, &st) || st.st_size <= 0) die("open/stat %s", path);
++    size_t sz = (size_t)st.st_size;
+     if (m->patch_off < 0) {
+         // Patch area before the base: file = the first part of the image (text + ro + data) + patch area; bss and the key page are anonymous zero pages. The gap from the patch area's end to the base is left inaccessible (PROT_NONE)
+         uint64_t pre = (uint64_t)-m->patch_off, fl = m->file_image_len;
+@@ -376,7 +370,9 @@ static void map_image(module_t *m, const char *dir) {
+         uint8_t *a = mmap(NULL, pre + m->size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+         if (a == MAP_FAILED) die("%s mmap %#llx", m->name, (unsigned long long)(pre + m->size));
+         m->base = a + pre;
+-        memcpy(m->base, raw, fl); memcpy(a, raw + fl, sz - fl); free(raw); install_key_page(m);
++        if ((fl & 0x3fff) || mmap(m->base, fl, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_FIXED, fd, 0) == MAP_FAILED ||
++            mmap(a, sz - fl, PROT_READ | PROT_EXEC, MAP_PRIVATE | MAP_FIXED, fd, fl) == MAP_FAILED) die("%s file mmap", m->name);
++        close(fd); install_key_page(m);
+         uint64_t rx = (m->text_end + 0x3FFF) & ~0x3FFFull;
+         if (mprotect(m->base, rx, PROT_READ | PROT_EXEC)) die("%s mprotect text", m->name);
+         if (mprotect(a, m->patch_len, PROT_READ | PROT_EXEC)) die("%s mprotect patch", m->name);
+@@ -384,13 +380,14 @@ static void map_image(module_t *m, const char *dir) {
+         return;
+     }
+     m->size = (sz + 0x3FFF) & ~0x3FFFull;
+-    m->base = mmap(NULL, m->size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
++    m->base = mmap(NULL, m->size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+     if (m->base == MAP_FAILED) die("%s mmap", m->name);
+-    memcpy(m->base, raw, sz); free(raw); install_key_page(m);
++    close(fd); install_key_page(m);
+     uint64_t rx = (m->text_end + 0x3FFF) & ~0x3FFFull;
+     if (mprotect(m->base, rx, PROT_READ | PROT_EXEC)) die("%s mprotect text", m->name);
+     uint64_t po = m->patch_off & ~0x3FFFull;
+     if (mprotect(m->base + po, m->size - po, PROT_READ | PROT_EXEC)) die("%s mprotect patch", m->name);
++    LOG("MODULE_MMAP %s file=%zu clean=shared writable=COW", m->name, sz);
+ }
+ #endif
+ 
 diff --git a/dm/host/main.c b/dm/host/main.c
-index 6ff3a44..c7dad18 100644
+index 6ff3a44..829dddc 100644
 --- a/dm/host/main.c
 +++ b/dm/host/main.c
 @@ -86,6 +86,7 @@ static void host_preload(int argc, char **argv) {
      if (!n) { static const char *def[] = DM_GAME_MODULES; for (int k = 0; k < DM_GAME_NMOD && n < MAX_MOD; k++) names[n++] = def[k]; }   // default module list from the game profile's modules (Mario: main sdk)
      load_modules(argv[1], names, n);
      uint64_t ta = now_ns();
-+    { void spl3_unlock_install(void); spl3_unlock_install(); }
++    { void spl3_unlock_install(void); void spl3_weapon_install(void); spl3_unlock_install(); spl3_weapon_install(); }
      probe_install();   // DM_PROBE probes (for diagnostics)
      ticks_install();   // DM_TICKS per-tick state hash (tick-entry observation gate)
      { void target_rank_install(void); target_rank_install(); }   // Touch version auto-targeting Boss > elite > normal (hle_target.c)
+diff --git a/dm/host/memstat.m b/dm/host/memstat.m
+index d1bd89b..6983e13 100644
+--- a/dm/host/memstat.m
++++ b/dm/host/memstat.m
+@@ -12,6 +12,11 @@
+ #include <TargetConditionals.h>
+ #include <mach/mach.h>
+ #include <mach/vm_statistics.h>
++#include <mach/mach_vm.h>
++#include <sys/stat.h>
++#if !TARGET_OS_IPHONE
++#include <libproc.h>
++#endif
+ #if TARGET_OS_IPHONE
+ #include <os/proc.h>
+ #endif
+@@ -54,6 +59,39 @@ static void dump_regions(const char *path) {
+     fclose(f);
+ }
+ 
++// A coordinated snapshot records actual resident clean pages of project-owned
++// immutable files, keyed by backing inode and file offset. Summing process RSS
++// or even footprint's Clean column cannot deduplicate these across processes.
++// Driver-owned GPU memory and mutable guest buffers are explicitly excluded.
++static void dump_shared_pages(const char *path) {
++#if !TARGET_OS_IPHONE
++    char tmp[1200]; snprintf(tmp, sizeof tmp, "%s.tmp", path);
++    FILE *f = fopen(tmp, "w"); if (!f) return;
++    fprintf(f, "# time_ns=%llu page_size=%u\n", (unsigned long long)now_ns(), vm_page_size);
++    vm_address_t a = 0; vm_size_t sz; natural_t depth = 0;
++    const char *rom = getenv("DM_ROMFS"), *msl = getenv("DM_MSL_DIR");
++    for (;;) {
++        vm_region_submap_info_data_64_t in; mach_msg_type_number_t cnt = VM_REGION_SUBMAP_INFO_COUNT_64;
++        if (vm_region_recurse_64(mach_task_self(), &a, &sz, &depth, (vm_region_recurse_info_t)&in, &cnt) != KERN_SUCCESS) break;
++        if (in.is_submap) { depth++; continue; }
++        char file[PROC_PIDPATHINFO_MAXSIZE]; struct stat st;
++        if (in.external_pager && in.pages_resident && proc_regionfilename(getpid(), a, file, sizeof file) > 0 &&
++            (strstr(file, ".patched.bin") || (rom && !strncmp(file, rom, strlen(rom))) || (msl && !strncmp(file, msl, strlen(msl)))) && !stat(file, &st)) {
++            for (uint64_t off = 0; off < sz; off += vm_page_size) {
++                int disposition, refs;
++                if (mach_vm_page_query(mach_task_self(), a + off, &disposition, &refs) == KERN_SUCCESS &&
++                    (disposition & (VM_PAGE_QUERY_PAGE_PRESENT | VM_PAGE_QUERY_PAGE_EXTERNAL)) == (VM_PAGE_QUERY_PAGE_PRESENT | VM_PAGE_QUERY_PAGE_EXTERNAL) &&
++                    !(disposition & (VM_PAGE_QUERY_PAGE_DIRTY | VM_PAGE_QUERY_PAGE_COPIED)))
++                    fprintf(f, "%llu\t%llu\t%llu\t%d\t%s\n", (unsigned long long)st.st_dev, (unsigned long long)st.st_ino,
++                            (unsigned long long)(in.offset + off), refs, file);
++            }
++        }
++        a += sz;
++    }
++    fclose(f); rename(tmp, path);
++#endif
++}
++
+ static void sample(FILE *f, double t, id<MTLDevice> dev) {
+     task_vm_info_data_t vi; mach_msg_type_number_t n = TASK_VM_INFO_COUNT;
+     uint64_t fp = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&vi, &n) == KERN_SUCCESS ? vi.phys_footprint : 0;
+@@ -61,7 +99,7 @@ static void sample(FILE *f, double t, id<MTLDevice> dev) {
+ #if TARGET_OS_IPHONE
+     avail = os_proc_available_memory();
+ #endif
+-    uint64_t virt[NC] = {0}, res[NC] = {0}, bill[NC] = {0};
++    uint64_t virt[NC] = {0}, res[NC] = {0}, bill[NC] = {0}, clean_file = 0;
+     static uint32_t seen[1 << 16]; static uint32_t gen; gen++; if (!gen) { memset(seen, 0, sizeof seen); gen = 1; }   // Objects already counted in this sample (open addressing)
+     vm_address_t a = 0; vm_size_t sz; natural_t depth = 0; vm_size_t pg = vm_page_size;
+     for (;;) {
+@@ -70,6 +108,15 @@ static void sample(FILE *f, double t, id<MTLDevice> dev) {
+         if (in.is_submap) { depth++; continue; }
+         int c = classify(a, &in);
+         virt[c] += sz; res[c] += (uint64_t)in.pages_resident * pg;
++        if (in.external_pager && in.pages_resident > in.pages_dirtied) {
++            // external_pager alone also matches Metal mappings of guest pools.
++            // A real backing pathname is required before calling it file data.
++#if !TARGET_OS_IPHONE
++            char path[PROC_PIDPATHINFO_MAXSIZE];
++            if (proc_regionfilename(getpid(), a, path, sizeof path) > 0 && path[0] == '/')
++                clean_file += (uint64_t)(in.pages_resident - in.pages_dirtied) * pg;
++#endif
++        }
+         if (!in.external_pager) {                             // File pages are reclaimable and do not count toward footprint
+             static uint64_t key[1 << 16];                     // Key = (object id, offset within the object): the pieces of one object split apart by mprotect cover different pages and must not be merged
+             uint64_t k = (uint64_t)in.object_id << 32 ^ (in.offset >> 14);
+@@ -84,7 +131,8 @@ static void sample(FILE *f, double t, id<MTLDevice> dev) {
+             vi.internal >> 20, vi.compressed >> 20, (vi.ledger_tag_graphics_footprint + vi.ledger_tag_graphics_footprint_compressed) >> 20,
+             (long long)(vi.limit_bytes_remaining >> 20));
+     for (int c = 0; c < NC; c++) fprintf(f, "\t%llu/%llu/%llu", virt[c] >> 20, res[c] >> 20, bill[c] >> 20);
+-    fprintf(f, "\t%llu\t%lld\n", sum >> 20, ((int64_t)fp - (int64_t)sum) >> 20);
++    fprintf(f, "\t%llu\t%lld\t%llu\t%llu\n", sum >> 20, ((int64_t)fp - (int64_t)sum) >> 20,
++            vi.resident_size >> 20, clean_file >> 20);
+     fflush(f);
+ }
+ 
+@@ -93,12 +141,17 @@ static void *memstat_thread(void *p) {
+     if (!f) { LOG("memstat：打不开 %s", (const char *)p); return NULL; }
+     fprintf(f, "# 单位 MiB；内核记账 internal / compressed / 图形 ledger / 距上限；类别列 = 虚拟/常驻/计费（按对象去重）；计费合计 = Σ私有计费；未归属 = phys_footprint − 计费合计\n秒\tphys_footprint\t可用\tmetal_alloc\tinternal\tcompressed\tgraphics\t距上限");
+     for (int c = 0; c < NC; c++) fprintf(f, "\t%s", k_cls[c]);
+-    fprintf(f, "\t计费合计\t未归属\n");
++    fprintf(f, "\t计费合计\t未归属\trss\tclean_file_resident\n");
+     id<MTLDevice> dev = MTLCreateSystemDefaultDevice();   // The same device object as the graphics backend (the system default device singleton)
+     uint64_t t0 = now_ns();
+     const char *ds = getenv("DM_MEMSTAT_DUMP"); int dump_at = ds ? atoi(ds) : -1;
+     char dp[1100]; snprintf(dp, sizeof dp, "%s.regions", (const char *)p);
+-    for (int sec = 0;; sec++) { sample(f, (now_ns() - t0) / 1e9, dev); if (sec == dump_at) dump_regions(dp); sleep(1); }
++    char request[1200], shared[1200]; snprintf(request, sizeof request, "%s.request", (const char *)p); snprintf(shared, sizeof shared, "%s.shared.tsv", (const char *)p);
++    for (int sec = 0;; sec++) {
++        sample(f, (now_ns() - t0) / 1e9, dev); if (sec == dump_at) dump_regions(dp);
++        if (!unlink(request)) dump_shared_pages(shared);
++        sleep(1);
++    }
+     return NULL;
+ }
+ 
 diff --git a/dm/host/tests/Makefile b/dm/host/tests/Makefile
-index 50c9e9b..dca75cb 100644
+index 50c9e9b..9e64040 100644
 --- a/dm/host/tests/Makefile
 +++ b/dm/host/tests/Makefile
-@@ -103,7 +103,17 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
+@@ -103,7 +103,20 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
  
  $(B)/t_hid_receipt: t_hid_receipt.c t_touch_tick_stub.c ../hle_hid.c ../dm_cursor.c ../dm_hud.c ../dm_hud.h ../touch_mac.c ../../ios/Sources/dm_touch_controls.c ../hle.h ../dm.h ../dm_input.h ../front.h | $(B)
  	clang -O1 -Wno-unused-function -I.. -I../../ios/Sources -o $@ t_hid_receipt.c t_touch_tick_stub.c ../dm_cursor.c ../dm_hud.c ../touch_mac.c ../../ios/Sources/dm_touch_controls.c -lm
@@ -2308,6 +2827,9 @@ index 50c9e9b..dca75cb 100644
 +	clang -O1 -g -I.. $(GINC) -o $@ t_spl3_unlock.c
 +$(B)/t_ldn_peer: t_ldn_peer.c ../hle_ldn.c ../hle_ldn.h ../hle.h ../dm.h | $(B)
 +	clang -O1 -g -Wall -Wextra -I.. $(GINC) -o $@ t_ldn_peer.c
++
++$(B)/t_spl3_weapon: t_spl3_weapon.c ../hle_spl3_unlock.c ../dm.h | $(B)
++	clang -O1 -g -I.. $(GINC) -o $@ t_spl3_weapon.c
 diff --git a/dm/host/tests/t_account_player.c b/dm/host/tests/t_account_player.c
 new file mode 100644
 index 0000000..7a3d75c
@@ -2344,6 +2866,39 @@ index 0000000..7a3d75c
 +    printf("account-player: %d checks, %d failed uid=%016llx:%016llx nickname=%s\n", checks, failures, u.v[0], u.v[1], nick);
 +    return failures != 0;
 +}
+diff --git a/dm/host/tests/t_fs.c b/dm/host/tests/t_fs.c
+index 33a28f5..597cf62 100644
+--- a/dm/host/tests/t_fs.c
++++ b/dm/host/tests/t_fs.c
+@@ -73,6 +73,17 @@ int main(void) {
+     snprintf(fn, sizeof fn, "%s/same", rdata); put(fn, "base"); snprintf(fn, sizeof fn, "%s/same", odata); put(fn, "overlay"); snprintf(fn, sizeof fn, "%s/base", rdata); put(fn, "only-base"); snprintf(fn, sizeof fn, "%s/over", odata); put(fn, "only-overlay");
+     setenv("DM_ROMFS", rom, 1); setenv("DM_ROMFS_OVERLAY", overlay, 1); CHECK(h_fs_MountRom("rom", NULL, 0) == RES_OK, "挂载 RomFS 两层 overlay");
+     CHECK(read_fs("rom:/data/same", got, sizeof got) && !strcmp(got, "overlay"), "overlay 文件优先"); CHECK(read_fs("rom:/data/base", got, sizeof got) && !strcmp(got, "only-base"), "overlay 缺失时回退基底");
++    {   // Immutable file mapping: offset/EOF semantics and close/reopen lifecycle.
++        uint64_t h = 0; size_t n = 0; char bytes[16] = {0};
++        CHECK(h_fs_OpenFile(&h, "rom:/data/base", MODE_READ) == RES_OK && g_rommap[h].base,
++              "RomFS has a file-backed read-only mapping");
++        CHECK(h_fs_ReadFile(&n, h, 5, bytes, sizeof bytes) == RES_OK && n == 4 && !memcmp(bytes,"base",4),
++              "mmap offset read is short at EOF");
++        CHECK(physical_read((int)h,bytes,4,9) == 0, "mmap EOF returns zero bytes");
++        CHECK(physical_read((int)h,bytes,4,-1) == -1 && errno == EINVAL, "mmap rejects negative offsets");
++        h_fs_CloseFile(h); CHECK(!g_rommap[h].base, "close releases the mapping before fd reuse");
++        CHECK(read_fs("rom:/data/base",got,sizeof got) && !strcmp(got,"only-base"), "reopen reads the same immutable bytes");
++    }
+     uint64_t rh; CHECK(h_fs_OpenFile(&rh, "rom:/data/same", MODE_WRITE) == RES_FAIL, "两层挂载均拒绝写入");
+     {   // Find a file in the overlay (dm_overlay_file): two layers joined by a colon (old devices = in-bundle overlay + Legacy Device Pack), searched layer by layer with earlier ones taking priority; treating the whole string as one directory finds nothing
+         char l2[1100], two[2300], want[1300]; snprintf(l2, sizeof l2, "%s/pack", root); mkdir(l2, 0755); snprintf(two, sizeof two, "%s:%s", overlay, l2); setenv("DM_ROMFS_OVERLAY", two, 1);
+diff --git a/dm/host/tests/t_fs_stub.c b/dm/host/tests/t_fs_stub.c
+index 26fc98e..7cfda6c 100644
+--- a/dm/host/tests/t_fs_stub.c
++++ b/dm/host/tests/t_fs_stub.c
+@@ -9,3 +9,6 @@ int dm_custom_lang_explicit(void) { return g_t_lang; }
+ #include "../dm.h"
+ module_t g_mod[MAX_MOD];
+ int g_nmod;
++// Tests call the implementations directly; generated big-stack entry stubs
++// must never be invoked in this standalone executable.
++void dm_bigstack_enter(void) { abort(); }
 diff --git a/dm/host/tests/t_hid_motion.c b/dm/host/tests/t_hid_motion.c
 new file mode 100644
 index 0000000..3f258ba
@@ -2610,6 +3165,40 @@ index 0000000..8f41733
 +    munmap(m->base, m->size);
 +    printf("spl3-unlock: %d checks, %d failed\n", checks, failures);
 +    return failures != 0;
++}
+diff --git a/dm/host/tests/t_spl3_weapon.c b/dm/host/tests/t_spl3_weapon.c
+new file mode 100644
+index 0000000..a602be6
+--- /dev/null
++++ b/dm/host/tests/t_spl3_weapon.c
+@@ -0,0 +1,28 @@
++// Native execution of the weapon-read overrides, without game assets.
++#include "../hle_spl3_unlock.c"
++module_t g_mod[MAX_MOD]; int g_nmod;
++int main(int argc, char **argv) {
++    module_t *m = &g_mod[0]; g_nmod = 1; strcpy(m->name, "main");
++    strcpy(m->build_id, argc > 1 && !strcmp(argv[1], "unknown") ? "unknown" : "28c4287aee36f7499da60f3e68b54c70");
++    m->text_end = m->size = 0x3574000;
++    m->base = mmap(NULL, m->size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
++    *(uint32_t *)(m->base+0x3571e1c) = 0xb94196e1;
++    *(uint32_t *)(m->base+0x3571e24) = argc > 1 && !strcmp(argv[1], "mismatch") ? 0 : 0xb94196e8;
++    mprotect(m->base, m->size, PROT_READ | PROT_EXEC);
++    spl3_weapon_install();
++    const char *e = getenv("DM_WEAPON"); unsigned wanted = e ? strtoul(e,0,10) : 2040;
++    unsigned saved[1024] = {0}; saved[0x194/4] = 2040;
++    int failed = 0;
++    for (int i = 0; i < 2; i++) {
++        uint32_t *code = mmap(NULL,0x4000,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANON,-1,0);
++        code[0] = *(uint32_t *)(m->base+(i ? 0x3571e24 : 0x3571e1c));
++        code[1] = i ? 0x2a0803e0 : 0x2a0103e0; // mov w0,w8 / mov w0,w1
++        code[2] = 0xd65f03c0;
++        mprotect(code,0x4000,PROT_READ|PROT_EXEC);sys_icache_invalidate(code,12);
++        register void *param __asm__("x23") = saved; register unsigned actual __asm__("w0");
++        __asm__ volatile("blr %2" : "=r"(actual) : "r"(param), "r"(code) : "x1","x8","x16","x17","x30","cc","memory");
++        failed += actual != wanted; munmap(code,0x4000);
++    }
++    failed += saved[0x194/4] != 2040;
++    printf("spl3-weapon: 3 checks, %d failed\n",failed);return failed != 0;
 +}
 diff --git a/dm/tools/nx_extract/Program.cs b/dm/tools/nx_extract/Program.cs
 index acb2a0b..2155191 100644

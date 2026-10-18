@@ -153,3 +153,46 @@ DM_FULL_UNLOCK 仅绕过这两个原生列表的已解锁赛季上限，仍保�
 双方 ResultWinners 与 Victory / Defeat 截图均确认，两个宿主优雅退出 0。
 同会话最后五秒采样分别发送 / 对端收到 4247、4298 个数据报，队列峰值 2、丢包 0。
 这不表示所有 25 张地图 / 五模式都已各跑一局，也不表示 M5 4v4 或完整图形效果已验收。
+
+## M5 资源准入与 4v4
+
+先测单进程，再逐级准入。所有阶段都使用独立参考档副本，网络仅为本次 Unix domain socket 空气服务。
+
+```sh
+bash tests/run_all.sh --milestone m5 --players 1 --timeout 400
+bash tests/run_all.sh --milestone m5 --players 2 --weapons 8001,2040 --timeout 1200
+bash tests/run_all.sh --milestone m5 --players 4 --admission-only --weapons 8001,2040,10,3000 --timeout 1400
+bash tests/run_all.sh --milestone m5 --players 8 --mode 0 --stage-id 1 \
+  --weapons 8001,2040,10,3000,0,1000,6000,7010 --timeout 2400
+```
+
+M5 默认 `--players 8`；1 / 2 / 4 只是中间阶段，返回 0 表示该阶段 `phase_passed`，其 `passed` 仍为 false。
+只有实际八端完整对战且所有门槛通过，最终 `passed` 才为 true。`--admission-only` 只验证同房和资源，不开始比赛。
+`--visible` 可让 player 0 建窗，其余仍 headless；不传时所有八端都 headless。
+
+- 每个进程使用 `DM_OPMODE=0`、`DM_HEADLESS=1`；同时传 `DM_WINDOW=1` 验证 headless 优先级。
+  720p 用原生 `WindowCrop 0,0 1280x720` 验证；原始交换链截图仍可能是 1920×1080。
+- 新进程必须完成加载、加入房间并度过启动峰值，才启动下一端。稳定运行目标 ≤6 GiB / 端；
+  冷启动峰值单独报告，不能据稳定占用同时启动八端。
+- `--mode 0..4` 依次为 Turf War、Splat Zones、Tower Control、Rainmaker、Clam Blitz。
+  `--stage-id` 用本地可显示 VersusSceneInfo 的 Id；也可用 `--stage-index 0..24`，按目录 DisplayOrder 排序。
+  `--weapons` 须为每人一个本地 Versus 武器 Id，原生 kit 读回必须与请求一致。
+- 设置、分队和开局都通过控制器脚本；最终队伍 UI 通过本机 Vision 检查双方人数。
+  所有八端必须实际进入 InGame / ResultJudge / ResultWinners，Turf War 从入图到判定至少 178 秒；
+  不改倒计时、结算、队伍内存或 PIA 消息。
+- `resources.jsonl` 每两秒记录逐端帧、RSS、footprint、分类、压缩页与全机 AGX GPU 利用率。
+  footprint / VM / 项目文件共享页快照分别保存在阶段命名文件。
+  共享页按实际 resident clean file 页的 inode + offset 去重；COW / dirty / GPU / guest 页不列入共享节省。
+  Metal 分配与 guest no-copy pool 重叠，不相加；RSS 也不能覆盖 GPU owned/unmapped 的物理占用。
+- 新增 swapout、swap 相对本阶段启动基线增长 >16 MiB、非 normal 内存压力、或本任务 footprint 合计 >44 GiB，
+  任一触发即失败并回收本次所有宿主，不继续扩容。
+- 产物均在 `work/tests/m5-<N>p-*`，含完整输入、空气日志、截图、native kit、原生状态序列与 `result.json`。
+  原件与参考档前后 hash、运行错误标记及优雅退出为所有阶段的硬门槛。
+
+`DM_RESOURCE_REPORT=1` 提供逻辑帧时间、内部 pass / draw，以及低频 GPU 资源分类；
+`DM_MEMSTAT=<path>` 提供逐秒 VM 记账。`<path>.request` 可请求只读项目文件页快照，产物为 `<path>.shared.tsv`。
+这些诊断不导出训练观测、不提供同步 RL step；M6 尚未由 M5 自动完成。
+
+2026-10-18 当前状态：两端整局、四端资源阶段通过；八端实际同房后在开局加载触发系统 pressure=2，
+已按停止条件退出，八端整局未通过。分队首个输入等待和 RL-0/RL-1 的 OCR O/I 歧义也仍是待修复项。
+完整数据与边界见 [PROGRESS.md 的 M5 最终停止位置](../notes/PROGRESS.md#M5-最终停止位置八端同房通过开局加载触发内存压力整局未通过)。
