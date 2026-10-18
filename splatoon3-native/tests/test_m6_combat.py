@@ -7,7 +7,7 @@ root=Path(__file__).resolve().parents[1];sys.path.insert(0,str(root))
 spec=importlib.util.spec_from_file_location('field_test',root/'tests/test_m6_fields.py');test=importlib.util.module_from_spec(spec);spec.loader.exec_module(test)
 
 
-def survey(env,out,result,step,observations):
+def survey(env,out,result,step,observations,inspect_results=False):
     packets={};offsets={};history=[]
     def packet(n):
         p=env.session.out/f'player-{n}/host.log'
@@ -90,8 +90,9 @@ def survey(env,out,result,step,observations):
             target=env.process_infos[other]['position']
             a[name]=drive(n,target,paint=False,move=(n==1))
             if n==1 and i%12==0:a[name]['buttons'][4]=1
+            if i%20 in (0,1):a[name]['buttons'][0]=0
             # Relaunch after a splat when back on the high spawn platform.
-            if env.process_infos[name]['position'][1]>20:a[name]['buttons'][0]=1
+            if env.process_infos[name]['position'][1]>20:a[name]['buttons'][0]=int(i%20 not in (0,1))
         return a
     epoch('pvp-approach',pvp,160)
     # Let the native game finish; never turn a comm error into termination.
@@ -105,9 +106,21 @@ def survey(env,out,result,step,observations):
     result['hp_passed']=True
     result['diagnostic_native_winners']=True;result['diagnostic_steps']=len(history)
     image('native-winners')
+    if inspect_results:
+        # Episode is over for every agent. Release RL control before using the
+        # ordinary M5 menu driver to inspect post-match UI; no retired STEP
+        # receives input, and this is not another training episode.
+        env.session.clock.resume()
+        for client in env.clients.values():client.close()
+        env.clients={}
+        env.session.frames(0,360)
+        for _ in range(3):
+            for n in range(2):env.session.press(n,'A')
+        result['post_result_menu_inspection']=True
     (out/'diagnostic.json').write_text(json.dumps(history,indent=2)+'\n')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--timeout',type=float,default=2400)
+    parser.add_argument('--inspect-results',action='store_true')
     args=parser.parse_args()
-    raise SystemExit(test.main(argparse.Namespace(survey=True,timeout=args.timeout),survey_callback=survey))
+    raise SystemExit(test.main(argparse.Namespace(survey=True,timeout=args.timeout),survey_callback=lambda *values:survey(*values,inspect_results=args.inspect_results)))

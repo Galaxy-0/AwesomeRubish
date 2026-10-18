@@ -97,7 +97,7 @@ class Session:
                    DM_PROBE='main:3db55d0,main:3dcc710,main:3dd9370,main:3571e24@x21+e8')
         if self.state_dump:
             env['DM_RL_STATE_DUMP']='1'
-            env['DM_PROBE']+=',main:3ef6930@x0+140,main:292075c@x0+88,main:2920760@x0+f00,main:3f2d700@x0+4c,main:3f71a6c@x19+c10'
+            env['DM_PROBE']+=',main:3ef6930@x0+140,main:292075c@x0+88,main:2920760@x0+f00,main:2920764@x0+ef0,main:2920768@x0+90,main:3f2d700@x0+4c,main:3f71a6c@x19+c10,main:3f6c6bc,main:3f6cdd8,main:3f6f4a8'
         (directory/'input.json').write_text(json.dumps({k:v for k,v in env.items() if k.startswith('DM_')},indent=2)+'\n')
         log=(directory/'host.log').open('wb');self.streams.append(log)
         process=subprocess.Popen([str(ROOT/'upstream/dm/host/dmhost'),str(self.patched)],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)

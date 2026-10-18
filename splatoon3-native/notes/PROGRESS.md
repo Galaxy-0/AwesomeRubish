@@ -1332,3 +1332,13 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
   生产callback→socket→Python **13项通过**，新序列0→0.49→1→0及非法101屏蔽通过；宿主构建通过。
 - 映射的动作 / HUD证据来自前一真实对局，新的正式输出由生产传输检查验证；下一轮 `tests/test_m6_combat.py` 会同时重跑正式HP受伤 / 恢复及正式特殊量自身涂地对照。尚未将该新增长测试写为已通过。
 - 不把49%时的RS输入写成成功释放特殊，满槽后释放的实际效果仍需后续覆盖。存活、比分 / 涂地比例、可见其它玩家和击杀计数未全部验证；完整M6与八端尚未签收。
+
+### 正式HP / 特殊量实机回归 PASS，继续 HUD / 结果参数
+
+- 特殊量已推送 **7d8de7cad2acc71d4739d54f6ca7941032aa8a2b**，远端一致。`tests/test_m6_combat.py --inspect-results` 正式读取已接线HP / 特殊量，**退出0**；`work/tests/m6-fields-20261018-142435-279913/result.json`：passed=true、errors=[]、hp_passed=true、special_passed=true、time_passed=true，425次step记录，另中立推进双方Winners。
+- 会话 `work/tests/m6-2p-20261018-142435-310915/`；日志 `work/m6/next-fields/official-combat.log`；源码 / 宿主冻结清单 official-combat-code.sha256 全匹配。
+  正式HP0号0..1、1号0.225..1；额外离线核对“HP保持正值且无>10单位位置跳变”的连续区间，1号恢复 **0.775**，不靠0→1重生当普通回血。正式特殊量仅0号涂地 **0 → 0.44**、静止1号0；两端时间166.133 /166.167 →155.533 /155.567秒。
+- 本次周期性松开ZR以验证输入边沿 / 重生流程；两端均完整到Winners。全部agent终止后先统一恢复时钟并RELEASE，再用M5菜单FIFO查看后续结算UI，遵守已终止STEP只推进不施加动作；此操作单独标为 post_result_menu_inspection，未冒充训练step / reset。
+- 四类新结果调用已捕获：ResultMeter原生设值0号参数89/37/42/18，对端37/89/18/42；统计控件绑定PaintPoint时分别显示个人点数134 /68。不能将89/(89+37)误报为覆盖全地图的涂地比例：回查PaintPercent文本formatter，它将第三 /第四参数按10拆分整数与小数，实际显示 **4.2% /1.8%**（观察者自身在前）。后续从该formatter现场参数导出，单位和顺序明确。
+- 后续存活 / 公开状态已找到具体入口：VS_MainTV_00布局实际引用TGPlayerIcon_00，包含Down/Special动画；`SplUITGPlayerIconCtrl` 的现场更新从玩家弱引用取得 live Player，再设置缓存状态（正常 /倒下 /不可用）。继续用该HUD数据验证存活和其它玩家公开基本状态，避免HP或缓存子类型代理。游戏布局原件及诊断输出仍仅在忽略work/。
+- 两宿主均优雅退出0；pressure最大1、footprint合计峰值8072 MiB、新增swapout0、参考档hash不变。本轮没有reset新一局；后续HUD/比分接好后再跑双端整局+reset及八端随机策略。未调用其它模型。
