@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local M5 sampling and conservative memory admission. No privileged commands."""
+"""Local M5 sampling and bounded memory admission. No privileged commands."""
 import json
 from pathlib import Path
 import re
@@ -21,7 +21,7 @@ def system_sample():
     return dict(time=time.time(), swap_mib=float(re.search(r'used = ([\d.]+)M', swap)[1]),
                 pressure=int(command(['sysctl', '-n', 'kern.memorystatus_vm_pressure_level']).strip()),
                 compressor_mib=pages.get('Pages occupied by compressor', 0)*pagesize/2**20,
-                pageouts=pages.get('Pageouts', 0), swapouts=pages.get('Swapouts', 0),
+                page_size=pagesize, pageouts=pages.get('Pageouts', 0), swapouts=pages.get('Swapouts', 0),
                 free_mib=pages.get('Pages free', 0)*pagesize/2**20,
                 gpu={k: stats[k] for k in ('Device Utilization %', 'Renderer Utilization %',
                      'Tiler Utilization %', 'In use system memory', 'Alloc system memory') if k in stats})
@@ -51,18 +51,19 @@ class Monitor:
             row['hosts'].append(dict(player=player, pid=p.pid,
                 frame=int(frames[-1][0]) if frames else max(map(int,legacy), default=0),
                 clock=float(frames[-1][1]) if frames else None,
-                phase='results' if 'PROBE main+0x3dd9370' in text else ('judging' if 'PROBE main+0x3dcc710' in text else ('in_game' if 'PROBE main+0x3db55d0' in text else ('lobby' if legacy and int(legacy[-1])>=4200 else 'boot'))),
+                phase='results' if 'PROBE main+0x3dd9370' in text else ('judging' if 'PROBE main+0x3dcc710' in text else ('in_game' if 'PROBE main+0x3db55d0' in text else ('loading' if (d.parent/'load-slots/active').exists() else ('lobby' if legacy and int(legacy[-1])>=4200 else 'boot')))),
                 memory=memory_row(d/'memory.tsv')))
         row['rss_sum_mib'] = sum(h['memory'].get('rss', 0) for h in row['hosts'])
         row['footprint_sum_mib'] = sum(h['memory'].get('phys_footprint', 0) for h in row['hosts'])
+        row['new_swapout_bytes'] = max(0, row['swapouts']-self.baseline['swapouts'])*row['page_size']
         self.rows.append(row)
         with (self.out/'resources.jsonl').open('a') as f: f.write(json.dumps(row)+'\n')
-        # Existing swap is an explicit baseline, not headroom. Stop on any new
-        # swapout, >16 MiB swap growth, or warning pressure, before adding hosts.
-        if row['swapouts'] > self.baseline['swapouts'] or row['swap_mib'] > self.baseline['swap_mib']+16:
-            raise RuntimeError('resource stop: new swapping detected')
-        if row['pressure'] != 1 or row['footprint_sum_mib'] > 44*1024:
-            raise RuntimeError('resource stop: pressure or 44 GiB task footprint limit')
+        # Warning is allowed. Count actual newly swapped-out bytes, not changes
+        # in swap usage (which may shrink while other pages are swapped out).
+        if row['new_swapout_bytes'] > 2*2**30:
+            raise RuntimeError('resource stop: additional swapout exceeds 2 GiB')
+        if row['pressure'] >= 4:
+            raise RuntimeError('resource stop: critical memory pressure')
         return row
 
     def snapshot(self, hosts, label):
@@ -102,5 +103,8 @@ class Monitor:
             max_rss_sum_mib=max((r['rss_sum_mib'] for r in rows), default=0),
             max_footprint_sum_mib=max((r['footprint_sum_mib'] for r in rows), default=0),
             swap_growth_mib=max((r['swap_mib']-self.baseline['swap_mib'] for r in rows), default=0),
+            max_new_swapout_bytes=max((r['new_swapout_bytes'] for r in rows), default=0),
+            max_pressure=max((r['pressure'] for r in rows), default=1),
+            max_compressor_mib=max((r['compressor_mib'] for r in rows), default=0),
             gpu_util_percent=[r['gpu'].get('Device Utilization %') for r in rows],
             note='RSS sums include shared pages; see group footprint snapshots for deduplication. Metal allocated size overlaps guest no-copy pools; do not add it to RSS.')

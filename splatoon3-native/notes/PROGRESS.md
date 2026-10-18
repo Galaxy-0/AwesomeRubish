@@ -849,3 +849,138 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
    当前没有把 Either 的潜在自动补齐当成已经证明的 4v4。
 
 **停在这里，保留未提交的 M5 实现 / 测试 / 补丁与证据。下一步仍是 M5，不是 M6。**
+
+## 2026-10-18：M5 继续，指挥方调整后的验收口径
+
+- 已先将上一轮实现、测试和资源失败证据作为阶段提交 **81a2edf** 推送 origin/main；只提交 splatoon3-native，游戏数据仍全部忽略。
+- 本次指示覆盖上一节历史停止线：允许 warning；仅 critical、相对本次启动基线新增 Swapouts 超过 2 GiB，或某宿主崩溃才按资源条件停止。
+  swapout 按 vm_stat 的实际 page size 乘计数增量，不能以 swap used 净变化替代。功能错误和整局超时仍须据实失败，不能签收。
+- 正在落实 GPU pipeline binary archive 的本地磁盘缓存、上传暂存的上传完成回收和上限，以及开局纹理上传两端一批的准入。
+  MSL source-to-IR 仍走系统编译器缓存，尚无证据证明全部 MTLLibrary 对象跨进程共享。最终效果与峰值组成待本轮实测。
+
+### 新缓存 / 暂存版本的单进程复测
+
+- `work/tests/m5-1p-20261018-100443-813022/`：native 子进程到 6,000 帧，`phase_passed: true`、错误为空、优雅退出 0；原件 / 参考 hash 未变。
+  全程采样 footprint 峰值 **4,715 MiB**，RSS 峰值 **2,046 MiB**，大厅稳定 footprint 最大 **3,279 MiB**、**44.77 fps**。
+  对比上一轮单进程冷峰 **10,039 MiB**，本次组合修改后下降约 **53%**；这不是单独某一项改动的消融实验。
+- 上一轮峰值 guest 常驻约 1.6 GiB、Metal allocated 约 9.3 GiB，上传旧块已降至 0–32 MiB，延迟队列只有 1–4 个；
+  因此不能把那额外几 GiB 直接定性为上传旧块泄漏。新版本将每次 pipeline 构建封在 autorelease pool、headless 禁止一次预测派发最多 384 个后台编译任务，
+  使用磁盘 GPU binary archive；同时上传暂存在自己 upload feedback 完成时释放，不再等下一次 replay fence。
+- 新版资源样本：第 1,800 帧贴图 **1,245,591,424 bytes**、buffer **758,694,048 bytes**、命令 **173,473,856 bytes**、C1 **4,325,376 bytes**，
+  Metal allocated **4,360,060,928 bytes**；上传在途峰值 **100,663,296 bytes（96 MiB）**，当时在途为 0。
+  604 个 shader 的源文件输入累计约 20.47 MiB，1,383 个渲染 PSO / 2 个计算 PSO；剩余 Metal 记账包含驱动 / 编译 / 内部对象，公开 API 未细分到每类。
+  不将此差额断言为纯 shader，也不把 guest + Metal / buffer 重叠口径相加。
+- 原始冷建日志中 GPU 归档 `hit=0 / miss=1301 / write=1301 / error=0` 为下界，磁盘归档约 118 MiB。
+  后续新进程已经出现 `hit=713 / miss=88 / write=88 / error=0`，命中路径使用 **FailOnBinaryArchiveMiss**，不能静默回退再伪装命中。
+- 新增 GPU 归档组件检查：冷建写盘、严格命中、损坏归档回退并原子替换；普通渲染 **132** / headless **135** 检查通过。
+  资源规则测试覆盖 warning + 恰好 2 GiB 继续、swap used 净减少但 swapout 增量超过 2 GiB 停止、critical 停止。
+- wrapper 失败仍保留：该单进程测试执行中误修改了正在等待它的 shell 文件，子进程通过后 wrapper 出现 EOF 解析错误、退出 2。
+  后续正式两端入口已重新启动并冻结脚本；不把该单进程 wrapper 标成退出 0。
+
+### 两端整局复测与进一步冷峰定位
+
+- `work/tests/m5-2p-20261018-100747-103147/`：两端自然入图到判定 **185.9277 / 185.9920 秒**，均到 ResultWinners、优雅退出 0；
+  对战 **32.28 / 34.76 fps**、稳定 footprint 最大 **3,665 / 3,695 MiB**、RSS 最大 **2,251 / 2,267 MiB**。
+  全程合计 footprint 峰值 **8,039 MiB**、RSS 峰值 **4,590 MiB**，压力始终 normal、新增 swapout **0**。
+- 该次正式入口仍退出 **1**，唯一验收错误是 `native team UI missing RL-1`：Vision 将其读成 **RL-T**，
+  所以仅 O/I 容错不够。原始结果不改写；原生队伍截图明确为 RL-0 Alpha、RL-1 Bravo，GetUid / GetNickname 读回与请求一致。
+  后续身份门槛改用这两个接口实际输出缓冲中的 UID / 昵称，并验证 UID 唯一；OCR 只验模式与队伍人数。
+- 四端后续测试（`work/tests/m5-4p-20261018-101846-484656/`）已暴露单次低冷峰并不稳定：
+  房主独自启动第 63 秒 / 2,760 帧出现 footprint **11,230 MiB**、Metal allocated **10,671 MiB**、GPU ledger **9,397 MiB**，guest 常驻 **1,633 MiB**。
+  同期后台预热为 0 行，GPU 归档约 1,274 hit / 27 miss；上传在途 0、峰值 96 MiB。
+  资源样本中贴图约 2.3 GiB、buffer 0.68 GiB、命令 0.17 GiB，远低于 Metal 总分配；不能将差额说成贴图上传暂存或全部重编 PSO。
+  随后 live shader / PSO 数量基本不变，Metal 总分配从约 10.4 GiB 回落到 3.6 GiB，支持还有驱动内部临时 / 保留分配，但公开 API 不足以逐类精确拆开。
+- 针对宿主可控部分，另补 shader library / reflection 的逐次 autorelease pool；
+  fence 后已退役、独立且无 parent / buffer / heap 的 GPU private 资源标记 Empty，允许丢弃内容。
+  绝不 purge guest no-copy shared backing、仍有效的游戏贴图或纹理 view。只累计 discard 请求字节，不把它当作已释放物理字节。
+  资源 inventory 也按 texture parent / buffer 去重，避免视图重复记账。
+  新组件检查普通 **134** / headless **138** 通过；该版本实机冷峰与八端效果仍待后续测试，当前四端进程继续使用启动时的旧二进制。
+
+### 四端 2v2 整局通过，验证加载错峰
+
+- `work/tests/m5-4p-20261018-101846-484656/`：正式 wrapper 退出 **0**，`phase_passed: true / errors: []`，
+  `passed: false`（不是八端 M5）。四端同房 **69a55ad854ec519235a026a132c87272**，武器 **8001 / 2040 / 10 / 3000**；
+  Turf War / Scorch Gorge，自然入图到判定 **188.6674 / 188.6897 / 188.7249 / 188.7111 秒**，均到 ResultWinners、优雅退出 0。
+  首个分队等待及实际身份读回均通过，原件 / 参考 hash 不变。
+- 开局四个控制器仍立即确认，由原生 PIA 决定就绪；宿主只限制新建 ≥256 KiB 的 packaged 贴图上传。
+  两个跨进程 flock 名额：首批 player 3 / 0 同时取得；player 1 / 2 等待 **8,793 / 10,066 ms**，
+  前批新大贴图上传安静且 Metal 分配回落或稳定后才放行。没有改 PIA 消息、倒计时或 InGame / 结算状态。
+  四端本次均正常进入同一局，证明该错峰不会只让菜单各自前进。
+- 对战 FPS **24.44 / 25.78 / 23.59 / 23.85**；对应稳定 footprint 最大 **4,713 / 3,744 / 3,710 / 3,712 MiB**、
+  RSS 最大 **2,262 / 2,266 / 2,267 / 2,270 MiB**。
+  全阶段 footprint 合计峰值 **15,933 MiB**、RSS 峰值 **9,192 MiB**；全机 GPU 利用率阶段平均 **90.31%**。
+  系统压力始终 normal，新增 swapout **0**，swap used 净增长 **0**。
+- 大厅项目文件 clean 页映射合计 **546.875 MiB**，唯一页 **150.3125 MiB**、重复 **396.5625 MiB**；
+  入图为 **551.171875 / 153.71875 / 397.453125 MiB**。本版已将实际 runtime pipeline archive backing 文件计入限定的项目文件页查询。
+  依旧不把此数字称为所有 GPU / guest / 系统库的全局 PSS。
+- 该四端二进制尚未包含后补的逐 shader pool / private Empty 退役；对应最终版本单端剖析正在单独进行，八端将使用最终版本。
+
+### 最终资源版本：单端冷峰复测通过，八端正式开始
+
+- `work/tests/m5-1p-20261018-103512-700324/`，武器 8001；正式 wrapper 退出 **0**，native 到 6,000 帧，`phase_passed: true / errors: []`，优雅退出 0。
+  逐秒 memstat footprint 峰值 **3,835 MiB**（两秒协调器采样峰值为 3,810 MiB），大厅稳定最大 **3,692 MiB**、RSS 最大约 **2,070 MiB**、**49.78 fps**。
+  压力始终 normal、新增 swapout **0**。本次采用与四端房主同一请求武器，包含 shader 逐次 pool、private 退役 Empty 和资源 inventory 去重。
+- **物理占用和“已分配”分离得到实测支持**：该次 Metal `currentAllocatedSize` 峰值仍 **8,215 MiB**；
+  第 27 秒 footprint 峰值样本为 3,835 MiB、Metal 分配 7,536 MiB、GPU ledger 2,037 MiB、guest 常驻 1,625 MiB。
+  不能再把 Metal / AGX allocation 字节直接当成全部仍占用的不可回收物理页。
+  fence 完成后丢弃已退役 private backing，保留活跃游戏状态；仍没有从公开 API 精确拆出驱动每类内部对象。
+  shader 编译原来已在 submission pool 内，本次是进一步将单个冷 submission 内可能聚集的临时对象限定到一次 library / reflection 创建，不能误称旧实现完全没有 pool。
+- 四端共享页还证明运行时归档确实有跨进程 clean backing 页：大厅 `.metalar` 映射合计 **162 MiB**、唯一 **54.09375 MiB**、重复 **107.90625 MiB**。
+  代码部分为 **352.25 / 88.0625 / 264.1875 MiB**，其它项目文件为 **32.625 / 8.15625 / 24.46875 MiB**。
+  这是实际 inode + offset 的 resident / clean 页查询，配合严格 GPU archive hit，未把每端私有 pipeline 对象本身称为同一个对象。
+- 最终八端入口已启动：
+  `bash tests/run_all.sh --milestone m5 --players 8 --mode 0 --stage-id 1 --weapons 8001,2040,10,3000,0,1000,6000,7010 --timeout 4000`。
+  产物 **`work/tests/m5-8p-20261018-103801-878129/`**，总日志 **`work/m5/final-eight.log`**。
+  普通渲染 **134** / headless **138**、NVN **79**、HID **73**、LDN frontend **10**、host options **32**、文件系统 **74**、虚拟 LDN **59**、资源停止规则检查全过。
+  宿主二进制 / harness / resource sampler / 入口 / 补丁 SHA256 固定在 `work/m5/final-code.sha256`，运行中不修改它们。
+  资源停止先同时 SIGTERM 全部本轮宿主，统一最多等 12 秒后回收剩余者；清理后另采系统 Swapouts，防止漏报停止期间的换出。
+  **八端最终结论待后续实测，当前仍不签收 M5。**
+
+## 2026-10-18：M5 签收 PASS，八端离线 4v4 自然结算
+
+**M5 PASS。** 本节覆盖前文的进行中 / warning 停止结论；所有先前失败记录保留。M6 尚未开始。
+
+### 正式结果与停止规则
+
+- `work/m5/final-eight.log` wrapper 退出 **0**；`work/tests/m5-8p-20261018-103801-878129/result.json` 的 `passed: true / phase_passed: true / errors: []`。
+- 八端同房 **`2e2bd31b711a5c9eb0f45926f52b29a8`**，原生 UI 明确 **RL-0..3 Alpha / RL-4..7 Bravo**，Turf War / Scorch Gorge（stage ID 1）。每端 UID 唯一、GetNickname 输出正确、native kit 均与八把指定武器一致。
+- 八端均实际经过 InGame → ResultJudge → ResultWinners；入图到判定 **194.70–195.51 秒**，未改计时 / 判定 / 结算 / PIA 消息。实际 PIA 接收下界为 131,072 / 131,072 / 131,072 / 65,536 / 65,536 / 65,536 / 65,536 / 65,536 帧。
+- 所有进程 `DM_HEADLESS=1 / DM_OPMODE=0`，有效 crop 1280×720；内部 pass / draw 持续增加，真实 host `screen_submits=0 / composite=0`。显式原始截图仅用于本地诊断，未上屏、未入库。
+- 八端都优雅退出 **0**，最后逻辑帧 **55,200 / 50,160 / 45,420 / 39,000 / 32,940 / 27,180 / 22,080 / 17,280**。无 CRASH / FATAL / GPU 执行错误，原件及只读参考档前后 SHA256 不变；清理后未留本轮 dmhost / air。
+- 资源采样最高 **pressure=2 / warning**，按新规则继续；**新增 Swapouts 从启动到清理后均为 0**（计数 6,864,757 不变，page size 16,384）。swap used 从 13,675.5 降到 13,523.5 MiB，没有用新增磁盘换出撑过比赛。清理后压力恢复 normal。
+
+### 同时运行时的逐端数据
+
+八端共同大厅窗口 **43.04 秒**，在设置输入前且全部至少 5,000 帧；共同对战窗口 **169.42 秒**，从所有端 InGame 后约 20 秒到首端判定之前。
+单端参考是本节前最终资源版本的 **49.78 fps / 低资源大厅**。人数、场景与武器负载不同，比例仅供资源比较，不称为同场景并行加速比。下表 footprint / RSS / compressed 为该共同对战窗口的采样最大值。
+
+| 玩家 | 武器 ID | 八端大厅 fps | 八端对战 fps | 单端大厅参考比例 | footprint MiB | RSS MiB | compressed MiB |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| RL-0 | 8001 | 18.27 | 13.45 | 27.02% | 4454 | 1320 | 1103 |
+| RL-1 | 2040 | 18.67 | 13.98 | 28.08% | 3693 | 587 | 1778 |
+| RL-2 | 10 | 18.61 | 13.82 | 27.76% | 3690 | 1253 | 1152 |
+| RL-3 | 3000 | 18.55 | 13.78 | 27.68% | 3598 | 594 | 1778 |
+| RL-4 | 0 | 18.44 | 13.50 | 27.13% | 3404 | 1210 | 1095 |
+| RL-5 | 1000 | 18.36 | 13.44 | 27.01% | 3440 | 1202 | 1174 |
+| RL-6 | 6000 | 18.30 | 13.43 | 26.98% | 3383 | 1243 | 1164 |
+| RL-7 | 7010 | 18.59 | 13.73 | 27.59% | 3436 | 1255 | 1169 |
+
+- **所有八端全程逐秒 footprint 峰值均 <6 GiB**：4,509 / 3,723 / 3,723 / 3,636 / 3,480 / 3,468 / 3,463 / 3,468 MiB；不是只把压缩后的低 RSS 当作达标。
+- 两秒协调器全阶段 footprint 合计峰值 **29,060 MiB（28.38 GiB）**，RSS 合计峰值 **11,065 MiB（10.81 GiB）**；两者可能出现在不同时间。共同对战窗口 footprint / RSS 合计峰值为 **28,967 / 8,664 MiB**。
+- 单端 RSS 低至约 0.6 GiB 是有压缩页及 GPU owned/unmapped 的结果。系统 compressor 从 **9,833.78 MiB** 升到最高 **20,773.89 MiB**。`footprint --swapped` 的列还包含 compressed，不能将它当成新增磁盘换出；本次以 vm_stat 的累计 Swapouts 实证为 0。
+- GPU 全机利用率：共同对战窗口已采样点平均 **98.62%**，全阶段已采样点平均 **94.34%**。当前主要性能约束是 GPU 工作量。每两秒系统采样在 VM / footprint 快照时有暂停，最大相邻间隔约 **15.19 秒**；逐端 memstat 仍由各自线程逐秒记录。
+
+### 共享页、驱动分配和冷峰解释
+
+- 入图快照：项目 clean file 页映射合计 **1,116.8125 MiB**，按 backing inode + offset 去重后 **158.328125 MiB**，重复 **958.484375 MiB**；大厅分别为 **1,105.703125 / 161.25 / 944.453125 MiB**。
+- 入图共享页组成：代码 **704.5 / 88.0625 / 616.4375 MiB**；GPU runtime `.metalar` 归档 **392.0625 / 67.734375 / 324.328125 MiB**；其它项目文件 **20.25 / 2.53125 / 17.71875 MiB**（依次为映射 / 唯一 / 重复）。该查询只含实际 resident、clean、external 且非 DIRTY / COPIED 的项目页；不是所有 guest / GPU / 系统库的 PSS。不能把不同时间的共享快照从全阶段 RSS 峰值直接相减。
+- 归档严格 hit 使用 FailOnBinaryArchiveMiss；八端最后已打印的 hit / miss / write / error 下界分别为：`1796/5/5/0, 1795/6/6/0, 1793/8/8/0, 1787/14/14/0, 1794/7/7/0, 1874/27/27/0, 1794/7/7/0, 1793/8/8/0`。按键 flock 避免多个进程同时编译同一个 GPU pipeline，写临时文件后原子替换，实际 readonly backing 页可跨端共享。
+- MSL source-to-IR 仍经 Metal 系统缓存；没有声称 8 个 MTLLibrary / pipeline 宿主对象是同一对象，也没有声称再无 newLibraryWithSource 调用。归档复用 GPU 编译结果，逐 library / reflection / pipeline pool 限制临时对象积聚。
+- **AGX allocation 并未被伪装降低**：全机 `Alloc system memory` 峰值 **43,193,090,048 bytes（40.23 GiB）**，`In use system memory` 峰值 **23,939,760,128 bytes（22.30 GiB）**，不一定同一时刻。它们与任务 footprint / RSS 有重叠，不能相加。
+- 可控的峰值处置是：冷启动依次准入；开局两端一批、前批分配安静稳定后放行；64 MiB 上传批次上限与三组 fenced upload allocator；上传暂存在自己的 GPU completion 回收；已退役独立 private backing 标记 Empty。对仍有效的游戏贴图、guest no-copy shared buffer、texture view / heap 不这样处理。Metal 内部各类保留 / 编译对象的精确字节仍不可由公开 API 独立拆开，不能给差额编造唯一来源。
+- 原先约 9.8–11 GiB 的单端冷峰不是全部由活跃贴图 / 命令 / 上传暂存构成。最终同武器单端 footprint 峰值约 **3.75 GiB**，但 Metal 分配仍曾达到约 **8 GiB**，说明允许丢弃已退役 backing 后，分配口径和不可回收物理记账能够分离。未将累计 discard 请求字节当作释放物理字节。
+
+### 验收边界与交付
+
+- 通过的是本次指定武器、Turf War / Scorch Gorge 的全自动 4v4 自然结算与资源门槛；沿用 M4 已验证的五模式 / 25 地图可选接口，没有声称全部组合逐一完成八端整局。控制脚本负责建房 / 设置 / 分队 / 准备，比赛期间没有策略训练动作；M6 的随机策略与同步 RL 接口尚未开始。
+- 原始截图、NSO / RomFS / shader 数据、存档、日志和采样全部保留 work/ 且不入库。最终测试结束后冻结 SHA256 校验仍全通过；源码补丁将按规则再次检查正向 / 反向应用，仅提交 splatoon3-native。

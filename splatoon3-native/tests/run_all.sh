@@ -23,6 +23,7 @@ make -C upstream/dm/gfx/tests GAME=0100C2500FC20000 t_render_enable t_nvn > work
 )
 upstream/dm/host/tests/build/t_fs > work/tests/fs.log 2>&1
 "$python" tests/test_host_options.py
+if [[ "$milestone" == m5 ]]; then "$python" tests/test_m5_resources.py; fi
 tail -1 work/tests/render-enable.log
 tail -1 work/tests/render-headless.log
 tail -1 work/tests/nvn.log

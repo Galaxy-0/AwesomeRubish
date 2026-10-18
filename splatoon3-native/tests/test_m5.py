@@ -17,7 +17,7 @@ from test_m1 import ROOT, FAILURE
 from test_m2 import SAVE_SHA256
 from test_m4 import enters, recognize, MODES
 sys.path.insert(0, str(ROOT/'tools'))
-from m5_resources import Monitor
+from m5_resources import Monitor, system_sample
 
 BUTTONS = dict(zip(('A','B','X','Y','LS','RS','L','R','ZL','ZR','Plus','Minus','Left','Up','Right','Down'),
                    (1 << n for n in range(16))))
@@ -28,7 +28,7 @@ class Run:
     def __init__(self, args):
         self.args=args
         self.out=ROOT/'work/tests'/datetime.datetime.now().strftime(f'm5-{args.players}p-%Y%m%d-%H%M%S-%f')
-        self.out.mkdir(parents=True); print(f'M5 artifacts: {self.out}', flush=True)
+        self.out.mkdir(parents=True); (self.out/'load-slots').mkdir(); print(f'M5 artifacts: {self.out}', flush=True)
         self.hosts=[]; self.streams=[]; self.fifos={}; self.air=None
         self.started=time.monotonic(); self.last_sample=0; self.last_print=0
         self.monitor=Monitor(self.out); self.result=dict(milestone='M5', players=args.players, passed=False, errors=[], requested_mode=MODES[args.mode], requested_stage_id=args.stage_id, requested_stage_row=args.stage_row)
@@ -79,8 +79,8 @@ class Run:
             DM_SAVE=str(d/'save'), DM_TEMP=str(d/'temp'), DM_MSL_DIR=str(ROOT/'work/build/cache/metal_shader_cache'),
             DM_FONT_DIR=str(ROOT/'work/build/font'), DM_PLAYER=str(player), DM_FULL_UNLOCK='1',
             DM_HEADLESS='1', DM_WINDOW='1', DM_OPMODE='0', DM_RESOURCE_REPORT='1',
-            DM_MEMSTAT=str(d/'memory.tsv'), DM_MEMSTAT_DUMP='90', DM_KEYS=route,
-            DM_HID_FIFO=str(fifo), DM_PROBE=PROBES, DM_WATCH_STALL='60', DM_WATCH_SAMPLE=str(d/'stall.txt'),
+            DM_MEM_CAP_GB='0', DM_MEMSTAT=str(d/'memory.tsv'), DM_MEMSTAT_DUMP='90', DM_KEYS=route,
+            DM_PIPELINE_CACHE=str(ROOT/'work/build/cache/runtime-pipelines'), DM_LOAD_SLOTS=str(self.out/'load-slots'), DM_HID_FIFO=str(fifo), DM_PROBE=PROBES, DM_WATCH_STALL='180', DM_WATCH_SAMPLE=str(d/'stall.txt'),
             DM_NVN_SHOT=','.join(map(str,range(2400,180001,600)))+':'+str(d/'frame_%d.png'))
         if self.args.visible and player==0: env['DM_HEADLESS']='0'
         if self.args.weapons: env['DM_WEAPON']=str(self.args.weapons[player])
@@ -142,6 +142,7 @@ class Run:
             for _ in range(col):self.press(0,'Right')
             for _ in range(row):self.press(0,'Down')
             self.press(0,'A');self.press(0,'Down');self.press(0,'A')
+            self.frames(0,600)  # The first row is not active during the team-panel transition.
             # Team rows begin Random; Right => Alpha, another Right => Bravo.
             for player in range(self.args.players):
                 self.press(0,'Right')
@@ -153,6 +154,7 @@ class Run:
             self.press(0,'A');self.frames(0,900)
             # Confirm all controllers together: sequential 300-frame waits for
             # eight players can exceed the native preparation deadline.
+            (self.out/'load-slots/active').touch()
             for player in range(self.args.players):self.send(player,'A')
             self.frames(0,300)
             self.until(lambda:all(enters(self.text(n),'3db55d0') for n,_,_ in self.hosts))
@@ -166,16 +168,23 @@ class Run:
 
     def finish(self):
         evidence=[]
-        for n,p,d in self.hosts:
+        # Stop every owned host before waiting: a critical-pressure stop must
+        # not leave seven peers allocating while the first host shuts down.
+        for _,p,_ in self.hosts:
             if p.poll() is None:p.terminate()
-            try:p.wait(12)
+        deadline=time.monotonic()+12
+        for n,p,d in self.hosts:
+            try:p.wait(max(0,deadline-time.monotonic()))
             except subprocess.TimeoutExpired:p.kill();p.wait();self.result['errors'].append(f'player-{n}: forced kill')
             text=self.text(n)
             if p.returncode or '优雅退出完成' not in text or FAILURE.search(text):self.result['errors'].append(f'player-{n}: unclean exit {p.returncode}')
+            uid=re.findall(rf'SPL3_PLAYER_UID player={n} uid=([0-9a-f:]+)',text)
+            nick=re.findall(rf'SPL3_PLAYER_NICK player={n} nickname=(\S+)',text)
+            if not uid or not nick or any(v!=f'RL-{n}' for v in nick):self.result['errors'].append(f'player-{n}: native identity readback missing')
             points=[(int(f),float(t)) for f,t in re.findall(r'RESOURCE_FRAME frame=(\d+) seconds=([\d.]+)',text)]
             fps=[60/(b[1]-a[1]) for a,b in zip(points,points[1:]) if b[0]-a[0]==60 and b[1]>a[1]]
             game=enters(text,'3db55d0');judge=enters(text,'3dcc710');winners=enters(text,'3dd9370')
-            evidence.append(dict(player=n,returncode=p.returncode,last_frame=self.frame(n),in_game=game,result_judge=judge,result_winners=winners,
+            evidence.append(dict(player=n,native_uid=uid,native_nick=nick,returncode=p.returncode,last_frame=self.frame(n),in_game=game,result_judge=judge,result_winners=winners,
                 frame_intervals_fps=fps,headless='HEADLESS window=0 internal_render=1' in text,
                 no_screen_composite='出图裁切：' not in text and '出图视口' not in text,
                 crop_720p='WindowCrop 0,0 1280x720' in text,
@@ -188,12 +197,12 @@ class Run:
                 evidence[-1].update(requested_weapon=self.args.weapons[n],native_weapon_ids=ids)
                 if not ids or any(w!=self.args.weapons[n] for w in ids):self.result['errors'].append(f'player-{n}: native kit did not use requested weapon')
             phase_stats={}
-            for phase in ('lobby','in_game','results'):
+            for phase in ('boot','lobby','loading','in_game','judging','results'):
                 rows=[(r,h) for r in self.monitor.rows for h in r['hosts'] if h['player']==n and h.get('phase')==phase]
                 clocks={h['clock']:h['frame'] for _,h in rows if h['clock'] is not None}
                 if len(clocks)>1:
                     t0,t1=min(clocks),max(clocks)
-                    steady=rows[10:] or rows
+                    steady=(rows[10:] or rows) if phase in ('lobby','in_game','results') else rows
                     phase_stats[phase]=dict(fps=(clocks[t1]-clocks[t0])/(t1-t0),
                         max_footprint_mib=max(h['memory'].get('phys_footprint',0) for _,h in steady),
                         max_rss_mib=max(h['memory'].get('rss',0) for _,h in steady),
@@ -218,9 +227,19 @@ class Run:
                 for team in ('Alpha Team','Bravo Team'):
                     if sum(team.lower() in line.lower() for line in lines)!=self.args.players//2:
                         self.result['errors'].append(f'native team UI does not show expected {team} count')
-                for n,_,d in self.hosts:
-                    if not any(re.search(rf'RL[- ]{n}\b',line) for line in lines):self.result['errors'].append(f'native team UI missing RL-{n}')
+                # Identity is read from the actual GetUid/GetNickname output
+                # buffers above; Vision confuses 0/O and 1/I/T in this font.
+                self.result['identity_source']='native GetUid/GetNickname output buffers'
             except (OSError,subprocess.SubprocessError) as e:self.result['errors'].append(f'team OCR: {e}')
+        try:
+            cleanup=system_sample()
+            cleanup['new_swapout_bytes']=max(0,cleanup['swapouts']-self.monitor.baseline['swapouts'])*cleanup['page_size']
+            self.result['system_after_cleanup']=cleanup
+            (self.out/'system-after-cleanup.json').write_text(json.dumps(cleanup,indent=2)+'\n')
+            if cleanup['pressure']>=4 or cleanup['new_swapout_bytes']>2*2**30:self.result['errors'].append('resource limit exceeded during cleanup')
+        except (OSError,subprocess.SubprocessError) as e:self.result['errors'].append(f'cleanup resource sample: {e}')
+        uid_set={h['native_uid'][-1] for h in evidence if h['native_uid']}
+        if len(uid_set)!=len(self.hosts):self.result['errors'].append('native player UIDs are not unique')
         self.result.update(hosts=evidence,resources=self.monitor.summary())
         if len(self.hosts)!=self.args.players:self.result['errors'].append('requested process count not reached')
         if self.args.players>1 and not self.result.get('same_room'):self.result['errors'].append('complete room membership not observed')

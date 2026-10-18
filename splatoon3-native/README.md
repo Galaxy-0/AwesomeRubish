@@ -16,7 +16,8 @@
 
 M2.5 已按 2026-10-18 调整后的口径通过验收武器全解锁（174 件 Versus 套装）与 `DM_PLAYER=0..7` 多身份。
 M3 已打通本机两进程 LDN；M4 已通过 25 张普通私房地图、全部五模式与全自动 1v1 到双方结算的验收。
-M5 已实现 headless / 720p / 文件 mmap 与缓存上限，单进程、两端整局和四端资源准入已通过。
-八端已真实同房，但开局加载触发系统内存压力 warning 后按无新增 swap 约束停止，尚未入图或结算，**M5 未 PASS**。
-本轮未 commit / push，M6 尚未开始；资源数据与控制 / OCR 卡点见进度末尾。
+**M5 已 PASS**：八端独立身份 / 指定武器，Turf War / Scorch Gorge 的离线 4v4 自然结算；八端优雅退出 0。
+headless / 720p、代码与文件 mmap、GPU binary archive 共享、上传暂存 / 退役 private 内存回收和两端一批开局均已实测。
+八端 footprint 合计峰值 28.38 GiB，单端全程峰值均 <6 GiB，对战共同窗口约 13.4–14.0 fps / 端；最高采样压力 warning，新增 swapout 0。
+阶段提交为 `81a2edf`；M6 尚未开始。
 详见 [进度与卡点](notes/PROGRESS.md) 和 [验收说明](tests/README.md)。

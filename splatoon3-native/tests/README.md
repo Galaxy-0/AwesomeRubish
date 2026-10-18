@@ -184,8 +184,8 @@ M5 默认 `--players 8`；1 / 2 / 4 只是中间阶段，返回 0 表示该阶�
   footprint / VM / 项目文件共享页快照分别保存在阶段命名文件。
   共享页按实际 resident clean file 页的 inode + offset 去重；COW / dirty / GPU / guest 页不列入共享节省。
   Metal 分配与 guest no-copy pool 重叠，不相加；RSS 也不能覆盖 GPU owned/unmapped 的物理占用。
-- 新增 swapout、swap 相对本阶段启动基线增长 >16 MiB、非 normal 内存压力、或本任务 footprint 合计 >44 GiB，
-  任一触发即失败并回收本次所有宿主，不继续扩容。
+- 资源条件只在 critical（pressure ≥4）、新增 swapout >2 GiB，或宿主崩溃时停止并回收本次宿主。
+  warning 继续；swapout 用 vm_stat 计数增量 × 实际 page size，不用 swap used 净增长替代，也没有 44 GiB 任务上限。
 - 产物均在 `work/tests/m5-<N>p-*`，含完整输入、空气日志、截图、native kit、原生状态序列与 `result.json`。
   原件与参考档前后 hash、运行错误标记及优雅退出为所有阶段的硬门槛。
 
@@ -193,6 +193,7 @@ M5 默认 `--players 8`；1 / 2 / 4 只是中间阶段，返回 0 表示该阶�
 `DM_MEMSTAT=<path>` 提供逐秒 VM 记账。`<path>.request` 可请求只读项目文件页快照，产物为 `<path>.shared.tsv`。
 这些诊断不导出训练观测、不提供同步 RL step；M6 尚未由 M5 自动完成。
 
-2026-10-18 当前状态：两端整局、四端资源阶段通过；八端实际同房后在开局加载触发系统 pressure=2，
-已按停止条件退出，八端整局未通过。分队首个输入等待和 RL-0/RL-1 的 OCR O/I 歧义也仍是待修复项。
-完整数据与边界见 [PROGRESS.md 的 M5 最终停止位置](../notes/PROGRESS.md#M5-最终停止位置八端同房通过开局加载触发内存压力整局未通过)。
+2026-10-18 M5 **PASS**：正式八端入口退出 0，八端 UID / 昵称 / kit、4 Alpha / 4 Bravo、InGame / ResultJudge / ResultWinners、参考档 hash 与优雅退出全通过。
+资源数据、系统采样覆盖和适用范围见 [PROGRESS.md 的 M5 签收](../notes/PROGRESS.md)。最高采样压力 warning，新增 swapout 0；没有将旧 warning 失败记录改写。
+GPU runtime binary archive 按设备 / OS / 翻译链 / shader 内容及 PSO 状态分键，flock 防并发重复编译并原子替换；严格命中与实际共享 clean backing 页均有证据。
+MSL source-to-IR 仍经系统缓存，MTLLibrary / pipeline 宿主对象仍为每端独立。进入分队后额外等待 600 帧，身份从实际 GetUid / GetNickname 输出读回，OCR 只检查模式 / 队伍人数。
