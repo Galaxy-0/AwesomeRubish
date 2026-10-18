@@ -1798,3 +1798,62 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 - 本轮三图aim/ink/swim本机反馈均通过；策略只读静态导航JSON、公共技能只收白名单OwnState的实际sandbox回归通过。裁判/策略接口边界和paint/knockdowns unknown规则继续有效。13项导航组件涵盖脚/膝/半径/薄墙/台阶/坡/跳跃、精确拐点、起点投影、临时封边、替代路线与三次失败退出；公共回归及生产传输29通过。
 - A1伤害补测来自已经接受并推送的partial证据，不冒充本轮新射击：两次损失均.550000012、HUD均1.0秒，原件sha256 `c125ab7feb7a7435d6040272a34971c3dd4953147fd25b3f797d95f258dcf6d3`。入口检查原生dmhost/rl计时传输hash未变，以及除Skills导航类外模块AST与partial commit一致，结果明确标记reused_accepted_partial=true。
 - 六个双端会话共12宿主均无FATAL且优雅退出，1296次资源采样最高pressure1、新增swapout0、同时两端footprint合计峰值9222MiB。原件/参考档由各会话关闭时核对不变；所有原生进程与空气服务已清理。图数据/游戏画面/原始trace/sample仍只在work，不入库。完整A4提交只含本项目源码/测试/文档；A5预备源仍单独保留，待A4推送后进行四房烟测与100局。
+
+## 2026-10-19：A4 已推送，A5 四房原生烟测出现新卡点（停止，A5 未签收）
+
+**A4 完整提交 `91cd943be7ea5f4eee69097fdc9124d475c472b0` 已 push，故障后再次核对本地 HEAD / 远端 main 相同。A4 partial `7e2ecd7` 和 A1 伤害补测保持有效。本节为新的四房原生运行卡点，按指示记录后停止；100局、A3b、T1 均未启动，没有请求其它模型。**
+
+- 已把 A5 接入正式入口：`bash tests/run_all.sh --milestone a5 --games 4 --parallel 4 --timeout 7200`。日志 `work/a5/smoke-4.log`，入口退出1；完整结果 `work/arena/tournament-20261019-013748-801620/result.json`。这是诊断烟测，`diagnostic_only=true`、`phase_passed=false`、`full_a5_passed=false`，不作为百局验收。前置公共回归、A4导航组件、A3接口边界及 A5组件6项 / 两基线实际sandbox子进程测试1项均通过。
+- 四个房间各自独立 air、存档副本、fixed60 时钟、双端工作刮水刀8000，按对交换策略/阵营/出生侧。仅保留直冲、占高台两个弱基线，未调强。八宿主使用 M5 两路加载准入：每房保留自己的 `active` 标记，房内 `slot-0/1` 链到擂台共享的两个 flock 文件，避免全局激活使一次性加载锁提前耗尽。组件验证本地激活隔离、共享inode/真实互斥、过晚配置拒绝和只取消所属进程。
+- 逐房实际屏障记录证实八个不同宿主 PID **75319/92426、75318/92427、75316/92428、75317/92429** 同时推进，首个ACK到最后成功ACK的保守公共重叠 **504.5909秒**。这只证明发生了四房并行，不能替代四房全部正常结算；原始签收 `concurrency_windows` 因本批失败未写为通过。补充诊断在同目录 `smoke-diagnostics.json`。
+
+### A5 当前卡点：District00 客端有 STEP 预算但 present 真停滞，120秒看门狗中止
+
+1. round-000 / round-001（温泉峡谷）均正常到原生 Winners，**11508受控帧**，双端互反结算比分分别 **1.1:3.2、3.0:1.1**；换边后占高台示例均胜。两局 HUD down 计数读回均0；`paint` / `knockdowns` 仍为 unknown。只有2个有效样本，不声称百局胜率或策略显著强弱；程序输出的两局区间只是部分统计。
+2. round-002（District00）最后完整屏障 **7932帧**，双方Timer HUD **47.5666656 / 47.5499992秒**；会话 `work/tests/m6-2p-20261019-013748-964858/`。客端 PID92428 的 `player-1/host.log:10695` 明确记录：`FATAL RL_STALL no present progress frame=17679 active_stall_ns=120003405084 limit_ns=120000000000 remaining=12`。前一行帧起点为 tick7933；有待执行预算而非策略暂停。随后 SIGABRT / 退出-6，协调器 receive 报 `native RL connection closed or invalid observation header`。这与此前长等待时present持续增长的误杀不同；当前确有120秒无present进展，根因尚未确定。
+3. round-003（District00）推进到 **10524帧**，HUD余 **4.36666679 / 4.44999981秒**，被共享取消事件回收，`cancelled=true`；该场没有第二个 RL_STALL，不计为另一次独立原生崩溃。协调器未启动下一批，未将失败/取消当成策略输赢。
+4. macOS 已生成故障 PID92428 的 SIGABRT 报告，完整 **52线程**原件复制到忽略目录 `.../round-002/player-1-crash.ips`，SHA256 **`14ae00a7b796da004f5d0e7de3d5e1bfb02b5e88360578b017f388ed583f1b4e`**，摘要 `crash-summary.json`。35线程在 `block_inner`，主线程为 `svc_thread → block_inner → pthread_cond_wait`；`nvn-present` 在 `present_main` 条件等待，4个客体线程在 svc nanosleep，看门狗线程执行 abort。故障时进程已由看门狗退出，因此没有事后伪称抓到了活进程 sample；采用系统崩溃时全部线程栈作证。
+5. **待验证假设**：fixed60 的帧内客体事件/条件等待仍有一条需要未来客体时间或另一端推进才能释放的路径，在特定District00状态或并发调度下形成等待环；另一个方向是网络接收/任务唤醒不同步导致present生产者等待。现有栈不能识别具体等待对象/发送方，不据此直接改时钟、提高阈值或调策略掩盖。后续定位应关联当帧等待对象、客体调用栈与对端日志，再做同局流程的单房/四房对照。
+6. 四会话共 **2100次**资源采样，最高pressure **2**、新增swapout **0**；每房两端footprint峰值 **7163 / 7045 / 7247 / 7264 MiB**，它们不是同时刻总和。未触发M5 critical阈值，没有证据把此次停滞认定为OOM。原生二进制、arena/rl源码、三图navigation/sight共 **30项冻结hash全部一致**。原件/参考存档仍为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。
+
+- 八个所属宿主、四个air、策略子进程和测试协调器均已回收；故障日志、逐present输入、策略白名单观测/动作、原生屏障和截图仅留在忽略的work。A5候选源码/测试与本节文档保留未提交，**没有创建A5签收commit/push**，没有提交游戏资产/画面。至此按真正新卡点停止。
+
+## 2026-10-19：按指挥方恢复 A5，一轮定位 + 单房 void 容错
+
+- 最新签收口径覆盖此前“一场失败即取消全部”的A5预备实现：目标100个有效原生结算局，void/(有效+void)≤10%，默认四房，void率高可降三房并记录比较。void重试保留逻辑局的地图/策略角色/换边位置；只清理自身房间，其他房间继续。未知策略/完整性/加载错误不伪装void。
+- 根因定位限定一轮。故障52线程报告结合原生源码与本机main反汇编，主线程栈的 `svc_thread_impl:717` 是 **SVC 0x34 WaitForAddress**（计数器/地址仲裁，可能用于游戏信号量），客体链包含main+4ad6d70 / 4cd68b0 / 4ad1a7c。它并非直接GPU完成等待或LDN socket读；LDN接收是独立 `ldn_reader→recvfrom` 线程。`nvn-present→present_main:6679` 等待 `g_pq_cv`（队列无待取提交或display-link持有），没有栈证据表明卡在GPU完成。主线程已经起了tick7933，不能靠再起一次同帧tick盲目绕过。崩溃报告没有客体堆内存，尚不能恢复该地址等待的对象/生产者；并发调度导致信号量等待链不释放仍是假设，不据此修改时钟或提高阈值。
+- 单房对照沿同一District00、8000/相同基线/角色流程启动，`work/a5/one-round-diagnosis/normal/`，在持续STEP时自动对两端执行macOS sample，原始正常栈留在work。此次不开展第二轮根因追踪；能从这一轮确定才修，否则保留证据并用容错擂台继续。
+- 独立调度器已实现：原生日志含 `FATAL RL_STALL` 才归类watchdog void；清理中的预期SIGABRT错误仍保留。新尝试独立目录，void不计胜/负/平分母，完成后补开同逻辑局。按实际最后成功ACK计算三/四房重叠，不能把无进展的120秒算成并行进展。超void预算或四房早期比率超限只停止新提交、排空当前房间，四房降三房时全新跑100局，不混算样本。
+- 组件测试现11项通过，含真实run_match失败分支的watchdog/任意错误区分、cleanup错误保留、单房void不取消他房、配对补跑、超预算排空、HUD/比分换边汇总、最后成功ACK截止的三房重叠；两弱基线实际sandbox测试1项通过。它们不代表原生百局已通过。正式入口 `bash tests/run_all.sh --milestone a5 --games 100 --parallel 4 --fallback-three` 将先跑全部既有回归，再开始擂台。
+- 一轮栈对照结论：正常District00客端在持续推进时也短暂经过相同main+4ad6d70/4cd68b0/4ad1a7c → WaitForAddress链，并可继续构建/提交图形命令；正常sample还包括合法预算边界WaitSynchronization与短暂GPU sync等待。故障报告没有客体堆快照，不能仅凭相同等待栈认定哪个信号生产者缺失。根因未闭环，不修改原生时钟/等待语义；单轮结论与两端正常sample SHA在 `work/a5/one-round-diagnosis/conclusion.json`。按指挥方限定，到此结束根因工作，继续容错百局。
+- 单房正常对照最终通过：`work/a5/one-round-diagnosis/normal/result.json`，11508受控帧、双方原生Winners、互反比分1.6:1.7、errors=[]，两个宿主优雅清理。它是本轮定位对照，不混入正式100局。容错正式入口的全部公共回归、导航/接口组件、A5组件11项和实际sandbox1项通过；四房原生正式运行目录 `work/arena/tournament-20261019-021200-165802/`，日志 `work/a5/acceptance-tolerant-100.log`，开始时冻结源码/二进制/三图数据，执行期间不改策略与运行时源码。
+
+### A5 当前真正新卡点：Winners 双端结算涂地比分相差0.1个百分点（停止，未签收）
+
+**本轮没有再发生watchdog卡死；新的停止原因是结算真值一致性。正式100有效局未完成，A5未PASS，不创建签收commit/push。已实现的void容错/测试/文档保留未提交；A4远端 `91cd943be7ea5f4eee69097fdc9124d475c472b0` 不变。按“真正的新卡点才停下”到此停止，没有第二轮死锁定位、没有请求其它模型，没有启动A3b/T1。**
+
+- 命令 `bash tests/run_all.sh --milestone a5 --games 100 --parallel 4 --fallback-three --timeout 7200`，日志 `work/a5/acceptance-tolerant-100.log`，退出1。结果 `work/arena/tournament-20261019-021200-165802/result.json`：**32有效、0 void、1独立完整性失败、3取消**；`phase_passed=false` / `full_a5_passed=false`。void率按授权口径为0/(32+0)=0%，不把其它错误或取消塞入分母。此前首次四房烟测的watchdog不是本轮样本，不混算。未触发四房void率超限，故未启动三房回退。
+- round-032-attempt-000（District00，rush在0端 / high-ground在1端）在 **11496受控帧**双方均到原生Winners，`phase=3`、`score_valid=1`、`turf_valid=1`、`score_units=1`。0端原生比分 **[0.699999988,1.29999995]**，1端 **[1.39999998,0.699999988]**；反序差约 **[0,-0.10000003]个百分点**，超过既有0.002容差，抛 `AssertionError('final scores disagree between peers')`。两端胜者方向虽相同，但不能把此局当成已通过互反比分校验。该场会话 `work/tests/m6-2p-20261019-045052-975411/`，两端PID30003/48498。样本帧25811/21167，按本端RL_ATTACH帧14519/9876换算是11292/11291；结算之后仍持续保留差异，不是读取到了局内零默认值。
+- 原生屏障JSON保留双方所有阶段/比分/有效位，补充 `.../round-032-attempt-000/score-disagreement.json` 包括首次出现比分帧、最终快照、反序差及原始trace SHA256。该assert在Winners图像单独保存之前失败；保留的38张周期/事件图并不宣称是两端最终Winners的人工截图验证。没有用截图缺口猜比分，也没有修改旧结果或放宽容差。
+- round-033/034/035 的 `cancelled=true`，是全局完整性失败后的回收，无独立RL_STALL，不当作另外3次原生崩溃。授权的watchdog void分支不会取消其他房；此次是未授权为void的新完整性错误，按既有错误隔离规则停止。32有效局全部成对换边并覆盖三图；root诊断单房正常局不计入32局。
+- **待验证假设**：双端百分比文字正落在舍入边界、双方涂地/结算快照未完全同步，或原生formatter的取值侧/采样归属存在边界差异。当前仅有一例0.1个百分点差异，不能判定为单纯显示误差，更不能据同胜者方向自动认定可靠比分。后续应先对照同局原生formatter参数、结算状态与网络涂地同步；是否采用单一裁判端或容忍显示精度，需要明确口径后再改，当前不自作扩大void定义。
+
+本轮 **32局部分统计，仅用于保留证据，不是百局结论**（95%双侧Clopper-Pearson，本轮无平局）：
+
+| 示例 | 胜/负 | 胜率 | 95%区间 | HUD敌方倒下 / 自身倒下 | 敌方 / 自身环境死亡 | 平均结算涂地百分点 |
+|---|---:|---:|---:|---:|---:|---:|
+| rush / 直冲 | 4/28 | 12.5% | 3.5131%–28.9948% | 3 / 3 | 0 / 0 | 1.0250 |
+| high-ground / 占高台 | 28/4 | 87.5% | 71.0052%–96.4869% | 3 / 3 | 0 / 0 | 1.9719 |
+
+- HUD倒下包含未分类原因；环境子集0表示本轮位置规则没有识别到环境死亡，不能推成所有倒下均有精确击杀归属。A3b实时paint/knockdowns继续unknown。每局两侧实际比分留在各自result，均值不是归一化到双方和100%的比分。rush结算范围0–1.8，high-ground 0–4.6个百分点。
+- 正式运行总墙钟 **10743.3051秒（2小时59分3.3秒）**；有效局含加载平均 **1200.9348秒**（1170.1789–1248.2311），受控至Winners平均 **673.3479秒**（617.9818–711.5908）。并行时逐局耗时之和不是整体墙钟。9段实际八宿主ACK公共重叠累计 **5124.3368秒**，不是仅设置四worker。
+- 36个会话 / 72个宿主日志末尾均确认优雅退出，所有air/策略子进程/协调器已回收；共 **20008次**资源采样，最高pressure2、新增swapout0。冻结的31项原生二进制、arena/rl源码、三图navigation/sight hash全部一致；原件/参考存档仍为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。没有提交游戏资产、画面或原始记录。
+
+## 2026-10-19：按新比分口径保存 A5 partial，准备保留33局续跑
+
+- 本节覆盖上一节比分一致性停止线：双端本地结算比分允许舍入/同步差，**胜者一致即有效**，比分取双端按角色对齐后的算术平均；保存原始两对比分、对齐差值、各端胜者。最大绝对差 **>2个百分点** 标suspect但仍有效；只有胜者不一致（含一端平局另一端有胜者）记比分void，与watchdog void合计。有效局suspect率和有效+void分母的void率分别输出；不再因小比分差取消整批。
+- 按用户明确指示先创建 **A5 partial**：容错调度、两个弱基线、规则/断点组件与数值结果入库，仍不标完整A5通过。公开数值检查点 `arena/results/a5-partial-20261019.json` 保存原round-000～031全部32局，并从旧原生屏障重新核验两端Winners，将round-032按新规则计入：双端0.7:1.3 / 1.4:0.7，平均 **0.7:1.35**，差0.1个百分点，suspect=false。round-032 HUD计数从同一完整屏障序列重建，双方敌/自身倒下均0；原失败result/trace保持原样。
+- 检查点现 **33有效 / 0 void / 0 suspect**，直冲4胜29负、占高台29胜4负。旧取消的round-033/034/035保留独立审计，不进胜负/void分母。原始结果和各场trace SHA、未变的原生/技能/可见性/地图runtime SHA及策略源码SHA供续跑前验证。只有已授权变更的runner/schedule/statistics不要求与旧协调器源码hash相同；没有更换原生、时钟、策略或地图来迁就旧结果。
+- `--resume` 先验证配对地图/角色、比分判定、native Winners、策略/证据/不可变runtime hash，排除已有效逻辑局后再提交。因此只需新增 **67有效局（round-033～099）**，不会重跑原32局或round-032。旧取消的33/34/35以attempt-001补跑。若将来四房void率触发三房回退，也保留所有已有效局，只补剩余局；分段保留并行对比和实际ACK重叠。总耗时累计实际运行段，排除会话间人工等待。
+- `.venv/bin/python tests/test_a5_components.py` **15项通过**，含小差取均值/原值保留、>2与恰好2边界、换边胜者、平局分歧void、NaN拒绝、已有33局不重复提交、取消尝试编号、检查点重复/比分篡改/证据变更拒绝；两个实际sandbox基线测试1项通过。原生遗留33局已逐项从证据重判；没有声称新增67局已完成。
+- 续跑命令为 `bash tests/run_all.sh --milestone a5 --games 100 --parallel 4 --fallback-three --resume arena/results/a5-partial-20261019.json --timeout 7200`。partial先commit/push核对远端，再执行上述入口。游戏原始状态、地图/资产、画面、线程栈仍只在ignored work；提交的结果只有数值与hash/相对证据引用。

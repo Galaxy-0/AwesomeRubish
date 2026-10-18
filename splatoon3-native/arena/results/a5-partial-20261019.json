@@ -1,0 +1,3681 @@
+{
+  "schema": "arena.checkpoint.v1",
+  "scoring_rule": "peer-winner-average-v1",
+  "passed": false,
+  "full_a5_passed": false,
+  "games_requested": 100,
+  "parallel_games": 4,
+  "policies": [
+    "rush",
+    "high-ground"
+  ],
+  "source_hashes": [
+    "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+    "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+  ],
+  "matches": [
+    {
+      "round": 0,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-000-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-021200-341946",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792347628.083318,
+      "host_pids": [
+        50419,
+        63710
+      ],
+      "last_progress_wall": 1792348306.914273,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        1.89999998
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.0189999998
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792348306.914273,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-021200-341946"
+      ],
+      "wall_seconds": 1186.7282860279083,
+      "controlled_seconds": 678.8335359096527,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          1.89999998
+        ],
+        [
+          1.89999998,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          1.89999998
+        ],
+        [
+          1.10000002,
+          1.89999998
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 1,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-001-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-021200-344456",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792347660.8254988,
+      "host_pids": [
+        50421,
+        64244
+      ],
+      "last_progress_wall": 1792348339.125688,
+      "outcome": "b",
+      "score_by_role": [
+        1.70000005,
+        1.0
+      ],
+      "turf_ratio_by_role": [
+        0.0170000005,
+        0.01
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792348339.125688,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-021200-344456"
+      ],
+      "wall_seconds": 1218.8976502418518,
+      "controlled_seconds": 678.3024220466614,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.70000005,
+          1.0
+        ],
+        [
+          1.0,
+          1.70000005
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.70000005,
+          1.0
+        ],
+        [
+          1.70000005,
+          1.0
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 2,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-002-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-021200-340954",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792347656.826438,
+      "host_pids": [
+        50418,
+        63708
+      ],
+      "last_progress_wall": 1792348368.41414,
+      "outcome": "a",
+      "score_by_role": [
+        1.79999995,
+        0.400000006
+      ],
+      "turf_ratio_by_role": [
+        0.0179999995,
+        0.00400000006
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792348368.41414,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-021200-340954"
+      ],
+      "wall_seconds": 1248.2310609817505,
+      "controlled_seconds": 711.5908131599426,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.79999995,
+          0.400000006
+        ],
+        [
+          0.400000006,
+          1.79999995
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.79999995,
+          0.400000006
+        ],
+        [
+          1.79999995,
+          0.400000006
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 3,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-003-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-021200-341792",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792347646.018517,
+      "host_pids": [
+        50420,
+        63714
+      ],
+      "last_progress_wall": 1792348335.541887,
+      "outcome": "b",
+      "score_by_role": [
+        0.899999976,
+        0.5
+      ],
+      "turf_ratio_by_role": [
+        0.00899999976,
+        0.005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792348335.541887,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-021200-341792"
+      ],
+      "wall_seconds": 1215.3527760505676,
+      "controlled_seconds": 689.5256350040436,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.899999976,
+          0.5
+        ],
+        [
+          0.5,
+          0.899999976
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.899999976,
+          0.5
+        ],
+        [
+          0.899999976,
+          0.5
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 4,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-004-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-023147-081461",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792348819.057546,
+      "host_pids": [
+        98524,
+        13015
+      ],
+      "last_progress_wall": 1792349502.809026,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        2.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.0220000005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792349502.809026,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-023147-081461"
+      ],
+      "wall_seconds": 1195.8971078395844,
+      "controlled_seconds": 683.7538270950317,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          2.20000005
+        ],
+        [
+          2.20000005,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          2.20000005
+        ],
+        [
+          1.10000002,
+          2.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 5,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-005-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-023215-705090",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792348861.6665049,
+      "host_pids": [
+        1961,
+        15642
+      ],
+      "last_progress_wall": 1792349548.244481,
+      "outcome": "b",
+      "score_by_role": [
+        2.79999995,
+        1.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.0279999995,
+        0.012000000500000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792349548.244481,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-023215-705090"
+      ],
+      "wall_seconds": 1212.6950788497925,
+      "controlled_seconds": 686.5804800987244,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          2.79999995,
+          1.20000005
+        ],
+        [
+          1.20000005,
+          2.79999995
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          2.79999995,
+          1.20000005
+        ],
+        [
+          2.79999995,
+          1.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 6,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-006-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-023219-260528",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792348847.1001291,
+      "host_pids": [
+        1998,
+        16320
+      ],
+      "last_progress_wall": 1792349545.181621,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        3.0999999
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.030999998999999997
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792349545.181621,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-023219-260528"
+      ],
+      "wall_seconds": 1206.1259169578552,
+      "controlled_seconds": 698.0839669704437,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          3.0999999
+        ],
+        [
+          3.0999999,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          3.0999999
+        ],
+        [
+          1.10000002,
+          3.0999999
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 7,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-007-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-023248-582901",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792348900.97087,
+      "host_pids": [
+        6552,
+        21059
+      ],
+      "last_progress_wall": 1792349576.620547,
+      "outcome": "b",
+      "score_by_role": [
+        1.5,
+        1.0
+      ],
+      "turf_ratio_by_role": [
+        0.015,
+        0.01
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792349576.620547,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-023248-582901"
+      ],
+      "wall_seconds": 1208.2027530670166,
+      "controlled_seconds": 675.652441740036,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.5,
+          1.0
+        ],
+        [
+          1.0,
+          1.5
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.5,
+          1.0
+        ],
+        [
+          1.5,
+          1.0
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 8,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-008-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-025142-988817",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792350020.549678,
+      "host_pids": [
+        45513,
+        61458
+      ],
+      "last_progress_wall": 1792350702.029501,
+      "outcome": "b",
+      "score_by_role": [
+        0.899999976,
+        2.0
+      ],
+      "turf_ratio_by_role": [
+        0.00899999976,
+        0.02
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792350702.029501,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-025142-988817"
+      ],
+      "wall_seconds": 1199.1718158721924,
+      "controlled_seconds": 681.4823288917542,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.899999976,
+          2.0
+        ],
+        [
+          2.0,
+          0.899999976
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.899999976,
+          2.0
+        ],
+        [
+          0.899999976,
+          2.0
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 9,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-009-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-025225-380391",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792350064.2481542,
+      "host_pids": [
+        50691,
+        64466
+      ],
+      "last_progress_wall": 1792350738.355412,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        0.400000006
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.00400000006
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11484,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792350738.355412,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-025225-380391"
+      ],
+      "wall_seconds": 1193.1689310073853,
+      "controlled_seconds": 674.1096529960632,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          0.400000006
+        ],
+        [
+          0.400000006,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          0.400000006
+        ],
+        [
+          1.10000002,
+          0.400000006
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 10,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-010-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-025228-407010",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792350074.663614,
+      "host_pids": [
+        51216,
+        65025
+      ],
+      "last_progress_wall": 1792350724.054074,
+      "outcome": "b",
+      "score_by_role": [
+        1.20000005,
+        2.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.012000000500000002,
+        0.0220000005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792350724.054074,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-025228-407010"
+      ],
+      "wall_seconds": 1175.867192029953,
+      "controlled_seconds": 649.3937110900879,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.20000005,
+          2.20000005
+        ],
+        [
+          2.20000005,
+          1.20000005
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.20000005,
+          2.20000005
+        ],
+        [
+          1.20000005,
+          2.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 11,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-011-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-025256-789393",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792350118.50738,
+      "host_pids": [
+        54696,
+        69676
+      ],
+      "last_progress_wall": 1792350752.997359,
+      "outcome": "b",
+      "score_by_role": [
+        3.5,
+        1.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.035,
+        0.012000000500000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792350752.997359,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-025256-789393"
+      ],
+      "wall_seconds": 1176.4098627567291,
+      "controlled_seconds": 634.492369890213,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          3.5,
+          1.20000005
+        ],
+        [
+          1.20000005,
+          3.5
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          3.5,
+          1.20000005
+        ],
+        [
+          3.5,
+          1.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 12,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-012-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-031142-181533",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792351205.9450681,
+      "host_pids": [
+        93305,
+        8211
+      ],
+      "last_progress_wall": 1792351884.516368,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        3.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.0320000005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792351884.516368,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-031142-181533"
+      ],
+      "wall_seconds": 1182.5130751132965,
+      "controlled_seconds": 678.5738999843597,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          3.20000005
+        ],
+        [
+          3.20000005,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          3.20000005
+        ],
+        [
+          1.10000002,
+          3.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 13,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-013-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-031204-282056",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792351229.783668,
+      "host_pids": [
+        95737,
+        9493
+      ],
+      "last_progress_wall": 1792351907.510067,
+      "outcome": "b",
+      "score_by_role": [
+        1.89999998,
+        1.10000002
+      ],
+      "turf_ratio_by_role": [
+        0.0189999998,
+        0.0110000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792351907.510067,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-031204-282056"
+      ],
+      "wall_seconds": 1183.4343371391296,
+      "controlled_seconds": 677.7286109924316,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.89999998,
+          1.10000002
+        ],
+        [
+          1.10000002,
+          1.89999998
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.89999998,
+          1.10000002
+        ],
+        [
+          1.89999998,
+          1.10000002
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 14,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-014-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-031218-557133",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792351268.838335,
+      "host_pids": [
+        97209,
+        11688
+      ],
+      "last_progress_wall": 1792351959.184424,
+      "outcome": "b",
+      "score_by_role": [
+        0.800000012,
+        1.10000002
+      ],
+      "turf_ratio_by_role": [
+        0.00800000012,
+        0.0110000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792351959.184424,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-031218-557133"
+      ],
+      "wall_seconds": 1220.8361279964447,
+      "controlled_seconds": 690.3489558696747,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.800000012,
+          1.10000002
+        ],
+        [
+          1.10000002,
+          0.800000012
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.800000012,
+          1.10000002
+        ],
+        [
+          0.800000012,
+          1.10000002
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 15,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-015-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-031233-200415",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792351287.405598,
+      "host_pids": [
+        99085,
+        13994
+      ],
+      "last_progress_wall": 1792351966.949999,
+      "outcome": "a",
+      "score_by_role": [
+        0.0,
+        1.39999998
+      ],
+      "turf_ratio_by_role": [
+        0.0,
+        0.013999999800000001
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792351966.949999,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-031233-200415"
+      ],
+      "wall_seconds": 1213.9444308280945,
+      "controlled_seconds": 679.5466811656952,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.0,
+          1.39999998
+        ],
+        [
+          1.39999998,
+          0.0
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.0,
+          1.39999998
+        ],
+        [
+          0.0,
+          1.39999998
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 16,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-016-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-033124-695565",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792352403.389235,
+      "host_pids": [
+        39759,
+        54811
+      ],
+      "last_progress_wall": 1792353079.1633549,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        4.5999999
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.045999999
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792353079.1633549,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-033124-695565"
+      ],
+      "wall_seconds": 1194.642296075821,
+      "controlled_seconds": 675.7762291431427,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          4.5999999
+        ],
+        [
+          4.5999999,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          4.5999999
+        ],
+        [
+          1.10000002,
+          4.5999999
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 17,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-017-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-033147-758882",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792352426.259083,
+      "host_pids": [
+        42266,
+        57189
+      ],
+      "last_progress_wall": 1792353102.0641742,
+      "outcome": "b",
+      "score_by_role": [
+        2.79999995,
+        1.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.0279999995,
+        0.012000000500000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792353102.0641742,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-033147-758882"
+      ],
+      "wall_seconds": 1194.4717421531677,
+      "controlled_seconds": 675.8078119754791,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          2.79999995,
+          1.20000005
+        ],
+        [
+          1.20000005,
+          2.79999995
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          2.79999995,
+          1.20000005
+        ],
+        [
+          2.79999995,
+          1.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 18,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-018-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-033239-402807",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792352491.577034,
+      "host_pids": [
+        48031,
+        62965
+      ],
+      "last_progress_wall": 1792353166.342088,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        1.89999998
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.0189999998
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792353166.342088,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-033239-402807"
+      ],
+      "wall_seconds": 1207.0947678089142,
+      "controlled_seconds": 674.7672691345215,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          1.89999998
+        ],
+        [
+          1.89999998,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          1.89999998
+        ],
+        [
+          1.10000002,
+          1.89999998
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 19,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-019-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-033247-160848",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792352524.8003871,
+      "host_pids": [
+        49088,
+        64958
+      ],
+      "last_progress_wall": 1792353184.945408,
+      "outcome": "b",
+      "score_by_role": [
+        2.0999999,
+        1.10000002
+      ],
+      "turf_ratio_by_role": [
+        0.020999999,
+        0.0110000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792353184.945408,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-033247-160848"
+      ],
+      "wall_seconds": 1217.9555668830872,
+      "controlled_seconds": 660.1600878238678,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          2.0999999,
+          1.10000002
+        ],
+        [
+          1.10000002,
+          2.0999999
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          2.0999999,
+          1.10000002
+        ],
+        [
+          2.0999999,
+          1.10000002
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 20,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-020-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-035119-340045",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792353602.8044858,
+      "host_pids": [
+        86455,
+        4542
+      ],
+      "last_progress_wall": 1792354267.981025,
+      "outcome": "b",
+      "score_by_role": [
+        0.400000006,
+        1.79999995
+      ],
+      "turf_ratio_by_role": [
+        0.00400000006,
+        0.0179999995
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792354267.981025,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-035119-340045"
+      ],
+      "wall_seconds": 1188.7687239646912,
+      "controlled_seconds": 665.1794681549072,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.400000006,
+          1.79999995
+        ],
+        [
+          1.79999995,
+          0.400000006
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.400000006,
+          1.79999995
+        ],
+        [
+          0.400000006,
+          1.79999995
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 21,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-021-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-035142-228346",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792353624.074819,
+      "host_pids": [
+        88758,
+        5801
+      ],
+      "last_progress_wall": 1792354317.792358,
+      "outcome": "a",
+      "score_by_role": [
+        0.0,
+        1.10000002
+      ],
+      "turf_ratio_by_role": [
+        0.0,
+        0.0110000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792354317.792358,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-035142-228346"
+      ],
+      "wall_seconds": 1215.7268571853638,
+      "controlled_seconds": 693.7202868461609,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.0,
+          1.10000002
+        ],
+        [
+          1.10000002,
+          0.0
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.0,
+          1.10000002
+        ],
+        [
+          0.0,
+          1.10000002
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 22,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-022-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-035246-507013",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792353707.931529,
+      "host_pids": [
+        97825,
+        13242
+      ],
+      "last_progress_wall": 1792354339.028873,
+      "outcome": "b",
+      "score_by_role": [
+        1.20000005,
+        2.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.012000000500000002,
+        0.0220000005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792354339.028873,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-035246-507013"
+      ],
+      "wall_seconds": 1172.6798799037933,
+      "controlled_seconds": 631.0994579792023,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.20000005,
+          2.20000005
+        ],
+        [
+          2.20000005,
+          1.20000005
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.20000005,
+          2.20000005
+        ],
+        [
+          1.20000005,
+          2.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 23,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-023-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-035305-120053",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792353737.159771,
+      "host_pids": [
+        99617,
+        15867
+      ],
+      "last_progress_wall": 1792354355.139457,
+      "outcome": "b",
+      "score_by_role": [
+        2.20000005,
+        1.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.0220000005,
+        0.012000000500000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792354355.139457,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-035305-120053"
+      ],
+      "wall_seconds": 1170.1788589954376,
+      "controlled_seconds": 617.9818489551544,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          2.20000005,
+          1.20000005
+        ],
+        [
+          1.20000005,
+          2.20000005
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          2.20000005,
+          1.20000005
+        ],
+        [
+          2.20000005,
+          1.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 24,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-024-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-041108-128409",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792354781.905647,
+      "host_pids": [
+        32802,
+        50391
+      ],
+      "last_progress_wall": 1792355459.583182,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        3.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.0320000005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792355459.583182,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-041108-128409"
+      ],
+      "wall_seconds": 1191.6661350727081,
+      "controlled_seconds": 677.6801459789276,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          3.20000005
+        ],
+        [
+          3.20000005,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          3.20000005
+        ],
+        [
+          1.10000002,
+          3.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 25,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-025-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-041157-966153",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792354831.443684,
+      "host_pids": [
+        39644,
+        53433
+      ],
+      "last_progress_wall": 1792355510.5618718,
+      "outcome": "b",
+      "score_by_role": [
+        1.5,
+        1.10000002
+      ],
+      "turf_ratio_by_role": [
+        0.015,
+        0.0110000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792355510.5618718,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-041157-966153"
+      ],
+      "wall_seconds": 1192.7967779636383,
+      "controlled_seconds": 679.1206049919128,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.5,
+          1.10000002
+        ],
+        [
+          1.10000002,
+          1.5
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.5,
+          1.10000002
+        ],
+        [
+          1.5,
+          1.10000002
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 26,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-026-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-041219-186234",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792354875.3328278,
+      "host_pids": [
+        42914,
+        56841
+      ],
+      "last_progress_wall": 1792355558.801398,
+      "outcome": "a",
+      "score_by_role": [
+        0.899999976,
+        0.5
+      ],
+      "turf_ratio_by_role": [
+        0.00899999976,
+        0.005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792355558.801398,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-041219-186234"
+      ],
+      "wall_seconds": 1219.770289182663,
+      "controlled_seconds": 683.4708371162415,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.899999976,
+          0.5
+        ],
+        [
+          0.5,
+          0.899999976
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.899999976,
+          0.5
+        ],
+        [
+          0.899999976,
+          0.5
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 27,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-027-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-041235-305640",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792354901.8212962,
+      "host_pids": [
+        44388,
+        58897
+      ],
+      "last_progress_wall": 1792355567.157769,
+      "outcome": "b",
+      "score_by_role": [
+        1.29999995,
+        0.0
+      ],
+      "turf_ratio_by_role": [
+        0.0129999995,
+        0.0
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792355567.157769,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-041235-305640"
+      ],
+      "wall_seconds": 1212.0502579212189,
+      "controlled_seconds": 665.3389058113098,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.29999995,
+          0.0
+        ],
+        [
+          0.0,
+          1.29999995
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.29999995,
+          0.0
+        ],
+        [
+          1.29999995,
+          0.0
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 28,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-028-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-043059-862967",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792355981.778034,
+      "host_pids": [
+        81568,
+        98731
+      ],
+      "last_progress_wall": 1792356652.8375309,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        2.0999999
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.020999999
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792356652.8375309,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-043059-862967"
+      ],
+      "wall_seconds": 1193.1661779880524,
+      "controlled_seconds": 671.0620651245117,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          2.0999999
+        ],
+        [
+          2.0999999,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          2.0999999
+        ],
+        [
+          1.10000002,
+          2.0999999
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 29,
+      "attempt": 0,
+      "stage": 3,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-029-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-043150-765040",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792356030.5890749,
+      "host_pids": [
+        87299,
+        3587
+      ],
+      "last_progress_wall": 1792356704.618935,
+      "outcome": "b",
+      "score_by_role": [
+        2.0999999,
+        1.20000005
+      ],
+      "turf_ratio_by_role": [
+        0.020999999,
+        0.012000000500000002
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792356704.618935,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-043150-765040"
+      ],
+      "wall_seconds": 1194.006916999817,
+      "controlled_seconds": 674.0323810577393,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          2.0999999,
+          1.20000005
+        ],
+        [
+          1.20000005,
+          2.0999999
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          2.0999999,
+          1.20000005
+        ],
+        [
+          2.0999999,
+          1.20000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 30,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-030-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-043238-969113",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792356096.29153,
+      "host_pids": [
+        93055,
+        9993
+      ],
+      "last_progress_wall": 1792356769.9351249,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        2.70000005
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.0270000005
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792356769.9351249,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-043238-969113"
+      ],
+      "wall_seconds": 1211.1741919517517,
+      "controlled_seconds": 673.645586013794,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          2.70000005
+        ],
+        [
+          2.70000005,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          2.70000005
+        ],
+        [
+          1.10000002,
+          2.70000005
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 31,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-031-attempt-000",
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-043247-366291",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792356123.203548,
+      "host_pids": [
+        94972,
+        10557
+      ],
+      "last_progress_wall": 1792356783.4920268,
+      "outcome": "b",
+      "score_by_role": [
+        2.5999999,
+        1.0
+      ],
+      "turf_ratio_by_role": [
+        0.025999999,
+        0.01
+      ],
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11508,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792356783.4920268,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-043247-366291"
+      ],
+      "wall_seconds": 1216.2864158153534,
+      "controlled_seconds": 660.2908971309662,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          2.5999999,
+          1.0
+        ],
+        [
+          1.0,
+          2.5999999
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          2.5999999,
+          1.0
+        ],
+        [
+          2.5999999,
+          1.0
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "winner_by_observer": [
+        0,
+        0
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "legacy_verdict": {
+        "passed": true,
+        "errors": []
+      },
+      "cancelled": false,
+      "reconciled_from_native_trace": true
+    },
+    {
+      "round": 32,
+      "attempt": 0,
+      "stage": 2,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-032-attempt-000",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "session": "work/tests/m6-2p-20261019-045052-975411",
+      "shared_load_slots": "work/arena/tournament-20261019-021200-165802/load-slots-shared",
+      "controlled_start_wall": 1792357182.740191,
+      "host_pids": [
+        30003,
+        48498
+      ],
+      "last_progress_wall": 1792357863.177192,
+      "cancelled": false,
+      "sessions_created": [
+        "work/tests/m6-2p-20261019-045052-975411"
+      ],
+      "wall_seconds": 1210.3717801570892,
+      "controlled_seconds": 680.563952922821,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          0.699999988,
+          1.29999995
+        ],
+        [
+          1.39999998,
+          0.699999988
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          0.699999988,
+          1.29999995
+        ],
+        [
+          0.699999988,
+          1.39999998
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        -0.10000003000000013
+      ],
+      "score_max_difference_pp": 0.10000003000000013,
+      "score_by_role": [
+        0.699999988,
+        1.3499999649999999
+      ],
+      "turf_ratio_by_role": [
+        0.00699999988,
+        0.013499999649999999
+      ],
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "outcome": "b",
+      "legacy_verdict": {
+        "passed": false,
+        "errors": [
+          "AssertionError('final scores disagree between peers')"
+        ]
+      },
+      "frames": 11496,
+      "native_winners": true,
+      "controlled_end_wall": 1792357863.177192,
+      "reconciled_from_native_trace": true,
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ]
+    }
+  ],
+  "statistics": {
+    "games": 33,
+    "wins": 4,
+    "losses": 29,
+    "draws": 0,
+    "win_rate": 0.12121212121212122,
+    "decided_win_rate": 0.12121212121212122,
+    "decided_exact_95_interval": [
+      0.03403288142297868,
+      0.2820162285372205
+    ],
+    "stronger": false,
+    "interval_method": "Clopper-Pearson two-sided 95%; draws excluded from binomial trials",
+    "valid_games": 33,
+    "void_games": 0,
+    "attempts": 33,
+    "void_rate": 0.0,
+    "suspect_games": 0,
+    "suspect_rate": 0.0,
+    "void_reasons": {},
+    "failed_or_cancelled": 0,
+    "by_policy": [
+      {
+        "games": 33,
+        "wins": 4,
+        "losses": 29,
+        "draws": 0,
+        "win_rate": 0.12121212121212122,
+        "decided_win_rate": 0.12121212121212122,
+        "decided_exact_95_interval": [
+          0.03403288142297868,
+          0.2820162285372205
+        ],
+        "stronger": false,
+        "interval_method": "Clopper-Pearson two-sided 95%; draws excluded from binomial trials",
+        "enemy_hud_downs": 3,
+        "own_hud_downs": 3,
+        "enemy_environmental_downs": 0,
+        "own_environmental_downs": 0,
+        "enemy_non_environment_classified_downs": 3,
+        "score_percentage_points": {
+          "mean": 1.0151515304242424,
+          "min": 0.0,
+          "max": 1.79999995
+        }
+      },
+      {
+        "games": 33,
+        "wins": 29,
+        "losses": 4,
+        "draws": 0,
+        "win_rate": 0.8787878787878788,
+        "decided_win_rate": 0.8787878787878788,
+        "decided_exact_95_interval": [
+          0.7179837714627795,
+          0.9659671185770213
+        ],
+        "stronger": true,
+        "interval_method": "Clopper-Pearson two-sided 95%; draws excluded from binomial trials",
+        "enemy_hud_downs": 3,
+        "own_hud_downs": 3,
+        "enemy_environmental_downs": 0,
+        "own_environmental_downs": 0,
+        "enemy_non_environment_classified_downs": 3,
+        "score_percentage_points": {
+          "mean": 1.9530302886969697,
+          "min": 0.0,
+          "max": 4.5999999
+        }
+      }
+    ],
+    "wall_seconds": {
+      "sum": 39640.28403878212,
+      "mean": 1201.220728447943,
+      "min": 1170.1788589954376,
+      "max": 1248.2310609817505
+    },
+    "controlled_seconds": {
+      "sum": 22227.697169065475,
+      "mean": 673.566580880772,
+      "min": 617.9818489551544,
+      "max": 711.5908131599426
+    }
+  },
+  "elapsed_wall_seconds": 10743.305104970932,
+  "first_started_wall": 1792347120.166158,
+  "excluded_attempts": [
+    {
+      "round": 33,
+      "attempt": 0,
+      "stage": 2,
+      "cancelled": true,
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-033-attempt-000",
+      "wall_seconds": 1158.6678957939148,
+      "errors": [
+        "RuntimeError('native RL connection closed or invalid observation header')"
+      ]
+    },
+    {
+      "round": 34,
+      "attempt": 0,
+      "stage": 3,
+      "cancelled": true,
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-034-attempt-000",
+      "wall_seconds": 1093.295704126358,
+      "errors": [
+        "RuntimeError('native RL connection closed or invalid observation header')"
+      ]
+    },
+    {
+      "round": 35,
+      "attempt": 0,
+      "stage": 3,
+      "cancelled": true,
+      "artifacts": "work/arena/tournament-20261019-021200-165802/round-035-attempt-000",
+      "wall_seconds": 1079.7935390472412,
+      "errors": [
+        "RuntimeError('native RL connection closed or invalid observation header')"
+      ]
+    }
+  ],
+  "next_attempt_by_round": {
+    "0": 1,
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "9": 1,
+    "10": 1,
+    "11": 1,
+    "12": 1,
+    "13": 1,
+    "14": 1,
+    "15": 1,
+    "16": 1,
+    "17": 1,
+    "18": 1,
+    "19": 1,
+    "20": 1,
+    "21": 1,
+    "22": 1,
+    "23": 1,
+    "24": 1,
+    "25": 1,
+    "26": 1,
+    "27": 1,
+    "28": 1,
+    "29": 1,
+    "30": 1,
+    "31": 1,
+    "32": 1,
+    "33": 1,
+    "34": 1,
+    "35": 1,
+    "36": 0,
+    "37": 0,
+    "38": 0,
+    "39": 0,
+    "40": 0,
+    "41": 0,
+    "42": 0,
+    "43": 0,
+    "44": 0,
+    "45": 0,
+    "46": 0,
+    "47": 0,
+    "48": 0,
+    "49": 0,
+    "50": 0,
+    "51": 0,
+    "52": 0,
+    "53": 0,
+    "54": 0,
+    "55": 0,
+    "56": 0,
+    "57": 0,
+    "58": 0,
+    "59": 0,
+    "60": 0,
+    "61": 0,
+    "62": 0,
+    "63": 0,
+    "64": 0,
+    "65": 0,
+    "66": 0,
+    "67": 0,
+    "68": 0,
+    "69": 0,
+    "70": 0,
+    "71": 0,
+    "72": 0,
+    "73": 0,
+    "74": 0,
+    "75": 0,
+    "76": 0,
+    "77": 0,
+    "78": 0,
+    "79": 0,
+    "80": 0,
+    "81": 0,
+    "82": 0,
+    "83": 0,
+    "84": 0,
+    "85": 0,
+    "86": 0,
+    "87": 0,
+    "88": 0,
+    "89": 0,
+    "90": 0,
+    "91": 0,
+    "92": 0,
+    "93": 0,
+    "94": 0,
+    "95": 0,
+    "96": 0,
+    "97": 0,
+    "98": 0,
+    "99": 0
+  },
+  "evidence_sha256": {
+    "work/arena/tournament-20261019-021200-165802/result.json": "59e33ab231c317f70ab15d6f7b241feda26df3bdbbbf74d7efb464fd2012d60f",
+    "work/arena/tournament-20261019-021200-165802/round-000-attempt-000/native-barriers.jsonl": "d290cabecafa6cf270f83dfaa040b4f1bd88d13bc4add94e25f5d3466c780fe2",
+    "work/arena/tournament-20261019-021200-165802/round-001-attempt-000/native-barriers.jsonl": "29911946246475098949c8ed15a1620268145e7ed91f70aea9cc101369bea58c",
+    "work/arena/tournament-20261019-021200-165802/round-002-attempt-000/native-barriers.jsonl": "c122deb79be61b7e42c4514e23dbc7d3eca8189fe761047adf5fac08a90140e3",
+    "work/arena/tournament-20261019-021200-165802/round-003-attempt-000/native-barriers.jsonl": "d0e319f16e2f2a20be7db3b32adec99b8dcc8bcccb117fec40b9ce8fe6a27e62",
+    "work/arena/tournament-20261019-021200-165802/round-004-attempt-000/native-barriers.jsonl": "09ed45330d04205975e7ae4814abcb9c9317e9dfb82c1f3c0601cb8ee83a0d87",
+    "work/arena/tournament-20261019-021200-165802/round-005-attempt-000/native-barriers.jsonl": "d291411b0facbbf9099f79e371254e66cce3b68a5fd1e398deeefe3c162e0430",
+    "work/arena/tournament-20261019-021200-165802/round-006-attempt-000/native-barriers.jsonl": "26300be4de9f3a17ca023865c2ab4441255991e1a7a2258561e40beabfd80395",
+    "work/arena/tournament-20261019-021200-165802/round-007-attempt-000/native-barriers.jsonl": "38671c36dfbb9ea0e6472389b688f5d7f8dabc7ab1fc741e955f8b8c1ef46284",
+    "work/arena/tournament-20261019-021200-165802/round-008-attempt-000/native-barriers.jsonl": "c9d4278a3a2f6e2caaa3b985197d3dfe88b64a2d4d2531a7bab4e58b6048f66c",
+    "work/arena/tournament-20261019-021200-165802/round-009-attempt-000/native-barriers.jsonl": "4984b64696b8b7fe61ebc3561693b71abee70e9edeb205412635fd7beeb98a71",
+    "work/arena/tournament-20261019-021200-165802/round-010-attempt-000/native-barriers.jsonl": "b7fe4a1d8788e86e1c8b2adb412f41ad385ac4b03f50c5d2c72eadda7f40b0f1",
+    "work/arena/tournament-20261019-021200-165802/round-011-attempt-000/native-barriers.jsonl": "4b14569f53a373c6143df1908d32a61392b1432cecda98381c94087af167b88a",
+    "work/arena/tournament-20261019-021200-165802/round-012-attempt-000/native-barriers.jsonl": "6d14b6bde9b2a78750704d6b421e578f4265c6932f17dd20628efa91e06b7390",
+    "work/arena/tournament-20261019-021200-165802/round-013-attempt-000/native-barriers.jsonl": "8148027038db8565a5c9b4d0b37f4622eecf9923e8f36d0050181a93d8c0ef3c",
+    "work/arena/tournament-20261019-021200-165802/round-014-attempt-000/native-barriers.jsonl": "30ae0fa28a45c0c039ecfb48519be4a5d79cd2201b14195057b58abc739917c7",
+    "work/arena/tournament-20261019-021200-165802/round-015-attempt-000/native-barriers.jsonl": "864fcc75c7c1c94e23afa7c26121e13b75e4bf061678f556331a26a739396ff5",
+    "work/arena/tournament-20261019-021200-165802/round-016-attempt-000/native-barriers.jsonl": "7956d554f9154aa0e2007d2ad7f5093635189824e96384ffcccf438e36653834",
+    "work/arena/tournament-20261019-021200-165802/round-017-attempt-000/native-barriers.jsonl": "f41a66acfdd569e494306cb014103901eec4972906ab092c8936b7ab27e60089",
+    "work/arena/tournament-20261019-021200-165802/round-018-attempt-000/native-barriers.jsonl": "28d1d9eee43eda7563b67ad9482f9d74574e7fa648a3d5e1bb9fbd1bec36a886",
+    "work/arena/tournament-20261019-021200-165802/round-019-attempt-000/native-barriers.jsonl": "2692b01c6af8415f2c040a5de664de82f207b1a2e725d8a3dc14ddfd488e380d",
+    "work/arena/tournament-20261019-021200-165802/round-020-attempt-000/native-barriers.jsonl": "9648769635d72cfa5ed2fb8ce5563b31ec3f2166f05221f368a9e4517ee49b8e",
+    "work/arena/tournament-20261019-021200-165802/round-021-attempt-000/native-barriers.jsonl": "87be9963ad80a0e61f8384a5bcbdd8ca8a2c9a7c04175ddc1e8232a5b2927e93",
+    "work/arena/tournament-20261019-021200-165802/round-022-attempt-000/native-barriers.jsonl": "e331f3132c8d782a0ad3e56e0d7569b2608c33acf5ca3f98f4b5d827a0c38885",
+    "work/arena/tournament-20261019-021200-165802/round-023-attempt-000/native-barriers.jsonl": "dd6a0699cdc2ef9c82fd9ad10ff5aeedcfb5d0b310d2a11d12ab4ea0afefc254",
+    "work/arena/tournament-20261019-021200-165802/round-024-attempt-000/native-barriers.jsonl": "ed8d8e52cef2d37ada84d38822b2f1b9db9eb021a04ca4289d6a5a6d6eebe8cf",
+    "work/arena/tournament-20261019-021200-165802/round-025-attempt-000/native-barriers.jsonl": "5e39f7c836430cfd96a50a0298e57d91b28cc8cab503235e5948be79c9f19b36",
+    "work/arena/tournament-20261019-021200-165802/round-026-attempt-000/native-barriers.jsonl": "ed97c148632cd26c0ddd0a69066088be8f7f8414451ea63028681ab32cc50bff",
+    "work/arena/tournament-20261019-021200-165802/round-027-attempt-000/native-barriers.jsonl": "e3fe6a5c68032d2daf09260f87abfbb769da24c5cee9c60e56077a0be1ef68ab",
+    "work/arena/tournament-20261019-021200-165802/round-028-attempt-000/native-barriers.jsonl": "3c7ea24fc099113b846958bbbc0052ee27d019238467d6d4470d8e0cbbc7b72b",
+    "work/arena/tournament-20261019-021200-165802/round-029-attempt-000/native-barriers.jsonl": "86c3798f48adbfda46a6303161d6a2a53a37c7a2834e2a28caf0d002daf0abf6",
+    "work/arena/tournament-20261019-021200-165802/round-030-attempt-000/native-barriers.jsonl": "1f4557eff7fa91fb21e21c2943b0b1ffd70a36bd34baf7716523f9758d38978f",
+    "work/arena/tournament-20261019-021200-165802/round-031-attempt-000/native-barriers.jsonl": "44ebee37bc49d3dcdc3527b6064f027bc8fe6cbcfd92a60e3d9e5813660c1360",
+    "work/arena/tournament-20261019-021200-165802/round-032-attempt-000/native-barriers.jsonl": "baecbcb9f2e379227afe292d045f5618b31cd3da275996b4a230e29f1468d786"
+  },
+  "immutable_runtime_sha256": {
+    "upstream/dm/host/dmhost": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+    "arena/config.py": "e7ecf41c019cc533ec1c062aef6cb8b3f651b8f5812f8cbe9fae2a4e88762cb3",
+    "arena/referee.py": "1c35e6de91a1ac1a0615f96ea83e8a09b4ccb77eba1127a07be75af31d4e214c",
+    "arena/referee_api.py": "9d87d9b25e9b6d50f80b91cbb1df70e5990b29cf970392aaca8f416504ee216c",
+    "arena/native_referee.py": "b2e1b329616bebb64e8e7cc7134fb1ed253f3cadbd00e3f20add44dcca5f3b89",
+    "arena/policy.py": "916af01d780b4526ab64f618c2bcb8919fa722eb090a6996718635f778a58796",
+    "arena/__init__.py": "d61466fe219361e19a6227dde8cef7da9c03bef092951eb678f160adbc5667fa",
+    "arena/geometry.py": "7d10b5f18fa74ce05587f5a4fabe3ccd6e80500667917bc9835b06f7ae0fe860",
+    "arena/policy_worker.py": "7f4bdad1b138e01f78152c578c866903d138c797afd77feec48075c38ae3967c",
+    "arena/visibility.py": "028ff4105f57fe7db9ef622b92dbb9775571afa1a0cbddd5239c9de24e43fe26",
+    "arena/process.py": "6c99d57f9a29326d8cb148588a13a8f4829251197b16d3d5b78605f3ab62cfe8",
+    "arena/hud_events.py": "08fbdb34ab3ce69e541ce59c74d0f9068219b74b88ed160a6306170bbed27d2c",
+    "arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+    "arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340",
+    "arena/policies/high-ground/policy.py": "7e3968cf90f9be7a766d08aa1a13c7d0a7268a5a8598ba45e3e62ba0139e0733",
+    "arena/policies/rush/policy.py": "ff1edf3ed8ac2c97191ec38c1fa2f41f7da7948146adacd134295ed95cc697c2",
+    "rl/env.py": "ccb97dd0c801a020770004b63134569c5c030d0329712b2a46214a7f4ce6dc0d",
+    "rl/protocol.py": "39232c1dfdaad6260a2b5c968c976eee1a2a5da7acece8b38f62e8323d105cb8",
+    "rl/clock.py": "beb14de74b1b885547f4c458b7aded395d3dbb73e0fe4862655065b7b2688758",
+    "rl/session.py": "41cc43cd0ee70f9108948d4cd96279d18af199e5b581a57b8b3c0d6112fc31f6",
+    "rl/__init__.py": "5566ca2ce69e7a30c942ed3a277c249983e132b4e0f56e1b906f4a92cdd14224",
+    "rl/loadout.py": "4a467181bbf2d7fcd04af077a443ab9e7b7d6e32e780fcc9ad5cda29820f4962",
+    "work/arena/maps/Yunohana/navigation.json": "15da29e0e3713100e551f6fbd879f256af5e7e3389c3a200de4ba91daae50329",
+    "work/arena/maps/Yunohana/sight.npz": "02151e94e562ae2744229c851b8db0c80248340f0cfe888a176a2e4a22623691",
+    "work/arena/maps/District00/navigation.json": "15d8f347a7e44496e428e053a12d033dab7548be4ee585ac2f64f03cd3351b5b",
+    "work/arena/maps/District00/sight.npz": "41276870ed4b0579eda724c2743131ff0008429ef9815c7156e50b6e3ffa261f",
+    "work/arena/maps/Yagara/navigation.json": "81b2ddd93666fe5ef45d3d6386fad5a220b222f7ad9d5d396f9c55e4c61b0c36",
+    "work/arena/maps/Yagara/sight.npz": "3c7dad69da85c483aea552e0cfce016aa8ee920c7896f536e117adcee7691fbf"
+  },
+  "legacy_source_result": "work/arena/tournament-20261019-021200-165802/result.json",
+  "legacy_runtime_exceptions": [
+    "arena/runner.py",
+    "arena/schedule.py",
+    "arena/statistics.py"
+  ]
+}

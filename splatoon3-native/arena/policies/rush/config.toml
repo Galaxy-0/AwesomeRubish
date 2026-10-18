@@ -1,0 +1,14 @@
+name = "rush"
+weapon = 8000
+step_frames = 12
+step_timeout = 0.25
+
+[loadout.head]
+main = "quick_super_jump"
+subs = ["quick_super_jump", "quick_super_jump", "quick_super_jump"]
+[loadout.clothes]
+main = "quick_super_jump"
+subs = ["quick_super_jump", "quick_super_jump", "quick_super_jump"]
+[loadout.shoes]
+main = "quick_super_jump"
+subs = ["quick_super_jump", "quick_super_jump", "quick_super_jump"]
