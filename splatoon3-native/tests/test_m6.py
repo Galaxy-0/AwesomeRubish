@@ -27,7 +27,7 @@ def difference(a,b):
 def main(args):
     out=ROOT/'work/tests'/datetime.datetime.now().strftime(f'm6-check-{args.players}p-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
     result=dict(milestone='M6-B-position-ink',players=args.players,passed=False,full_m6_passed=False,errors=[],episodes=[],
-                internal_state='local_packet_position_ink',unavailable_fields=['alive','visible_peers','kills'],artifacts=str(out))
+                internal_state='local_packet_position_ink',unavailable_fields=['last_hit_kills'],artifacts=str(out))
     env=NativeParallelEnv(players=args.players,frame_skip=args.frame_skip,mode=args.mode,stage_id=args.stage_id,
                          weapons=args.weapons or [0]*args.players,timeout=args.timeout,patched=args.patched,state_dump=args.state_dump)
     rng=np.random.default_rng(args.seed);last_print=time.monotonic();step_number=0
@@ -68,6 +68,8 @@ def main(args):
             if any(not o['position_valid'] or not o['ink_valid'] for o in observations.values()):raise AssertionError('local native position is unavailable after warmup')
             if any(float(o['pixels'].var())<25 for o in observations.values()):raise AssertionError('black/flat in-game pixel observation')
             for a,o in observations.items():Image.fromarray(o['pixels']).save(out/f'{a}-initial.png')
+            slots={i['self_slot'] for i in infos.values() if i['self_slot_valid']}
+            if len(slots)!=args.players or any(not o['alive_valid'] or not all(o['hud_valid'][s] for s in slots) for o in observations.values()):raise AssertionError('native public HUD player state unavailable after warmup')
             if any(not o['special_valid'] for o in observations.values()):raise AssertionError('own special gauge unavailable after warmup')
             if any(not o['hp_valid'] for o in observations.values()):raise AssertionError('own HP unavailable after warmup')
             if any(not o['time_valid'] or not 0<float(o['remaining_time'][0])<=300 for o in observations.values()):raise AssertionError('invalid native in-game countdown')
@@ -131,6 +133,8 @@ def main(args):
                 observations,done,infos=step(actions)
             record['individual_termination_complete']=True;record['judge_infos']=env.process_infos.copy()
             while not all(i['phase']==3 for i in env.process_infos.values()):observations,_,infos=step(None)
+            if not all(i['score_valid'] for i in env.process_infos.values()):raise AssertionError('native result score unavailable')
+            record['score_infos']={a:{k:i[k] for k in ('score','score_units','turf_ratio','turf_valid')} for a,i in env.process_infos.items()}
             record['random_match_complete']=True;record['terminal_infos']=env.process_infos
             for n,_,_ in env.session.hosts:
                 text=env.session.text(n)

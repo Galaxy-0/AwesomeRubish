@@ -7,7 +7,7 @@ root=Path(__file__).resolve().parents[1];sys.path.insert(0,str(root))
 spec=importlib.util.spec_from_file_location('field_test',root/'tests/test_m6_fields.py');test=importlib.util.module_from_spec(spec);spec.loader.exec_module(test)
 
 
-def survey(env,out,result,step,observations,inspect_results=False):
+def survey(env,out,result,step,observations,inspect_results=False,reset_check=False):
     packets={};offsets={};history=[]
     def packet(n):
         p=env.session.out/f'player-{n}/host.log'
@@ -100,10 +100,27 @@ def survey(env,out,result,step,observations,inspect_results=False):
         run(pvp(len(history)),'pvp-to-end')
     while not all(i['phase']==3 for i in env.process_infos.values()):env.advance_settlement()
     hp_samples={a:[row['infos'][a]['hp'] for row in history if row['infos'][a]['phase']==1 and row['infos'][a].get('hp_valid')] for a in env.possible_agents}
-    result['hp_effect']={a:dict(min=min(values),max=max(values),recovered=any(0<v<.95 and max(values[i+1:],default=v)>v+.05 for i,v in enumerate(values))) for a,values in hp_samples.items()}
+    result['hp_effect']={a:dict(min=min(values),max=max(values),recovered=False) for a,values in hp_samples.items()}
+    for a in env.possible_agents:
+        low=None;previous_position=None
+        for row in history:
+            info=row['infos'][a];health=info['hp'];position=info['position']
+            if info['phase']!=1 or not info['hp_valid'] or health<=0:
+                low=None;previous_position=None;continue
+            if previous_position is not None and sum((x-y)**2 for x,y in zip(position,previous_position))>100:low=None
+            previous_position=position;low=min(low,health) if low is not None else health
+            if 0<low<.95 and health>low+.05:result['hp_effect'][a]['recovered']=True
     if not any(v['min']<.95 for v in result['hp_effect'].values()):raise AssertionError('PvP did not reduce official own HP')
     if not any(v['recovered'] for v in result['hp_effect'].values()):raise AssertionError('official HP did not recover after damage')
     result['hp_passed']=True
+    result['hud_effect']={a:dict(self_slot=env.process_infos[a]['self_slot'],down_events=max(row['infos'][a]['hud_downs'][env.process_infos[a]['self_slot']] for row in history)) for a in env.possible_agents}
+    if not any(v['down_events']>0 for v in result['hud_effect'].values()):raise AssertionError('native HUD did not register a real down')
+    if not any(row['infos'][a]['alive_valid'] and row['infos'][a]['alive']==0 for row in history for a in env.possible_agents):raise AssertionError('own alive never followed native HUD Down')
+    result['alive_passed']=True
+    if not all(i['score_valid'] and i['turf_valid'] and i['score_units']==1 for i in env.process_infos.values()):raise AssertionError('native result score unavailable at Winners')
+    first,second=[env.process_infos[a]['turf_ratio'] for a in env.possible_agents]
+    if not np.allclose(first,second[::-1],atol=.002):raise AssertionError('peer result scores are not observer-relative')
+    result['score_effect']={a:i['score'] for a,i in env.process_infos.items()};result['score_passed']=True
     result['diagnostic_native_winners']=True;result['diagnostic_steps']=len(history)
     image('native-winners')
     if inspect_results:
@@ -117,10 +134,18 @@ def survey(env,out,result,step,observations,inspect_results=False):
         for _ in range(3):
             for n in range(2):env.session.press(n,'A')
         result['post_result_menu_inspection']=True
+    if reset_check:
+        old_pids={p.pid for _,p,_ in env.session.hosts}
+        observations,infos=env.reset(seed=174)
+        if old_pids & {p.pid for _,p,_ in env.session.hosts}:raise AssertionError('reset reused old hosts')
+        for _ in range(10):observations=step({a:test.neutral() for a in env.agents},'reset-second-match')
+        if not all(i['phase']==1 for i in env.process_infos.values()):raise AssertionError('reset failed to start another match')
+        result['reset_passed']=True;result['reset_session']=str(env.session.out)
     (out/'diagnostic.json').write_text(json.dumps(history,indent=2)+'\n')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--timeout',type=float,default=2400)
     parser.add_argument('--inspect-results',action='store_true')
+    parser.add_argument('--reset-check',action='store_true')
     args=parser.parse_args()
-    raise SystemExit(test.main(argparse.Namespace(survey=True,timeout=args.timeout),survey_callback=lambda *values:survey(*values,inspect_results=args.inspect_results)))
+    raise SystemExit(test.main(argparse.Namespace(survey=True,timeout=args.timeout),survey_callback=lambda *values:survey(*values,inspect_results=args.inspect_results,reset_check=args.reset_check)))

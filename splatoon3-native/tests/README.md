@@ -249,3 +249,8 @@ HP字段来自已与PlayerDamage更新独立比对的自身包；生产传输检
 正式HP/特殊量接线后的 `tests/test_m6_combat.py --inspect-results` 已通过：0号HP范围0..1、1号0.225..1，1号在正HP连续区间恢复0.775；涂地充能0→0.44、静止对端0，两端均Winners。425次step记录，结算动画另中立推进。结果为work/tests/m6-fields-20261018-142435-279913/result.json。
 
 结算比分接线：score_units=1为百分数，2为规则计数；turf_ratio只对前者有效。比分按原生文本formatter第三/第四参数读取，不能按bar原始面积简单归一化。生产传输17项含4.2%/1.8%换算、规则计数、非法值屏蔽与下一局清空；新结算gate的实机输出待HUD集成回归。
+
+
+后续集成回归 `tests/test_m6_combat.py --reset-check` 使用正式字段，检查原生HUD存活/倒下、玩家槽位与公开状态、受伤后正HP连续区间恢复、涂地充能、双方结果百分比相反顺序，并用新进程再开一局。`--inspect-results` 仅在所有agent终止后释放RL控制并查看结果菜单。该回归于2026-10-18通过：首局426步，reset新进程第二局10步，正式比分4.0%/2.0%与2.0%/4.0%；四宿主优雅退出，无新增swapout。结果work/tests/m6-fields-20261018-151321-599465/result.json。
+
+当前默认reward示例以自身特殊充能正增量做涂地塑形，并奖励公开HUD的敌队倒下事件（包括环境死亡、不含个人最后一击归属）；可传reward_fn=None关闭。真实paint_points / kills计数尚未导出，不把该示例写成精确个人击杀或涂地面积。

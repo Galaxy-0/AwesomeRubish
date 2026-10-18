@@ -42,7 +42,12 @@ class Client:
                            hp=np.array([info.get('hp',0)],np.float32),hp_valid=int(info.get('hp_valid',0)),
                            special=np.array([info.get('special',0)],np.float32),special_valid=int(info.get('special_valid',0)),
                            score=np.array(info.get('score',[0,0]),np.float32),score_valid=int(info.get('score_valid',0)),
-                           score_units=int(info.get('score_units',0)),turf_ratio=np.array(info.get('turf_ratio',[0,0]),np.float32),turf_valid=int(info.get('turf_valid',0)))
+                           score_units=int(info.get('score_units',0)),turf_ratio=np.array(info.get('turf_ratio',[0,0]),np.float32),turf_valid=int(info.get('turf_valid',0)),
+                           self_slot=info.get('self_slot',-1) if info.get('self_slot_valid',0) else 8,self_slot_valid=int(info.get('self_slot_valid',0)),
+                           alive=int(info.get('alive',0)),alive_valid=int(info.get('alive_valid',0)),
+                           hud_special_ready=np.array(info.get('hud_special_ready',[0]*8),np.int8),hud_status=np.array(info.get('hud_status',[2]*8),np.int64),hud_valid=np.array(info.get('hud_valid',[0]*8),np.int8),
+                           hud_downs=np.array(info.get('hud_downs',[0]*8),np.int64),hud_counter_valid=np.array(info.get('hud_counter_valid',[0]*8),np.int8),
+                           hud_team=np.full(8,-1,np.int8),hud_weapon=np.full(8,-1,np.int32),team=2)
         if observation['position'].shape!=(3,) or not np.isfinite(observation['position']).all() or observation['position_valid'] not in (0,1):
             raise RuntimeError('invalid native position observation')
         if not np.isfinite(observation['ink']).all() or not 0<=observation['ink'][0]<=1 or observation['ink_valid'] not in (0,1):
@@ -59,6 +64,10 @@ class Client:
             value=observation[key]
             if value.shape!=(2,) or not np.isfinite(value).all() or (value<0).any() or (value>maximum).any():raise RuntimeError('invalid native '+key)
         if observation['score_valid'] not in (0,1) or observation['turf_valid'] not in (0,1) or observation['score_units'] not in (0,1,2):raise RuntimeError('invalid native score flags')
+        if observation['self_slot'] not in range(9) or observation['self_slot_valid'] not in (0,1) or observation['alive'] not in (0,1) or observation['alive_valid'] not in (0,1):raise RuntimeError('invalid own HUD state')
+        for key,maximum in (('hud_status',2),('hud_valid',1),('hud_downs',np.iinfo(np.int64).max),('hud_counter_valid',1),('hud_special_ready',1)):
+            v=observation[key]
+            if v.shape!=(8,) or (v<0).any() or (v>maximum).any():raise RuntimeError('invalid native '+key)
         return observation, info
 
     def send_step(self, action, frames):

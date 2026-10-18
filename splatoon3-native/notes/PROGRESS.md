@@ -1351,3 +1351,21 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 - 导出 `score[2]`、`score_valid`、`score_units`（1百分数、2规则计数），Turf另有`turf_ratio[2]`及有效位，info含采样帧。只在Judge接收结果formatter值，保留到Winners，下一InGame清空；没有局内实时涂地比例时明确无效。协议头上限扩大到4096字节，为后续HUD数组留空间。
 - 生产传输 **17项通过**，覆盖42/18→4.2/1.8及.042/.018、100/30规则计数、非法值、阶段过滤和新一局清空；原生宿主构建与补丁正 / 反向检查通过。新结果gate的真实socket输出将与下一轮HUD一起验证，当前映射证据为实机设值+原生formatter数据流，正式通道为生产组件检查。
 - 非Turf规则计数路径目前有原生KO==100/0显示逻辑及组件证据，尚未另跑真实非Turf对局；不宣称全模式已签收。剩余时间与其它里程碑状态不变。
+
+### 存活 / 公开玩家HUD接线与双端集成回归（运行中）
+
+- 比分接线提交 `edb742fcd3113659198774c5cd323d6c41f61c6c` 已推送。新增OBS28取本地PlayerDamage每帧更新的owner现场，OBS29在原生RTTI已确认live Player后关联HUD节点，OBS30在TGPlayerIcon更新epilogue复制缓存状态；对应main偏移2920760/4011c64/4011e28，均有构建号与原指令校验。PlayerInfo+7e8原生槽位范围0..7；不从构造期猜归属，训练侧不保留可供异步解引用的对象指针。
+- `alive`独立取自身HUD Normal/Down，不能用HP>0代替。每个观察者只导出其自身顶部公共HUD的各槽位状态、特殊就绪指示和Normal→Down事件；配置好的公开分队/武器按各端原生self_slot合并。未提供视野外敌方位置或HP，缺失/陈旧信息用有效位屏蔽。槽位碰撞会中止验证，不能默默填猜测。
+- reward示例接入默认环境：特殊充能正增量作为涂地塑形，敌队公共HUD倒下事件作为团队消灭信号（包含环境死亡，无最后一击归属）；未将其命名为真实paint_points或个人kills。可关闭/自定义。
+- 帧锁存补充并发边界：在预算端点等待下一STEP的自动帧号HID查询，唤醒后重新读取当前帧号；明确帧号调用仍检查倒退/预算。原生夹具覆盖端点等待与同帧锁存、独立HP/HUD生死、缺席状态、公开特殊就绪与元数据归属。
+- 当前 `.venv/bin/python tests/test_m6_combat.py --inspect-results --reset-check`，日志 `work/m6/next-fields/hud-score-two-player.log`，首局 `work/tests/m6-2p-20261018-151321-623112/`。冻结清单hud-score-code.sha256；宿主/测试运行期间未改动。新增门槛包括正式alive倒下、真实HUD事件、双方结果百分比顺序，以及新进程第二局十步。尚未把运行中的测试算作通过；八端仍待双端通过后执行。
+
+### 存活 / 公开HUD / 结果比分集成签收：双端整局 + reset PASS
+
+- `tests/test_m6_combat.py --inspect-results --reset-check` 完整结束，`work/tests/m6-fields-20261018-151321-599465/result.json` **passed=true / errors=[]**，heading/time/HP/special/public_hud/alive/score/reset各项为true。首局426次step，reset后第二局10次，共 **436**；结算动画另由中立advance_settlement推进至双方Winners。首局及reset会话分别为151321-623112 /152305-922392。
+- 两端自有原生slot分别0/1，双方HUD都映射到同样两个槽；每个玩家均有一次Normal→Down→Normal。0号63次ACK观察为Down，其中29次HP仍正；1号30次Down ACK全部HP正，进一步实证alive不能用HP>0代理。两个观察者各自的原生HUD均记录[1,1,0,0,0,0,0,0]倒下事件，没有合并对方隐藏内部状态。
+- 正式HP0号0..1，1号0.754..1，1号在正HP、无位置大跳的连续区间回血。仅0号涂地特殊量 **0→0.44**、1号0；自身heading分别转1.946rad、中立对端0；倒计时双方166.58/166.57→156.03/156.00秒。
+- 正式socket在Winners输出比分 **[4.0,2.0] /[2.0,4.0]**，Turf比例[.04,.02]及反序；与真实ResultMeter参数第三/第四40/20及20/40相符。结果formatter接线已获实机验证。非Turf比分仍只有静态/组件覆盖，未另跑非Turf完整局。
+- reward累计1.062 /1.031，均有限，来自公开敌方倒下事件各1次加充能塑形；其中包含环境死亡，不能称为个人kills。生产传输/生命周期/reward **24项通过**，独立HUD/HP、缺席、就绪位、原生slot元数据映射均有组件覆盖。
+- 四宿主均优雅退出0，无FATAL；两局footprint合计峰值 **8226 /7943 MiB**，pressure最大1，新swapout均0；原件/参考档hash不变。hud-score-code.sha256全部匹配；源码/门控构建与补丁正反向检查通过。游戏数据和画面仅在忽略work/。
+- 本次提交公开HUD/存活与reward集成，下一步正式入口八端随机策略整局；**完整M6尚未签收**。没有新的卡点，没有调用其它模型。

@@ -26,11 +26,15 @@ def main(args, survey_callback=None):
     log=(out/'steps.jsonl').open('w');step_number=0;last_print=time.monotonic()
     def step(actions,label):
         nonlocal step_number,last_print
-        observations,_,_,truncated,infos=env.step(actions);step_number+=1
+        observations,rewards,_,truncated,infos=env.step(actions);step_number+=1
         if any(truncated.values()):raise TimeoutError('field match timeout')
+        totals=result.setdefault('reward_totals',{a:0.0 for a in env.possible_agents})
+        for a,value in rewards.items():
+            if not np.isfinite(value):raise AssertionError('non-finite example reward')
+            totals[a]+=value
         for a,o in observations.items():
             if not env.observation_space(a).contains(o):raise AssertionError(f'{a}: out-of-space observation')
-        log.write(json.dumps(dict(step=step_number,label=label,infos=env.process_infos,
+        log.write(json.dumps(dict(step=step_number,label=label,rewards=rewards,infos=env.process_infos,
                                  actions={a:{k:v.tolist() for k,v in d.items()} for a,d in actions.items()}))+'\n');log.flush()
         if time.monotonic()-last_print>30:
             print(f'M6 fields step={step_number} epoch={label}',flush=True);last_print=time.monotonic()
@@ -38,6 +42,10 @@ def main(args, survey_callback=None):
     try:
         observations,_=env.reset(seed=173);result['session']=str(env.session.out)
         for _ in range(30):observations=step({a:neutral() for a in env.agents},'warmup')
+        if any(not o['alive_valid'] or o['alive']!=1 or not o['self_slot_valid'] for o in observations.values()):raise AssertionError('own native HUD status unavailable after warmup')
+        slots={i['self_slot'] for i in env.process_infos.values()}
+        if len(slots)!=len(env.possible_agents) or any(not all(o['hud_valid'][s] for s in slots) for o in observations.values()):raise AssertionError('public player HUD slots unavailable')
+        result['public_hud_passed']=True
         if any(not o['time_valid'] for o in observations.values()):raise AssertionError('countdown unavailable in InGame')
         initial_times={a:float(o['remaining_time'][0]) for a,o in observations.items()}
         effects=[]

@@ -96,6 +96,31 @@ class TransportTest(unittest.TestCase):
         self.assertEqual(observation['phase'],1);self.assertEqual(observation['score_valid'],0)
         np.testing.assert_array_equal(observation['score'],[0,0])
 
+    def test_alive_uses_native_hud_not_positive_health(self):
+        observation,_=self.start(mode='hud-down')
+        self.assertEqual(observation['alive_valid'],1);self.assertEqual(observation['alive'],1)
+        self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['hp'][0],1);self.assertEqual(observation['alive'],0)
+        self.assertEqual(observation['hud_downs'][0],1);self.assertEqual(observation['hud_status'][4],0)
+        self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['alive'],1);self.assertEqual(observation['hud_downs'][0],1)
+
+    def test_absent_hud_is_unavailable_without_down_credit(self):
+        self.start(mode='hud-absent');self.client.send_step(neutral(),1);observation,_=self.client.receive()
+        self.assertEqual(observation['alive_valid'],0);self.assertEqual(observation['hud_status'][0],2)
+        self.assertEqual(observation['hud_downs'][0],0)
+
+    def test_unmapped_slot_does_not_guess_own_identity(self):
+        observation,_=self.start(mode='bad-slot')
+        self.assertEqual(observation['self_slot'],8);self.assertEqual(observation['self_slot_valid'],0)
+        self.assertEqual(observation['alive_valid'],0)
+
+    def test_visible_special_ready_is_independent_of_own_charge(self):
+        observation,_=self.start(mode='hud-ready')
+        self.assertEqual(observation['special'][0],0)
+        self.assertEqual(observation['hud_special_ready'][4],1)
+        self.assertEqual(observation['hud_valid'][4],1)
+
     def test_reject_invalid_client_action(self):
         self.start();action=neutral();action['sticks'][0]=float('nan')
         with self.assertRaises(ValueError):self.client.send_step(action,3)
@@ -156,7 +181,34 @@ class TransportTest(unittest.TestCase):
         self.assertIn(b'RL input frame outside budget/backwards',self.process.stderr.read())
 
 
+class RewardSignalsTest(unittest.TestCase):
+    def test_charge_and_enemy_hud_downs_with_ally_filter(self):
+        from rl.env import turf_kill_reward
+        before=dict(special_valid=1,special=np.array([.2]),team=0,hud_team=np.array([0,0,1,1,-1,-1,-1,-1]),
+                    hud_downs=np.zeros(8,np.int64),hud_counter_valid=np.ones(8,np.int8))
+        after=before|dict(special=np.array([.5]),hud_downs=np.array([0,1,1,0,0,0,0,0],np.int64))
+        self.assertAlmostEqual(turf_kill_reward(before,after),1.03)
+
+    def test_unknown_hud_and_negative_counter_reset_do_not_reward(self):
+        from rl.env import turf_kill_reward
+        before=dict(team=0,hud_team=np.array([1]*8),hud_downs=np.ones(8,np.int64),hud_counter_valid=np.zeros(8,np.int8))
+        after=before|dict(hud_downs=np.full(8,5,np.int64),hud_counter_valid=np.ones(8,np.int8))
+        self.assertEqual(turf_kill_reward(before,after),0)
+        self.assertEqual(turf_kill_reward(after,before),0)
+
+
 class EnvironmentLifecycleTest(unittest.TestCase):
+    def test_public_metadata_uses_native_slots_instead_of_agent_order(self):
+        from rl.env import NativeParallelEnv
+        env=NativeParallelEnv(players=2,weapons=[0,7000]);observations={a:{} for a in env.possible_agents}
+        infos={'player_0':dict(self_slot=1,self_slot_valid=1),'player_1':dict(self_slot=7,self_slot_valid=1)}
+        env._decorate(observations,infos)
+        self.assertEqual(observations['player_0']['hud_team'][7],1)
+        self.assertEqual(observations['player_0']['hud_weapon'][7],7000)
+        self.assertEqual(observations['player_1']['team'],1)
+        infos['player_1']['self_slot']=1
+        with self.assertRaises(RuntimeError):env._decorate(observations,infos)
+
     def test_asynchronous_agent_settlement_keeps_all_processes_advancing(self):
         from rl.env import NativeParallelEnv
         env=NativeParallelEnv(players=2);calls=[]

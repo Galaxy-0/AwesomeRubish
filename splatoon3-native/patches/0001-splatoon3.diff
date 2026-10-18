@@ -1958,7 +1958,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..1f37e52 100644
+index fda33ac..02cfff3 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1966,7 +1966,7 @@ index fda33ac..1f37e52 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_MAX = 28 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_MAX = 31 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -3094,10 +3094,10 @@ index 61cf410..e5e894c 100644
  // pictures that depend on absolute time (such as the liquid level of the life / mana orbs) still differ at the same tick (measured: at tick E + 2 frames two passes differ by about 18,000 pixels, concentrated at the two orb positions).
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..45781df
+index 0000000..b45b404
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,303 @@
+@@ -0,0 +1,396 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
@@ -3112,6 +3112,7 @@ index 0000000..45781df
 +#include <errno.h>
 +#include <math.h>
 +#include <stdatomic.h>
++#include <stdarg.h>
 +
 +static int rl_listener = -1, rl_peer = -1;
 +static _Atomic int rl_enabled, rl_controlled, rl_remaining, rl_phase;
@@ -3133,6 +3134,10 @@ index 0000000..45781df
 +static uint64_t rl_position_frame, rl_state_sequence;
 +static int rl_position_seen, rl_ink_seen, rl_heading_seen, rl_hp_seen, rl_special_seen, rl_state_dump;
 +static float rl_time;static int rl_time_seen;static uint64_t rl_time_frame;
++static int rl_self_slot=-1,rl_self_seen,rl_self_ambiguous,rl_self_health=-1;
++static uintptr_t rl_hud_node[8];
++static int rl_hud_status[8],rl_hud_seen[8],rl_hud_ever[8],rl_hud_special[8];
++static uint64_t rl_hud_frame[8],rl_hud_touch[8],rl_hud_downs[8];
 +static float rl_score[2],rl_turf[2];static int rl_score_seen,rl_score_units;static uint64_t rl_score_frame;
 +
 +int dm_rl_active(void) { return atomic_load(&rl_controlled); }
@@ -3147,7 +3152,10 @@ index 0000000..45781df
 +}
 +static void phase_ingame(const uint64_t *r) {
 +    (void)r;
-+    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_special_seen = rl_time_seen = rl_score_seen = 0; pthread_mutex_unlock(&rl_state_mu);
++    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_special_seen = rl_time_seen = rl_score_seen = 0;
++    rl_self_slot=-1;rl_self_seen=rl_self_ambiguous=0;rl_self_health=-1;
++    for(int i=0;i<8;i++){rl_hud_node[i]=0;rl_hud_status[i]=2;rl_hud_seen[i]=rl_hud_ever[i]=rl_hud_special[i]=0;rl_hud_frame[i]=rl_hud_touch[i]=rl_hud_downs[i]=0;}
++    pthread_mutex_unlock(&rl_state_mu);
 +    atomic_store(&rl_phase, 1);
 +}
 +static void phase_judge(const uint64_t *r) {
@@ -3208,12 +3216,14 @@ index 0000000..45781df
 +}
 +
 +static void score_state(const uint64_t *r,int units) {
-+    if (atomic_load(&rl_phase)!=2) return;
++    int phase=atomic_load(&rl_phase);if (phase<2) return;
++    if(!(r[1]|r[2]|r[3]|r[4]))return; // Native reset formatter, not a result.
 +    uint32_t a=(uint32_t)r[3],b=(uint32_t)r[4];
 +    if (a>(units==1?1000:100) || b>(units==1?1000:100)) return;
 +    // The actual text formatter divides PaintPercent by ten. Its operands
 +    // are already observer-relative; the bar's raw areas are different args.
 +    pthread_mutex_lock(&rl_state_mu);
++    if(phase>=3 && rl_score_seen){pthread_mutex_unlock(&rl_state_mu);return;}
 +    rl_score[0]=units==1 ? a/10.0f : a;rl_score[1]=units==1 ? b/10.0f : b;
 +    rl_turf[0]=units==1 ? a/1000.0f : 0;rl_turf[1]=units==1 ? b/1000.0f : 0;
 +    rl_score_units=units;rl_score_seen=1;rl_score_frame=dm_guest_frame();
@@ -3221,6 +3231,66 @@ index 0000000..45781df
 +}
 +static void turf_score(const uint64_t *r) {score_state(r,1);}
 +static void rule_score(const uint64_t *r) {score_state(r,2);}
++
++// Only called while the native caller holds a live Player reference. The same
++// PlayerInfo slot load is used by this build's native player/network code.
++static int player_slot(uintptr_t player) {
++    uintptr_t storage=0,info=0;int slot=-1;
++    if(!player)return -1;memcpy(&storage,(void *)(player+0x108),8);
++    if(!storage)return -1;memcpy(&info,(void *)(storage+8),8);
++    if(!info)return -1;memcpy(&slot,(void *)(info+0x7e8),4);
++    return slot>=0 && slot<8 ? slot : -1;
++}
++static void own_player(const uint64_t *r) {
++    if(atomic_load(&rl_phase)!=1)return;
++    uintptr_t player=0;memcpy(&player,(const void *)(uintptr_t)(r[0]+0xf00),8);
++    int slot=player_slot(player);if(slot<0)return;
++    pthread_mutex_lock(&rl_state_mu);
++    int health;memcpy(&health,(const void *)(uintptr_t)(r[0]+0x88),4);
++    int health_changed=rl_self_health!=health;rl_self_health=health;
++    int first=!rl_self_seen;
++    if(rl_self_seen && rl_self_slot!=slot)rl_self_ambiguous=1;
++    rl_self_slot=slot;rl_self_seen=1;
++    pthread_mutex_unlock(&rl_state_mu);
++    if(first)LOG("RL_SELF_SLOT slot=%d player=%p",slot,(void *)player);
++    if(health_changed && rl_state_dump)LOG("RL_DAMAGE frame=%llu slot=%d hp=%d",dm_guest_frame(),slot,health);
++}
++static void hud_bind(const uint64_t *r) {
++    if(atomic_load(&rl_phase)!=1)return;
++    // Native RTTI has just confirmed x20 is Player, with its weak ref held.
++    int slot=player_slot((uintptr_t)r[20]);if(slot<0)return;
++    uintptr_t node=(uintptr_t)r[19];uint64_t frame=dm_guest_frame();int changed=0;
++    pthread_mutex_lock(&rl_state_mu);
++    for(int i=0;i<8;i++)if(i!=slot && rl_hud_node[i]==node){rl_hud_node[i]=0;rl_hud_seen[i]=0;rl_hud_status[i]=2;}
++    if(!rl_hud_node[slot] || (rl_hud_node[slot]!=node && frame>rl_hud_touch[slot]+120)) {
++        rl_hud_node[slot]=node;rl_hud_seen[slot]=0;rl_hud_status[slot]=2;changed=1;
++    }
++    if(rl_hud_node[slot]==node)rl_hud_touch[slot]=frame;
++    pthread_mutex_unlock(&rl_state_mu);
++    if(changed)LOG("RL_HUD_BIND slot=%d node=%p player=%p",slot,(void *)node,(void *)(uintptr_t)r[20]);
++}
++static void hud_state(const uint64_t *r) {
++    if(atomic_load(&rl_phase)!=1)return;
++    const uint8_t *node=(const uint8_t *)(uintptr_t)r[19];int state;
++    memcpy(&state,node+0x140,4);
++    // Manual/replay overrides do not describe a live player reference.
++    if(node[0x16c] || state<0 || state>2)return;
++    uint64_t frame=dm_guest_frame();int changed=0,found=-1,special=node[0x166]!=0;
++    pthread_mutex_lock(&rl_state_mu);
++    for(int i=0;i<8;i++)if(rl_hud_node[i]==(uintptr_t)node) {
++        found=i;changed=!rl_hud_ever[i] || rl_hud_status[i]!=state || rl_hud_special[i]!=special;
++        if(rl_hud_seen[i] && frame>=rl_hud_frame[i] && frame-rl_hud_frame[i]<=120 && rl_hud_status[i]==0 && state==1)rl_hud_downs[i]++;
++        rl_hud_seen[i]=state<2;rl_hud_status[i]=state;rl_hud_ever[i]|=state<2;rl_hud_special[i]=node[0x166]!=0;
++        // The epilogue has finished setting Normal/Down/Absent and Special.
++        rl_hud_frame[i]=frame;rl_hud_touch[i]=frame;break;
++    }
++    pthread_mutex_unlock(&rl_state_mu);
++    if(changed && rl_state_dump)LOG("RL_HUD_STATE frame=%llu slot=%d status=%d special=%d",frame,found,state,special);
++}
++static size_t json_append(char *buffer,size_t used,size_t capacity,const char *format,...) {
++    va_list ap;va_start(ap,format);int n=vsnprintf(buffer+used,capacity-used,format,ap);va_end(ap);
++    if(n<0 || (size_t)n>=capacity-used)die("RL metadata overflow");return used+(size_t)n;
++}
 +
 +void dm_rl_init(void) {
 +    const char *path = getenv("DM_RL_SOCKET");
@@ -3245,6 +3315,8 @@ index 0000000..45781df
 +    gate_obs_set(OBS_SPL3_TIMER,timer_state);
 +    if (!gate_obs_present(OBS_SPL3_TURF_SCORE) || !gate_obs_present(OBS_SPL3_RULE_SCORE)) die("RL requires result score gates");
 +    gate_obs_set(OBS_SPL3_TURF_SCORE,turf_score);gate_obs_set(OBS_SPL3_RULE_SCORE,rule_score);
++    if(!gate_obs_present(OBS_SPL3_OWN_PLAYER) || !gate_obs_present(OBS_SPL3_HUD_BIND) || !gate_obs_present(OBS_SPL3_HUD_STATE))die("RL requires player HUD gates");
++    gate_obs_set(OBS_SPL3_OWN_PLAYER,own_player);gate_obs_set(OBS_SPL3_HUD_BIND,hud_bind);gate_obs_set(OBS_SPL3_HUD_STATE,hud_state);
 +    rl_state_dump = getenv("DM_RL_STATE_DUMP") && !strcmp(getenv("DM_RL_STATE_DUMP"),"1");
 +    const char *clock_path=getenv("DM_RL_CLOCK_FILE");
 +    if (clock_path) {
@@ -3284,7 +3356,15 @@ index 0000000..45781df
 +    char header[4096];
 +    float position[3]={0},ink=0,heading=0,remaining_time=0,hp=0,special=0;uint64_t sample=0,time_sample=0;int valid=0,ink_valid=0,heading_valid=0,time_valid=0,hp_valid=0,special_valid=0;
 +    float score[2]={0},turf[2]={0};int score_valid=0,score_units=0,turf_valid=0;uint64_t score_sample=0;
++    int self_slot=-1,self_valid=0,alive=0,alive_valid=0,hud[8],hud_valid[8],counter_valid[8],hud_special[8];uint64_t hud_frame[8],downs[8];
 +    pthread_mutex_lock(&rl_state_mu);
++    self_valid=rl_self_seen && !rl_self_ambiguous,rl_self_health=-1;self_slot=self_valid ? rl_self_slot : -1;
++    for(int i=0;i<8;i++) {
++        hud_frame[i]=rl_hud_frame[i];downs[i]=rl_hud_downs[i];counter_valid[i]=rl_hud_ever[i];
++        hud_valid[i]=atomic_load(&rl_phase)==1 && rl_hud_seen[i] && hud_frame[i]<=rl_frame && rl_frame-hud_frame[i]<=120;
++        hud[i]=hud_valid[i] ? rl_hud_status[i] : 2;hud_special[i]=hud_valid[i] ? rl_hud_special[i] : 0;
++    }
++    if(self_valid && hud_valid[self_slot]) {alive_valid=1;alive=hud[self_slot]==0;}
 +    score_valid=rl_score_seen && atomic_load(&rl_phase)>=2;score_sample=rl_score_frame;
 +    if (score_valid) {memcpy(score,rl_score,sizeof score);memcpy(turf,rl_turf,sizeof turf);score_units=rl_score_units;turf_valid=score_units==1;}
 +    sample=rl_position_frame;time_sample=rl_time_frame;
@@ -3301,14 +3381,23 @@ index 0000000..45781df
 +    if (ink_valid) ink=rl_ink;
 +    if (valid) memcpy(position,rl_position,sizeof position);
 +    pthread_mutex_unlock(&rl_state_mu);
++    char hud_json[1600];size_t h=0;
++    h=json_append(hud_json,h,sizeof hud_json,",\"self_slot\":%d,\"self_slot_valid\":%d,\"alive\":%d,\"alive_valid\":%d",self_slot,self_valid,alive,alive_valid);
++    h=json_append(hud_json,h,sizeof hud_json,",\"hud_status\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%d",i?",":"",hud[i]);
++    h=json_append(hud_json,h,sizeof hud_json,"],\"hud_valid\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%d",i?",":"",hud_valid[i]);
++    h=json_append(hud_json,h,sizeof hud_json,"],\"hud_special_ready\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%d",i?",":"",hud_special[i]);
++    h=json_append(hud_json,h,sizeof hud_json,"],\"hud_sample_frame\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%llu",i?",":"",hud_frame[i]);
++    h=json_append(hud_json,h,sizeof hud_json,"],\"hud_downs\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%llu",i?",":"",downs[i]);
++    h=json_append(hud_json,h,sizeof hud_json,"],\"hud_counter_valid\":[");for(int i=0;i<8;i++)h=json_append(hud_json,h,sizeof hud_json,"%s%d",i?",":"",counter_valid[i]);
++    json_append(hud_json,h,sizeof hud_json,"]");
 +    pthread_mutex_lock(&rl_pixels_mu);
 +    if (!rl_have_image || rl_image_frame != rl_frame) die("RL stale pixels image=%llu input=%llu", rl_image_frame, rl_frame);
 +    int n = snprintf(header, sizeof header,
 +        "{\"version\":1,\"request\":%llu,\"frame\":%llu,\"advanced\":%llu,\"phase\":%d,"
 +        "\"width\":128,\"height\":72,\"channels\":3,\"bytes\":%d,\"source_width\":%u,\"source_height\":%u,"
-+        "\"position\":[%.9g,%.9g,%.9g],\"position_valid\":%d,\"position_sample_frame\":%llu,\"ink\":%.9g,\"ink_valid\":%d,\"heading\":%.9g,\"heading_valid\":%d,\"hp\":%.9g,\"hp_valid\":%d,\"special\":%.9g,\"special_valid\":%d,\"remaining_time\":%.9g,\"time_valid\":%d,\"time_sample_frame\":%llu,\"score\":[%.9g,%.9g],\"score_valid\":%d,\"score_units\":%d,\"turf_ratio\":[%.9g,%.9g],\"turf_valid\":%d,\"score_sample_frame\":%llu,\"frames_without_input\":%llu,\"action_ignored\":%d,\"input_repeats\":%llu,\"guest_time_ns\":%llu}\n",
++        "\"position\":[%.9g,%.9g,%.9g],\"position_valid\":%d,\"position_sample_frame\":%llu,\"ink\":%.9g,\"ink_valid\":%d,\"heading\":%.9g,\"heading_valid\":%d,\"hp\":%.9g,\"hp_valid\":%d,\"special\":%.9g,\"special_valid\":%d,\"remaining_time\":%.9g,\"time_valid\":%d,\"time_sample_frame\":%llu,\"score\":[%.9g,%.9g],\"score_valid\":%d,\"score_units\":%d,\"turf_ratio\":[%.9g,%.9g],\"turf_valid\":%d,\"score_sample_frame\":%llu,\"frames_without_input\":%llu,\"action_ignored\":%d,\"input_repeats\":%llu,\"guest_time_ns\":%llu%s}\n",
 +        rl_request, rl_frame, rl_frame - rl_step_start, atomic_load(&rl_phase), DM_RL_BYTES, rl_source_width, rl_source_height,
-+        position[0],position[1],position[2],valid,sample,ink,ink_valid,heading,heading_valid,hp,hp_valid,special,special_valid,remaining_time,time_valid,time_sample,score[0],score[1],score_valid,score_units,turf[0],turf[1],turf_valid,score_sample,rl_without_input,atomic_load(&rl_phase)>=2,atomic_load(&rl_input_repeats),guest_ns());
++        position[0],position[1],position[2],valid,sample,ink,ink_valid,heading,heading_valid,hp,hp_valid,special,special_valid,remaining_time,time_valid,time_sample,score[0],score[1],score_valid,score_units,turf[0],turf[1],turf_valid,score_sample,rl_without_input,atomic_load(&rl_phase)>=2,atomic_load(&rl_input_repeats),guest_ns(),hud_json);
 +    int ok = n > 0 && n < sizeof header && rl_write(header, (size_t)n) && rl_write(rl_image, sizeof rl_image);
 +    pthread_mutex_unlock(&rl_pixels_mu);
 +    return ok;
@@ -3317,11 +3406,15 @@ index 0000000..45781df
 +int dm_rl_input(uint64_t frame, dm_rl_action_t *action) {
 +    if (!dm_rl_active()) return 0;
 +    pthread_mutex_lock(&rl_input_mu);
-+    if (frame==UINT64_MAX) frame=dm_guest_frame();
++    int auto_frame=frame==UINT64_MAX;
++    if (auto_frame) frame=dm_guest_frame();
 +    // A query at the completed budget endpoint belongs to the next frame.
 +    // It waits for the next STEP, just like the present thread, rather than
 +    // inventing an action or rejecting normal concurrent SDK polling.
-+    while (dm_rl_active() && frame==rl_budget_end) pthread_cond_wait(&rl_input_cv,&rl_input_mu);
++    while (dm_rl_active() && frame==rl_budget_end) {
++        pthread_cond_wait(&rl_input_cv,&rl_input_mu);
++        if(auto_frame)frame=dm_guest_frame();
++    }
 +    if (!dm_rl_active()) { pthread_mutex_unlock(&rl_input_mu);return 0; }
 +    uint64_t current=atomic_load(&rl_frame), previous=atomic_load(&rl_last_input);
 +    if (frame<rl_input_floor || frame>rl_budget_end)
@@ -3769,7 +3862,7 @@ index d1bd89b..7ca2611 100644
  }
  
 diff --git a/dm/host/tests/Makefile b/dm/host/tests/Makefile
-index 50c9e9b..7273292 100644
+index 50c9e9b..d9608e9 100644
 --- a/dm/host/tests/Makefile
 +++ b/dm/host/tests/Makefile
 @@ -103,7 +103,29 @@ $(B)/t_oe: t_oe.c ../hle_oe.c ../hle.h ../dm.h | $(B)
@@ -3797,10 +3890,10 @@ index 50c9e9b..7273292 100644
 +$(B)/t_rl: t_rl.c ../hle_rl.c ../dm_rl.h ../dm_rl_clock.h ../dm.h | $(B)
 +	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_rl.c ../hle_rl.c
 +
-+$(B)/t_hid_rl: t_hid_rl.c ../hle_hid.c ../dm_rl.h | $(B)
++$(B)/t_hid_rl: t_hid_rl.c ../hle_hid.c ../dm_rl.h ../hle.h ../dm.h | $(B)
 +	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_hid_rl.c ../hle_hid.c -lm
 +
-+$(B)/t_rl_clock: t_rl_clock.c ../hle_os.c ../hle.h ../dm_rl_clock.h | $(B)
++$(B)/t_rl_clock: t_rl_clock.c ../hle_os.c ../hle.h ../dm.h ../dm_rl_clock.h | $(B)
 +	clang -O1 -g -Wall -I.. $(GINC) -o $@ t_rl_clock.c ../hle_os.c
 diff --git a/dm/host/tests/t_account_player.c b/dm/host/tests/t_account_player.c
 new file mode 100644
@@ -4098,10 +4191,10 @@ index 0000000..acde13d
 +}
 diff --git a/dm/host/tests/t_rl.c b/dm/host/tests/t_rl.c
 new file mode 100644
-index 0000000..f5c8437
+index 0000000..dee2047
 --- /dev/null
 +++ b/dm/host/tests/t_rl.c
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,88 @@
 +// Production transport with independent present and HID scheduling; no game.
 +#include "../dm.h"
 +#include "../dm_rl.h"
@@ -4115,7 +4208,7 @@ index 0000000..f5c8437
 +void dm_guest_clock_share(struct dm_rl_clock *clock) {(void)clock;}
 +uint64_t guest_ns(void){return test_frame*16666667ull;}
 +uint64_t dm_guest_frame(void) { return test_frame; }
-+int gate_obs_present(int n) { return n>=21 && n<=27; }
++int gate_obs_present(int n) { return n>=21 && n<=30; }
 +void gate_obs_set(int n,void (*fn)(const uint64_t *)) { callbacks[n]=fn; }
 +void guest_clock_freeze_for(int reason,int on) { if(reason!=3)abort();frozen=on; }
 +void dm_hid_rl_action(uint64_t b,const int32_t a[4],const float g[3]) { (void)g;apply_count++;buttons=b;memcpy(sticks,a,sizeof sticks); }
@@ -4130,6 +4223,13 @@ index 0000000..f5c8437
 +    uint64_t regs[31]={(uint64_t)(uintptr_t)state};
 +    if(!strcmp(mode,"invalid")){position[0]=NAN;ink=INFINITY;facing[0]=NAN;}
 +    memcpy(state+0x20,position,sizeof position);memcpy(state+0x84,&ink,sizeof ink);memcpy(state+0x44,facing,sizeof facing);callbacks[OBS_SPL3_INGAME](regs);
++    uint8_t roots[2][0x110]={{0}},infos[2][0x800]={{0}},stores[2][16]={{0}},nodes[2][0x188]={{0}},damage[0xf08]={0};
++    for(int i=0;i<2;i++) {
++        uintptr_t storage=(uintptr_t)stores[i],info=(uintptr_t)infos[i];int slot=i?4:0;
++        if(!strcmp(mode,"bad-slot") && !i)slot=99;
++        memcpy(roots[i]+0x108,&storage,8);memcpy(stores[i]+8,&info,8);memcpy(infos[i]+0x7e8,&slot,4);
++    }
++    uintptr_t own=(uintptr_t)roots[0];memcpy(damage+0xf00,&own,8);
 +    uint64_t controlled=0;pthread_t boundary_thread;int boundary_started=0;
 +    for(uint64_t frame=1;;frame++) {
 +        // Input for the interval from present N to N+1 uses frame N.
@@ -4154,7 +4254,8 @@ index 0000000..f5c8437
 +            }
 +        }
 +        if(!strcmp(mode,"boundary") && controlled==1) {
-+            if(pthread_create(&boundary_thread,NULL,boundary_query,(void *)(uintptr_t)frame))abort();
++            test_frame=frame;
++            if(pthread_create(&boundary_thread,NULL,boundary_query,(void *)(uintptr_t)UINT64_MAX))abort();
 +            boundary_started=1;
 +        }
 +        memset(rgb,buttons?191:(sticks[0]?113:17),sizeof rgb);
@@ -4163,6 +4264,14 @@ index 0000000..f5c8437
 +        uint32_t charge_sequence[]={0,49,100,0};
 +        uint32_t special=!strcmp(mode,"invalid") ? 101 : !strcmp(mode,"charge") ? charge_sequence[controlled%4] : 0;
 +        memcpy(state+0x80,&special,4);memcpy(state+0x70,&health,4);test_frame=frame;callbacks[OBS_SPL3_LOCAL_STATE](regs);
++        uint64_t own_regs[31]={(uintptr_t)damage};callbacks[OBS_SPL3_OWN_PLAYER](own_regs);
++        for(int i=0;i<2;i++) {
++            int status=!i && !strcmp(mode,"hud-down") && controlled==1 ? 1 : !i && !strcmp(mode,"hud-absent") && controlled==1 ? 2 : 0;
++            memcpy(nodes[i]+0x140,&status,4);
++            nodes[i][0x166]=!strcmp(mode,"hud-ready") && i==1;
++            uint64_t bind_regs[31]={0};bind_regs[19]=(uintptr_t)nodes[i];bind_regs[20]=(uintptr_t)roots[i];callbacks[OBS_SPL3_HUD_BIND](bind_regs);
++            uint64_t hud_regs[31]={0};hud_regs[19]=(uintptr_t)nodes[i];callbacks[OBS_SPL3_HUD_STATE](hud_regs);
++        }
 +        uint8_t timer[0x150]={0};float raw=!strcmp(mode,"invalid") ? NAN : 10800-frame;int scale=60;
 +        memcpy(timer+0x140,&raw,4);memcpy(timer+0x14c,&scale,4);timer[0x148]=1;
 +        uint64_t timer_regs[31]={(uint64_t)(uintptr_t)timer};callbacks[OBS_SPL3_TIMER](timer_regs);
@@ -4391,10 +4500,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..b53dae2 100644
+index 837700c..d643903 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,17 @@ CUTS = {
+@@ -162,6 +162,20 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -4408,11 +4517,14 @@ index 837700c..b53dae2 100644
 +    (0x3ef6934, 25, 'a9027bfd', 'Splatoon 3 live timer HUD update; read-only countdown'),
 +    (0x3f6d6a4, 26, 'a9016ffc', 'Splatoon 3 result PaintPercent formatter; read-only score'),
 +    (0x3f6df34, 27, 'a9016ffc', 'Splatoon 3 result rule count formatter; read-only score'),
++    (0x2920760, 28, 'a9014ff4', 'Splatoon 3 local PlayerDamage live update; read-only own slot'),
++    (0x4011c64, 29, 'f9408689', 'Splatoon 3 TGPlayerIcon after Player RTTI call and test; read-only live actor'),
++    (0x4011e28, 30, 'fd4013e8', 'Splatoon 3 TGPlayerIcon update epilogue; read-only displayed HUD state'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +643,7 @@ for fa, fb in funcs:
+@@ -632,7 +646,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -4421,12 +4533,16 @@ index 837700c..b53dae2 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +737,8 @@ for off, oid, ow, why in obs:
+@@ -726,7 +740,12 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25
 -    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8), f'private obs point not approved {off:#x}'
-+    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27))
++    # 0x4011c64 is two instructions after BLR x8 (only TBZ w0 between).
++    # x9-x17 remain call-clobbered there; the original LDR defines x9 next.
++    # 0x4011e28 is the common UI epilogue: x19 still owns the live widget,
++    # x9-x17 are dead; the original LDR restores d8 before the native return.
++    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27),(0x2920760,28),(0x4011c64,29),(0x4011e28,30))
 +    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8) or spl3_prologue, f'private obs point not approved {off:#x}'
      assert off < TEXT_END and off not in kinds and not any(lo <= off < hi for wseg in windows for lo, hi in [(wseg[0].address, wseg[-1].address + 4)]), f'观测门与改写点冲突 {off:#x}'
      put_branch(off, site_obs(off, oid, w)); stat('obs')
