@@ -8,7 +8,8 @@ import numpy as np
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'arena/lib'))
 from atlas import MapAtlas
 from skills import Skills,aim_at,ink_at
-from tools.build_arena_maps import graph
+from tools.build_arena_maps import graph,edge_kind,central_component
+from arena.geometry import CollisionMesh
 
 
 def observation(position=(0.,0.,0.),yaw=0.,pitch=0.,frame=10,**changes):
@@ -68,10 +69,85 @@ class ControllerTests(unittest.TestCase):
         s=Skills(atlas);r=s.move_to(observation(),(0,0,2))
         self.assertGreater(r.action['sticks'][1],0)
         near=s.move_to(observation(position=(0,0,1.25),frame=11),(0,0,2))
-        self.assertGreater(abs(near.action['sticks'][1]),.8)
-        self.assertEqual(s.move_to(observation(position=(0,0,1.25),frame=200),(0,0,2)).status,'blocked')
+        self.assertGreaterEqual(abs(near.action['sticks'][1]),.5)
+        self.assertLess(abs(near.action['sticks'][1]),.85)
+        self.assertEqual(s.move_to(observation(position=(0,0,1.25),frame=200),(0,0,2)).status,'recovering_jump')
         self.assertTrue(s.move_to(observation(position=(0,0,2),frame=201),(0,0,2)).done)
         self.assertEqual(s.objective(),(0,0,1))
+
+    def test_strict_corner_position_height_and_slowdown(self):
+        atlas=MapAtlas(dict(schema='arena.map.v1',nodes=[[0,0,0,1],[0,0,1,1],[1,0,1,1]],edges=[[1],[2],[]],regions={},spawns={},resolution=1))
+        s=Skills(atlas)
+        r=s.move_to(observation(),(1,0,1))
+        r=s.move_to(observation(position=(0,0,.4),frame=16),(1,0,1))
+        self.assertEqual(s.index,1);self.assertEqual(r.action['sticks'][0],0)
+        self.assertAlmostEqual(r.action['sticks'][1],.65)
+        s.move_to(observation(position=(0,-1,1),frame=22),(1,0,1));self.assertEqual(s.index,1)
+        s.move_to(observation(position=(0,0,.9),frame=28),(1,0,1));self.assertEqual(s.index,2)
+
+    def test_corner_diagonal_input_stays_effective_and_slows(self):
+        atlas=MapAtlas(dict(schema='arena.map.v1',nodes=[[0,0,0,1],[0,0,1,1],[1,0,1,1]],edges=[[1],[2],[]],regions={},spawns={},resolution=1))
+        s=Skills(atlas);r=s.move_to(observation(yaw=math.pi/4),(1,0,1))
+        self.assertTrue(all(abs(v)>.55 for v in r.action['sticks'][:2]))
+        self.assertLessEqual(math.hypot(*r.action['sticks'][:2]),.85+1e-9)
+        straight=MapAtlas(dict(schema='arena.map.v1',nodes=[[0,0,0,1],[0,0,1,1],[0,0,2,1]],edges=[[1],[2],[]],regions={},spawns={},resolution=1))
+        fast=Skills(straight).move_to(observation(yaw=math.pi/4),(0,0,2))
+        self.assertGreater(math.hypot(*fast.action['sticks'][:2]),math.hypot(*r.action['sticks'][:2]))
+
+    def test_route_starts_at_actual_pose_instead_of_entering_projection_anchor(self):
+        atlas=MapAtlas(dict(schema='arena.map.v1',nodes=[[-1,6,1,1],[-2,6,2,1],[-3,6,2,1]],edges=[[1],[2],[]],regions={},spawns={},resolution=1))
+        p=(-1.3,6,1.33);s=Skills(atlas)
+        r=s.move_to(observation(position=p),( -3,6,2))
+        self.assertEqual(s.path[0],p);self.assertEqual(s.index,1)
+        # Facing +Z, the measured start must steer away from the crate corner.
+        self.assertGreater(r.action['sticks'][0],0);self.assertGreater(r.action['sticks'][1],0)
+        self.assertEqual(s.nodes[0],0)
+
+    def test_one_jump_then_block_edge_and_three_replans(self):
+        atlas=MapAtlas(dict(schema='arena.map.v1',nodes=[[0,0,0,1],[0,0,1,1],[1,0,0,1],[1,0,1,1]],edges=[[1,2],[3],[3],[]],regions={},spawns={},resolution=1))
+        s=Skills(atlas,stall_frames=20)
+        s.move_to(observation(frame=0),(1,0,1))
+        jump=s.move_to(observation(frame=20),(1,0,1));self.assertEqual(jump.status,'recovering_jump');self.assertEqual(jump.action['buttons'][4],1)
+        # Vertical jumping in place must not count as horizontal progress.
+        r=s.move_to(observation(frame=50,position=(0,1,0)),(1,0,1));self.assertFalse(r.action['buttons'][4])
+        r=s.move_to(observation(frame=80),(1,0,1));self.assertEqual(r.status,'replanning');self.assertEqual(s.replans,1)
+        first=s.events[-2];self.assertEqual(first['kind'],'block_edge')
+        self.assertNotIn(tuple(first['edge']),list(zip(s.nodes,s.nodes[1:])))
+        s.move_to(observation(frame=81),(1,0,1))
+        s.move_to(observation(frame=101),(1,0,1))
+        s.move_to(observation(frame=161),(1,0,1))
+        r=s.move_to(observation(frame=162),(1,0,1))
+        self.assertEqual(r.status,'blocked');self.assertEqual(s.replans,3)
+        self.assertEqual(sum(e['kind']=='jump' for e in s.events),2)
+
+    def test_replan_can_arrive_via_alternate_edge_and_block_expires(self):
+        atlas=MapAtlas(dict(schema='arena.map.v1',nodes=[[0,0,0,1],[0,0,1,1],[1,0,0,1],[1,0,1,1]],edges=[[1,2],[3],[3],[]],regions={},spawns={},resolution=1))
+        s=Skills(atlas,stall_frames=20)
+        for f in (0,20,80,81):s.move_to(observation(frame=f),(1,0,1))
+        s.move_to(observation(frame=87,position=(1,0,0)),(1,0,1))
+        self.assertTrue(s.move_to(observation(frame=93,position=(1,0,1)),(1,0,1)).done)
+        self.assertEqual(s.replans,1);self.assertIn((0,1),s.blocked_edges)
+        s.move_to(observation(frame=2000),(0,0,1))
+        self.assertNotIn((0,1),s.blocked_edges)
+
+    def test_low_step_is_not_a_walk_and_body_radius_catches_parallel_wall(self):
+        floor=quad(-2,0,-2,2,0)+quad(0,2,-2,2,.5)
+        face=[[(0,0,-2),(0,.5,-2),(0,.5,2)],[(0,0,-2),(0,.5,2),(0,0,2)]]
+        mesh=CollisionMesh(np.array(floor+face,float))
+        self.assertEqual(edge_kind(mesh,(-1,0,0),(1,.5,0)),'jump')
+        highface=[[(0,0,-2),(0,3,-2),(0,3,2)],[(0,0,-2),(0,3,2),(0,0,2)]]
+        self.assertIsNone(edge_kind(CollisionMesh(np.array(quad(-2,2,-2,2,0)+highface)),(-1,0,0),(1,0,0)))
+        parallel=[[(.2,0,-2),(.2,3,-2),(.2,3,2)],[(.2,0,-2),(.2,3,2),(.2,0,2)]]
+        self.assertIsNone(edge_kind(CollisionMesh(np.array(quad(-2,2,-2,2,0)+parallel)),(0,0,-1),(0,0,1)))
+        drop=quad(-2,0,-2,2,3)+quad(0,2,-2,2,0)+highface
+        self.assertEqual(edge_kind(CollisionMesh(np.array(drop)),(-1,3,0),(1,0,0)),'jump')
+        ramp=[[(-2,0,-2),(-2,0,2),(2,2,2)],[(-2,0,-2),(2,2,2),(2,2,-2)]]
+        self.assertEqual(edge_kind(CollisionMesh(np.array(ramp)),(-.5,.75,0),(.5,1.25,0)),'walk')
+
+    def test_named_central_regions_exclude_one_way_sinks_without_deleting_them(self):
+        edges=[[1],[0,2],[3],[2],[]]
+        self.assertEqual(central_component(edges,0,set(range(5))),{0,1})
+        self.assertEqual(edges[1],[0,2])
 
     def test_multiple_layers_ledge_direction_and_non_swim_material(self):
         floor=quad(-2,2,-2,2,0)+quad(-2,2,-2,2,3)

@@ -15,6 +15,7 @@ class MapAtlas:
         self.points = [tuple(n[:3]) for n in data['nodes']]
         self.swimmable = [bool(n[3]) for n in data['nodes']]
         self.edges = data['edges']
+        self.edge_kinds = data.get('edge_kinds',{})
         self.regions = data['regions']
         self.spawns = data['spawns']
         self.resolution = data['resolution']
@@ -32,7 +33,7 @@ class MapAtlas:
         return min(candidates, key=lambda i: sum((a-b)**2 * (4 if j == 1 else 1)
                                                 for j, (a,b) in enumerate(zip(position,self.points[i]))))
 
-    def route(self, start, end, swim=False):
+    def plan(self, start, end, swim=False, blocked_edges=()):
         a, b = self.nearest(start,swim), self.nearest(end,swim)
         if math.dist(self.points[b],end) > 2*self.resolution:
             raise ValueError('target is outside the traversable atlas')
@@ -41,6 +42,7 @@ class MapAtlas:
             _, p = heapq.heappop(queue)
             if p == b:break
             for q in self.edges[p]:
+                if (p,q) in blocked_edges:continue
                 if swim and not self.swimmable[q]:continue
                 value = cost[p]+math.dist(self.points[p],self.points[q])
                 if value >= cost.get(q,math.inf):continue
@@ -48,8 +50,13 @@ class MapAtlas:
                 heapq.heappush(queue,(value+math.dist(self.points[q],self.points[b]),q))
         if b not in prev:raise ValueError('no static route to target')
         result=[];q=b
-        while q is not None:result.append(self.points[q]);q=prev[q]
+        while q is not None:result.append(q);q=prev[q]
         return list(reversed(result))
+
+    def route(self, start, end, swim=False, blocked_edges=()):
+        return [self.points[i] for i in self.plan(start,end,swim,blocked_edges)]
+
+    def edge_kind(self, a, b):return self.edge_kinds.get(f'{a}:{b}','walk')
 
     def region(self, name):
         """Named experimental regions, derived from map geometry, not game callouts."""

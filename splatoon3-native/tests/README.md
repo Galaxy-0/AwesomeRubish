@@ -289,23 +289,24 @@ bash tests/run_all.sh --milestone a1 --timeout 2400
 
 A2已通过双端交换配装实测，完整耗墨计数和单次耗墨可用 `tests/a2_metrics.py work/tests/<a2-run>/result.json` 从原始记录自动复核，不改原始结果。正式签收及统计口径变更见PROGRESS。
 
-## A4 地图与技能库（进行中）
+## A4 地图与技能库（已签收）
 
-`bash tests/run_all.sh --milestone a4 --timeout 2400` 重建三张保守角色碰撞网格，
-检查公共库和实际策略进程仅可读取静态导航JSON，然后依次新开三局验证高台/平地路线、
-瞄准、显式涂路和实际潜墨移动。温泉峡谷另测平地近距离正对目标的连续/暂停伤害一致性。
-每张地图的脚本和总入口均有上限；任一失败保留原件并停止后续地图，不把子项当签收。
-原始证据只在 `work/tests/a4-*`；当前进度见PROGRESS。
+`bash tests/run_all.sh --milestone a4 --timeout 3000` 重建三图导航、预检端点可达性，
+再执行每图10条预设路线。各图≥9/10到达才通过，正常两局按6+4分组以保留原生180秒计时；
+失败记录位置和恢复事件。随后验证瞄准、耗墨和实际己墨潜游；全部源码/图冻结复核。
+仅选择部分 `--stages` 是诊断，`full_a4_passed` 保持false。
 
-fixed60 客体等待不设绝对墙钟上限。独立看门狗默认在有 STEP 预算、非策略暂停且
-120 秒没有任何新 present 时中止；`stall_timeout` / `DM_RL_STALL_SECONDS` 可配置。
-`tests/test_rl_watchdog.py` 包含 65 秒真实策略暂停再恢复、带预算共享暂停和真卡死；
-原生 `t_rl_long_wait` 用 >60 秒墙钟推进 5.425 秒客体睡眠，另测有限事件等待；
-`t_rl_watchdog` 用虚拟时钟验证数小时慢步进及跨天暂停。均接入 A1–A4，
-本次 A4 正在重跑三图实机及伤害补测，不能以组件通过替代实机签收。
+角色碰撞边按脚/腿/膝/头及左右半径多线段扫掠，区分连续坡、保守20cm台阶和独立jump弧；
+严格拐点与高度条件，首路径点用实际位置而非强迫走入投影格点中心。无进展先跳一次，
+仍受阻则临时封当前有向边、最多3次重规划。13项组件及实际sandbox公共图读取回归通过。
 
-当前停止（新卡点）：温泉峡谷 1429 STEP 与 A1 连续/暂停伤害补测已通过；
-District00 在第424 STEP后因 `move_to` 实际位置不前进返回 blocked，
-不是客体停帧或 RL_STALL。整体 `work/tests/a4-20261018-231423-522804/result.json`
-保持失败，Yagara未启动，A5原生四场/百局未运行。卡点截图、双方sample、
-原始steps及只读路径重放保留在 `work/tests/a4-stage2-20261018-232556-373765/`。
+fixed60客体等待与握手后STEP无绝对墙钟截止，由默认120秒无present进展看门狗中止；
+策略暂停不计时，`stall_timeout` / `DM_RL_STALL_SECONDS`可配置。回归含生产>60秒
+慢步进客体睡眠、真实65秒策略暂停、长STEP持续present以及真停帧。
+
+正式结果 `work/tests/a4-20261019-004014-515336/result.json` 为完整PASS：
+三图各10/10、公共技能均通过；温泉峡谷两次/Yagara一次实际封边重规划后到达。
+A1连续/暂停伤害证据显式复用已接受partial `7e2ecd7`，验证原生/时间传输hash和非导航AST
+未变，两次均损失.550000012、HUD1.0秒。原生证据仅在ignored work；历史失败见PROGRESS。
+
+A5仍待原生四房/百局验收；A3b在A5之后。

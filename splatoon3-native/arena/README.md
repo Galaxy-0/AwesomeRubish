@@ -61,3 +61,9 @@ actual policy-process replay and explicit deferred-field unknown checks.
 The arena will use final scores for winners and observer HUD enemy Down counts
 for 1v1; position-classified environmental deaths are recorded separately. These
 counts are not the deferred native last-hit/weapon attribution.
+
+A4 is accepted (2026-10-19): the public `lib/` navigation/control primitives passed
+10/10 preset native routes on each of Yunohana, District00 and Yagara, including
+three successful live replanning recoveries, plus aim/ink/submerged feedback.
+See `lib/README.md` and PROGRESS for the exact scope, A1 damage carry-forward and
+static/dynamic geometry limitations. A5 native tournament acceptance is next.

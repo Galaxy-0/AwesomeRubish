@@ -32,7 +32,80 @@ def surfaces(path):
     return np.asarray(triangles,float).reshape((-1,3,3)),np.asarray(swim,bool)
 
 
-def graph(triangles,swim_flags,resolution=1.,min_y=0.,max_y=24.):
+def segments_clear(triangles,starts,ends,epsilon=.005):
+    """Batched double-sided segment sweep against a local collision subset."""
+    if not len(triangles):return True
+    a=np.asarray(starts,float)[:,None,:];d=(np.asarray(ends,float)-np.asarray(starts,float))[:,None,:]
+    t=np.asarray(triangles,float)[None,:,:,:];e1=t[:,:,1]-t[:,:,0];e2=t[:,:,2]-t[:,:,0]
+    cross=np.cross(d,e2);det=np.sum(e1*cross,axis=2);good=np.abs(det)>1e-10
+    inv=np.zeros_like(det);inv[good]=1/det[good]
+    delta=a-t[:,:,0];u=np.sum(delta*cross,axis=2)*inv;q=np.cross(delta,e1)
+    v=np.sum(d*q,axis=2)*inv;along=np.sum(e2*q,axis=2)*inv
+    hits=good & (u>=-1e-8)&(v>=-1e-8)&(u+v<=1+1e-8)&(along>=-1e-8)&(along<=1+1e-8)
+    return not bool(np.any(hits))
+
+
+def edge_kind(mesh,p,q,radius=.3,max_step=.2,max_jump=.8):
+    """Terrain-following foot/knee/body lanes; elevated flight is labelled jump.
+
+    This is a sampled capsule approximation, not an exact native physics shape.
+    Continuous ramps may rise more than max_step across a whole metre; only
+    their local support discontinuities are treated as steps.
+    """
+    a=np.asarray(p[:3],float);b=np.asarray(q[:3],float);rise=b[1]-a[1]
+    if not -3.5<=rise<=max_jump:return None
+    low=np.minimum(a,b)-[radius,.21,radius];high=np.maximum(a,b)+[radius,2.6,radius]
+    keep=((mesh.low<=high)&(mesh.high>=low)).all(axis=1);tri=mesh.triangles[keep]
+    direction=b-a;length=np.linalg.norm(direction[[0,2]])
+    side=np.array([-direction[2],0.,direction[0]])*radius/max(length,.001)
+    ts=np.linspace(0,1,max(3,math.ceil(length/.2)+1))
+    lanes=np.array([a+ts[:,None]*direction+offset for offset in (np.zeros(3),side,-side)])
+    normals=np.cross(tri[:,1]-tri[:,0],tri[:,2]-tri[:,0]);up=normals[:,1]/np.maximum(np.linalg.norm(normals,axis=1),1e-10)>=.7
+    floor=tri[up];support=np.full(lanes.shape[:2],np.nan)
+    if len(floor):
+        xz=lanes.reshape(-1,3)[:,[0,2]][:,None,:];base=floor[None,:,0][:,:,[0,2]]
+        e1=floor[None,:,1][:,:,[0,2]]-base;e2=floor[None,:,2][:,:,[0,2]]-base
+        det=e1[:,:,0]*e2[:,:,1]-e1[:,:,1]*e2[:,:,0];valid=np.abs(det)>1e-10
+        inv=np.zeros_like(det);inv[valid]=1/det[valid];delta=xz-base
+        u=(delta[:,:,0]*e2[:,:,1]-delta[:,:,1]*e2[:,:,0])*inv
+        v=(e1[:,:,0]*delta[:,:,1]-e1[:,:,1]*delta[:,:,0])*inv
+        heights=floor[None,:,0,1]+u*(floor[None,:,1,1]-floor[None,:,0,1])+v*(floor[None,:,2,1]-floor[None,:,0,1])
+        ok=valid & (u>=-1e-7)&(v>=-1e-7)&(u+v<=1+1e-7)&(heights>=min(a[1],b[1])-.2)&(heights<=max(a[1],b[1])+.2)
+        cost=np.where(ok,np.abs(heights-lanes.reshape(-1,3)[:,1,None]),np.inf)
+        chosen=cost.argmin(axis=1);values=heights[np.arange(len(chosen)),chosen]
+        support=np.where(np.isfinite(cost.min(axis=1)),values,np.nan).reshape(support.shape)
+    if not np.isfinite(support[:,[0,-1]]).all():return None
+    def sweep(path,steps=False):
+        starts=[];ends=[]
+        for height in (.08,.3,.55,1.,1.4):
+            begin=path[:,:-1,:].copy();end=path[:,1:,:].copy()
+            if steps and height==.08:
+                # A local <=20cm step is traversed at its raised foot height;
+                # a tall face cannot be bypassed by raising the whole edge.
+                raised=np.maximum(begin[:,:,1],end[:,:,1]);begin[:,:,1]=raised;end[:,:,1]=raised
+            begin[:,:,1]+=height;end[:,:,1]+=height
+            starts.extend(begin.reshape(-1,3));ends.extend(end.reshape(-1,3))
+            # Cross-sections detect a wall contained between the two side
+            # lanes, even when it is parallel to the direction of travel.
+            left=path[1].copy();right=path[2].copy();left[:,1]+=height;right[:,1]+=height
+            starts.extend(left);ends.extend(right)
+        return segments_clear(tri,starts,ends)
+    if np.isfinite(support).all() and np.max(np.abs(np.diff(support,axis=1)))<=max_step+1e-5:
+        walk=lanes.copy();walk[:,:,1]=support
+        if sweep(walk,True):return 'walk'
+    # A separate capsule sweep follows an explicit jump arc. Never turn the
+    # successful high-level check into an ordinary walk edge.
+    arc=lanes.copy()
+    if rise < -max_step:
+        # Clear the ledge before descending: a straight diagonal from the
+        # upper foot into the lower floor incorrectly cuts through its face.
+        arc[:,:,1]=a[1]+np.clip((ts-.5)*2,0,1)*rise
+    arc[:,:,1]+=np.sin(np.pi*ts)*(1.+max(0.,rise)*.25)
+    if sweep(arc):return 'jump'
+    return None
+
+
+def graph(triangles,swim_flags,resolution=1.,min_y=0.,max_y=24.,return_kinds=False):
     normal=np.cross(triangles[:,1]-triangles[:,0],triangles[:,2]-triangles[:,0]);norm=np.linalg.norm(normal,axis=1)
     up=(normal[:,1]/np.maximum(norm,1e-10))>=.7
     cells={}
@@ -56,20 +129,31 @@ def graph(triangles,swim_flags,resolution=1.,min_y=0.,max_y=24.):
         center=np.array((x*resolution,y+.65,z*resolution))
         if not all(mesh.clear(center-axis,center+axis,.001) for axis in (np.array((.32,0,0)),np.array((0,0,.32)))):continue
         i=len(nodes);nodes.append([x*resolution,round(y,4),z*resolution,int(swim)]);by_cell.setdefault((x,z),[]).append(i)
-    edges=[[] for _ in nodes]
+    edges=[[] for _ in nodes];kinds={}
     for i,p in enumerate(nodes):
         x,z=round(p[0]/resolution),round(p[2]/resolution)
         for dx,dz in ((1,0),(-1,0),(0,1),(0,-1),(1,1),(1,-1),(-1,1),(-1,-1)):
             for j in by_cell.get((x+dx,z+dz),[]):
-                q=nodes[j];rise=q[1]-p[1]
-                if not -.0-3.5<=rise<=.7:continue
-                if dx and dz:
-                    if not all(any(abs(nodes[k][1]-p[1])<=.7 for k in by_cell.get(c,[])) for c in ((x+dx,z),(x,z+dz))):continue
-                high=max(p[1],q[1]);start=(p[0],high+.35,p[2]);end=(q[0],high+.35,q[2])
-                perpendicular=np.array([-(q[2]-p[2]),0.,q[0]-p[0]],float);perpendicular*=.3/np.linalg.norm(perpendicular)
-                if not all(mesh.clear(np.array(start)+offset,np.array(end)+offset,.01) for offset in (np.zeros(3),perpendicular,-perpendicular)):continue
+                q=nodes[j]
+                if dx and dz and not all(any(abs(nodes[k][1]-p[1])<=.8 for k in by_cell.get(c,[])) for c in ((x+dx,z),(x,z+dz))):continue
+                kind=edge_kind(mesh,p,q)
+                if kind is None:continue
                 edges[i].append(j)
-    return nodes,edges
+                if kind!='walk':kinds[f'{i}:{j}']=kind
+    return (nodes,edges,kinds) if return_kinds else (nodes,edges)
+
+
+def central_component(edges,start,allowed):
+    def reach(graph):
+        seen={start};stack=[start]
+        while stack:
+            for q in graph[stack.pop()]:
+                if q not in seen:seen.add(q);stack.append(q)
+        return seen
+    reverse=[[] for _ in edges]
+    for p,links in enumerate(edges):
+        for q in links:reverse[q].append(p)
+    return reach(edges) & reach(reverse) & allowed
 
 
 def build(stage,resolution):
@@ -79,7 +163,7 @@ def build(stage,resolution):
         for source in (directory/'sources'/a['actor']).glob('*.obj'):
             tri,flags=surfaces(source);matrix,translation=transform({'Rotate':a['rotate'],'Scale':a['scale'],'Translate':a['translate']})
             parts.append(tri@matrix.T+translation);swim.append(flags)
-    triangles=np.concatenate(parts);nodes,edges=graph(triangles,np.concatenate(swim),resolution)
+    triangles=np.concatenate(parts);nodes,edges,kinds=graph(triangles,np.concatenate(swim),resolution,return_kinds=True)
     np.savez_compressed(directory/'human.npz',triangles=triangles)
     pack=unpack(ROOT/f'work/data/v720896/RomFS/Pack/Scene/Vss_{name}.pack.zs');banc=read(pack[f'Banc/Vss_{name}.bcett.byml'])
     def nearest(p):return min(range(len(nodes)),key=lambda i:sum((nodes[i][j]-p[j])**2*(4 if j==1 else 1) for j in range(3)))
@@ -94,24 +178,31 @@ def build(stage,resolution):
             for q in edges[stack.pop()]:
                 if q not in seen:seen.add(q);stack.append(q)
         return seen
+    (directory/'graph-candidate.json').write_text(json.dumps(dict(nodes=nodes,edges=edges,edge_kinds=kinds,spawns=spawns),separators=(',',':'))+'\n')
+    print(json.dumps(dict(stage=stage,nodes=len(nodes),edges=sum(map(len,edges)),jump_edges=len(kinds))),flush=True)
     shared=reachable(nearest(spawns['alpha']['ground'])) & reachable(nearest(spawns['bravo']['ground']))
     if not shared:raise ValueError('no shared traversable area reachable from both spawn grounds')
     def shared_nearest(p):
         return min(shared,key=lambda i:(nodes[i][0]-p[0])**2+(nodes[i][2]-p[2])**2+.05*(nodes[i][1]-p[1])**2)
-    center=nodes[shared_nearest((0,3,0))][:3];regions={}
-    targets={'center':center,'west_lane':nodes[shared_nearest((-18,center[1],0))][:3],
-             'east_lane':nodes[shared_nearest((18,center[1],0))][:3],
+    center_index=shared_nearest((0,3,0));center=nodes[center_index][:3];regions={}
+    returnable=central_component(edges,center_index,shared)
+    def central_nearest(p):
+        return min(returnable,key=lambda i:(nodes[i][0]-p[0])**2+(nodes[i][2]-p[2])**2+.05*(nodes[i][1]-p[1])**2)
+    targets={'center':center,'west_lane':nodes[central_nearest((-18,center[1],0))][:3],
+             'east_lane':nodes[central_nearest((18,center[1],0))][:3],
              'alpha_base':spawns['alpha']['ground'],'bravo_base':spawns['bravo']['ground']}
-    high=[i for i in shared if abs(nodes[i][0])<25 and abs(nodes[i][2])<25]
+    high=[i for i in returnable if abs(nodes[i][0])<25 and abs(nodes[i][2])<25]
     targets['central_high']=nodes[max(high,key=lambda i:(nodes[i][1],-math.hypot(nodes[i][0],nodes[i][2])))][:3]
     for label,p in targets.items():
         regions[label]=dict(center=p,radius=6.,kind='experimental geometry label')
     data=dict(schema='arena.map.v1',stage_id=stage,name=name,resolution=resolution,nodes=nodes,edges=edges,
-              regions=regions,spawns=spawns,omitted=manifest['omitted'],
-              scope=dict(min_y=0.,max_y=24.,max_rise=.7,max_drop=3.5,body_radius=.3,
+              regions=regions,spawns=spawns,edge_kinds=kinds,omitted=manifest['omitted'],
+              scope=dict(min_y=0.,max_y=24.,max_rise=.8,max_step=.2,max_drop=3.5,body_radius=.3,sweep_spacing=.2,
+                         sweep_heights=[.08,.3,.55,1.,1.4],jump_arc_height=1.,central_returnable_nodes=len(returnable),
+                         region_selection="central lanes/high require a return path; one-way sinks remain in graph",
                          description='Static conservative graph; swim flag is material potential, never live ink'))
     (directory/'navigation.json').write_text(json.dumps(data,separators=(',',':'))+'\n')
-    print(json.dumps(dict(stage=stage,name=name,nodes=len(nodes),edges=sum(map(len,edges)),regions=regions,spawns=spawns)),flush=True)
+    print(json.dumps(dict(stage=stage,name=name,nodes=len(nodes),edges=sum(map(len,edges)),jump_edges=len(kinds),regions=regions,spawns=spawns)),flush=True)
 
 
 if __name__=='__main__':

@@ -74,7 +74,7 @@ The two-player main test runs one random match through both Winners, then resets
 
 M6-B passed 447 synchronized first-match steps plus ten after reset. The expanded HUD/score regression passed 426 first-match steps plus ten after reset, four graceful exits and no new swapouts. Both native slots were public to both observers; both had one Down event, including positive-HP Down samples. Final Turf scores were [4.0,2.0] and [2.0,4.0]. Missing-input presents are covered by the production fixture; no missing-input frame was observed in the M6-B real match. The separate eight-player formal run passed 186 synchronized steps through all native Winners, with all eight public HUD slots valid, matching own/enemy result scores [4.4,4.0] / [4.0,4.4], eight graceful exits and no new swapouts. Artifacts, pixels and independent save copies remain under ignored `work/tests/m6-*`.
 
-Run A1 with `bash tests/run_all.sh --milestone a1`. Its acceptance scope is exact fixed60 time, native HUD agreement and matching movement between prequeued continuous input and the same script with policy pauses. Damage consistency is deferred to A4 after `aim_at`, on flat ground at close range facing the target. `tests/diagnose_stamper_aim.py` preserves the earlier unsuccessful aiming diagnostic; it is not an A1 gate. See `notes/PROGRESS.md` for current acceptance evidence.
+Run A1 with `bash tests/run_all.sh --milestone a1`. Its acceptance scope is exact fixed60 time, native HUD agreement and matching movement between prequeued continuous input and the same script with policy pauses. The damage comparison was assigned to A4 and has passed on flat ground at close range facing the target; A4 carries the accepted partial proof with unchanged time/aim code checks. `tests/diagnose_stamper_aim.py` preserves the earlier unsuccessful aiming diagnostic; it is not an A1 gate. See `notes/PROGRESS.md` for current acceptance evidence.
 
 A2 adds optional `loadouts=[kit_for_player_0, kit_for_player_1, ...]` at construction or reset. Each kit is a dictionary with `head`, `clothes`, `shoes`; each piece declares `main` and exactly three `subs` by names in `rl/loadout.py`. A `None` kit preserves that player's save-selected equipment. Custom kits fill all twelve slots with legal skills. Exclusive main skills are restricted to their native gear category and cannot be subskills. The `none` enum is reserved for development diagnostics and is rejected in a declared custom kit.
 
@@ -105,7 +105,7 @@ attribution are deferred as A3b until after A5; both private fields remain unkno
 See `arena/README.md` and the A3 split decision in PROGRESS.
 
 
-A4 (in progress) adds coordinator metadata `own_view={yaw,pitch,valid}` from the
+A4 (accepted) adds coordinator metadata `own_view={yaw,pitch,valid}` from the
 already diagnosed own packet, with the same native sample frame as position.
 It remains outside the M6 observation space. The arena copies it only into that
 player's own allowlist (`view_yaw`, `view_pitch`); opponent view never crosses the
