@@ -26,3 +26,15 @@ and retains diagnostics rather than inventing a native victory.
 T1 authors can use separate private directories. The committed example sources
 are public examples; worker sandboxing does not isolate other coding sessions'
 filesystem access, which the T1 director must arrange separately.
+
+A6 adds `own.special` as an optional own-only, fresh (at most 8 presents old)
+HUD meter; missing/stale feedback stays `None`. `ControlProcess` is the typed
+allowlist extension used by the coordinator. It adds no enemy state. Shared
+`stamper` / `stamper_data` are public; use `step_frames=1` for their shortest
+release boundaries and FastTurn. See [the skill guide](../lib/stamper.md).
+
+`tests/benchmark_a6.py --policy <directory> --scenario stationary|lateral|approach`
+runs a single-room black-box proficiency fixture with the declared gear/cadence.
+Its fixed-position main-weapon scores include raw/executed inputs and sample
+counts. Matching source/loadout/library/evaluator cards are included in each
+new tournament report; absent or stale cards remain unavailable.

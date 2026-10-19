@@ -68,3 +68,11 @@ the measured foot position; intermediate corners still require their own tight
 arrival. Central lane/high labels require a return path to the central component.
 One-way sinks remain in the complete static graph, without claiming wall-ink
 climbing support. The accepted proof and earlier failure records are in PROGRESS.
+
+## Weapon 8000 / A6
+
+The shared `stamper` and `stamper_data` modules provide bounded charge/dash/combo,
+roll/surge, Burst Bomb and aiming controllers. See [stamper.md](stamper.md) for
+inputs, native support limits and proficiency commands. `step_frames=1` is
+required for exact release edges and calibrated FastTurn. Zipcaster RS activation
+is verified from a naturally full meter; hook traversal remains unsupported.

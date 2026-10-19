@@ -2095,6 +2095,83 @@ index 0000000..2be3993
 +    watch->wall=wall;watch->frame=frame;watch->running=running;watch->initialized=1;
 +    return running && watch->stalled>=limit;
 +}
+diff --git a/dm/host/dm_spl3_test_special.h b/dm/host/dm_spl3_test_special.h
+new file mode 100644
+index 0000000..bff333e
+--- /dev/null
++++ b/dm/host/dm_spl3_test_special.h
+@@ -0,0 +1,71 @@
++/* Opt-in test host only. Compile with SPL3_A6_TEST_SPECIAL; never a tournament.
++ * Verified 11.3.0: Player+108 -> storage; storage+d0c is XOR-coded float
++ * charge. main+6001130 holds the XOR-key pointer. Native full-charge code at
++ * main+288f438..288f470 writes points=cost*211.2, increment=0, charge=1.
++ * storage+d18 is XOR-coded remaining special time (540 for Stamper Zipcaster).
++ * No PlayerNetState/HUD copy is written. Normal builds exclude this file.
++ */
++#include <mach/mach.h>
++#include <mach/mach_vm.h>
++
++static pthread_mutex_t a6_special_mu=PTHREAD_MUTEX_INITIALIZER;
++static pthread_once_t a6_special_once=PTHREAD_ONCE_INIT;
++static int a6_special_mode, a6_special_filled, a6_special_active, a6_special_slot=-1;
++static unsigned a6_special_fills;
++
++static int a6_special_region(uintptr_t p,size_t n,int write) {
++    mach_vm_address_t start=p;mach_vm_size_t length=0;
++    vm_region_basic_info_data_64_t info;mach_msg_type_number_t count=VM_REGION_BASIC_INFO_COUNT_64;mach_port_t object=0;
++    kern_return_t status=mach_vm_region(mach_task_self(),&start,&length,VM_REGION_BASIC_INFO_64,(vm_region_info_t)&info,&count,&object);
++    if(object)mach_port_deallocate(mach_task_self(),object);
++    return status==KERN_SUCCESS && start<=p && n<=length && p-start<=length-n &&
++        (info.protection&VM_PROT_READ) && (!write || (info.protection&VM_PROT_WRITE));
++}
++static void a6_special_configure(void) {
++    const char *mode=getenv("DM_TEST_SPECIAL");if(!mode || !*mode)return;
++    if(!getenv("DM_RL_SOCKET") || strcmp(dm_main_build(),"28c4287aee36f7499da60f3e68b54c70"))
++        die("DM_TEST_SPECIAL requires controlled verified Splatoon 3 11.3.0 test host");
++    if(!strcmp(mode,"full"))a6_special_mode=1;
++    else if(!strcmp(mode,"infinite"))a6_special_mode=2;
++    else die("DM_TEST_SPECIAL requires full or infinite");
++    LOG("A6_TEST_SPECIAL mode=%s test_only=1",mode);
++}
++static void a6_special_reset(void) {
++    pthread_mutex_lock(&a6_special_mu);
++    a6_special_filled=a6_special_active=0;a6_special_fills=0;a6_special_slot=-1;
++    pthread_mutex_unlock(&a6_special_mu);
++}
++static void a6_special_update(uintptr_t player,int slot,int health) {
++    pthread_once(&a6_special_once,a6_special_configure);
++    if(!a6_special_mode || !dm_rl_active() || health<=0 || !a6_special_region(player+0x108,8,0))return;
++    uintptr_t storage=0,key_pointer=0;uint32_t key=0,raw=0,remaining_raw=0;float cost=0,charge=0;
++    memcpy(&storage,(void *)(player+0x108),8);
++    if(!storage || !a6_special_region(storage,0xd30,1))die("A6 special storage unavailable");
++    for(int i=0;i<g_nmod;i++)if(!strcmp(g_mod[i].name,"main")) {
++        if(g_mod[i].size<0x6001138 || !a6_special_region((uintptr_t)g_mod[i].base+0x6001130,8,0))
++            die("A6 special key pointer unavailable");
++        memcpy(&key_pointer,g_mod[i].base+0x6001130,8);break;
++    }
++    if(!key_pointer || !a6_special_region(key_pointer,4,0))die("A6 special key unavailable");
++    memcpy(&key,(void *)key_pointer,4);memcpy(&raw,(void *)(storage+0xd0c),4);
++    raw^=key;memcpy(&charge,&raw,4);memcpy(&remaining_raw,(void *)(storage+0xd18),4);
++    int32_t remaining=(int32_t)(remaining_raw^key);memcpy(&cost,(void *)(storage+0xd10),4);
++    if(!isfinite(charge) || charge<-.001f || charge>1.01f || !isfinite(cost) || cost<=0 || cost>1000 || remaining<0 || remaining>36000)
++        die("A6 special canonical fields outside verified ranges");
++    pthread_mutex_lock(&a6_special_mu);
++    if(a6_special_slot<0)a6_special_slot=slot;
++    if(a6_special_slot!=slot)die("A6 special own-player slot changed");
++    if(remaining>0)a6_special_active=1;
++    int refill=!a6_special_filled || (a6_special_mode==2 && a6_special_active && remaining==0);
++    if(refill && remaining==0) {
++        uint32_t points=(uint32_t)(int32_t)(cost*211.2f);points^=key;
++        uint32_t full=key^UINT32_C(0x3f800000);
++        memcpy((void *)(storage+0xd00),&points,4);
++        memcpy((void *)(storage+0xd04),&key,4);
++        memcpy((void *)(storage+0xd0c),&full,4);
++        a6_special_filled=1;a6_special_active=0;a6_special_fills++;
++        LOG("A6_TEST_SPECIAL_FILL frame=%llu slot=%d mode=%s count=%u old_charge=%.9g remaining=%d cost=%.9g",
++            dm_guest_frame(),slot,a6_special_mode==1?"full":"infinite",a6_special_fills,charge,remaining,cost);
++    }
++    pthread_mutex_unlock(&a6_special_mu);
++}
 diff --git a/dm/host/front_mac.m b/dm/host/front_mac.m
 index c7559ca..d3b7360 100644
 --- a/dm/host/front_mac.m
@@ -3173,10 +3250,10 @@ index 61cf410..631520d 100644
          atomic_store(&g_gdet, wall_guest_ns()); atomic_store(&g_gdet_on, 1);
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..f87dc3c
+index 0000000..e8dd0a0
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,461 @@
+@@ -0,0 +1,470 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
@@ -3194,6 +3271,9 @@ index 0000000..f87dc3c
 +#include <math.h>
 +#include <stdatomic.h>
 +#include <stdarg.h>
++#ifdef SPL3_A6_TEST_SPECIAL
++#include "dm_spl3_test_special.h"
++#endif
 +
 +static int rl_listener = -1, rl_peer = -1;
 +static _Atomic int rl_enabled, rl_controlled, rl_remaining, rl_phase;
@@ -3258,6 +3338,9 @@ index 0000000..f87dc3c
 +}
 +static void phase_ingame(const uint64_t *r) {
 +    (void)r;
++#ifdef SPL3_A6_TEST_SPECIAL
++    a6_special_reset();
++#endif
 +    pthread_mutex_lock(&rl_state_mu); rl_position_seen = rl_ink_seen = rl_heading_seen = rl_hp_seen = rl_special_seen = rl_time_seen = rl_score_seen = rl_view_seen = 0;
 +    rl_self_slot=-1;rl_self_seen=rl_self_ambiguous=0;rl_self_health=-1;
 +    rl_form_squid=rl_ground_contact=-1;
@@ -3371,6 +3454,9 @@ index 0000000..f87dc3c
 +    if(rl_self_seen && rl_self_slot!=slot)rl_self_ambiguous=1;
 +    rl_self_slot=slot;rl_self_seen=1;
 +    pthread_mutex_unlock(&rl_state_mu);
++#ifdef SPL3_A6_TEST_SPECIAL
++    a6_special_update(player,slot,health);
++#endif
 +    if(first)LOG("RL_SELF_SLOT slot=%d player=%p",slot,(void *)player);
 +    if(health_changed && rl_state_dump)LOG("RL_DAMAGE frame=%llu slot=%d hp=%d",dm_guest_frame(),slot,health);
 +}

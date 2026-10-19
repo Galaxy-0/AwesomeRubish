@@ -5,10 +5,15 @@ cd "$root"
 python="${PYTHON:-$root/.venv/bin/python}"
 milestone=m1
 if [[ "${1:-}" == --milestone ]]; then
-    milestone="${2:?--milestone requires m1, m2, m25, m3, m4, m5, m6, a1, a2, a3a, a4 or a5}"
+    milestone="${2:?--milestone requires m1, m2, m25, m3, m4, m5, m6, a1, a2, a3a, a4, a5 or a6}"
     shift 2
 fi
-case "$milestone" in m1|m2|m25|m3|m4|m5|m6|a1|a2|a3a|a4|a5) ;; *) echo "Unknown milestone: $milestone" >&2; exit 2 ;; esac
+case "$milestone" in m1|m2|m25|m3|m4|m5|m6|a1|a2|a3a|a4|a5|a6) ;; *) echo "Unknown milestone: $milestone" >&2; exit 2 ;; esac
+# A6 uses the existing verified host. Dispatch BEFORE shared make targets:
+# T1 may be running, so even a no-op default dmhost build is forbidden.
+if [[ "$milestone" == a6 ]]; then
+    exec "$python" tests/test_a6.py "$@"
+fi
 mkdir -p work/tests
 if [[ "$milestone" == m6 || "$milestone" == a1 || "$milestone" == a2 || "$milestone" == a3a || ( "$milestone" == a4 || "$milestone" == a5 ) ]]; then "$python" tools/prepare_rl.py; fi
 make -C upstream/dm/host/tests GAME=0100C2500FC20000 build/t_hid_motion build/t_ldn_frontend build/t_account_player build/t_spl3_unlock build/t_spl3_weapon build/t_ldn_peer build/t_fs > work/tests/hid-build.log 2>&1

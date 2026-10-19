@@ -20,9 +20,9 @@ from skills import neutral
 from rl import NativeParallelEnv
 from arena.config import PolicySpec
 from arena.hud_events import HudEvents
-from arena.process import PolicyProcess
+from arena.control_process import ControlProcess as PolicyProcess, own_special, encode_control
+from arena.proficiency import report_cards, report_markdown
 from arena.referee_api import RefereeAPI
-from arena.policy import encode_policy
 from arena.statistics import tournament_statistics,meets_a5_threshold
 from arena.schedule import schedule,overlap_windows
 from arena.scoring import compare_scores,SCORING_RULE
@@ -86,7 +86,9 @@ def run_match(task):
     result=dict(round=task['round'],attempt=task.get('attempt',0),stage=task['stage'],passed=False,void=False,errors=[],artifacts=str(out),
                 role_to_policy=task['roles'],screenshot_resolution=[128,72],paint=None,knockdowns=None)
     specs=[PolicySpec.load(path) for path in task['policy_paths']]
-    roles=[specs[i] for i in task['roles']];atlas=MapAtlas.load(task['stage']);env=None;children=[];frame=0
+    roles=[specs[i] for i in task['roles']]
+    result['proficiency_by_role']={f'player_{n}':task.get('proficiency_by_policy',{}).get(s.name,dict(status='unavailable',reason='no matching scorecard')) for n,s in enumerate(roles)}
+    atlas=MapAtlas.load(task['stage']);env=None;children=[];frame=0
     finished=threading.Event();cancel_thread=None;slots_ready=threading.Event();slot_errors=[]
     worker_stop=_STOP if _STOP is not None else threading.Event()
     if task.get("shared_load_slots") is None:slots_ready.set()
@@ -113,8 +115,10 @@ def run_match(task):
             if not settling:
                 for n,agent in enumerate(agents):
                     if frame%roles[n].step_frames==0:
-                        observation=api.policy_observation(agent);held[agent]=children[n].act(observation)
-                        policy_traces[n].write(json.dumps(dict(observation=json.loads(encode_policy(observation)),action=held[agent]))+'\n')
+                        observation=api.policy_observation(agent)
+                        special=own_special(env.process_infos[agent],agent,origins[agent])
+                        held[agent]=children[n].act(observation,special)
+                        policy_traces[n].write(json.dumps(dict(observation=json.loads(encode_control(observation,special)),action=held[agent]))+'\n')
                         policy_traces[n].flush()
             actions={a:(neutral() if settling else held[a]) for a in env.agents}
             native_actions={a:{k:np.asarray(v,dtype=np.int8 if k=='buttons' else np.float32) for k,v in action.items()} for a,action in actions.items()}
@@ -194,9 +198,12 @@ def concurrency_window(matches):
 
 def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early_rate_check=False,resume=None):
     if type(games) is not int or games<2 or games%2:raise ValueError('an even number of games is required for swapped pairs')
+    if os.environ.get('DM_TEST_SPECIAL'):
+        raise ValueError('DM_TEST_SPECIAL is forbidden in arena/T1 matches')
     if parallel not in (1,2,3,4):raise ValueError('parallel games must be 1, 2, 3 or 4')
     specs=[PolicySpec.load(policy_a),PolicySpec.load(policy_b)]
     if specs[0].name==specs[1].name:raise ValueError('policy names must differ')
+    profiles=report_cards(specs)
     prior=load_resume(resume,specs,games) if resume is not None else {}
     initial=prior.get('matches',[]);valid_rounds={m['round'] for m in initial if m.get('passed')}
     out=Path(out) if out is not None else ROOT/'work/arena'/datetime.datetime.now().strftime('tournament-%Y%m%d-%H%M%S-%f')
@@ -210,7 +217,8 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
                 global_loader_slots=2,policies=[s.name for s in specs],source_hashes=[s.source_sha256 for s in specs],matches=[],concurrency_windows=[],errors=[],artifacts=str(out),started_wall=started,
                 first_started_wall=prior.get('first_started_wall',prior.get('started_wall',started)),
                 evidence_sha256=prior.get('evidence_sha256',{}),immutable_runtime_sha256=prior.get('immutable_runtime_sha256',{}),
-                excluded_attempts=prior.get('excluded_attempts',[]))
+                excluded_attempts=prior.get('excluded_attempts',[]),proficiency_by_policy=profiles,
+                proficiency_scope='fixed-pose main-weapon benchmark; matching policy source/loadout/library/evaluator only')
     if resume is not None:
         result['resumed_from']=dict(checkpoint=relative(resume),sha256=sha256(resume),valid_rounds=sorted(valid_rounds),
                                     prior_elapsed_wall_seconds=prior.get('elapsed_wall_seconds',0))
@@ -221,7 +229,7 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
     context=multiprocessing.get_context('spawn');stop=context.Event()
     tasks=[dict(round=n,stage=(n//2)%3+1,roles=[0,1] if n%2==0 else [1,0],policy_paths=[str(s.root) for s in specs],
                 attempt=prior.get('next_attempt_by_round',{}).get(str(n),0),
-                timeout=timeout,shared_load_slots=str(shared_slots)) for n in range(games) if n not in valid_rounds]
+                timeout=timeout,shared_load_slots=str(shared_slots),proficiency_by_policy=profiles) for n in range(games) if n not in valid_rounds]
     def save(matches,reason):
         result['matches']=list(matches);result['stop_reason']=reason
         result['statistics']=tournament_statistics(matches)
@@ -234,6 +242,7 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
         checkpoints=out/'checkpoints';checkpoints.mkdir(exist_ok=True)
         write_json_atomic(checkpoints/f'after-attempt-{len(matches):03d}.json',result)
         write_json_atomic(out/'result.json',result)
+        (out/'proficiency.md').write_text(report_markdown(profiles))
         print(json.dumps(dict(valid=result['statistics']['valid_games'],void=result['statistics']['void_games'],requested=games,attempts=len(matches),stop_reason=reason)),flush=True)
     save(initial,None)
     try:
@@ -255,7 +264,9 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
     except BaseException as error:stop.set();result['errors'].append(repr(error))
     result['segment_elapsed_wall_seconds']=time.time()-started
     result['elapsed_wall_seconds']=prior.get('elapsed_wall_seconds',0)+result['segment_elapsed_wall_seconds']
-    write_json_atomic(out/'result.json',result);return result
+    write_json_atomic(out/'result.json',result)
+    (out/'proficiency.md').write_text(report_markdown(profiles))
+    return result
 
 
 if __name__=='__main__':

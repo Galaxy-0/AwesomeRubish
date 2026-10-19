@@ -1,0 +1,851 @@
+{
+  "schema": "arena.proficiency.v1",
+  "policy": "alpha",
+  "source_sha256": "ed6fb4707adaa2f4f49fe8fc822330afa2765b1d9959b0f060001d67b3ae217c",
+  "policy_step_frames": 12,
+  "library_sha256": {
+    "atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340",
+    "skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+    "stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+    "stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392"
+  },
+  "evaluation_sha256": {
+    "upstream/dm/host/dmhost": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+    "rl/env.py": "ccb97dd0c801a020770004b63134569c5c030d0329712b2a46214a7f4ce6dc0d",
+    "rl/protocol.py": "39232c1dfdaad6260a2b5c968c976eee1a2a5da7acece8b38f62e8323d105cb8",
+    "rl/clock.py": "beb14de74b1b885547f4c458b7aded395d3dbb73e0fe4862655065b7b2688758",
+    "rl/session.py": "41cc43cd0ee70f9108948d4cd96279d18af199e5b581a57b8b3c0d6112fc31f6",
+    "rl/__init__.py": "5566ca2ce69e7a30c942ed3a277c249983e132b4e0f56e1b906f4a92cdd14224",
+    "rl/loadout.py": "4a467181bbf2d7fcd04af077a443ab9e7b7d6e32e780fcc9ad5cda29820f4962",
+    "work/data/v720896/ExeFS/main": "942420a731d52141f97d70baacf7c61ac871de5cebfed44efc39cc70dfcbfd52",
+    "work/build/patched_v720896/main.patched.bin": "aea2e0fd339dec06bbc70de39200ed8fc1d5f5b26cf07a187014759dceeafc94",
+    "work/build/patched_v720896/main.gates.tsv": "95038dcaf1e740754933bbedc7859416ae27133a4b9f279d16b66f0a168c2413",
+    "work/build/patched_v720896/main.obs.tsv": "19bc120a60652e1f7ed44646a5af8740905156b8d64120ba29d4543148d83104",
+    "work/data/v720896/RomFS/Pack/Params.pack.zs": "98fd2f33d5857655aa62ac9e56b4b35de59fdff0f4e0c468ff73d5637dc7455f",
+    "work/data/v720896/RomFS/RSDB/WeaponInfoMain.Product.b30.rstbl.byml.zs": "fdfddc6bce0ac83460eba37cbafcbf0e4afd2548faf5664dc8f3a47c65ac7681",
+    "arena/proficiency.py": "91ff94ff8a3771482d087486dd27078fc85d789be9ac8a151abd122b7a5bcef2",
+    "arena/control_process.py": "b901e83900e8a19e619d0b57b585cbe20dbac770509cbc3dec412ff89fea3de2",
+    "arena/proficiency_process.py": "a88f8b00d29d6418fd89a6906e5423affee65cf9ccf6166d79ce1d4bec8ff200",
+    "arena/proficiency_worker.py": "50d4b3d10ca709bbf2c04d3d9164de4ea4b9268398077471e6178dd0b62105b3",
+    "arena/policy.py": "916af01d780b4526ab64f618c2bcb8919fa722eb090a6996718635f778a58796",
+    "arena/process.py": "6c99d57f9a29326d8cb148588a13a8f4829251197b16d3d5b78605f3ab62cfe8",
+    "arena/config.py": "e7ecf41c019cc533ec1c062aef6cb8b3f651b8f5812f8cbe9fae2a4e88762cb3",
+    "arena/referee.py": "1c35e6de91a1ac1a0615f96ea83e8a09b4ccb77eba1127a07be75af31d4e214c",
+    "arena/referee_api.py": "9d87d9b25e9b6d50f80b91cbb1df70e5990b29cf970392aaca8f416504ee216c",
+    "arena/native_referee.py": "b2e1b329616bebb64e8e7cc7134fb1ed253f3cadbd00e3f20add44dcca5f3b89",
+    "arena/visibility.py": "028ff4105f57fe7db9ef622b92dbb9775571afa1a0cbddd5239c9de24e43fe26",
+    "arena/geometry.py": "7d10b5f18fa74ce05587f5a4fabe3ccd6e80500667917bc9835b06f7ae0fe860",
+    "tests/benchmark_a6.py": "38dae5afde3831de2eef8637c7827b18fe6203cf74767be6eaa8e1062fa1f2a2",
+    "tests/a6_lab.py": "a5bf16884ff924cb94c8d5806c50b86a3ef6f009bb83382535d6db38134b6688",
+    "tests/a6_metrics.py": "dc3bf12845eee184d8553b40aa60667b9ecadcb1771313bf898d7ba6e64d1a7f",
+    "tests/a6_motion.py": "4d56ae876a905446b68821613ac5bedfbb6180ec530b55dabf07f183a0a8543f",
+    "tests/probe_a6_combat.py": "8670bcb914ee1d3272bd0c19b08ea669506ad25227836b3b4ea086d027a9a471",
+    "work/arena/maps/Yunohana/navigation.json": "15da29e0e3713100e551f6fbd879f256af5e7e3389c3a200de4ba91daae50329",
+    "work/arena/maps/Yunohana/sight.npz": "02151e94e562ae2744229c851b8db0c80248340f0cfe888a176a2e4a22623691",
+    "work/arena/maps/District00/navigation.json": "15d8f347a7e44496e428e053a12d033dab7548be4ee585ac2f64f03cd3351b5b",
+    "work/arena/maps/District00/sight.npz": "41276870ed4b0579eda724c2743131ff0008429ef9815c7156e50b6e3ffa261f",
+    "work/arena/maps/Yagara/navigation.json": "81b2ddd93666fe5ef45d3d6386fad5a220b222f7ad9d5d396f9c55e4c61b0c36",
+    "work/arena/maps/Yagara/sight.npz": "3c7dad69da85c483aea552e0cfce016aa8ee920c7896f536e117adcee7691fbf"
+  },
+  "loadout": {
+    "head": {
+      "main": "ink_saver_main",
+      "subs": [
+        "ink_saver_main",
+        "ink_saver_main",
+        "ink_recovery_up"
+      ]
+    },
+    "clothes": {
+      "main": "ink_recovery_up",
+      "subs": [
+        "ink_saver_main",
+        "ink_recovery_up",
+        "run_speed_up"
+      ]
+    },
+    "shoes": {
+      "main": "run_speed_up",
+      "subs": [
+        "run_speed_up",
+        "run_speed_up",
+        "ink_resistance_up"
+      ]
+    }
+  },
+  "trials": [
+    {
+      "scenario": "stationary",
+      "distance": 6.079366319813135,
+      "nominal_distance": 6.0,
+      "repeat": 0,
+      "status": "measured",
+      "budget_frames": 240,
+      "score": 47.5,
+      "target_down": true,
+      "time_to_down_frames": 126,
+      "right_censored": false,
+      "hit_window": true,
+      "reaction_frames": 26,
+      "native_evidence": "work/a6/benchmark-stationary-20261019-180707-705601/trial-0.json",
+      "native_evidence_sha256": "583d51049477576b5f270c6cb1fab89f8f9817a94984647f2365e8a48bf20189",
+      "native_run_result": "work/a6/benchmark-stationary-20261019-180707-705601/result.json",
+      "native_run_sha256": "e5ee933f5ae5fc1e567b2b8a0d47c14accd8a4174776072046290cb96b7c81f6",
+      "released_attack_cycle": null,
+      "target_baseline": {
+        "frame": 13695,
+        "position_sample_frame": 13694,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          2.34797478,
+          3.00000238,
+          7.65682602
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 18374,
+        "position_sample_frame": 18372,
+        "position": [
+          -3.72761059,
+          3,
+          7.87120247
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 6.0773666273081615,
+      "distance_max": 6.9890136148991795,
+      "attack_cycles": 3,
+      "attack_frames": 36,
+      "masked_movement_frames": 124,
+      "time_remaining_at_start": 117.900002
+    },
+    {
+      "scenario": "stationary",
+      "distance": 6.642038078053931,
+      "nominal_distance": 6.0,
+      "repeat": 1,
+      "status": "measured",
+      "budget_frames": 240,
+      "score": 56.667,
+      "target_down": true,
+      "time_to_down_frames": 104,
+      "right_censored": false,
+      "hit_window": true,
+      "reaction_frames": 4,
+      "native_evidence": "work/a6/benchmark-stationary-20261019-180707-705601/trial-1.json",
+      "native_evidence_sha256": "677f705e3fb0182b571202f6f30529a20ce45f630cadf3c6dc7e5f06f5e2cf7a",
+      "native_run_result": "work/a6/benchmark-stationary-20261019-180707-705601/result.json",
+      "native_run_sha256": "e5ee933f5ae5fc1e567b2b8a0d47c14accd8a4174776072046290cb96b7c81f6",
+      "released_attack_cycle": null,
+      "target_baseline": {
+        "frame": 17029,
+        "position_sample_frame": 17028,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          2.88722348,
+          3.00000525,
+          7.24895287
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 21708,
+        "position_sample_frame": 21707,
+        "position": [
+          -3.72561359,
+          3.00001001,
+          7.87109089
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 6.642038078053611,
+      "distance_max": 7.5480752726063365,
+      "attack_cycles": 3,
+      "attack_frames": 36,
+      "masked_movement_frames": 100,
+      "time_remaining_at_start": 62.3333321
+    },
+    {
+      "scenario": "stationary",
+      "distance": 6.618950897207265,
+      "nominal_distance": 6.0,
+      "repeat": 2,
+      "status": "measured",
+      "budget_frames": 240,
+      "score": 49.583,
+      "target_down": true,
+      "time_to_down_frames": 121,
+      "right_censored": false,
+      "hit_window": true,
+      "reaction_frames": 22,
+      "native_evidence": "work/a6/benchmark-stationary-20261019-180707-705601/trial-2.json",
+      "native_evidence_sha256": "15b50a504939dfe631a33856c395919db7caf5c696f371540d6b69cab4fce307",
+      "native_run_result": "work/a6/benchmark-stationary-20261019-180707-705601/result.json",
+      "native_run_sha256": "e5ee933f5ae5fc1e567b2b8a0d47c14accd8a4174776072046290cb96b7c81f6",
+      "released_attack_cycle": null,
+      "target_baseline": {
+        "frame": 20467,
+        "position_sample_frame": 20464,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          2.86550856,
+          3.00000143,
+          7.26477432
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 25146,
+        "position_sample_frame": 25143,
+        "position": [
+          -3.72561359,
+          3.0000205,
+          7.87109089
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 6.618950897207265,
+      "distance_max": 7.532172928040984,
+      "attack_cycles": 3,
+      "attack_frames": 36,
+      "masked_movement_frames": 111,
+      "time_remaining_at_start": 5.0333333
+    },
+    {
+      "scenario": "lateral",
+      "distance": 6.069387661490952,
+      "nominal_distance": 6.0,
+      "repeat": 0,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 100.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": true,
+      "reaction_frames": 4,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-183047-097162/trial-0.json",
+      "native_evidence_sha256": "bd9108b5775182ab6f74680a08f4577c7d25a4334bbe24183dd6ee0e69c9c526",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-183047-097162/result.json",
+      "native_run_sha256": "a2c04648cc174cb439465f19b4d9440f33d32094a5babad921ba7e4626fe1e31",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 13759,
+        "position_sample_frame": 13755,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          2.3643465,
+          3.00000525,
+          7.59152937
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 18469,
+        "position_sample_frame": 18468,
+        "position": [
+          -3.68953729,
+          3,
+          8.02507019
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 6.054200148337704,
+      "distance_max": 6.590013753644422,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 86,
+      "time_remaining_at_start": 117.583336
+    },
+    {
+      "scenario": "lateral",
+      "distance": 6.205684319273276,
+      "nominal_distance": 6.0,
+      "repeat": 1,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 100.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": true,
+      "reaction_frames": 24,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-183047-097162/trial-1.json",
+      "native_evidence_sha256": "4606051df62122570916ca52cb8b011750d4638d3746687b4cfcc1f9868f967c",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-183047-097162/result.json",
+      "native_run_sha256": "a2c04648cc174cb439465f19b4d9440f33d32094a5babad921ba7e4626fe1e31",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 14279,
+        "position_sample_frame": 14275,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          2.51323724,
+          3.00000143,
+          8.21508598
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 18989,
+        "position_sample_frame": 18988,
+        "position": [
+          -3.68953729,
+          3.00000429,
+          8.02507019
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 6.205684319273276,
+      "distance_max": 6.804327395644333,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 90,
+      "time_remaining_at_start": 108.916664
+    },
+    {
+      "scenario": "lateral",
+      "distance": 5.842129022620652,
+      "nominal_distance": 6.0,
+      "repeat": 2,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 100.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": true,
+      "reaction_frames": 32,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-183047-097162/trial-2.json",
+      "native_evidence_sha256": "ade6875748c5cc0a969c51d4a92a6775d8630d64e1202495732045889bf741b3",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-183047-097162/result.json",
+      "native_run_sha256": "a2c04648cc174cb439465f19b4d9440f33d32094a5babad921ba7e4626fe1e31",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 14919,
+        "position_sample_frame": 14915,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          2.14983416,
+          3.00000191,
+          8.20454884
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 19629,
+        "position_sample_frame": 19628,
+        "position": [
+          -3.68953729,
+          3.00001001,
+          8.02507019
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 5.842129022620652,
+      "distance_max": 6.426381556774,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 82,
+      "time_remaining_at_start": 98.25
+    },
+    {
+      "scenario": "lateral",
+      "distance": 10.890718300932631,
+      "nominal_distance": 12.0,
+      "repeat": 0,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 0.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": false,
+      "reaction_frames": 34,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-183047-097162/trial-3.json",
+      "native_evidence_sha256": "947132c3733d2a58cb31a91d26ec0ab4372c249a4b740ba3fbf0d35294fa4935",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-183047-097162/result.json",
+      "native_run_sha256": "a2c04648cc174cb439465f19b4d9440f33d32094a5babad921ba7e4626fe1e31",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 16285,
+        "position_sample_frame": 16283,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          7.57415867,
+          3.00002337,
+          8.02229595
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 20995,
+        "position_sample_frame": 20992,
+        "position": [
+          -3.31655955,
+          3,
+          8.02096844
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 10.878718947879172,
+      "distance_max": 10.982269593172559,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 80,
+      "time_remaining_at_start": 75.4833298
+    },
+    {
+      "scenario": "lateral",
+      "distance": 11.29846293467265,
+      "nominal_distance": 12.0,
+      "repeat": 1,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 0.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": false,
+      "reaction_frames": null,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-183047-097162/trial-4.json",
+      "native_evidence_sha256": "8ecc8bff81b8609f664183490f5edb5232ba20edb4c90cd8c8d94effa7609a64",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-183047-097162/result.json",
+      "native_run_sha256": "a2c04648cc174cb439465f19b4d9440f33d32094a5babad921ba7e4626fe1e31",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 17477,
+        "position_sample_frame": 17475,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          7.98929644,
+          3.00010872,
+          8.34343147
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 22187,
+        "position_sample_frame": 22184,
+        "position": [
+          -3.30456018,
+          3.00028563,
+          8.02083683
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 11.29846293467265,
+      "distance_max": 11.440453832816026,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 84,
+      "time_remaining_at_start": 55.6166649
+    },
+    {
+      "scenario": "lateral",
+      "distance": 11.316633738167988,
+      "nominal_distance": 12.0,
+      "repeat": 2,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 0.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": false,
+      "reaction_frames": null,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-183047-097162/trial-5.json",
+      "native_evidence_sha256": "ac9a64141e7c90b0db3345e12b1b48a6aa6dce64d29e8f95567b016926fd7e16",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-183047-097162/result.json",
+      "native_run_sha256": "a2c04648cc174cb439465f19b4d9440f33d32094a5babad921ba7e4626fe1e31",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 18511,
+        "position_sample_frame": 18507,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          8.0052557,
+          3.00000238,
+          8.41360092
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 23221,
+        "position_sample_frame": 23220,
+        "position": [
+          -3.30456018,
+          3.00054455,
+          8.02083683
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 11.316633738167988,
+      "distance_max": 11.466704730823292,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 86,
+      "time_remaining_at_start": 38.3833351
+    },
+    {
+      "scenario": "lateral",
+      "distance": 17.44646229053156,
+      "nominal_distance": 18.0,
+      "repeat": 0,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 0.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": false,
+      "reaction_frames": 28,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-184057-696337/trial-0.json",
+      "native_evidence_sha256": "e0d7fc2d2438e89eee1dca6299736d3023cdc8a738bc74b580d608b6a4a6471d",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-184057-696337/result.json",
+      "native_run_sha256": "d500776ec1355ff490c9c9b1ec5314a8580b590587ed1a14ed983fe440ba2359",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 14000,
+        "position_sample_frame": 13996,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          13.7005043,
+          3.00000429,
+          7.68229198
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 18733,
+        "position_sample_frame": 18729,
+        "position": [
+          -3.74473763,
+          3,
+          7.88864231
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 17.41535272844999,
+      "distance_max": 17.463132078406012,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 86,
+      "time_remaining_at_start": 113.183334
+    },
+    {
+      "scenario": "lateral",
+      "distance": 17.697910869068426,
+      "nominal_distance": 18.0,
+      "repeat": 1,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 0.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": false,
+      "reaction_frames": null,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-184057-696337/trial-1.json",
+      "native_evidence_sha256": "736d4c83db94dad99a13f0e0e2288bdb583b6d9b88ef20a68870599d745ea771",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-184057-696337/result.json",
+      "native_run_sha256": "d500776ec1355ff490c9c9b1ec5314a8580b590587ed1a14ed983fe440ba2359",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 15170,
+        "position_sample_frame": 15168,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          13.9822149,
+          3.00001001,
+          8.07200813
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 19903,
+        "position_sample_frame": 19901,
+        "position": [
+          -3.71474123,
+          3.00001907,
+          7.88817978
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 17.697910869068426,
+      "distance_max": 17.777174343984846,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 80,
+      "time_remaining_at_start": 93.6833344
+    },
+    {
+      "scenario": "lateral",
+      "distance": 17.718596449505604,
+      "nominal_distance": 18.0,
+      "repeat": 2,
+      "status": "measured",
+      "budget_frames": 90,
+      "score": 0.0,
+      "target_down": false,
+      "time_to_down_frames": null,
+      "right_censored": true,
+      "hit_window": false,
+      "reaction_frames": 26,
+      "native_evidence": "work/a6/benchmark-lateral-20261019-184057-696337/trial-2.json",
+      "native_evidence_sha256": "55e499f08fb71221c93852df9550a168605563e1d6fe3c5c4f6c5b788386101c",
+      "native_run_result": "work/a6/benchmark-lateral-20261019-184057-696337/result.json",
+      "native_run_sha256": "d500776ec1355ff490c9c9b1ec5314a8580b590587ed1a14ed983fe440ba2359",
+      "released_attack_cycle": true,
+      "target_baseline": {
+        "frame": 16198,
+        "position_sample_frame": 16196,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          14.0004444,
+          3.00002623,
+          8.23582649
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 20931,
+        "position_sample_frame": 20929,
+        "position": [
+          -3.71474123,
+          3.00003624,
+          7.88817978
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": null,
+      "roll_calibration": null,
+      "distance_min": 17.718596449505604,
+      "distance_max": 17.811558515408755,
+      "attack_cycles": 1,
+      "attack_frames": 12,
+      "masked_movement_frames": 88,
+      "time_remaining_at_start": 76.5500031
+    },
+    {
+      "scenario": "approach",
+      "distance": 9.208736574442375,
+      "nominal_distance": 6.0,
+      "repeat": 0,
+      "status": "measured",
+      "budget_frames": 180,
+      "score": 100.0,
+      "target_down": true,
+      "time_to_down_frames": 131,
+      "right_censored": false,
+      "hit_window": true,
+      "reaction_frames": 6,
+      "native_evidence": "work/a6/benchmark-approach-20261019-184946-627040/trial-0.json",
+      "native_evidence_sha256": "8d5d6450efa5bcbe8c4b4bafe2e1e785fcdbad0a24b27a2bbdb4e7b64dd11a12",
+      "native_run_result": "work/a6/benchmark-approach-20261019-184946-627040/result.json",
+      "native_run_sha256": "c80ae85c34f4fbb116112168c39e4d2e8f3005c94a4167aa17bc5c298025fc16",
+      "released_attack_cycle": null,
+      "target_baseline": {
+        "frame": 15453,
+        "position_sample_frame": 15450,
+        "hp": 1,
+        "hp_valid": 1,
+        "position": [
+          5.34783888,
+          3,
+          7.94112253
+        ],
+        "position_valid": 1,
+        "referee_motion": {
+          "form_squid": 1,
+          "ground_contact": 0
+        },
+        "alive": 1
+      },
+      "source_baseline": {
+        "frame": 20182,
+        "position_sample_frame": 20178,
+        "position": [
+          -3.86042714,
+          3.00000095,
+          7.84803009
+        ],
+        "position_valid": 1
+      },
+      "roll_proof": {
+        "verified": true,
+        "reason": "matched-control boosted reversal arc",
+        "run_up_frames": 30,
+        "run_up_distance": 3.435998988230759,
+        "run_up_valid": true,
+        "undamaged_samples": 14,
+        "peak_height_over_ground": 1.72096157,
+        "reverse_displacement": -6.788399871675825
+      },
+      "roll_calibration": {
+        "path": "work/a6/roll-calibration.json",
+        "sha256": "e230a347cd0f4e7cbf8f13098a3f8efc82b3c5a14111c715c60f168de5d85851"
+      },
+      "distance_min": 0.9035324781651214,
+      "distance_max": 9.594116893726603,
+      "attack_cycles": 4,
+      "attack_frames": 48,
+      "masked_movement_frames": 125,
+      "time_remaining_at_start": 88.8333359
+    }
+  ],
+  "measured": 13,
+  "total": 13,
+  "fixture": {
+    "stage_id": 1,
+    "weapon": 8000,
+    "shooter_team": 0,
+    "clock": "fixed60",
+    "target_gear": "uniform quick_super_jump"
+  },
+  "fixture_constraints": "Shooter translation and R/RS/B/Y masked; camera, ZR main weapon and ZL refill allowed. Lateral windows accept one ZR press/release cycle. Approach target stops within 1.5 units or after passing the shooter. A live target below y=2.5 aborts the flat fixture; environmental downs cannot score. Raw and executed actions retained.",
+  "lateral_window_hits": 3,
+  "lateral_window_trials": 9,
+  "lateral_window_hit_rate": 0.3333333333333333,
+  "lateral_by_distance": {
+    "6.0": {
+      "hits": 3,
+      "trials": 3,
+      "actual_distances": [
+        6.069387661490952,
+        6.205684319273276,
+        5.842129022620652
+      ],
+      "rate": 1.0
+    },
+    "12.0": {
+      "hits": 0,
+      "trials": 3,
+      "actual_distances": [
+        10.890718300932631,
+        11.29846293467265,
+        11.316633738167988
+      ],
+      "rate": 0.0
+    },
+    "18.0": {
+      "hits": 0,
+      "trials": 3,
+      "actual_distances": [
+        17.44646229053156,
+        17.697910869068426,
+        17.718596449505604
+      ],
+      "rate": 0.0
+    }
+  },
+  "approach_downs": 1,
+  "approach_trials": 1,
+  "approach_down_rate": 1.0,
+  "approach_reaction_observations": 1,
+  "approach_reaction_mean_frames": 6.0,
+  "aggregate_score": 42.596,
+  "definitions": {
+    "stationary": "neutral-input target; native knockback retained; 100*(1-down_frames/budget), no down scores zero; censored time remains null",
+    "lateral": "100 for >=.29 native HP drop in one fresh sample within the window (filters slow enemy-ink damage); not per-projectile accuracy",
+    "approach": "100 for target down after matched-control calibration AND undamaged native boosted-reversal witness in this trial; unverified roll is unsupported",
+    "reaction": "first attack input after first CURRENT visible target sample, in presents",
+    "aggregate": "mean of measured trials only; compare identical coverage, distances, budgets and gear",
+    "attribution": "native local HUD Down=1/HP only; unavailable=2 cannot score; no last-hit ownership inference"
+  }
+}

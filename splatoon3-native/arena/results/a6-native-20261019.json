@@ -1,0 +1,121 @@
+{
+  "passed": true,
+  "full_a6_passed": true,
+  "components_passed": true,
+  "errors": [],
+  "artifacts": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/gate-20261019-235104-301312",
+  "freeze_before": {
+    "files": 36,
+    "mismatches": [
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/runner.py"
+    ],
+    "active": false
+  },
+  "audit": {
+    "native": [
+      "timing",
+      "combat",
+      "range",
+      "combo_bomb",
+      "roll",
+      "aim_surge",
+      "zip_activation",
+      "moving_emerge"
+    ],
+    "range_brackets": {
+      "light": {
+        "farthest_hit": 18.789657081185833,
+        "nearest_miss": 19.561855878759893
+      },
+      "full": {
+        "farthest_hit": 21.782415184879806,
+        "nearest_miss": 22.55530398186706
+      }
+    },
+    "controller_proofs": {
+      "charge": "unchanged_operation_dependency_ast+protected_T1_manifest_and_native_freeze_checks",
+      "emerge_charge": "unchanged_operation_dependency_ast+protected_T1_manifest_and_native_freeze_checks",
+      "moving_emerge": "whole_module_sha256+direct_base_sha256",
+      "dash": "unchanged_operation_dependency_ast+protected_T1_manifest_and_native_freeze_checks",
+      "combo_move": "unchanged_operation_dependency_ast+direct_base_sha256",
+      "squid_roll": "unchanged_operation_dependency_ast+direct_base_sha256",
+      "squid_surge": "unchanged_operation_dependency_ast+direct_base_sha256",
+      "burst_bomb": "unchanged_operation_dependency_ast+direct_base_sha256",
+      "predictive_aim": "unchanged_operation_dependency_ast+direct_base_sha256",
+      "fast_turn": "unchanged_operation_dependency_ast+direct_base_sha256"
+    },
+    "zipcaster_activation_verified": true,
+    "partial_normal_end": [
+      "combat",
+      "combo_bomb",
+      "roll",
+      "aim_surge"
+    ],
+    "supported": [
+      "burst_bomb",
+      "combo_move",
+      "dash",
+      "fast_turn",
+      "predictive_aim",
+      "squid_roll",
+      "squid_surge"
+    ],
+    "unsupported": {
+      "charge_keep": {
+        "reason": "Weapon 8000 IsEnableChargeKeep=false by design; native diving cancels full charge.",
+        "evidence": [
+          {
+            "path": "work/a6/charge-keep-static.json",
+            "sha256": "e7812bf9654b821acadc8a6a829beb7442cbc11b91dbc31f4f90f6654b3007c5"
+          },
+          {
+            "path": "work/a6/research-20261019-121821-668939/result.json",
+            "sha256": "9825443627f21cfbd05d4b06ff7079eced73f7fb3cff1d2c82bc99eea995a34b",
+            "attachments_sha256": {
+              "work/a6/research-20261019-121821-668939/steps.jsonl": "cb51cf9c0752f3175649abb98be445fdc72bb919546f69998c8b6bd344c84ae4"
+            }
+          }
+        ]
+      },
+      "zipcaster": {
+        "reason": "Naturally full-meter RS activation verified; current R hook recipe produced zero horizontal travel. Hook traversal remains unverified, not a weapon design prohibition.",
+        "evidence": [
+          {
+            "path": "work/a6/zipcaster-disposition.json",
+            "sha256": "5031dd9ea92462b7397b4ac5e848ffa9c320de36d23515ad69af53e17ec46545"
+          },
+          {
+            "path": "work/a6/special-walk-20261019-171106-413055/result.json",
+            "sha256": "d42422cc4dfb7ebdfdd678ecbf76f64a0c01e0902d758e4403d5f70efbec7391",
+            "attachments_sha256": {
+              "work/a6/special-walk-20261019-171106-413055/steps.jsonl": "163dbdf53c007faa24c8fd4f9bd11cb381f2c01973569c0261077a64d9125bcf"
+            }
+          }
+        ]
+      }
+    },
+    "scorecards": 3
+  },
+  "core_a6_passed": true,
+  "test_special": {
+    "modes": [
+      "full",
+      "infinite"
+    ],
+    "one_room": true,
+    "painting_inputs": 0,
+    "full_native_uses": 1,
+    "infinite_native_uses": 2,
+    "full_fills": 1,
+    "infinite_fills": 3,
+    "idle_presents": 90,
+    "default_unchanged": true
+  },
+  "freeze_after": {
+    "files": 36,
+    "mismatches": [
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/runner.py"
+    ],
+    "active": false
+  }
+}

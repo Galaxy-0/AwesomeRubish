@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "errors": [],
+  "milestones": {
+    "a1": {
+      "passed": true,
+      "evidence": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/a1-20261019-212441-504314/result.json",
+      "sha256": "978b969efa9e31e4772ea60c71d2bd28bc7311928aea4dd745bb7736ec7f6328"
+    },
+    "a2": {
+      "passed": true,
+      "evidence": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/a2-20261019-213038-574972/result.json",
+      "sha256": "c53403dc43efe574c23be83d3e85504de7c5ce7b54003efd9d2efd9ba9626e22"
+    },
+    "a3a": {
+      "passed": true,
+      "evidence": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/a3a-20261019-214352-466974/result.json",
+      "sha256": "cfb4d88084cc0e63a5b1d7a9b787cdba2a332624976ae225faeced92ce0cdf7f"
+    },
+    "a4": {
+      "passed": true,
+      "evidence": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/a4-20261019-215214-551424/result.json",
+      "sha256": "fddcdfcdab41d4b085cafd7fdfb728ac5fcf8698c91476a4a0d26f36a4b82151"
+    },
+    "a5": {
+      "passed": true,
+      "accepted_native70_inherited": true,
+      "archive_audit": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/regression-20261019-212204-171249/a5-accepted70-audit.json",
+      "archive_audit_sha256": "bb6f3f581cba1440c89461768968b390ec2b20fb49eb117e4fb0827c5b91ad09",
+      "fresh_swapped_games": 2,
+      "fresh_rooms_parallel": 1,
+      "evidence": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/arena/tournament-20261019-224155-196336/result.json",
+      "evidence_sha256": "1109f996fb72c0ca5daaec0c190e63c01fd5076389017435b5284862b75afe67",
+      "fresh_full_a5_passed": false
+    }
+  },
+  "artifacts": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/regression-20261019-212204-171249",
+  "rooms_parallel": 1
+}

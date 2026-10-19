@@ -66,4 +66,17 @@ A4 is accepted (2026-10-19): the public `lib/` navigation/control primitives pas
 10/10 preset native routes on each of Yunohana, District00 and Yagara, including
 three successful live replanning recoveries, plus aim/ink/submerged feedback.
 See `lib/README.md` and PROGRESS for the exact scope, A1 damage carry-forward and
-static/dynamic geometry limitations. A5 native tournament acceptance is next.
+static/dynamic geometry limitations. A5 is accepted by the strict audit of 70
+completed native games; see `results/a5-accepted-70-20261019.json` and PROGRESS.
+
+A6 adds the public [weapon 8000 controllers](lib/stamper.md), an own-only
+`own.special` extension and single-room proficiency fixtures. Run
+`bash tests/run_all.sh --milestone a6` to audit native operation evidence,
+three policy scorecards and A1–A5 regression. `arena.proficiency` merges cards
+and attaches matching cards to a new tournament report without changing its
+win/paint/attribution results. The report distinguishes unavailable scores and
+unsupported operations; fixture scores alone cannot establish why a policy won.
+
+The optional special-meter test host is built separately by
+`tools/build_a6_test_host.py`; see the weapon guide for `full|infinite` native
+validation. Tournament runs reject nonempty `DM_TEST_SPECIAL` before startup.

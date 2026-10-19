@@ -1,0 +1,181 @@
+{
+  "schema": "arena.a6.acceptance.v1",
+  "t1_runtime": {
+    "path": "work/arena/tournament-20261019-113138-347725/runtime-sha256.json",
+    "sha256": "8f950b44cd20ef37d898c0deeeb74c9455c7ab83795cc79d2e6d835c4db85047"
+  },
+  "t1_source": {
+    "path": "work/a6/t1-source-result.json",
+    "sha256": "c474a11c2e1445ab762d2a5dbdf881b91fe03f755fe97228b7892bc0e5ba5b85"
+  },
+  "t1_release": {
+    "path": "work/a6/t1-release.json",
+    "sha256": "75baa988a9fd155edd79587b7428d97642404b78c735b5d410d4d2e470575290"
+  },
+  "native": {
+    "timing": {
+      "path": "work/a6/timing-refine-20261019-125833-624062/result.json",
+      "sha256": "f83ff877237138b5037acf1aacfae8846aec3a2a13908e61ec96417ae750f5de",
+      "attachments_sha256": {
+        "work/a6/timing-refine-20261019-125833-624062/steps.jsonl": "01db32769050b0c18ff1da2a89c81c8707ad0de69331b11b18cc2ff6e6861aa0"
+      }
+    },
+    "combat": {
+      "path": "work/a6/combat-20261019-131326-782403/result.json",
+      "sha256": "aaa46974cfde7b9ab5584c484d7710696d8dc0353f8c109d595ebb58fce95df1",
+      "allow_partial_normal_end": true,
+      "attachments_sha256": {
+        "work/a6/combat-20261019-131326-782403/steps.jsonl": "3e2c5d748b47f28820f7b2afb9dd11a75579510271da691efa01e13acd487c7c"
+      }
+    },
+    "range": {
+      "path": "work/a6/range-20261019-135543-208917/result.json",
+      "sha256": "7f9edd9869448748b54b4271507d52d722ba2e4f194b5a30c5b482d0c0f7f0dd",
+      "attachments_sha256": {
+        "work/a6/range-20261019-135543-208917/steps.jsonl": "f1d79e97d61a9ad632929ddf02546328cd1cca3b1dda02af02cb8ace14a89292"
+      }
+    },
+    "combo_bomb": {
+      "path": "work/a6/special-20261019-145547-697696/result.json",
+      "sha256": "581741ea2f3a7e2fd4e86abf9b6602417728b645f58e5a92fbf68b9ef8ead059",
+      "allow_partial_normal_end": true,
+      "attachments_sha256": {
+        "work/a6/special-20261019-145547-697696/steps.jsonl": "1f4a45ec2c72ea6292068b6103315d46c0105191ffd16032bfe9329a6c7b80cb"
+      }
+    },
+    "roll": {
+      "path": "work/a6/validation-20261019-151606-376387/result.json",
+      "sha256": "b8cba3dbb73be46211309e1cf0c15326d186bd2582bf0530ef7b7a06e8d384a5",
+      "allow_partial_normal_end": true,
+      "attachments_sha256": {
+        "work/a6/validation-20261019-151606-376387/steps.jsonl": "4f97af8ac10ecdbf096493e3bf3f1ea5cb6c6a0fc8193e0ce79ba44eb390f303"
+      }
+    },
+    "aim_surge": {
+      "path": "work/a6/special-fast-20261019-160006-027739/result.json",
+      "sha256": "8c0f9cf525d95890ca22c6e29924c8985db276b81a8aae620a642f7bdef2b330",
+      "allow_partial_normal_end": true,
+      "attachments_sha256": {
+        "work/a6/special-fast-20261019-160006-027739/steps.jsonl": "1648bd2a1e5a47ebde07377e30359c71274fa4a67030c03b4a8c8f5faa900d3d"
+      }
+    },
+    "zip_activation": {
+      "path": "work/a6/special-walk-20261019-171106-413055/result.json",
+      "sha256": "d42422cc4dfb7ebdfdd678ecbf76f64a0c01e0902d758e4403d5f70efbec7391",
+      "attachments_sha256": {
+        "work/a6/special-walk-20261019-171106-413055/steps.jsonl": "163dbdf53c007faa24c8fd4f9bd11cb381f2c01973569c0261077a64d9125bcf"
+      }
+    },
+    "moving_emerge": {
+      "path": "work/a6/benchmark-approach-20261019-175708-982073/result.json",
+      "sha256": "0f6e2172dd099a29e8875abc66f2b61aafce414504098c52bed919bc987c63a5",
+      "attachments_sha256": {
+        "work/a6/benchmark-approach-20261019-175708-982073/steps.jsonl": "b9b1ca93c45d2246abab9ec39294ee5b3d02efe91a9ef97b4772aace789b65ee"
+      }
+    }
+  },
+  "supported": {
+    "dash": {
+      "run": "combat",
+      "case": "dash-full"
+    },
+    "combo_move": {
+      "run": "combo_bomb",
+      "case": "light-combo-move"
+    },
+    "squid_roll": {
+      "run": "roll",
+      "case": "squid-roll-matched"
+    },
+    "squid_surge": {
+      "run": "aim_surge",
+      "case": "surge-stopped-charge"
+    },
+    "burst_bomb": {
+      "run": "combo_bomb",
+      "case": "burst-bomb"
+    },
+    "predictive_aim": {
+      "run": "aim_surge",
+      "case": "predictive-track"
+    },
+    "fast_turn": {
+      "run": "aim_surge",
+      "case": "fast-turn-gyro",
+      "controller": "FastTurn"
+    }
+  },
+  "unsupported": {
+    "charge_keep": {
+      "reason": "Weapon 8000 IsEnableChargeKeep=false by design; native diving cancels full charge.",
+      "evidence": [
+        {
+          "path": "work/a6/charge-keep-static.json",
+          "sha256": "e7812bf9654b821acadc8a6a829beb7442cbc11b91dbc31f4f90f6654b3007c5"
+        },
+        {
+          "path": "work/a6/research-20261019-121821-668939/result.json",
+          "sha256": "9825443627f21cfbd05d4b06ff7079eced73f7fb3cff1d2c82bc99eea995a34b",
+          "attachments_sha256": {
+            "work/a6/research-20261019-121821-668939/steps.jsonl": "cb51cf9c0752f3175649abb98be445fdc72bb919546f69998c8b6bd344c84ae4"
+          }
+        }
+      ]
+    },
+    "zipcaster": {
+      "reason": "Naturally full-meter RS activation verified; current R hook recipe produced zero horizontal travel. Hook traversal remains unverified, not a weapon design prohibition.",
+      "evidence": [
+        {
+          "path": "work/a6/zipcaster-disposition.json",
+          "sha256": "5031dd9ea92462b7397b4ac5e848ffa9c320de36d23515ad69af53e17ec46545"
+        },
+        {
+          "path": "work/a6/special-walk-20261019-171106-413055/result.json",
+          "sha256": "d42422cc4dfb7ebdfdd678ecbf76f64a0c01e0902d758e4403d5f70efbec7391",
+          "attachments_sha256": {
+            "work/a6/special-walk-20261019-171106-413055/steps.jsonl": "163dbdf53c007faa24c8fd4f9bd11cb381f2c01973569c0261077a64d9125bcf"
+          }
+        }
+      ]
+    }
+  },
+  "scorecards": [
+    {
+      "path": "arena/results/proficiency/proficiency-reference.json",
+      "sha256": "3e5c4a92310e3fb13318658bde3d429701a20ea17406657c53ae403834f83d79",
+      "policy_root": "work/a6/frozen-policies-20261019-150539/arena/proficiency-reference"
+    },
+    {
+      "path": "arena/results/proficiency/alpha.json",
+      "sha256": "2b1c2b7fae5b91fa2f94a43da0f2159867d726e8ddef47f0a3efc54a92bcec1c",
+      "policy_root": "work/a6/frozen-policies-20261019-150539/arena/policies/alpha"
+    },
+    {
+      "path": "arena/results/proficiency/bravo.json",
+      "sha256": "4bdb19e550fe4093b5e9730b7e728bc3e74c6212bf4ddea04e120bfcc6bc7986",
+      "policy_root": "work/a6/frozen-policies-20261019-150539/arena/policies/bravo"
+    }
+  ],
+  "regression": {
+    "path": "arena/results/a6-regression-20261019.json",
+    "sha256": "454160e9bb4e6898440f43294e5695c7e434f4dacb2d272ac1e2558ed5200404"
+  },
+  "test_special": {
+    "status": "verified",
+    "native": {
+      "path": "work/a6/test-special-20261019-234146-957867/result.json",
+      "sha256": "a0a450b0a622bf64a3710ef1985d705b10f33cced42f6fa4b2f780638f1c6999",
+      "attachments_sha256": {
+        "work/a6/test-special-20261019-234146-957867/steps.jsonl": "b0ad2acd004f10f5e3ad048662cc43e1fc904a716dd25cae662a7db67e744bfb",
+        "work/tests/m6-2p-20261019-234147-017920/player-0/host.log": "55caf242ac29f07cf3c88a6d4f80b64198218ebea1f1b9e27f83a2425707ed9b",
+        "work/tests/m6-2p-20261019-234147-017920/player-0/input.json": "6aa71520155d050e86d589daa991254a334cca68108b97609126a3cf154c7718",
+        "work/tests/m6-2p-20261019-234147-017920/player-1/host.log": "0da20303eafb4dee6f39bf72529d4a198f998c0f2cf06307f04e7078302b5a0c",
+        "work/tests/m6-2p-20261019-234147-017920/player-1/input.json": "8b7f69ecb804a6a2338e6af884c79751951f12759c71c07323a66c59176774e5"
+      }
+    },
+    "canonical_survey": {
+      "path": "work/a6/gauge-survey-20261019-230932-790996/canonical-special-analysis.json",
+      "sha256": "2b73ba3d4d6d1f3fd405721032490b4bccb27528dbd434bf6ea1911d9039d5b4"
+    }
+  }
+}
