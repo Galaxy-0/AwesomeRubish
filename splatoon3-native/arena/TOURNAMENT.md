@@ -1,11 +1,12 @@
-# A5 tournament runner (native acceptance pending)
+# A5 tournament runner (70-game native acceptance)
 
 ```sh
 bash tests/run_all.sh --milestone a5 --games 4 --parallel 4
-bash tests/run_all.sh --milestone a5 --games 100 --parallel 4 --fallback-three --resume arena/results/a5-partial-20261019.json
+bash tests/run_all.sh --milestone a5 --games 70 --parallel 4 --fallback-three
+.venv/bin/python -m arena.a5_audit arena/results/a5-paused-70-20261019.json --out arena/results/a5-accepted-70-20261019.json
 ```
 
-The four-game smoke phase does not sign A5. The formal gate requires 100 valid
+The four-game smoke phase does not sign A5. The revised formal gate requires at least 70 valid
 native games, all reaching Winners with both observers agreeing on the winner,
 and void/(valid+void) <= 10%. Four concurrent 1v1 rooms (eight hosts) are the
 default. A documented three-room fallback is authorized for excessive voids.
@@ -51,8 +52,8 @@ or weapon attribution is synthesized; A3b paint/knockdowns remain unknown.
 Final Turf percentages are settlement values, not live world paint coverage.
 
 Statistics use two-sided 95% Clopper-Pearson exact binomial intervals on decided
-games, with draws separate. Superiority requires a lower bound > 0.5; 60/100
-has lower bound about 0.4972 and 61/100 about 0.5073. `statistics.by_policy`
+games, with draws separate. Superiority requires a lower bound > 0.5; with 70
+decided games, at least 44 wins meet that rule. `statistics.by_policy`
 reports HUD down/environment subsets, native score distributions and valid-game
 wall/controlled durations. HUD non-environment subsets are not asserted to be
 exact last-hit kills. Tournament elapsed wall time and void rate are separate.
@@ -60,13 +61,17 @@ exact last-hit kills. Tournament elapsed wall time and void rate are separate.
 `concurrency_windows` uses controlled start to the last successful native ACK,
 with distinct host PIDs (eight for four rooms, six for three). A stalled room's
 watchdog delay cannot inflate the windows. Merely selecting workers does not
-satisfy the actual concurrent-room check. Partial runs are not A5 acceptance.
+satisfy the actual concurrent-room check. Runs below the revised 70-game gate
+are diagnostic only.
 
 `--resume` validates policy hashes, paired fixture identities, evidence hashes
 and immutable native/skill/map runtime hashes. Completed fixtures are excluded
 before submission. Cancelled attempts remain separately audited. Wall time
 sums active run segments, excluding the human pause between sessions.
-`arena/results/` contains numeric summaries and provenance hashes only.
+`arena/results/` contains numeric summaries and provenance hashes only. The
+paused 70-game source retains its original `games_requested=100` and interrupted
+status; the separate acceptance audit checks all 70 native score traces and
+maps each winning seat through `role_to_policy`. It does not rewrite the source.
 The original 32-game result plus round-032 was reconciled from native traces
 without modifying any old result file:
 

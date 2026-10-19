@@ -12,6 +12,24 @@ from arena.hud_events import HudEvents
 
 
 class TournamentComponents(unittest.TestCase):
+    def test_winning_seat_is_not_winning_policy_after_spawn_swap(self):
+        from arena.a5_audit import winners_from_local_scores
+        from arena.scoring import compare_scores
+        # The same player_1 victory belongs to different policies when roles swap.
+        for roles,expected in [([0,1],'b'),([1,0],'a')]:
+            seats,outcome=winners_from_local_scores([1,2],[2,1],roles)
+            self.assertEqual(seats,[1,1]);self.assertEqual(outcome,expected)
+            self.assertEqual(compare_scores([1,2],[2,1],roles)['outcome'],expected)
+        # Opposite seat victories can belong to the same policy.
+        self.assertEqual(winners_from_local_scores([2,1],[1,2],[1,0]),([0,0],'b'))
+
+    def test_revised_70_game_void_gate_boundaries(self):
+        from arena.statistics import meets_a5_threshold
+        self.assertFalse(meets_a5_threshold(69,0,4))
+        self.assertTrue(meets_a5_threshold(70,7,4))
+        self.assertFalse(meets_a5_threshold(70,8,4))
+        self.assertFalse(meets_a5_threshold(70,0,2))
+
     def test_winner_agreement_averages_and_preserves_both_raw_scores(self):
         from arena.scoring import compare_scores
         small=compare_scores([.7,1.3],[1.4,.7],[0,1])

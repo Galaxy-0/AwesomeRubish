@@ -309,16 +309,16 @@ fixed60客体等待与握手后STEP无绝对墙钟截止，由默认120秒无pre
 A1连续/暂停伤害证据显式复用已接受partial `7e2ecd7`，验证原生/时间传输hash和非导航AST
 未变，两次均损失.550000012、HUD1.0秒。原生证据仅在ignored work；历史失败见PROGRESS。
 
-A5仍待原生四房/百局验收；A3b在A5之后。
+A5按修订后的70有效局门槛签收；A3b/T1不在本轮启动。
 
-A5 容错验收：`bash tests/run_all.sh --milestone a5 --games 100 --parallel 4 --fallback-three`。
-要求100个有效原生结算局，void率≤10%；看门狗中止的房间独立清理并补跑原地图/换边位置，
+A5 容错验收：`bash tests/run_all.sh --milestone a5 --games 70 --parallel 4 --fallback-three`。
+要求至少70个有效原生结算局，void率≤10%；看门狗中止的房间独立清理并补跑原地图/换边位置，
 其余房间继续。四房在至少12次已结束尝试后void率>10%时，排空当前房间，用三房补完剩余逻辑局，
 保留各并行段对比，不重跑已有效局。组件覆盖真实失败分支的watchdog识别、清理错误保留、
 单房void不取消他房、配对补跑、超预算排空、HUD/比分换边汇总和三/四房实际ACK重叠。
-任意策略/完整性错误不冒充void；具体状态和实机证据见PROGRESS，组件通过不等于百局签收。
+任意策略/完整性错误不冒充void；具体状态和实机证据见PROGRESS，组件通过不等于原生签收。
 
 最新比分规则：双端胜者一致即有效，比分取均值并保留双端原值/差值；>2个百分点标suspect，
 仍计入；双端胜者不一致与watchdog一起记void。续跑用
-`--resume arena/results/a5-partial-20261019.json`，保留32局与重判有效的round-032，
-只提交round-033到099，原取消尝试编号保留。suspect率以有效局为分母。
+`--resume arena/results/a5-partial-20261019.json` 可保留32局与重判有效的round-032；
+已暂停的70局通过 `arena.a5_audit` 单独审计，原始100局目标检查点保持不改。suspect率以有效局为分母。

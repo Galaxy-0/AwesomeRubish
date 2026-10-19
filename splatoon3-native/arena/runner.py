@@ -23,7 +23,7 @@ from arena.hud_events import HudEvents
 from arena.process import PolicyProcess
 from arena.referee_api import RefereeAPI
 from arena.policy import encode_policy
-from arena.statistics import tournament_statistics
+from arena.statistics import tournament_statistics,meets_a5_threshold
 from arena.schedule import schedule,overlap_windows
 from arena.scoring import compare_scores,SCORING_RULE
 from arena.checkpoint import load_resume,relative,sha256
@@ -192,7 +192,7 @@ def concurrency_window(matches):
                 host_pids=pids,start_wall=start,end_wall=end,overlap_seconds=end-start)
 
 
-def tournament(policy_a,policy_b,games=100,parallel=4,timeout=7200,out=None,early_rate_check=False,resume=None):
+def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early_rate_check=False,resume=None):
     if type(games) is not int or games<2 or games%2:raise ValueError('an even number of games is required for swapped pairs')
     if parallel not in (1,2,3,4):raise ValueError('parallel games must be 1, 2, 3 or 4')
     specs=[PolicySpec.load(policy_a),PolicySpec.load(policy_b)]
@@ -251,7 +251,7 @@ def tournament(policy_a,policy_b,games=100,parallel=4,timeout=7200,out=None,earl
         result['matches'].sort(key=lambda m:(m['round'],m['attempt']))
         if reason:result['errors'].append(reason)
         result['passed']=stats['valid_games']==games and not result['errors'] and stats['failed_or_cancelled']==0 and bool(result['segment_concurrency_windows'] or not tasks)
-        result['full_a5_passed']=result['passed'] and games>=100 and parallel in (3,4) and stats['void_rate']<=.1
+        result['full_a5_passed']=result['passed'] and meets_a5_threshold(stats['valid_games'],stats['void_games'],parallel)
     except BaseException as error:stop.set();result['errors'].append(repr(error))
     result['segment_elapsed_wall_seconds']=time.time()-started
     result['elapsed_wall_seconds']=prior.get('elapsed_wall_seconds',0)+result['segment_elapsed_wall_seconds']
@@ -260,7 +260,7 @@ def tournament(policy_a,policy_b,games=100,parallel=4,timeout=7200,out=None,earl
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--policy-a',type=Path,default=ROOT/'arena/policies/rush')
-    p.add_argument('--policy-b',type=Path,default=ROOT/'arena/policies/high-ground');p.add_argument('--games',type=int,default=100)
+    p.add_argument('--policy-b',type=Path,default=ROOT/'arena/policies/high-ground');p.add_argument('--games',type=int,default=70)
     p.add_argument('--parallel',type=int,choices=(1,2,3,4),default=4);p.add_argument('--timeout',type=float,default=7200)
     p.add_argument('--resume',type=Path)
     args=p.parse_args();report=tournament(args.policy_a,args.policy_b,args.games,args.parallel,args.timeout,resume=args.resume)

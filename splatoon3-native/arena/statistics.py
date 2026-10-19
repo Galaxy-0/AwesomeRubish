@@ -2,6 +2,12 @@
 import math
 
 
+def meets_a5_threshold(valid,void,parallel):
+    """The revised A5 sample, void-rate and concurrent-room gate."""
+    return (valid>=70 and parallel in (3,4) and
+            void/(valid+void)<=.1)
+
+
 def binomial_tail(n,k,p,upper):
     if p<=0:return float(0>=k) if upper else 1.
     if p>=1:return 1. if upper else float(n<=k)

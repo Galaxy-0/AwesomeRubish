@@ -1871,3 +1871,31 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 - 指挥方按用户要求暂停：Codex 会话与擂台续跑均已停止，宿主全部清理。
 - 检查点：`arena/results/a5-paused-70-20261019.json`（70 个有效局 + 3 个看门狗 void，三张图各 1 个；源自 `work/arena/tournament-20261019-075030-340076/result.json`）。
 - 恢复时：用该检查点 `--resume` 续跑或直接按 70 局签收；先核对胜者到策略的映射（指挥方粗算 70 局得 high-ground 38 / rush 32，与 32 局时 28/4 不一致，需确认 outcome 与 role_to_policy 的含义）。
+
+## 2026-10-19：A5 70 局胜负映射审计与修订门槛签收
+
+**用户决定用已有70个有效局验收，不再续跑；A5新门槛为有效局≥70、void/(有效+void)≤10%。A3b和T1均未启动。** 原暂停检查点仍保持 `games_requested=100`、`passed=false` 和预期的 `KeyboardInterrupt()` 历史，不重写成“原100局运行成功”。新增独立审计 `arena/results/a5-accepted-70-20261019.json`，逐局列出地图、两端原生比分、胜利席位、`role_to_policy`、胜利策略、trace hash；`arena.a5_audit` 对70局原生屏障重新计算胜者并验证比分/配对/策略源码/冻结运行文件，同时确认3个void的看门狗证据和真实四房重叠。
+
+### 胜负字段与人工截图对照
+
+- `policies=[rush,high-ground]`，策略索引0为直冲、1为占高台。`role_to_policy=[x,y]` 是 **player_0席位→策略x、player_1席位→策略y**；偶数round为`[0,1]`，奇数round为`[1,0]`，每对同图交换出生侧/阵营。原生每端 `score=[own,enemy]`；对player_1端反序对齐后比较。`winner_by_observer` 的0/1是获胜**席位**；`outcome='a'/'b'` 是获胜**策略**（a=rush，b=high-ground），不是席位。平局为`draw`，两端胜者不一致才是比分void。
+- 人工查看原始 128×72 Winners 图并与双方比分核对：round-000 温泉 `[0,1]`，player_0图Defeat，1.1:1.9，high-ground胜；round-001 温泉 `[1,0]`，player_0图Victory，1.7:1.0，仍为high-ground胜。round-002 District `[0,1]`，player_0图Victory，1.8:0.4，rush胜；round-033 District `[1,0]`，player_0图Defeat，0:2.6、player_1图Victory，rush胜。round-004/005 Yagara 分别player_1/player_0图Victory，换边后均为high-ground胜；round-050/051 District 分别player_1/player_0图Victory，均为high-ground胜；round-069 District `[1,0]`，player_0图Defeat，0.7:1.1、player_1图Victory，rush胜。截图均保留在各局 `work/arena/tournament-*/round-*/winners-player_*.png`，不入库。69局有双端Winners图；round-032旧版完整性断言发生在截图保存前，仍有双端 `phase=3`、score/turf有效的原生屏障及两端比分，已在此前partial重判，未冒称有该局Winners图。
+- 指挥方粗算的 **38/32 实际是player_1/player_0席位胜场**：偶数35局中player_1赢32、player_0赢3；奇数35局换边后player_0赢29、player_1赢6。折回策略为high-ground **32+29=61胜**、rush **3+6=9胜**。此前32局high-ground 28/rush 4是正确的阶段累计，后来38局新增high-ground 33/rush 5；没有统计代码错误。新增换边/席位与策略区分回归，防止把38/32当策略胜率。
+
+### 70局最终数值与证据边界
+
+| 策略 | 胜/负 | 胜率 | 95%双侧精确区间 | HUD敌方倒下/自身倒下 | 敌方/自身环境死亡 | 平均结算比分百分点（范围） |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| rush/直冲 | 9/61 | 12.86% | 6.05%–23.01% | 6/7 | 0/0 | 1.0314（0–2.6） |
+| high-ground/占高台 | 61/9 | 87.14% | 76.99%–93.95% | 7/6 | 0/0 | 1.9850（0–4.6） |
+
+| 地图 | 有效局 | rush胜 | high-ground胜 | void |
+| --- | ---: | ---: | ---: | ---: |
+| Yunohana/温泉峡谷 | 24 | 0 | 24 | 1 |
+| District00 | 24 | 9 | 15 | 1 |
+| Yagara | 22 | 0 | 22 | 1 |
+
+- 无平局；95%区间为Clopper–Pearson，按70个有胜负结果的有效局计算。high-ground下限0.7699>0.5，按既定显著性口径更强。结算比分是双方原生百分比显示值按席位对齐后的算术平均，非实时墨图，也不能把两队分数强行归一到100%。`suspect=0/70=0%`；没有超过2个百分点的双端分数差。
+- `void=3/(70+3)=4.11%`，原因均为 `native_progress_watchdog`：round-041 Yagara、048 Yunohana、056 District00各1；原房间保留日志/trace，补跑同逻辑局成功，未将中断/取消目录算成void。HUD敌方倒下和自身倒下是观察者计数，环境死亡0仅表示位置规则未识别到环境子集；不能推断真实最后一击归属。A3b实时墨图和原生击倒归属仍未知。
+- 有效局平均含加载墙钟 **1194.70秒/局**（1106.95–1265.06），平均受控至Winners **654.66秒/局**（510.97–728.08）；三段实际运行累计墙钟 **23389.93秒＝6小时29分49.9秒**，不含用户暂停间隔。逐局墙钟求和83629.25秒因四房并行不能当整体耗时。原始逐present动作、采样帧状态、HUD事件、两端截图均留在ignored `work/arena/`。
+- `.venv/bin/python tests/test_a5_components.py` **17项通过**，`tests/test_a5_process.py` **1项通过**；独立 `python -m arena.a5_audit ...` 验证70局原生Winners/双方比分、从每局原生trace重放HUD计数、3个void的实际FATAL日志和真实四房重叠，输出逐局签收文件。此前70局续跑入口已先运行完整A5前置回归；本轮没有启动新原生对局。Git仅纳入本项目源码、文档和数值/哈希证据，不纳入游戏资产、截图或原始状态。

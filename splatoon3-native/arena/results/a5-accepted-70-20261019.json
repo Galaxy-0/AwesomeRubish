@@ -1,0 +1,2397 @@
+{
+  "schema": "arena.a5.audit.v1",
+  "accepted": true,
+  "criterion": "at least 70 valid native games; void/(valid+void) <= 10%",
+  "source_checkpoint": "arena/results/a5-paused-70-20261019.json",
+  "source_sha256": "afeec2a9c73186545cee727e6349ba74acde6f9116b7cab15750c2e73c707357",
+  "policy_order": [
+    "rush",
+    "high-ground"
+  ],
+  "valid_rounds": 70,
+  "statistics": {
+    "games": 70,
+    "wins": 9,
+    "losses": 61,
+    "draws": 0,
+    "win_rate": 0.12857142857142856,
+    "decided_win_rate": 0.12857142857142856,
+    "decided_exact_95_interval": [
+      0.06051331419038958,
+      0.23008839016903648
+    ],
+    "stronger": false,
+    "interval_method": "Clopper-Pearson two-sided 95%; draws excluded from binomial trials",
+    "valid_games": 70,
+    "void_games": 3,
+    "attempts": 73,
+    "void_rate": 0.0410958904109589,
+    "suspect_games": 0,
+    "suspect_rate": 0.0,
+    "void_reasons": {
+      "native_progress_watchdog": 3
+    },
+    "failed_or_cancelled": 0,
+    "by_policy": [
+      {
+        "games": 70,
+        "wins": 9,
+        "losses": 61,
+        "draws": 0,
+        "win_rate": 0.12857142857142856,
+        "decided_win_rate": 0.12857142857142856,
+        "decided_exact_95_interval": [
+          0.06051331419038958,
+          0.23008839016903648
+        ],
+        "stronger": false,
+        "interval_method": "Clopper-Pearson two-sided 95%; draws excluded from binomial trials",
+        "enemy_hud_downs": 6,
+        "own_hud_downs": 7,
+        "enemy_environmental_downs": 0,
+        "own_environmental_downs": 0,
+        "enemy_non_environment_classified_downs": 6,
+        "score_percentage_points": {
+          "mean": 1.0314285886857144,
+          "min": 0.0,
+          "max": 2.5999999
+        }
+      },
+      {
+        "games": 70,
+        "wins": 61,
+        "losses": 9,
+        "draws": 0,
+        "win_rate": 0.8714285714285714,
+        "decided_win_rate": 0.8714285714285714,
+        "decided_exact_95_interval": [
+          0.7699116098309635,
+          0.9394866858096105
+        ],
+        "stronger": true,
+        "interval_method": "Clopper-Pearson two-sided 95%; draws excluded from binomial trials",
+        "enemy_hud_downs": 7,
+        "own_hud_downs": 6,
+        "enemy_environmental_downs": 0,
+        "own_environmental_downs": 0,
+        "enemy_non_environment_classified_downs": 7,
+        "score_percentage_points": {
+          "mean": 1.9849999922714285,
+          "min": 0.0,
+          "max": 4.5999999
+        }
+      }
+    ],
+    "wall_seconds": {
+      "sum": 83629.25428438187,
+      "mean": 1194.7036326340267,
+      "min": 1106.9493520259857,
+      "max": 1265.0635797977448
+    },
+    "controlled_seconds": {
+      "sum": 45826.4139316082,
+      "mean": 654.6630561658314,
+      "min": 510.9677450656891,
+      "max": 728.0768141746521
+    }
+  },
+  "by_map": {
+    "Yunohana": {
+      "valid": 24,
+      "rush_wins": 0,
+      "high_ground_wins": 24,
+      "void": 1
+    },
+    "District00": {
+      "valid": 24,
+      "rush_wins": 9,
+      "high_ground_wins": 15,
+      "void": 1
+    },
+    "Yagara": {
+      "valid": 22,
+      "rush_wins": 0,
+      "high_ground_wins": 22,
+      "void": 1
+    }
+  },
+  "seat_wins": {
+    "player_0": 32,
+    "player_1": 38
+  },
+  "voids": [
+    {
+      "round": 41,
+      "attempt": 0,
+      "map": "Yagara",
+      "reason": "native_progress_watchdog",
+      "artifacts": "work/arena/tournament-20261019-052248-811075/round-041-attempt-000"
+    },
+    {
+      "round": 48,
+      "attempt": 0,
+      "map": "Yunohana",
+      "reason": "native_progress_watchdog",
+      "artifacts": "work/arena/tournament-20261019-052248-811075/round-048-attempt-000"
+    },
+    {
+      "round": 56,
+      "attempt": 0,
+      "map": "District00",
+      "reason": "native_progress_watchdog",
+      "artifacts": "work/arena/tournament-20261019-052248-811075/round-056-attempt-000"
+    }
+  ],
+  "elapsed_wall_seconds": 23389.926286697388,
+  "native_overlap_windows": 13,
+  "evidence_sha256": {
+    "work/arena/tournament-20261019-021200-165802/round-000-attempt-000/native-barriers.jsonl": "d290cabecafa6cf270f83dfaa040b4f1bd88d13bc4add94e25f5d3466c780fe2",
+    "work/arena/tournament-20261019-021200-165802/round-000-attempt-000/result.json": "4356eabe4c04bb91a19c9f9872e4f9fd6719ffbd82ac90125160fbfe18e175b7",
+    "work/arena/tournament-20261019-021200-165802/round-001-attempt-000/native-barriers.jsonl": "29911946246475098949c8ed15a1620268145e7ed91f70aea9cc101369bea58c",
+    "work/arena/tournament-20261019-021200-165802/round-001-attempt-000/result.json": "a5588f3620ddab88aab859584e5fe6fda68c0383fd9a53461103dd5af34a7a85",
+    "work/arena/tournament-20261019-021200-165802/round-002-attempt-000/native-barriers.jsonl": "c122deb79be61b7e42c4514e23dbc7d3eca8189fe761047adf5fac08a90140e3",
+    "work/arena/tournament-20261019-021200-165802/round-002-attempt-000/result.json": "9d03d5c62af150ee98f978932c7e70ff6147ce99f18858fc9b002b40c1a15e2d",
+    "work/arena/tournament-20261019-021200-165802/round-003-attempt-000/native-barriers.jsonl": "d0e319f16e2f2a20be7db3b32adec99b8dcc8bcccb117fec40b9ce8fe6a27e62",
+    "work/arena/tournament-20261019-021200-165802/round-003-attempt-000/result.json": "8b84a72e88b491bef2c83860d06caacf6d38124a55b35566399dd333be5f6aa5",
+    "work/arena/tournament-20261019-021200-165802/round-004-attempt-000/native-barriers.jsonl": "09ed45330d04205975e7ae4814abcb9c9317e9dfb82c1f3c0601cb8ee83a0d87",
+    "work/arena/tournament-20261019-021200-165802/round-004-attempt-000/result.json": "0054173dbbe85e60ddecc5ec0e52ff2dcbd18135ea77638443f5d5a75f37bc90",
+    "work/arena/tournament-20261019-021200-165802/round-005-attempt-000/native-barriers.jsonl": "d291411b0facbbf9099f79e371254e66cce3b68a5fd1e398deeefe3c162e0430",
+    "work/arena/tournament-20261019-021200-165802/round-005-attempt-000/result.json": "ff24f7a129a156ae356864303719ed801edb25f7cd2e8034e38c8e2f9e0c8df7",
+    "work/arena/tournament-20261019-021200-165802/round-006-attempt-000/native-barriers.jsonl": "26300be4de9f3a17ca023865c2ab4441255991e1a7a2258561e40beabfd80395",
+    "work/arena/tournament-20261019-021200-165802/round-006-attempt-000/result.json": "c7e8af945832335bcb67d65512dcbfd93c7ba551db05277da9c8daecbdb1ea48",
+    "work/arena/tournament-20261019-021200-165802/round-007-attempt-000/native-barriers.jsonl": "38671c36dfbb9ea0e6472389b688f5d7f8dabc7ab1fc741e955f8b8c1ef46284",
+    "work/arena/tournament-20261019-021200-165802/round-007-attempt-000/result.json": "8f9f14c1d7db8205565710d3f4c7fd50965484d74d1cbc000585e608af4016a7",
+    "work/arena/tournament-20261019-021200-165802/round-008-attempt-000/native-barriers.jsonl": "c9d4278a3a2f6e2caaa3b985197d3dfe88b64a2d4d2531a7bab4e58b6048f66c",
+    "work/arena/tournament-20261019-021200-165802/round-008-attempt-000/result.json": "24d349bb87b9a3f90c1efc08f46dddae9544f5b67d9721dfac5cd92dca794c47",
+    "work/arena/tournament-20261019-021200-165802/round-009-attempt-000/native-barriers.jsonl": "4984b64696b8b7fe61ebc3561693b71abee70e9edeb205412635fd7beeb98a71",
+    "work/arena/tournament-20261019-021200-165802/round-009-attempt-000/result.json": "3b9963cf924f61a10a4d8b8f9e5175eccb1b591b994f38ec33e97521d2fe5ad9",
+    "work/arena/tournament-20261019-021200-165802/round-010-attempt-000/native-barriers.jsonl": "b7fe4a1d8788e86e1c8b2adb412f41ad385ac4b03f50c5d2c72eadda7f40b0f1",
+    "work/arena/tournament-20261019-021200-165802/round-010-attempt-000/result.json": "f44bf057124525f6f3c57e00c1ca5ef8ac6bf75dbcc821844e3ea3d3cf8b12e2",
+    "work/arena/tournament-20261019-021200-165802/round-011-attempt-000/native-barriers.jsonl": "4b14569f53a373c6143df1908d32a61392b1432cecda98381c94087af167b88a",
+    "work/arena/tournament-20261019-021200-165802/round-011-attempt-000/result.json": "ac52335dc47009ab13acca3dd3980d9898878d4be1cdbf61270e2bd72441a820",
+    "work/arena/tournament-20261019-021200-165802/round-012-attempt-000/native-barriers.jsonl": "6d14b6bde9b2a78750704d6b421e578f4265c6932f17dd20628efa91e06b7390",
+    "work/arena/tournament-20261019-021200-165802/round-012-attempt-000/result.json": "ce3cf5870832453685e77de6f5365b9d3819ea64a2d49f38aea05f5423eb37c6",
+    "work/arena/tournament-20261019-021200-165802/round-013-attempt-000/native-barriers.jsonl": "8148027038db8565a5c9b4d0b37f4622eecf9923e8f36d0050181a93d8c0ef3c",
+    "work/arena/tournament-20261019-021200-165802/round-013-attempt-000/result.json": "a0b36bf10115a4b73221deced793abe2041b8dab71183add4867deab1ac19bed",
+    "work/arena/tournament-20261019-021200-165802/round-014-attempt-000/native-barriers.jsonl": "30ae0fa28a45c0c039ecfb48519be4a5d79cd2201b14195057b58abc739917c7",
+    "work/arena/tournament-20261019-021200-165802/round-014-attempt-000/result.json": "82c66e31b6e9253f7d26ca93bcfc9c475d55eedf9143f2b83c1434eec317acaf",
+    "work/arena/tournament-20261019-021200-165802/round-015-attempt-000/native-barriers.jsonl": "864fcc75c7c1c94e23afa7c26121e13b75e4bf061678f556331a26a739396ff5",
+    "work/arena/tournament-20261019-021200-165802/round-015-attempt-000/result.json": "a5ac8786dfd81aada29e3a5f1ef38a2eec0739239ccb00c6d7df7da438d8fa44",
+    "work/arena/tournament-20261019-021200-165802/round-016-attempt-000/native-barriers.jsonl": "7956d554f9154aa0e2007d2ad7f5093635189824e96384ffcccf438e36653834",
+    "work/arena/tournament-20261019-021200-165802/round-016-attempt-000/result.json": "139e416cd288470c37a8c61ea6f9647809d0450e798aaf1dcc46584a70cf243d",
+    "work/arena/tournament-20261019-021200-165802/round-017-attempt-000/native-barriers.jsonl": "f41a66acfdd569e494306cb014103901eec4972906ab092c8936b7ab27e60089",
+    "work/arena/tournament-20261019-021200-165802/round-017-attempt-000/result.json": "fe9100fc495b3257455d15124f82404d863122fbbe76b8baf7f9af56037b7075",
+    "work/arena/tournament-20261019-021200-165802/round-018-attempt-000/native-barriers.jsonl": "28d1d9eee43eda7563b67ad9482f9d74574e7fa648a3d5e1bb9fbd1bec36a886",
+    "work/arena/tournament-20261019-021200-165802/round-018-attempt-000/result.json": "d489ba088f347e09388ff4abf796a85e1a8d014abfc99fb8b290bd23f76ad5c7",
+    "work/arena/tournament-20261019-021200-165802/round-019-attempt-000/native-barriers.jsonl": "2692b01c6af8415f2c040a5de664de82f207b1a2e725d8a3dc14ddfd488e380d",
+    "work/arena/tournament-20261019-021200-165802/round-019-attempt-000/result.json": "775e82c5545710c6fbe9e237654e6724c1427c7bc7c1878b953536c410c13906",
+    "work/arena/tournament-20261019-021200-165802/round-020-attempt-000/native-barriers.jsonl": "9648769635d72cfa5ed2fb8ce5563b31ec3f2166f05221f368a9e4517ee49b8e",
+    "work/arena/tournament-20261019-021200-165802/round-020-attempt-000/result.json": "4f9fe112d26fed89752500d75ac2b4895413780c05e80ec704caeb4dd82bb8cc",
+    "work/arena/tournament-20261019-021200-165802/round-021-attempt-000/native-barriers.jsonl": "87be9963ad80a0e61f8384a5bcbdd8ca8a2c9a7c04175ddc1e8232a5b2927e93",
+    "work/arena/tournament-20261019-021200-165802/round-021-attempt-000/result.json": "7c02cdcb20988b9fd1e89c6e12ee3a23db427b168fb769292a8dc857fd86cf88",
+    "work/arena/tournament-20261019-021200-165802/round-022-attempt-000/native-barriers.jsonl": "e331f3132c8d782a0ad3e56e0d7569b2608c33acf5ca3f98f4b5d827a0c38885",
+    "work/arena/tournament-20261019-021200-165802/round-022-attempt-000/result.json": "8f90eacd25e4c12e9dc7ba88a64eeeafe8d57925d043bbce94d49a5679d036a7",
+    "work/arena/tournament-20261019-021200-165802/round-023-attempt-000/native-barriers.jsonl": "dd6a0699cdc2ef9c82fd9ad10ff5aeedcfb5d0b310d2a11d12ab4ea0afefc254",
+    "work/arena/tournament-20261019-021200-165802/round-023-attempt-000/result.json": "1f17a2d3cdbf3332e897a04bad062506cf33850f64e27c690cdf8051d680a1e9",
+    "work/arena/tournament-20261019-021200-165802/round-024-attempt-000/native-barriers.jsonl": "ed8d8e52cef2d37ada84d38822b2f1b9db9eb021a04ca4289d6a5a6d6eebe8cf",
+    "work/arena/tournament-20261019-021200-165802/round-024-attempt-000/result.json": "39f519d692379c9303d343b7e5e4fb170425df2332f24933c186b9ed85f0666c",
+    "work/arena/tournament-20261019-021200-165802/round-025-attempt-000/native-barriers.jsonl": "5e39f7c836430cfd96a50a0298e57d91b28cc8cab503235e5948be79c9f19b36",
+    "work/arena/tournament-20261019-021200-165802/round-025-attempt-000/result.json": "98215aee0149f0cc1ec6bdeb7c5665709e4720a3101fe9c5a5b4f1bf0c1535d3",
+    "work/arena/tournament-20261019-021200-165802/round-026-attempt-000/native-barriers.jsonl": "ed97c148632cd26c0ddd0a69066088be8f7f8414451ea63028681ab32cc50bff",
+    "work/arena/tournament-20261019-021200-165802/round-026-attempt-000/result.json": "da5f27ae64a8a91e69e8a1e69890967c6dd7caa729c2bdb681b66ec6c268b400",
+    "work/arena/tournament-20261019-021200-165802/round-027-attempt-000/native-barriers.jsonl": "e3fe6a5c68032d2daf09260f87abfbb769da24c5cee9c60e56077a0be1ef68ab",
+    "work/arena/tournament-20261019-021200-165802/round-027-attempt-000/result.json": "b9dc367a41963cd67eb351362f1a1541fb3f2450a2eddef949120f849a468326",
+    "work/arena/tournament-20261019-021200-165802/round-028-attempt-000/native-barriers.jsonl": "3c7ea24fc099113b846958bbbc0052ee27d019238467d6d4470d8e0cbbc7b72b",
+    "work/arena/tournament-20261019-021200-165802/round-028-attempt-000/result.json": "7670df7b1ee4cdd9730b644810f5bab80509aa2793a864042f1426f46b641a21",
+    "work/arena/tournament-20261019-021200-165802/round-029-attempt-000/native-barriers.jsonl": "86c3798f48adbfda46a6303161d6a2a53a37c7a2834e2a28caf0d002daf0abf6",
+    "work/arena/tournament-20261019-021200-165802/round-029-attempt-000/result.json": "b1dd654c830c81eac2691085d5b4b4f48bca448ead36a8d4af146dd6006a0b16",
+    "work/arena/tournament-20261019-021200-165802/round-030-attempt-000/native-barriers.jsonl": "1f4557eff7fa91fb21e21c2943b0b1ffd70a36bd34baf7716523f9758d38978f",
+    "work/arena/tournament-20261019-021200-165802/round-030-attempt-000/result.json": "9df3da9e691b896af66102e8675f811599750097c7f950d34ddb6bd1247e355c",
+    "work/arena/tournament-20261019-021200-165802/round-031-attempt-000/native-barriers.jsonl": "44ebee37bc49d3dcdc3527b6064f027bc8fe6cbcfd92a60e3d9e5813660c1360",
+    "work/arena/tournament-20261019-021200-165802/round-031-attempt-000/result.json": "671bb0e4cad85076749198bdb600e60b3156e567b49b2236042740c42b025253",
+    "work/arena/tournament-20261019-021200-165802/round-032-attempt-000/native-barriers.jsonl": "baecbcb9f2e379227afe292d045f5618b31cd3da275996b4a230e29f1468d786",
+    "work/arena/tournament-20261019-021200-165802/round-032-attempt-000/result.json": "64fcadd1125fd13b736d2d65a1ce2021cffce3c511dae6687663a25e964b2b81",
+    "work/arena/tournament-20261019-052248-811075/round-036-attempt-000/native-barriers.jsonl": "4cb1f25f569db77a87acd9e37943a2514547b6f627b63063f259d87305aed61b",
+    "work/arena/tournament-20261019-052248-811075/round-036-attempt-000/result.json": "6b8bed6b08909b86832e8053d6291317b111b692783d51d086ce6be8667a133a",
+    "work/arena/tournament-20261019-052248-811075/round-035-attempt-001/native-barriers.jsonl": "edcca7d245713ac0b8bb73f3ab2c866df857ffc9cf3a587b0cd13703147fa84d",
+    "work/arena/tournament-20261019-052248-811075/round-035-attempt-001/result.json": "8433286343ac0ef28009cfbb367dbb7c5bfc7ab9d483971ab7abcd04fcf302e5",
+    "work/arena/tournament-20261019-052248-811075/round-034-attempt-001/native-barriers.jsonl": "16b8b0b3d62af7fe164d3e4a2c7e3c31a4b85a40cef948902c9466f4115b3a2a",
+    "work/arena/tournament-20261019-052248-811075/round-034-attempt-001/result.json": "8f614499a15deb4337f3434b91d89ced5d393d0446a80064a4733fe3634dab94",
+    "work/arena/tournament-20261019-052248-811075/round-033-attempt-001/native-barriers.jsonl": "1a9836ba4d97ef8e5a15bee70d7768e426872eca88f5557d20063d1f23d15f14",
+    "work/arena/tournament-20261019-052248-811075/round-033-attempt-001/result.json": "a81307ed7921e98b2b322cb611012150e838250df5cf8b4b02de864cd06ac1b3",
+    "work/arena/tournament-20261019-052248-811075/round-037-attempt-000/native-barriers.jsonl": "91caa0feaf56fb8aaa80372b08fedfbd1fe57a406f6eef82884b9e1d98037d43",
+    "work/arena/tournament-20261019-052248-811075/round-037-attempt-000/result.json": "e94f9ffc11b0b4e77d3337d71f7d8437bd7265512531529d3e09186035679e9a",
+    "work/arena/tournament-20261019-052248-811075/round-038-attempt-000/native-barriers.jsonl": "f21467f2bf5e29e7af5362b0084bdeb4629e5ebb88e185379553e51a6e4446be",
+    "work/arena/tournament-20261019-052248-811075/round-038-attempt-000/result.json": "ebe431c4d8eb961aee9c1f5e6aaaeba51588510fd1497cbe888f832f2c9cdd4b",
+    "work/arena/tournament-20261019-052248-811075/round-039-attempt-000/native-barriers.jsonl": "d506cf1e1b7a1b11b5c36dccf74269f71715eec40e5588c90b39a3ca7f134441",
+    "work/arena/tournament-20261019-052248-811075/round-039-attempt-000/result.json": "2e66fd40b20f53dc15e5eb7af5b52b63c24c4aa2dfbf3d04c11cc22909b242f5",
+    "work/arena/tournament-20261019-052248-811075/round-040-attempt-000/native-barriers.jsonl": "25694893128e0461a272b65d260642832f4ab7bd75321fdad72fd37559ee63af",
+    "work/arena/tournament-20261019-052248-811075/round-040-attempt-000/result.json": "f103a46e9c772308c63764525f7d8f0c2e0e94f2c7c866ec87f0407a7facd930",
+    "work/arena/tournament-20261019-052248-811075/round-041-attempt-000/native-barriers.jsonl": "ac23242ebaab9b62fe6a625626b58da2668014ade106997397b8346c74bdc5f3",
+    "work/arena/tournament-20261019-052248-811075/round-041-attempt-000/result.json": "7257de09c00759929a332fa0fb700a5dd3ac7a309fca5eda70282f1c136cd8fd",
+    "work/tests/m6-2p-20261019-060155-649889/player-0/host.log": "5a3f5cfd5207b089785448849853133e153b2bc00e4da6a3391b99ac873e5050",
+    "work/arena/tournament-20261019-052248-811075/round-042-attempt-000/native-barriers.jsonl": "35eb202931f929238698721cb7e5f980fc88f50fcdb21b6e86733bedb1b97446",
+    "work/arena/tournament-20261019-052248-811075/round-042-attempt-000/result.json": "91f4b42c2491057063fd02d3c700f00a5cc8e9a7a5b4bfd9420199f2d6d1670f",
+    "work/arena/tournament-20261019-052248-811075/round-043-attempt-000/native-barriers.jsonl": "8ffb8731b9e60046cafb281274cb82a0676c0f93661de1ceff7aa150d2f71521",
+    "work/arena/tournament-20261019-052248-811075/round-043-attempt-000/result.json": "dea4eaaff453cf30d629e69e9d87684f9daba5f916fdb7fe5d04d54e178e0913",
+    "work/arena/tournament-20261019-052248-811075/round-044-attempt-000/native-barriers.jsonl": "b71049c844b205da97fe102496620f5be60a5d56f65799472e763d497dd7e543",
+    "work/arena/tournament-20261019-052248-811075/round-044-attempt-000/result.json": "27ed4389e2cdadeff49c81a0442ab5cdfcf212b3a66b9e91301c1841020cfa06",
+    "work/arena/tournament-20261019-052248-811075/round-041-attempt-001/native-barriers.jsonl": "615ac663a5271c49855a992997479a4bccee8569ccba23abd7083ad10e763972",
+    "work/arena/tournament-20261019-052248-811075/round-041-attempt-001/result.json": "fc4ce0e3b7edcb5a72a30232ce9d5703ea21f18a2924b76c3bc51407933b7d08",
+    "work/arena/tournament-20261019-052248-811075/round-045-attempt-000/native-barriers.jsonl": "045ec0c43e1595c95d7a15efba991edfaf3796ee4047470d680722efe1a8114d",
+    "work/arena/tournament-20261019-052248-811075/round-045-attempt-000/result.json": "89fb24fb9f119f26486f9137595f382d6d86a60ef842d531cf7a5c185ceb7579",
+    "work/arena/tournament-20261019-052248-811075/round-046-attempt-000/native-barriers.jsonl": "24e07ce24db376422611acf35477bc6b69c784a50181ae1405ae3ee45f7b8aff",
+    "work/arena/tournament-20261019-052248-811075/round-046-attempt-000/result.json": "e93d3899176ae94f4ca225fc698383fe2b0dc8f08e072f791be2be55793e292a",
+    "work/arena/tournament-20261019-052248-811075/round-047-attempt-000/native-barriers.jsonl": "0f1521005f704dfa660ec9a964756be8f63cb79df6e57891c500a8469faa12f7",
+    "work/arena/tournament-20261019-052248-811075/round-047-attempt-000/result.json": "7b7b2004e807acf4e83b322f77fdfc90ad8d52e56698f97d27f5b7af8c42246a",
+    "work/arena/tournament-20261019-052248-811075/round-048-attempt-000/native-barriers.jsonl": "0ab233366a3a6c6758655ed87253db6e61e7638b3e016aea7f487169485293fc",
+    "work/arena/tournament-20261019-052248-811075/round-048-attempt-000/result.json": "95ffae2c235eccf1fbb5f3b3242e285e1bc807a0748550672c2d89bfc167ca61",
+    "work/tests/m6-2p-20261019-063220-804960/player-0/host.log": "d3527e64ed6f412186b8a85b71ec83222ac5af4c2848eb5343d857281c27a832",
+    "work/arena/tournament-20261019-052248-811075/round-049-attempt-000/native-barriers.jsonl": "4f327ad3dc66da5259d578a26439450acf4a9e14c1cc1b90450ab5e33b03922f",
+    "work/arena/tournament-20261019-052248-811075/round-049-attempt-000/result.json": "205ddef7e5b16face484df84739969ae916ca0152385fee0ec4a350e960e98de",
+    "work/arena/tournament-20261019-052248-811075/round-050-attempt-000/native-barriers.jsonl": "18b2e1a80067c0673c6871552487c01dc9b064e14f70e6b6014978acfc905c19",
+    "work/arena/tournament-20261019-052248-811075/round-050-attempt-000/result.json": "170ec77b5e4cb66d9373b2222c2fcdc71ec405e24400959bf28606281e66883d",
+    "work/arena/tournament-20261019-052248-811075/round-051-attempt-000/native-barriers.jsonl": "ead5be3d936558aee1345c41c1ffaf69fac5b6f21217eec8db9bfc3b06bd64f5",
+    "work/arena/tournament-20261019-052248-811075/round-051-attempt-000/result.json": "43bb7d4e98cb6e2c0a0f71003f6905d4974883bb8c5b8e46f4d3a12ff0d78998",
+    "work/arena/tournament-20261019-052248-811075/round-048-attempt-001/native-barriers.jsonl": "3e7163232724da0c1a020e7fbe262d52fd64f5cc759dc532f0f31937507d74e3",
+    "work/arena/tournament-20261019-052248-811075/round-048-attempt-001/result.json": "907a4428b541f07879c889bea5a0d7043e168fdce45778c936226b9eed6ecb75",
+    "work/arena/tournament-20261019-052248-811075/round-052-attempt-000/native-barriers.jsonl": "4bc7843e167c359cb108ae34e76b7bff7beabd609a3ac6788265343b00106a5e",
+    "work/arena/tournament-20261019-052248-811075/round-052-attempt-000/result.json": "af300eeaf7eac5f411d24963da0910cb06fce09a69f478c012f22e3b05b90059",
+    "work/arena/tournament-20261019-052248-811075/round-053-attempt-000/native-barriers.jsonl": "98c5833b7c777c6e70f1f62d773e9ba471ccabfab7a9dbd3a1b18802efc930b6",
+    "work/arena/tournament-20261019-052248-811075/round-053-attempt-000/result.json": "00a0a0176425df7f16e0ee1f9e4b4e2780da0d1d24d178dbe5abcc242161189f",
+    "work/arena/tournament-20261019-052248-811075/round-054-attempt-000/native-barriers.jsonl": "319b85caced24473960ddd3054e3959e265c6d46f864bafda5bfc7cc544015c7",
+    "work/arena/tournament-20261019-052248-811075/round-054-attempt-000/result.json": "86928fb14c6eb4822e91bd2e854cb97fed3327ddc9c1d318ffba9c5d13246da1",
+    "work/arena/tournament-20261019-052248-811075/round-055-attempt-000/native-barriers.jsonl": "d2f37c37a80c130dd762b864348515960bf2bc27efc6e487064fe441eebd9d05",
+    "work/arena/tournament-20261019-052248-811075/round-055-attempt-000/result.json": "da67241e5f631976fb4bf063db929b1c24191625317dbc113817a16acc1628c8",
+    "work/arena/tournament-20261019-052248-811075/round-056-attempt-000/native-barriers.jsonl": "4300140268b0e3dd475fec1b4768d2a163c31726b1310def44d8ab17c487ab88",
+    "work/arena/tournament-20261019-052248-811075/round-056-attempt-000/result.json": "7df16063c5766bb8f63e0cfb626d6905352e87278596277e68803d344c754b5c",
+    "work/tests/m6-2p-20261019-071940-716481/player-1/host.log": "75500ce48725013a8c5b4a2d5ed8ef0b3f808e730fe5587a31edbd8c9d9fb34a",
+    "work/arena/tournament-20261019-052248-811075/round-057-attempt-000/native-barriers.jsonl": "447c028c84354770664b2ee0d822ea909ad3f11c4acaf18a6c4b0d62b7086040",
+    "work/arena/tournament-20261019-052248-811075/round-057-attempt-000/result.json": "eb7c613fa18ccc6c6735b71a867a1b19d161321031d310d92211eb4419e3f1af",
+    "work/arena/tournament-20261019-052248-811075/round-058-attempt-000/native-barriers.jsonl": "631dd2c90f24e9b1a916084f3e7c758f44a31dda76f517918d490839e4b396f7",
+    "work/arena/tournament-20261019-052248-811075/round-058-attempt-000/result.json": "95ebdcb52dface037680d01e2a8d0921f11023c8449bf4c402956790c524e3d9",
+    "work/arena/tournament-20261019-075030-340076/round-060-attempt-001/native-barriers.jsonl": "d337ebb9bdf36c5cc2f523c9b64f21db1fe12960a41e7751a150ed75ef54c12b",
+    "work/arena/tournament-20261019-075030-340076/round-060-attempt-001/result.json": "aea01e21f4d69af1ff65a598fcfe782ef2db5fff21858f503ba382b0945915ab",
+    "work/arena/tournament-20261019-075030-340076/round-061-attempt-001/native-barriers.jsonl": "f38045f032105831d357d2b1b800024faf2f5db148c233257486c0596e7d2b1d",
+    "work/arena/tournament-20261019-075030-340076/round-061-attempt-001/result.json": "30a316643284428d6220e1c75c91ea29dadb5d5170ee1c56cc0ae4c4835d7bcf",
+    "work/arena/tournament-20261019-075030-340076/round-059-attempt-001/native-barriers.jsonl": "ee297c376bbf308cb9d0f3454c6bf54ae0b15367bf36000d836db55d462c465a",
+    "work/arena/tournament-20261019-075030-340076/round-059-attempt-001/result.json": "e5f786c57e53241187765cdd280b6c116708d90c6d5b4dd972d85f413b2fdacf",
+    "work/arena/tournament-20261019-075030-340076/round-056-attempt-002/native-barriers.jsonl": "1e2eb3384eba856ce7722bc7a6a0e2d370eb9756ea37e4a91ba216ad3a82d3ad",
+    "work/arena/tournament-20261019-075030-340076/round-056-attempt-002/result.json": "c4815633df97e75064c96af46d8562e0a5a45c0a0ffa38051686fc172c7abe51",
+    "work/arena/tournament-20261019-075030-340076/round-064-attempt-000/native-barriers.jsonl": "5da016a74963e28d7519034f94e051bb2fccf450dee299748c2d0b838076097b",
+    "work/arena/tournament-20261019-075030-340076/round-064-attempt-000/result.json": "3c19cd8fd7677d3c5059c116b07335ab91f3dd11ffde6e78087c376a469be9c8",
+    "work/arena/tournament-20261019-075030-340076/round-062-attempt-000/native-barriers.jsonl": "1f04acfc2a4279506e948da9615ee8bed47c58d3b57f422bcf0bb436a59421db",
+    "work/arena/tournament-20261019-075030-340076/round-062-attempt-000/result.json": "f5c38a12f634734ea7b62d00e0db50a45e8a3dbeb00b2995393d1addbbcbed0e",
+    "work/arena/tournament-20261019-075030-340076/round-063-attempt-000/native-barriers.jsonl": "d6f9911c3dc1af9089f546dfaab024012cc78d1759e2ad4dd244423cb7ce9ea1",
+    "work/arena/tournament-20261019-075030-340076/round-063-attempt-000/result.json": "7998edf0119fadd320434581780919c28c46f3ee0831903cfd672b513d270afb",
+    "work/arena/tournament-20261019-075030-340076/round-065-attempt-000/native-barriers.jsonl": "555da8a46243e287043515300bb11bac174b7424a7afd521b6d137309e9e9535",
+    "work/arena/tournament-20261019-075030-340076/round-065-attempt-000/result.json": "108b4262d0d71236dd883f32487d1a1145cef17314359c4f882ce4620807274f",
+    "work/arena/tournament-20261019-075030-340076/round-067-attempt-000/native-barriers.jsonl": "b9192d3c67fac174ba666ba1a3363b619cd24dc80a60a317ebc3de85f838d809",
+    "work/arena/tournament-20261019-075030-340076/round-067-attempt-000/result.json": "0d8fddbca8efd494f5143ecad838dacfbf61f5d3df6c0915534afa3922a465a1",
+    "work/arena/tournament-20261019-075030-340076/round-066-attempt-000/native-barriers.jsonl": "566353b6cddad340ad6d48571df9a782d4acc7004ea641b622d84ea4861c8cf1",
+    "work/arena/tournament-20261019-075030-340076/round-066-attempt-000/result.json": "8ebfb7c90cc3a99fd9ed80514d5204800e02ce71cb3a1fa119dbb745ace804d6",
+    "work/arena/tournament-20261019-075030-340076/round-068-attempt-000/native-barriers.jsonl": "e4de269c1574784a532ae8a7e2a9b466d913481a9cfb3add5b9202ac0b849766",
+    "work/arena/tournament-20261019-075030-340076/round-068-attempt-000/result.json": "f64decae2feadc1802076ad711bd66eb4fb2e3881845be8e65b56082c0efa07d",
+    "work/arena/tournament-20261019-075030-340076/round-069-attempt-000/native-barriers.jsonl": "f63879f629d8b82f3354545ce124e383c533ac5d142f13f7cc003a4e7d8c8d41",
+    "work/arena/tournament-20261019-075030-340076/round-069-attempt-000/result.json": "98f2b4d37f04d4ae9a33a2982df802ce4d8e424b11f8a8e948409ca46b1ec1a5"
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        1.89999998
+      ],
+      "observer1_own_enemy": [
+        1.89999998,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        1.89999998
+      ],
+      "suspect": false,
+      "trace_sha256": "d290cabecafa6cf270f83dfaa040b4f1bd88d13bc4add94e25f5d3466c780fe2",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-000-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-000-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 1,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.70000005,
+        1
+      ],
+      "observer1_own_enemy": [
+        1,
+        1.70000005
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.70000005,
+        1.0
+      ],
+      "suspect": false,
+      "trace_sha256": "29911946246475098949c8ed15a1620268145e7ed91f70aea9cc101369bea58c",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-001-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-001-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 2,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.79999995,
+        0.400000006
+      ],
+      "observer1_own_enemy": [
+        0.400000006,
+        1.79999995
+      ],
+      "winning_seat": 0,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        1.79999995,
+        0.400000006
+      ],
+      "suspect": false,
+      "trace_sha256": "c122deb79be61b7e42c4514e23dbc7d3eca8189fe761047adf5fac08a90140e3",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-002-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-002-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 3,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0.899999976,
+        0.5
+      ],
+      "observer1_own_enemy": [
+        0.5,
+        0.899999976
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.899999976,
+        0.5
+      ],
+      "suspect": false,
+      "trace_sha256": "d0e319f16e2f2a20be7db3b32adec99b8dcc8bcccb117fec40b9ce8fe6a27e62",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-003-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-003-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 4,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        2.20000005
+      ],
+      "observer1_own_enemy": [
+        2.20000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        2.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "09ed45330d04205975e7ae4814abcb9c9317e9dfb82c1f3c0601cb8ee83a0d87",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-004-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-004-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 5,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.79999995,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        2.79999995
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.79999995,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "d291411b0facbbf9099f79e371254e66cce3b68a5fd1e398deeefe3c162e0430",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-005-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-005-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 6,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        3.0999999
+      ],
+      "observer1_own_enemy": [
+        3.0999999,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        3.0999999
+      ],
+      "suspect": false,
+      "trace_sha256": "26300be4de9f3a17ca023865c2ab4441255991e1a7a2258561e40beabfd80395",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-006-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-006-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 7,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.5,
+        1
+      ],
+      "observer1_own_enemy": [
+        1,
+        1.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.5,
+        1.0
+      ],
+      "suspect": false,
+      "trace_sha256": "38671c36dfbb9ea0e6472389b688f5d7f8dabc7ab1fc741e955f8b8c1ef46284",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-007-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-007-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 8,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.899999976,
+        2
+      ],
+      "observer1_own_enemy": [
+        2,
+        0.899999976
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.899999976,
+        2.0
+      ],
+      "suspect": false,
+      "trace_sha256": "c9d4278a3a2f6e2caaa3b985197d3dfe88b64a2d4d2531a7bab4e58b6048f66c",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-008-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-008-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 9,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        0.400000006
+      ],
+      "observer1_own_enemy": [
+        0.400000006,
+        1.10000002
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        0.400000006
+      ],
+      "suspect": false,
+      "trace_sha256": "4984b64696b8b7fe61ebc3561693b71abee70e9edeb205412635fd7beeb98a71",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-009-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-009-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 10,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        2.20000005
+      ],
+      "observer1_own_enemy": [
+        2.20000005,
+        1.20000005
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        2.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "b7fe4a1d8788e86e1c8b2adb412f41ad385ac4b03f50c5d2c72eadda7f40b0f1",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-010-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-010-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 11,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        3.5,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        3.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        3.5,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "4b14569f53a373c6143df1908d32a61392b1432cecda98381c94087af167b88a",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-011-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-011-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 12,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        3.20000005
+      ],
+      "observer1_own_enemy": [
+        3.20000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        3.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "6d14b6bde9b2a78750704d6b421e578f4265c6932f17dd20628efa91e06b7390",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-012-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-012-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 13,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.89999998,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        1.89999998
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.89999998,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "8148027038db8565a5c9b4d0b37f4622eecf9923e8f36d0050181a93d8c0ef3c",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-013-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-013-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 14,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.800000012,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        0.800000012
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.800000012,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "30ae0fa28a45c0c039ecfb48519be4a5d79cd2201b14195057b58abc739917c7",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-014-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-014-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 15,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0,
+        1.39999998
+      ],
+      "observer1_own_enemy": [
+        1.39999998,
+        0
+      ],
+      "winning_seat": 1,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        0.0,
+        1.39999998
+      ],
+      "suspect": false,
+      "trace_sha256": "864fcc75c7c1c94e23afa7c26121e13b75e4bf061678f556331a26a739396ff5",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-015-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-015-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 16,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        4.5999999
+      ],
+      "observer1_own_enemy": [
+        4.5999999,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        4.5999999
+      ],
+      "suspect": false,
+      "trace_sha256": "7956d554f9154aa0e2007d2ad7f5093635189824e96384ffcccf438e36653834",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-016-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-016-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 17,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.79999995,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        2.79999995
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.79999995,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "f41a66acfdd569e494306cb014103901eec4972906ab092c8936b7ab27e60089",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-017-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-017-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 18,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        1.89999998
+      ],
+      "observer1_own_enemy": [
+        1.89999998,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        1.89999998
+      ],
+      "suspect": false,
+      "trace_sha256": "28d1d9eee43eda7563b67ad9482f9d74574e7fa648a3d5e1bb9fbd1bec36a886",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-018-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-018-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 19,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.0999999,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        2.0999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.0999999,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "2692b01c6af8415f2c040a5de664de82f207b1a2e725d8a3dc14ddfd488e380d",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-019-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-019-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 20,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.400000006,
+        1.79999995
+      ],
+      "observer1_own_enemy": [
+        1.79999995,
+        0.400000006
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.400000006,
+        1.79999995
+      ],
+      "suspect": false,
+      "trace_sha256": "9648769635d72cfa5ed2fb8ce5563b31ec3f2166f05221f368a9e4517ee49b8e",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-020-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-020-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 21,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        0
+      ],
+      "winning_seat": 1,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        0.0,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "87be9963ad80a0e61f8384a5bcbdd8ca8a2c9a7c04175ddc1e8232a5b2927e93",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-021-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-021-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 22,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        2.20000005
+      ],
+      "observer1_own_enemy": [
+        2.20000005,
+        1.20000005
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        2.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "e331f3132c8d782a0ad3e56e0d7569b2608c33acf5ca3f98f4b5d827a0c38885",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-022-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-022-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 23,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.20000005,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        2.20000005
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.20000005,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "dd6a0699cdc2ef9c82fd9ad10ff5aeedcfb5d0b310d2a11d12ab4ea0afefc254",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-023-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-023-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 24,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        3.20000005
+      ],
+      "observer1_own_enemy": [
+        3.20000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        3.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "ed8d8e52cef2d37ada84d38822b2f1b9db9eb021a04ca4289d6a5a6d6eebe8cf",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-024-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-024-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 25,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.5,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        1.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.5,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "5e39f7c836430cfd96a50a0298e57d91b28cc8cab503235e5948be79c9f19b36",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-025-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-025-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 26,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.899999976,
+        0.5
+      ],
+      "observer1_own_enemy": [
+        0.5,
+        0.899999976
+      ],
+      "winning_seat": 0,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        0.899999976,
+        0.5
+      ],
+      "suspect": false,
+      "trace_sha256": "ed97c148632cd26c0ddd0a69066088be8f7f8414451ea63028681ab32cc50bff",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-026-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-026-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 27,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.29999995,
+        0
+      ],
+      "observer1_own_enemy": [
+        0,
+        1.29999995
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.29999995,
+        0.0
+      ],
+      "suspect": false,
+      "trace_sha256": "e3fe6a5c68032d2daf09260f87abfbb769da24c5cee9c60e56077a0be1ef68ab",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-027-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-027-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 28,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        2.0999999
+      ],
+      "observer1_own_enemy": [
+        2.0999999,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        2.0999999
+      ],
+      "suspect": false,
+      "trace_sha256": "3c7ea24fc099113b846958bbbc0052ee27d019238467d6d4470d8e0cbbc7b72b",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-028-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-028-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 29,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.0999999,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        2.0999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.0999999,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "86c3798f48adbfda46a6303161d6a2a53a37c7a2834e2a28caf0d002daf0abf6",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-029-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-029-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 30,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        2.70000005
+      ],
+      "observer1_own_enemy": [
+        2.70000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        2.70000005
+      ],
+      "suspect": false,
+      "trace_sha256": "1f4557eff7fa91fb21e21c2943b0b1ffd70a36bd34baf7716523f9758d38978f",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-030-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-030-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 31,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.5999999,
+        1
+      ],
+      "observer1_own_enemy": [
+        1,
+        2.5999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.5999999,
+        1.0
+      ],
+      "suspect": false,
+      "trace_sha256": "44ebee37bc49d3dcdc3527b6064f027bc8fe6cbcfd92a60e3d9e5813660c1360",
+      "winners_images": [
+        "work/arena/tournament-20261019-021200-165802/round-031-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-021200-165802/round-031-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 32,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.699999988,
+        1.29999995
+      ],
+      "observer1_own_enemy": [
+        1.39999998,
+        0.699999988
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.699999988,
+        1.3499999649999999
+      ],
+      "suspect": false,
+      "trace_sha256": "baecbcb9f2e379227afe292d045f5618b31cd3da275996b4a230e29f1468d786",
+      "winners_images": []
+    },
+    {
+      "round": 33,
+      "map": "District00",
+      "attempt": 1,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0,
+        2.5999999
+      ],
+      "observer1_own_enemy": [
+        2.5999999,
+        0
+      ],
+      "winning_seat": 1,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        0.0,
+        2.5999999
+      ],
+      "suspect": false,
+      "trace_sha256": "1a9836ba4d97ef8e5a15bee70d7768e426872eca88f5557d20063d1f23d15f14",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-033-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-033-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 34,
+      "map": "Yagara",
+      "attempt": 1,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        2.70000005
+      ],
+      "observer1_own_enemy": [
+        2.70000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        2.70000005
+      ],
+      "suspect": false,
+      "trace_sha256": "16b8b0b3d62af7fe164d3e4a2c7e3c31a4b85a40cef948902c9466f4115b3a2a",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-034-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-034-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 35,
+      "map": "Yagara",
+      "attempt": 1,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.5999999,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        2.5999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.5999999,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "edcca7d245713ac0b8bb73f3ab2c866df857ffc9cf3a587b0cd13703147fa84d",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-035-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-035-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 36,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        3.20000005
+      ],
+      "observer1_own_enemy": [
+        3.20000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        3.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "4cb1f25f569db77a87acd9e37943a2514547b6f627b63063f259d87305aed61b",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-036-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-036-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 37,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.5,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        1.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.5,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "91caa0feaf56fb8aaa80372b08fedfbd1fe57a406f6eef82884b9e1d98037d43",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-037-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-037-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 38,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.200000003,
+        1.70000005
+      ],
+      "observer1_own_enemy": [
+        1.70000005,
+        0.200000003
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.200000003,
+        1.70000005
+      ],
+      "suspect": false,
+      "trace_sha256": "f21467f2bf5e29e7af5362b0084bdeb4629e5ebb88e185379553e51a6e4446be",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-038-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-038-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 39,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0,
+        1.70000005
+      ],
+      "observer1_own_enemy": [
+        1.70000005,
+        0
+      ],
+      "winning_seat": 1,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        0.0,
+        1.70000005
+      ],
+      "suspect": false,
+      "trace_sha256": "d506cf1e1b7a1b11b5c36dccf74269f71715eec40e5588c90b39a3ca7f134441",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-039-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-039-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 40,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        2.5
+      ],
+      "observer1_own_enemy": [
+        2.5,
+        1.20000005
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        2.5
+      ],
+      "suspect": false,
+      "trace_sha256": "25694893128e0461a272b65d260642832f4ab7bd75321fdad72fd37559ee63af",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-040-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-040-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 41,
+      "map": "Yagara",
+      "attempt": 1,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        4.5999999,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        4.5999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        4.5999999,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "615ac663a5271c49855a992997479a4bccee8569ccba23abd7083ad10e763972",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-041-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-041-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 42,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        3.0999999
+      ],
+      "observer1_own_enemy": [
+        3.0999999,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        3.0999999
+      ],
+      "suspect": false,
+      "trace_sha256": "35eb202931f929238698721cb7e5f980fc88f50fcdb21b6e86733bedb1b97446",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-042-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-042-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 43,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.20000005,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        2.20000005
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.20000005,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "8ffb8731b9e60046cafb281274cb82a0676c0f93661de1ceff7aa150d2f71521",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-043-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-043-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 44,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.100000001,
+        2.5999999
+      ],
+      "observer1_own_enemy": [
+        2.5999999,
+        0.100000001
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.100000001,
+        2.5999999
+      ],
+      "suspect": false,
+      "trace_sha256": "b71049c844b205da97fe102496620f5be60a5d56f65799472e763d497dd7e543",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-044-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-044-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 45,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.20000005,
+        0.100000001
+      ],
+      "observer1_own_enemy": [
+        0.100000001,
+        2.20000005
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.20000005,
+        0.100000001
+      ],
+      "suspect": false,
+      "trace_sha256": "045ec0c43e1595c95d7a15efba991edfaf3796ee4047470d680722efe1a8114d",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-045-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-045-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 46,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        2.20000005
+      ],
+      "observer1_own_enemy": [
+        2.20000005,
+        1.20000005
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        2.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "24e07ce24db376422611acf35477bc6b69c784a50181ae1405ae3ee45f7b8aff",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-046-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-046-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 47,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.29999995,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        2.29999995
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.29999995,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "0f1521005f704dfa660ec9a964756be8f63cb79df6e57891c500a8469faa12f7",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-047-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-047-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 48,
+      "map": "Yunohana",
+      "attempt": 1,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        3.20000005
+      ],
+      "observer1_own_enemy": [
+        3.20000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        3.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "3e7163232724da0c1a020e7fbe262d52fd64f5cc759dc532f0f31937507d74e3",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-048-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-048-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 49,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.5,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        1.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.5,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "4f327ad3dc66da5259d578a26439450acf4a9e14c1cc1b90450ab5e33b03922f",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-049-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-049-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 50,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.300000012,
+        0.600000024
+      ],
+      "observer1_own_enemy": [
+        0.600000024,
+        0.300000012
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.300000012,
+        0.600000024
+      ],
+      "suspect": false,
+      "trace_sha256": "18b2e1a80067c0673c6871552487c01dc9b064e14f70e6b6014978acfc905c19",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-050-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-050-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 51,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0.800000012,
+        0.5
+      ],
+      "observer1_own_enemy": [
+        0.5,
+        0.800000012
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.800000012,
+        0.5
+      ],
+      "suspect": false,
+      "trace_sha256": "ead5be3d936558aee1345c41c1ffaf69fac5b6f21217eec8db9bfc3b06bd64f5",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-051-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-051-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 52,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        2.70000005
+      ],
+      "observer1_own_enemy": [
+        2.70000005,
+        1.20000005
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        2.70000005
+      ],
+      "suspect": false,
+      "trace_sha256": "4bc7843e167c359cb108ae34e76b7bff7beabd609a3ac6788265343b00106a5e",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-052-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-052-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 53,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.0999999,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        2.0999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.0999999,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "98c5833b7c777c6e70f1f62d773e9ba471ccabfab7a9dbd3a1b18802efc930b6",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-053-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-053-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 54,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        3.20000005
+      ],
+      "observer1_own_enemy": [
+        3.20000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        3.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "319b85caced24473960ddd3054e3959e265c6d46f864bafda5bfc7cc544015c7",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-054-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-054-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 55,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.5,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        1.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.5,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "d2f37c37a80c130dd762b864348515960bf2bc27efc6e487064fe441eebd9d05",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-055-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-055-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 56,
+      "map": "District00",
+      "attempt": 2,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.200000003,
+        1.5
+      ],
+      "observer1_own_enemy": [
+        1.5,
+        0.200000003
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.200000003,
+        1.5
+      ],
+      "suspect": false,
+      "trace_sha256": "1e2eb3384eba856ce7722bc7a6a0e2d370eb9756ea37e4a91ba216ad3a82d3ad",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-056-attempt-002/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-056-attempt-002/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 57,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0,
+        1.5
+      ],
+      "observer1_own_enemy": [
+        1.5,
+        0
+      ],
+      "winning_seat": 1,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        0.0,
+        1.5
+      ],
+      "suspect": false,
+      "trace_sha256": "447c028c84354770664b2ee0d822ea909ad3f11c4acaf18a6c4b0d62b7086040",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-057-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-057-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 58,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        2.4000001
+      ],
+      "observer1_own_enemy": [
+        2.4000001,
+        1.20000005
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        2.4000001
+      ],
+      "suspect": false,
+      "trace_sha256": "631dd2c90f24e9b1a916084f3e7c758f44a31dda76f517918d490839e4b396f7",
+      "winners_images": [
+        "work/arena/tournament-20261019-052248-811075/round-058-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-052248-811075/round-058-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 59,
+      "map": "Yagara",
+      "attempt": 1,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.5999999,
+        1
+      ],
+      "observer1_own_enemy": [
+        1,
+        2.5999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.5999999,
+        1.0
+      ],
+      "suspect": false,
+      "trace_sha256": "ee297c376bbf308cb9d0f3454c6bf54ae0b15367bf36000d836db55d462c465a",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-059-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-059-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 60,
+      "map": "Yunohana",
+      "attempt": 1,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        2.70000005
+      ],
+      "observer1_own_enemy": [
+        2.70000005,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        2.70000005
+      ],
+      "suspect": false,
+      "trace_sha256": "d337ebb9bdf36c5cc2f523c9b64f21db1fe12960a41e7751a150ed75ef54c12b",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-060-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-060-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 61,
+      "map": "Yunohana",
+      "attempt": 1,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.5,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        1.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.5,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "f38045f032105831d357d2b1b800024faf2f5db148c233257486c0596e7d2b1d",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-061-attempt-001/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-061-attempt-001/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 62,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.60000002,
+        0.699999988
+      ],
+      "observer1_own_enemy": [
+        0.699999988,
+        1.60000002
+      ],
+      "winning_seat": 0,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        1.60000002,
+        0.699999988
+      ],
+      "suspect": false,
+      "trace_sha256": "1f04acfc2a4279506e948da9615ee8bed47c58d3b57f422bcf0bb436a59421db",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-062-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-062-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 63,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        0.899999976
+      ],
+      "observer1_own_enemy": [
+        0.899999976,
+        1.20000005
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        0.899999976
+      ],
+      "suspect": false,
+      "trace_sha256": "d6f9911c3dc1af9089f546dfaab024012cc78d1759e2ad4dd244423cb7ce9ea1",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-063-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-063-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 64,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.20000005,
+        2.20000005
+      ],
+      "observer1_own_enemy": [
+        2.20000005,
+        1.20000005
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.20000005,
+        2.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "5da016a74963e28d7519034f94e051bb2fccf450dee299748c2d0b838076097b",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-064-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-064-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 65,
+      "map": "Yagara",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        4.5,
+        1.20000005
+      ],
+      "observer1_own_enemy": [
+        1.20000005,
+        4.5
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        4.5,
+        1.20000005
+      ],
+      "suspect": false,
+      "trace_sha256": "555da8a46243e287043515300bb11bac174b7424a7afd521b6d137309e9e9535",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-065-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-065-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 66,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        1.10000002,
+        1.79999995
+      ],
+      "observer1_own_enemy": [
+        1.79999995,
+        1.10000002
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        1.10000002,
+        1.79999995
+      ],
+      "suspect": false,
+      "trace_sha256": "566353b6cddad340ad6d48571df9a782d4acc7004ea641b622d84ea4861c8cf1",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-066-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-066-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 67,
+      "map": "Yunohana",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        2.5999999,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        2.5999999
+      ],
+      "winning_seat": 0,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        2.5999999,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "b9192d3c67fac174ba666ba1a3363b619cd24dc80a60a317ebc3de85f838d809",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-067-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-067-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 68,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "observer0_own_enemy": [
+        0.699999988,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        0.699999988
+      ],
+      "winning_seat": 1,
+      "winning_policy": "high-ground",
+      "outcome": "b",
+      "score_by_seat": [
+        0.699999988,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "e4de269c1574784a532ae8a7e2a9b466d913481a9cfb3add5b9202ac0b849766",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-068-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-068-attempt-000/winners-player_1.png"
+      ]
+    },
+    {
+      "round": 69,
+      "map": "District00",
+      "attempt": 0,
+      "role_to_policy": [
+        1,
+        0
+      ],
+      "observer0_own_enemy": [
+        0.699999988,
+        1.10000002
+      ],
+      "observer1_own_enemy": [
+        1.10000002,
+        0.699999988
+      ],
+      "winning_seat": 1,
+      "winning_policy": "rush",
+      "outcome": "a",
+      "score_by_seat": [
+        0.699999988,
+        1.10000002
+      ],
+      "suspect": false,
+      "trace_sha256": "f63879f629d8b82f3354545ce124e383c533ac5d142f13f7cc003a4e7d8c8d41",
+      "winners_images": [
+        "work/arena/tournament-20261019-075030-340076/round-069-attempt-000/winners-player_0.png",
+        "work/arena/tournament-20261019-075030-340076/round-069-attempt-000/winners-player_1.png"
+      ]
+    }
+  ]
+}
