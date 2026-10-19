@@ -1,15 +1,15 @@
 name = "bravo"
 weapon = 8000
-step_frames = 12
+step_frames = 1
 step_timeout = 0.75
 
 [loadout.head]
-main = "run_speed_up"
-subs = ["run_speed_up", "run_speed_up", "ink_resistance_up"]
-
-[loadout.clothes]
 main = "ink_saver_main"
 subs = ["ink_saver_main", "ink_saver_main", "ink_saver_main"]
+
+[loadout.clothes]
+main = "run_speed_up"
+subs = ["swim_speed_up", "swim_speed_up", "swim_speed_up"]
 
 [loadout.shoes]
 main = "ink_recovery_up"

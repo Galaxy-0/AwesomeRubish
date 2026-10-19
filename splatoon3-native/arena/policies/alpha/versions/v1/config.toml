@@ -1,0 +1,16 @@
+name = "alpha"
+weapon = 8000
+step_frames = 1
+step_timeout = 0.5
+
+[loadout.head]
+main = "ink_saver_main"
+subs = ["ink_saver_main", "ink_saver_main", "ink_recovery_up"]
+
+[loadout.clothes]
+main = "ink_recovery_up"
+subs = ["ink_saver_main", "ink_recovery_up", "ink_resistance_up"]
+
+[loadout.shoes]
+main = "run_speed_up"
+subs = ["run_speed_up", "swim_speed_up", "ink_resistance_up"]
