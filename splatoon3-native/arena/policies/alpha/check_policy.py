@@ -10,7 +10,8 @@ import unittest
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-sys.path[:0] = [str(ROOT), str(ROOT / 'arena/lib')]
+sys.path[:0] = [str(HERE), str(ROOT), str(ROOT / 'arena/lib')]
+from turf_coverage import cell as coverage_cell
 spec = importlib.util.spec_from_file_location('alpha_candidate', HERE / 'policy.py')
 policy = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(policy)
@@ -86,32 +87,60 @@ class CheckPolicy(unittest.TestCase):
         self.assertGreaterEqual(max(abs(x),abs(y)), .59)
         self.assertLessEqual(math.hypot(x,y), .95)
 
-    def test_home_anchors_return_and_only_down_enables_recovery_route(self):
+    def test_initial_coverage_starts_on_home_ground_without_a_death(self):
         spawn = (23.9, 31., -104.7)
         bot = policy.Alpha(observation(0, enemy=False, position=spawn))
-        bot.act(observation(0, enemy=False, position=spawn))
-        self.assertGreater(len(bot.home_anchors), 0)
-        for q in bot.home_anchors:
-            self.assertTrue(bot.atlas.plan(q, bot.atlas.region('center')))
-        self.assertFalse(bot.recovery_targets)
-        bot.act(observation(100, enemy=False, hp=0., alive=False))
-        bot.act(observation(600, enemy=False, position=spawn))
-        self.assertTrue(bot.recovery_targets)
+        self.assertEqual(bot.act(observation(0, enemy=False, position=spawn)), policy.neutral())
+        landed = (23.8999939, 10.5671377, -72.0307465)
+        bot.act(observation(93, enemy=False, position=landed))
+        self.assertIsNone(bot.coverage.wait_started)
+        self.assertIsNotNone(bot.coverage.goal)
+        progress, lateral = bot.coverage.progress(bot.coverage.goal)
+        self.assertLess(progress, .65)
+        self.assertTrue(bot.nav.path)
 
-    def test_spawn_launcher_preserves_home_targets_until_near_walkable_layer(self):
+    def test_spawn_launcher_waits_and_preserves_coverage_memory(self):
         spawn = (23.9, 31., -104.7)
         bot = policy.Alpha(observation(0, enemy=False, position=spawn))
         bot.act(observation(0, enemy=False, position=spawn))
+        bot.coverage.visits[(0, 1, 0)] = 4.
         bot.act(observation(100, enemy=False, hp=0., alive=False))
         for f in range(600, 692):
             self.assertEqual(bot.act(observation(f, enemy=False, position=spawn)), policy.neutral())
-            self.assertEqual(len(bot.recovery_targets), 2)
-        # Own foot position measured at round-1 selftest respawn f5284.
+            self.assertIsNone(bot.coverage.goal)
         landed = (23.6296749, 10.8022318, -72.4763947)
         bot.act(observation(692, enemy=False, position=landed))
-        self.assertIsNone(bot.recovery_launch)
-        self.assertEqual(len(bot.recovery_targets), 2)
+        self.assertIsNone(bot.coverage.wait_started)
+        self.assertIsNotNone(bot.coverage.goal)
         self.assertTrue(bot.nav.path)
+        self.assertEqual(bot.coverage.visits[(0, 1, 0)], 4.)
+
+    def test_fallen_yagara_chooses_current_component_instead_of_upper_center(self):
+        o = observation(9000, enemy=False, position=(-16.0328, 1.52145, 6.6045))
+        o['stage_id'] = 3
+        bot = policy.Alpha(o)
+        bot.act(o)
+        self.assertIsNotNone(bot.coverage.goal)
+        self.assertLess(abs(bot.coverage.goal[1]-1.5), .6)
+        self.assertLess(bot.coverage.goal[0], -14.)
+        self.assertTrue(bot.nav.path)
+
+    def test_spent_patch_and_failed_goal_are_not_immediately_reselected(self):
+        o = observation(100, enemy=False)
+        bot = policy.Alpha(o)
+        bot.act(o)
+        old = bot.coverage.goal_node
+        bot.coverage.visits[coverage_cell(bot.coverage.goal)] = 100.
+        bot.nav.failed = True
+        bot.coverage.move(o)
+        self.assertGreater(bot.coverage.cooldown[old], o['frame'])
+        self.assertNotEqual(bot.coverage.goal_node, old)
+
+    def test_paint_target_stays_on_own_layer(self):
+        bot = policy.Alpha(observation(0, enemy=False))
+        q = bot.coverage.floor_target((5., 6., -4.), 3.)
+        self.assertIsNotNone(q)
+        self.assertLess(abs(q[1]-3.), .6)
 
     def test_visible_threat_outside_charge_range_is_watched_without_firing(self):
         o = observation(0)
@@ -152,14 +181,14 @@ class CheckPolicy(unittest.TestCase):
         o['own']['view_yaw'] = None
         self.assertEqual(bot.act(o), policy.neutral())
 
-    def test_recorded_round1_streams_validate_without_hidden_velocity(self):
+    def test_recorded_round2_streams_validate_without_hidden_velocity(self):
         from arena.process import validate_action
-        root = ROOT / 'work/arena/t1/round-001'
+        root = ROOT / 'work/arena/t1/round-002'
         if not root.is_dir():
-            self.skipTest('local round-1 records are not available')
+            self.skipTest('local round-2 records are not available')
         calls, maximum = 0, 0.
         for game in range(3):
-            path = root / f'game-{game}-attempt-000/policy-1.jsonl'
+            path = root / f'game-{game}-attempt-000/policy-0.jsonl'
             rows = [json.loads(line) for line in path.read_text().splitlines()]
             bot = policy.Alpha(rows[0]['observation'])
             for row in rows:

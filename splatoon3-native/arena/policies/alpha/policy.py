@@ -1,13 +1,14 @@
-"""Alpha v2: paint broadly, keep the attacker in view, and fight while moving.
+"""Alpha v3: seek fresh reachable ground, preserve the v2 combat/escape core.
 
-Round 1 exposed blind retreat, cancelled counterattacks, and camera-relative
-walking drift. Only own feedback/current visibility/timed memory/static atlas
-enter this rule system. A remembered point is never updated as hidden truth.
+Round 2 exposed repetitive central coverage and unreachable-layer loops.
+Coverage uses own visit/shot-attempt counters, not a private ink map.
+Only own feedback/current visibility/timed memory/static atlas enter this rule system. A remembered point is never updated as hidden truth.
 """
 from collections import deque
 import math
 
 from atlas import MapAtlas
+from turf_coverage import Coverage
 from skills import Skills, aim_at, neutral, own_state, wrap
 from stamper import PredictiveAim, charge_slash, emerge_charge, light_combo
 
@@ -44,10 +45,8 @@ class Alpha:
         self.atlas = MapAtlas.load(obs['stage_id'])
         self.nav = Skills(self.atlas)
         self.escape_nav = Skills(self.atlas)
-        high = self.atlas.region('central_high')
-        far, near = ('east_lane', 'west_lane') if high[0] < 0 else ('west_lane', 'east_lane')
-        self.route = ('central_high', 'center', far, 'center', near, 'center')
-        self.leg, self.leg_started = 0, obs['frame']
+        self.coverage = Coverage(self.atlas, self.nav)
+        self.paint_target = None
         self.aim = PredictiveAim(windup_frames=30, max_lead_frames=36)
         self.plan = None
         self.plan_kind = None
@@ -72,11 +71,6 @@ class Alpha:
         self.dead_since = None
         self.saw_down = False
         self.last_death_position = None
-        self.home_anchors = []
-        self.home_prepared = False
-        self.recovery_targets = deque()
-        self.recovery_started = None
-        self.recovery_launch = None
 
     def invalidate(self):
         self.nav.target = None
@@ -122,29 +116,6 @@ class Alpha:
         if ready and obs['frame'] % 30 == 0:
             a['buttons'][0] = 1
         return a
-
-    def prepare_home(self):
-        """Spawn -> flank -> center must exist; home drops may be one-way."""
-        self.home_prepared = True
-        if self.launch is None:
-            return
-        center = self.atlas.region('center')
-        base = min((self.atlas.region('alpha_base'), self.atlas.region('bravo_base')),
-                   key=lambda q: horizontal(q, self.launch))
-        for side in (-1, 1):
-            wanted = (base[0] * .48 + center[0] * .52 + side * 12,
-                      base[1] * .48 + center[1] * .52,
-                      base[2] * .48 + center[2] * .52)
-            q = self.atlas.points[self.atlas.nearest(wanted)]
-            try:
-                forward = self.atlas.route(base, q)
-                back = self.atlas.route(q, center)
-            except ValueError:
-                continue
-            if (sum(math.dist(a, b) for a, b in zip(forward, forward[1:])) <= 90
-                    and sum(math.dist(a, b) for a, b in zip(back, back[1:])) <= 90):
-                if q not in self.home_anchors:
-                    self.home_anchors.append(q)
 
     def choose_retreat(self, obs, enemy):
         p = obs['own']['position']
@@ -238,39 +209,11 @@ class Alpha:
 
     def paint(self, obs):
         f, p = obs['frame'], obs['own']['position']
-        if self.recovery_targets and self.recovery_launch is not None:
-            # Alive becomes true while the native spawn launcher is airborne.
-            # Do not interpret that temporary off-atlas position as a failed
-            # route and discard every home target. Feet near the static layer
-            # are a readiness proxy, not a private ground-contact signal.
-            q = self.atlas.points[self.atlas.nearest(p)]
-            if (f - self.recovery_launch < 180
-                    and (horizontal(p, q) > 1.5 or abs(p[1] - q[1]) > .6)):
-                return neutral()
-            self.recovery_launch = None
-            self.recovery_started = f
+        if self.coverage.waiting(obs):
+            return neutral()
         if self.paint_cache is not None and f - self.paint_frame < 6:
             return rebase_move(self.paint_cache, self.paint_yaw, obs['own']['view_yaw'])
-        if self.recovery_targets:
-            if self.recovery_started is None:
-                self.recovery_started = f
-            goal = self.recovery_targets[0]
-        else:
-            goal = self.atlas.region(self.route[self.leg % len(self.route)])
-        move = self.nav.move_to(obs, goal)
-        start = self.recovery_started if self.recovery_targets else self.leg_started
-        if move.done or move.status == 'blocked' or f - start > 1500:
-            if self.recovery_targets:
-                self.recovery_targets.popleft()
-                self.recovery_started = f if self.recovery_targets else None
-                if not self.recovery_targets:
-                    self.leg, self.leg_started = 1, f
-                goal = self.recovery_targets[0] if self.recovery_targets else self.atlas.region('center')
-            else:
-                self.leg += 1
-                self.leg_started = f
-                goal = self.atlas.region(self.route[self.leg % len(self.route)])
-            move = self.nav.move_to(obs, goal)
+        move = self.coverage.move(obs)
         target = None
         if not move.done and self.nav.path:
             q = self.nav.path[min(self.nav.index + 4, len(self.nav.path) - 1)]
@@ -279,10 +222,12 @@ class Alpha:
             if distance > .2:
                 ux, uz = dx / distance, dz / distance
                 side = (-1, 0, 1)[(f // 108) % 3]
-                target = (p[0]+ux*4+uz*side*1.7, q[1], p[2]+uz*4-ux*side*1.7)
+                wanted = (p[0]+ux*4+uz*side*1.7, p[1], p[2]+uz*4-ux*side*1.7)
+                target = self.coverage.floor_target(wanted, p[1])
         if target is None:
             angle = (f // 96 % 8) * math.tau / 8
             target = (p[0]+5*math.sin(angle), p[1]-.5, p[2]+5*math.cos(angle))
+        self.paint_target = target
         aiming = aim_at(obs, target)
         a = move.action
         a['sticks'][2:] = aiming.action['sticks'][2:]
@@ -362,18 +307,15 @@ class Alpha:
         f, p = obs['frame'], own['position']
         if self.launch is None and f < 120 and p[1] > 20:
             self.launch = tuple(p)
-        if self.launch is not None and not self.home_prepared:
-            self.prepare_home()
+            self.coverage.set_home(self.launch)
+            self.coverage.relaunch(f)
+        self.coverage.observe(obs)
         if self.dead_since is not None:
-            if self.saw_down and self.last_death_position is not None:
-                self.recovery_targets = deque(sorted(self.home_anchors,
-                    key=lambda q: horizontal(q, self.last_death_position), reverse=True))
-                self.recovery_started = f
-                self.recovery_launch = f if self.recovery_targets else None
+            if self.saw_down:
+                self.coverage.relaunch(f)
             self.dead_since, self.saw_down = None, False
             self.refilling = False
             self.followup = False
-            self.leg_started = f
             self.retreat_until = -1
             self.retreat_goal = None
             self.threat_position = None
@@ -449,6 +391,7 @@ class Alpha:
                 a['sticks'][2:] = tracking.action['sticks'][2:]
                 a['gyro'] = tracking.action['gyro']
             a['buttons'][0] = 0
+        self.coverage.note_paint(obs, a, self.paint_target)
         return a
 
 
