@@ -9,6 +9,7 @@ from atlas import MapAtlas
 from arena.config import PolicySpec
 from arena.statistics import exact_interval,summarize
 from arena.hud_events import HudEvents
+from test_settlement import SettlementTests
 
 
 class TournamentComponents(unittest.TestCase):

@@ -1,0 +1,277 @@
+{
+  "schema": "arena.t1.entry-smoke.v1",
+  "passed": true,
+  "components": {
+    "t1": 10,
+    "a5_including_settlement": 21,
+    "a6_process": 6,
+    "total_distinct": 37
+  },
+  "policies": [
+    "rush",
+    "high-ground"
+  ],
+  "source_hashes": [
+    "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+    "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+  ],
+  "round": 1,
+  "summary": {
+    "schema": "arena.t1.summary.v1",
+    "round": 1,
+    "policies": [
+      "rush",
+      "high-ground"
+    ],
+    "source_hashes": [
+      "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+      "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+    ],
+    "passed": true,
+    "complete": true,
+    "games": [
+      {
+        "fixture": 0,
+        "stage": 1,
+        "map": "Yunohana",
+        "role_to_policy": [
+          1,
+          0
+        ],
+        "winner": "b",
+        "winner_name": "high-ground",
+        "score_by_role": [
+          1.70000005,
+          1.0
+        ],
+        "score_by_policy": {
+          "a": 1.0,
+          "b": 1.70000005
+        },
+        "hud_by_policy": {
+          "a": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          },
+          "b": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          }
+        },
+        "suspect": false,
+        "attempt": 0,
+        "artifacts": "work/arena/t1-entry-smoke-20261020-005624-133407/round-001/game-0-attempt-000"
+      },
+      {
+        "fixture": 1,
+        "stage": 2,
+        "map": "District00",
+        "role_to_policy": [
+          1,
+          0
+        ],
+        "winner": "b",
+        "winner_name": "high-ground",
+        "score_by_role": [
+          1.0,
+          0.699999988
+        ],
+        "score_by_policy": {
+          "a": 0.699999988,
+          "b": 1.0
+        },
+        "hud_by_policy": {
+          "a": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          },
+          "b": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          }
+        },
+        "suspect": false,
+        "attempt": 0,
+        "artifacts": "work/arena/t1-entry-smoke-20261020-005624-133407/round-001/game-1-attempt-000"
+      },
+      {
+        "fixture": 2,
+        "stage": 3,
+        "map": "Yagara",
+        "role_to_policy": [
+          1,
+          0
+        ],
+        "winner": "b",
+        "winner_name": "high-ground",
+        "score_by_role": [
+          2.20000005,
+          1.0
+        ],
+        "score_by_policy": {
+          "a": 1.0,
+          "b": 2.20000005
+        },
+        "hud_by_policy": {
+          "a": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          },
+          "b": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          }
+        },
+        "suspect": false,
+        "attempt": 0,
+        "artifacts": "work/arena/t1-entry-smoke-20261020-005624-133407/round-001/game-2-attempt-000"
+      }
+    ],
+    "wins": {
+      "a": 0,
+      "b": 3,
+      "draw": 0
+    },
+    "round_winner": "b",
+    "round_winner_name": "high-ground",
+    "void_attempts": 0,
+    "errors": []
+  },
+  "settlement": [
+    {
+      "stage": 1,
+      "frames": 480,
+      "budget_frames": 1800,
+      "native_winners": true
+    },
+    {
+      "stage": 2,
+      "frames": 480,
+      "budget_frames": 1800,
+      "native_winners": true
+    },
+    {
+      "stage": 3,
+      "frames": 480,
+      "budget_frames": 1800,
+      "native_winners": true
+    }
+  ],
+  "proficiency": {
+    "policy": "rush",
+    "source_sha256": "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+    "repeats": 1,
+    "total": 5,
+    "measured": 5,
+    "aggregate_score": 7.0,
+    "trials": [
+      {
+        "scenario": "stationary",
+        "nominal_distance": 6.0,
+        "repeat": 0,
+        "status": "measured",
+        "score": 35.0,
+        "target_down": true,
+        "time_to_down_frames": 156,
+        "right_censored": false,
+        "hit_window": true,
+        "reaction_frames": 56
+      },
+      {
+        "scenario": "lateral",
+        "nominal_distance": 6.0,
+        "repeat": 0,
+        "status": "measured",
+        "score": 0.0,
+        "target_down": false,
+        "time_to_down_frames": null,
+        "right_censored": true,
+        "hit_window": false,
+        "reaction_frames": null
+      },
+      {
+        "scenario": "lateral",
+        "nominal_distance": 12.0,
+        "repeat": 0,
+        "status": "measured",
+        "score": 0.0,
+        "target_down": false,
+        "time_to_down_frames": null,
+        "right_censored": true,
+        "hit_window": false,
+        "reaction_frames": null
+      },
+      {
+        "scenario": "lateral",
+        "nominal_distance": 18.0,
+        "repeat": 0,
+        "status": "measured",
+        "score": 0.0,
+        "target_down": false,
+        "time_to_down_frames": null,
+        "right_censored": true,
+        "hit_window": false,
+        "reaction_frames": null
+      },
+      {
+        "scenario": "approach",
+        "nominal_distance": 6.0,
+        "repeat": 0,
+        "status": "measured",
+        "score": 0.0,
+        "target_down": false,
+        "time_to_down_frames": null,
+        "right_censored": true,
+        "hit_window": false,
+        "reaction_frames": null
+      }
+    ]
+  },
+  "peak_owned_hosts": 8,
+  "four_room_controlled_windows": [
+    {
+      "start_wall": 1792429598.2917042,
+      "end_wall": 1792429837.839777,
+      "seconds": 239.5480728149414,
+      "host_pids": [
+        8470,
+        17252,
+        8469,
+        17191,
+        8467,
+        17190,
+        8468,
+        17246
+      ]
+    }
+  ],
+  "default_host_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+  "all_owned_hosts_closed": true,
+  "evidence": {
+    "work/arena/t1-entry-smoke-20261020-005624-133407/smoke-result.json": "9c12248ade4ae9121d02359057a15da1a0340f265568a3306d22ed468a41894d",
+    "work/arena/t1-entry-smoke-20261020-005624-133407/round-001/result.json": "608d2398cfbf580a7a050ad11606c5a1e8e50a15beee3f13a2a48f71c7b77f05",
+    "work/arena/t1-entry-smoke-20261020-005624-133407/round-001/summary.json": "e19172a8fe8c5d159e0632779842c15e1093909ca9bfe5008507a83c1e51df60",
+    "work/arena/t1-entry-smoke-20261020-005624-133407/rush-proficiency.json": "54685a9ba1f38d7ce6f9512c62c16f3ec52cc29523042a994cb62b3f91cbd5a6",
+    "work/arena/t1-entry-smoke-20261020-005624-133407/rush-proficiency.md": "65c7cb3c2fc4ae34b80dc323a708444c67fdfeb01d4f98ad8e1209624ba5ffad",
+    "work/arena/proficiency-20261020-005624-272653/result.json": "c2c75db3ee63f1c3f280fc9cbe6ffe714945982552e55a312a107175b794822f"
+  },
+  "full_a5_passed": false
+}

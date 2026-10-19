@@ -2105,3 +2105,29 @@ GOAL新增DM_TEST_SPECIAL=full|infinite；自然涂地满槽/RS证据已完成�
 - T1 R0协调器87626退出后才合入公共arena/lib；释放前36项冻结哈希全匹配，原R0清单和默认宿主从未改写。释放后唯一旧清单差异为已获准扩展的arena/runner.py。没有给任何非本任务宿主/test_a5发信号；只回收自己启动的driver及其子进程。游戏数据/截图/原生包/二进制仍仅在ignored work；提交只包含本项目代码、源补丁、文档及数值证据索引/分数表。
 
 A6交付范围：最短满蓄观测21present；真实潜游后出墨输入到满蓄释放26present（出墨反馈到释放25–26）；轻挥/满蓄墨刃35/70，平地站立靶射程边界18.7897–19.5619 / 21.7824–22.5553世界单位。冲刺斩、30帧连斩及恢复位移、同速校准乌贼滑、停杆墙蓄跳、快速炸弹、预判相机领先与校准快速转向均有原生证据。潜墨保持蓄力按武器设定unsupported；触手喷射挂钩位移候选未证实，保留失败证据。三份冻结R0策略的分数表及战报接入已完成；接近项每份N=1，固定射手/屏蔽移动的测量不解释擂台输赢。
+
+### T1 BO3与按版本熟练度入口（2026-10-20，实机验证中）
+
+新增 `tests/t1_round.py`，复用A5单房裁判/原生比分/HUD与void分类。每轮固定三图各一局、三worker并行；偶数轮a在player_0，奇数轮a在player_1，任意连续两轮逐图席位均衡。void保留原件并自动补跑原图原席位；普通策略/完整性错误失败退出。result沿用A5策略a/b判定，summary另按策略映射比分/HUD和本轮胜者；平局轮保留draw。DM_TEST_SPECIAL在任何快照/开房前拒绝。
+
+新增 `tests/proficiency.py --policy ... --out ...`，默认13项、内部逐房串行，另有 `--repeats 1` 的5项冒烟。复用原A6夹具/评分/沙箱，绑定完整策略版本SHA、配装、cadence、库/评测哈希，输出JSON/Markdown及原生索引。两个入口均从原件→副本→再次读取原件校验哈希后使用独立快照，运行中作者更新不影响快照。BO3运行时哈希不包含alpha/bravo工作目录；没有修改其文件。两个入口共享两把加载flock，激活标记仍每房独立，允许3个BO3房+1个熟练度房同时运行，不重编dmhost。
+
+组件测试：`tests/test_t1_components.py` 10项、A5组件17项、A6实际沙箱/进程6项均通过。覆盖逐图多轮席位均衡、奇偶轮策略/席位映射、void原夹具补跑不取消同伴、draw/未完成不伪造胜者、测试特殊量拒绝、快照隔离/外部symlink拒绝、共享锁inode及作者并发修改不影响已捕获版本。
+
+一次实机冒烟已启动，运行索引 `work/t1-entry-smoke/current.json`：第1轮rush vs high-ground三图BO3与rush熟练度 `--repeats 1` 同时运行，共享本次专用加载锁；临时caffeinate仅覆盖自有父进程。原生日志/截图/版本副本留ignored work；待两入口均完成后签出实机结果与并行窗口。尚未commit/push。
+
+### T1 调度冲突澄清及结算步长回归修复（2026-10-20 00:56）
+
+指挥方说明此前4房冒烟与两位作者自测同时运行，swap超限是调度冲突，上一段由指挥方中止；不将该现象归因于新入口。旧失败/中止原件保留在 `work/arena/t1-entry-smoke-20261020-000419-559210`、`t1-entry-smoke-20261020-000818-750320`，没有有效对局/分数表进入验收。现在获得独占机器授权；重试前清点无dmhost。若独占4房仍触发资源保护，按最新授权改BO3先跑、熟练度后跑，保留原资源阈值并记录推荐并发。
+
+另修复策略作者报告的真实擂台结算缺陷：原来固定最多120次advance_settlement，其实际帧预算随策略frame_skip改变，step_frames=1时仅120present，到不了Winners。`arena.runner.settlement_steps` 在策略关闭后改用30present中立块，按两端实际ACK的同步帧增量累计，上限1800present（fixed60的30秒游戏时间），末块不越界；Winners到达立即结束，超预算/不同步/无进展/取消/会话截止均失败并恢复原步长，保留原输入/原生轨迹和新增settlement_frames/budget字段。
+
+新增 `tests/test_settlement.py` 4项，明确重现步长1的旧120帧失败，并验证步长1/12/60均在同一360帧原生动画夹具达到Winners；还验证预算边界、不越界、取消/截止/坏ACK后恢复步长。连同BO3组件10项、A5组件17项、A6沙箱进程6项，本次37项组件通过。修复后的rush vs high-ground第1轮BO3与rush五项熟练度已重新同时启动，独占4房；索引仍为 `work/t1-entry-smoke/current.json`，使用新输出目录，不复用任何失败样本。默认宿主未重编、alpha/bravo未修改。
+
+### T1 入口及结算修复实机验收（2026-10-20 01:34）
+
+- 独占重试原件：`work/arena/t1-entry-smoke-20261020-005624-133407/`。两个入口均exit=0、passed=true/errors=[]。BO3三图各一局有效、0 void/失败，第1轮a=rush在player_1、b=high-ground在player_0；b以3–0获胜。按策略a/b的结算百分比分别为温泉峡谷1.0/1.70000005、District00 0.699999988/1.0、Yagara 1.0/2.20000005；各观察者HUD倒下均0，未推断最后击倒归属。逐局原生末帧均双方phase=3，原始双端比分独立重算与summary策略映射一致。
+- 三局均使用新增结算逻辑，额外推进480present后到达Winners，低于1800present上限；保留逐present中立输入、实际ACK状态和预算字段。step_frames=1的具体缺陷由4项组件回归覆盖；这次弱基线原生冒烟不冒称额外跑了步长1的完整对局。
+- rush熟练度 `--repeats 1` 共5项、全部measured，合表7.0分：静止靶156present击倒/35分，横移6/12/18各0分，接近0分（未击倒的用时保留null及右截尾，不编造击倒时间）。接近项通过既有原生滑行校准与本轮动作见证。JSON与Markdown均在原件根目录`rush-proficiency.json/.md`；三张分场景卡及输入/状态索引在`work/arena/proficiency-20261020-005624-272653/`（以合表policy_version.run_artifacts为准）。源码SHA256为`83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd`，与BO3捕获的rush版本相同；完整库/评测及逐项原件哈希复核通过。5项只验证入口，不与正式13项/既有39样本直接作强弱比较。
+- 3房BO3与1房熟练度的实际原生控制窗口重叠239.548秒，8个不同自有dmhost PID；本轮没有触发资源保护，无需降级。所有自有宿主已退出，默认宿主仍为`628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d`。推荐独占机器3＋1，共享两把加载锁；资源保护触发时先BO3后熟练度，原阈值不变，不叠加作者自测。
+- 组件日志：`work/tests/t1-components.log` 10项、`t1-a5-components.log` 21项（含4项结算回归）、`t1-a6-process.log` 6项，合计37项不同测试通过。未新跑A1–A5全套/70局统计验收。`bash tools/update-patch.sh`完成且源补丁无新差异。数值归档及证据SHA索引：`arena/results/t1-entry-smoke-20261020.json`；用法：`arena/TOURNAMENT.md`。交付仅本项目代码、文档和数值索引，alpha/bravo和游戏数据未纳入本次改动。

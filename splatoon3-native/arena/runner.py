@@ -29,6 +29,36 @@ from arena.scoring import compare_scores,SCORING_RULE
 from arena.checkpoint import load_resume,relative,sha256
 
 _STOP=None
+SETTLEMENT_MAX_FRAMES=30*60
+
+
+def settlement_steps(env,stop=None,max_frames=SETTLEMENT_MAX_FRAMES):
+    """Yield neutral ACKs until both Winners, bounded by fixed60 game frames.
+
+    Policies have stopped: their act cadence must not limit result animations.
+    Use 30-present neutral chunks and restore the configured policy stride.
+    """
+    if type(max_frames) is not int or max_frames<=0:
+        raise ValueError('settlement frame budget must be a positive integer')
+    stride=env.frame_skip
+    origins={a:i['frame'] for a,i in env.process_infos.items()}
+    elapsed=0
+    try:
+        while not all(i['phase']==3 for i in env.process_infos.values()):
+            if stop is not None and stop.is_set():
+                raise InterruptedError('tournament cancelled during settlement')
+            if elapsed>=max_frames:
+                raise TimeoutError(f'native Winners unavailable after {max_frames} settlement presents')
+            env.frame_skip=min(30,max_frames-elapsed)
+            env.advance_settlement()
+            if env.timed_out:raise TimeoutError('native settlement deadline')
+            infos=env.process_infos
+            advances={i['frame']-origins[a] for a,i in infos.items()}
+            if len(advances)!=1 or next(iter(advances))!=elapsed+env.frame_skip:
+                raise AssertionError('native settlement present barrier mismatch/no progress')
+            elapsed=next(iter(advances))
+            yield infos
+    finally:env.frame_skip=stride
 
 def write_json_atomic(path, data):
     """Persist a complete checkpoint before replacing the previous version."""
@@ -137,12 +167,11 @@ def run_match(task):
             if all(i['phase']==1 for i in infos.values()) and not settling:api.update(infos)
             else:settling=True
         for child in children:child.close()
-        for _ in range(120):
-            if all(i['phase']==3 for i in env.process_infos.values()):break
-            if _STOP is not None and _STOP.is_set():raise InterruptedError('tournament cancelled during settlement')
-            previous=frame;env.advance_settlement()
-            if env.timed_out:raise TimeoutError('native settlement deadline')
-            infos=env.process_infos;frame=infos[agents[0]]['frame']-origins[agents[0]]
+        settlement_start=frame
+        result.update(settlement_budget_frames=SETTLEMENT_MAX_FRAMES,settlement_frames=0)
+        for infos in settlement_steps(env,worker_stop):
+            previous=frame;frame=infos[agents[0]]['frame']-origins[agents[0]]
+            result['settlement_frames']=frame-settlement_start
             for tick in range(previous,frame):inputs.write(json.dumps(dict(frame_interval=[tick,tick+1],actions={a:neutral() for a in agents},settlement=True))+'\n')
             result['last_progress_wall']=time.time()
             inputs.flush();events.update(infos,frame);native_trace.write(json.dumps(dict(frame=frame,wall_time=result['last_progress_wall'],infos=infos,settlement=True))+'\n');native_trace.flush()

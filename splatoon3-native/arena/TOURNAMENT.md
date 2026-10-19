@@ -78,3 +78,73 @@ without modifying any old result file:
 ```sh
 .venv/bin/python -m arena.checkpoint --legacy work/arena/tournament-20261019-021200-165802/result.json --out arena/results/a5-partial-20261019.json
 ```
+
+## T1 BO3 输方更新入口
+
+每轮完整打三局（不因先赢两局提前结束），三个房间并行，各地图一局。
+`a/b` 始终对应命令行的 `--policy-a/--policy-b`；`player_0/1` 是出生点/阵营席位。
+轮号为非负整数：偶数轮a在player_0，奇数轮a在player_1，三张图整体交换。
+因此任意连续两轮，每份策略在每张图各占两个席位一次。
+
+```sh
+.venv/bin/python tests/t1_round.py \
+  --policy-a arena/policies/alpha --policy-b arena/policies/bravo \
+  --round 1 --out work/arena/t1/round-001
+```
+
+`--out` 必须是ignored work下尚不存在的目录。输出：
+
+- `result.json`：沿用A5的matches、role_to_policy、outcome、双端原始比分、平均比分、suspect、HUD倒下与环境死亡、statistics及原生并行窗口；另有顶层round轮号及策略快照/源码哈希。matches中的round仍是本轮逻辑局号0/1/2。
+- `summary.json`：逐图胜者、按席位和按策略映射的比分、按策略HUD倒下、本轮胜局数与round_winner（a/b/draw）。三局未齐时本轮胜者为null。
+- `game-N-attempt-NNN/`：每次尝试的A5原生输入/状态/截图。void自动补跑同一地图、同一席位，不取消其它房；无效尝试完整保留，不计胜局。沿用A5的watchdog/双方胜者分歧判void，普通策略/完整性错误失败退出，不冒充void。Ctrl-C只回收本命令所属房间。
+- `policies/a/`、`policies/b/`：开局前的只读使用快照（内容哈希核对原件/副本/再次读取的原件），运行中作者可继续改工作目录。快照留在ignored work，命令不会修改作者目录或读取对方源码用于战术分析。
+
+若三局含平局且双方胜局数相同，round_winner为draw，没有自动指定输方。
+BO3胜者是轮次调度结果，不是A5的70局统计优势签收；full_a5_passed保持false。
+入口发现非空`DM_TEST_SPECIAL`即在启动/快照前拒绝。
+
+## 第4房：按版本运行熟练度
+
+```sh
+.venv/bin/python tests/proficiency.py \
+  --policy arena/policies/alpha --out work/arena/proficiency/alpha-v2.json
+```
+
+默认13项：静止靶3次；横移6/12/18各3次；乌贼滑接近1次。
+各场景和分距离房间串行执行，任一时刻只占一个房间，可与上面的三房BO3同时运行。
+结果为指定JSON和同名Markdown；未指定.json后缀时写入该目录的scorecard.json/.md。
+每次先捕获完整策略版本，卡片绑定源码SHA256、配装、调用间隔、公共库及A6评测哈希；
+`policy_version`给出快照与原生运行索引。作者后续修改不影响本次测量。
+既有输出不覆盖，失败房保留原件且不生成冒充完整结果的卡片。
+
+`--repeats 1`运行5项冒烟（静止1、横移三距离各1、接近1），不能与13项正式表直接比较。
+该入口沿用A6固定射手/主武器夹具和自然特殊量，不接受DM_TEST_SPECIAL；
+特殊量开关的独立测试仍用`tests/probe_a6_test_special.py`。
+逐项unsupported与右截尾原样保留；接近项仅N=1，分数不单独解释战术输赢。
+
+两个入口默认共用`work/arena/t1-load-slots/`的两把加载锁，房间激活标记仍独立。
+如指定`--shared-load-slots PATH`，同时运行的两个命令应使用同一路径。
+锁只限制重加载，不把四个房间串行化；不重编或替换dmhost。
+建议在一个临时`caffeinate -i`父进程下同时启动两个命令，避免机器休眠触发墙钟看门狗。
+推荐并发为独占机器的3房BO3＋1房熟练度；不要再叠加作者自测房。
+若资源保护触发，保留失败原件和原阈值，改为BO3三房先完成、熟练度单房随后运行，
+使用全新输出目录。共享加载锁不能限制其它命令另开的房间。
+组件测试（不启动游戏）：
+
+```sh
+.venv/bin/python tests/test_t1_components.py
+.venv/bin/python tests/test_settlement.py
+```
+
+结算动画独立于策略调用间隔：双方停止策略后，使用30present中立块推进到
+Winners，上限为1800present（fixed60下30秒游戏时间），按实际ACK帧数计数，
+末块截断到剩余预算。不会因step_frames=1而只给120帧结算时间；对局记录保留
+settlement_budget_frames与settlement_frames。超出游戏时间预算仍未到Winners则失败，
+不会伪造结算或比分；原生无进展看门狗及墙钟会话截止仍生效。
+
+2026-10-20独占实机冒烟已通过：rush vs high-ground第1轮三图有效、0 void，
+high-ground以3–0获胜；三局均在额外480present结算后到达双方Winners。
+同时运行的rush五项熟练度全部measured，JSON/Markdown已生成，源码哈希与BO3一致。
+四房实际原生控制窗口重叠239.55秒、8个不同宿主PID；全部自有宿主已退出。
+数值与证据哈希索引见`arena/results/t1-entry-smoke-20261020.json`。
+这次证明入口和3＋1并发可用；五项冒烟不替代默认13项正式熟练度表，BO3不替代A5统计签收。
