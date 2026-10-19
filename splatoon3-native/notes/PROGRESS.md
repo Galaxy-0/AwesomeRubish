@@ -1857,3 +1857,17 @@ M3 基线为 `3522186`。本轮只推进 M4；下列诊断结果本身不表示�
 - `--resume` 先验证配对地图/角色、比分判定、native Winners、策略/证据/不可变runtime hash，排除已有效逻辑局后再提交。因此只需新增 **67有效局（round-033～099）**，不会重跑原32局或round-032。旧取消的33/34/35以attempt-001补跑。若将来四房void率触发三房回退，也保留所有已有效局，只补剩余局；分段保留并行对比和实际ACK重叠。总耗时累计实际运行段，排除会话间人工等待。
 - `.venv/bin/python tests/test_a5_components.py` **15项通过**，含小差取均值/原值保留、>2与恰好2边界、换边胜者、平局分歧void、NaN拒绝、已有33局不重复提交、取消尝试编号、检查点重复/比分篡改/证据变更拒绝；两个实际sandbox基线测试1项通过。原生遗留33局已逐项从证据重判；没有声称新增67局已完成。
 - 续跑命令为 `bash tests/run_all.sh --milestone a5 --games 100 --parallel 4 --fallback-three --resume arena/results/a5-partial-20261019.json --timeout 7200`。partial先commit/push核对远端，再执行上述入口。游戏原始状态、地图/资产、画面、线程栈仍只在ignored work；提交的结果只有数值与hash/相对证据引用。
+- **A5 partial 已提交推送 `66263d1ff45a86ecfb6f0a1a9eda3a121623adda`**，本地HEAD与远端main已核对相同，仅本项目22个源码/测试/文档/数值结果文件入库。正式续跑目录 `work/arena/tournament-20261019-052248-811075/`，日志 `work/a5/acceptance-resume-100.log`；前置回归与15项组件/实际sandbox通过，检查点校验通过。首批实际启动33/34/35的attempt-001及36的attempt-000，未创建任何0～32的新对局；当前以33个保留有效局为起点补到100。
+- 续跑中首个真实watchdog容错：round-041-attempt-000（Yagara）0端在present14645、remaining=2时无进展120.0278秒，`FATAL RL_STALL`后退出-6，归类 `native_progress_watchdog` / `cancelled=false`。其原始host日志与预期cleanup错误保留在该尝试目录/会话 `work/tests/m6-2p-20261019-060155-649889/`。调度自动新建round-041-attempt-001；同时42/43/44继续受控推进（观测时4380/2484/2172帧），没有共享取消事件或整批中断。此时41有效、1void、0suspect、errors=[]，是实机单房void隔离/补开证据，不是新的停止点。
+
+## 2026-10-19：A5 会话中断后按最新逐局结果续跑
+
+- 上次前台擂台在 `work/arena/tournament-20261019-052248-811075/result.json` 落下最后完整快照后随会话结束。逐房核验原生 Winners、结算有效位、双端比分及 `result.json`：round-000～055 全部有效，另有 round-057/058 有效，共 **58有效、3void、0suspect**。void 为 041/048/056 的 `native_progress_watchdog`；056-attempt-001、059/060/061-attempt-000 没有完整 `result.json`/原生 Winners，作为中断尝试单独审计，不计有效或void。
+- `arena/results/a5-resume-58-20261019.json` 保存58局数值、旧/新证据hash、四个中断目录及续跑尝试编号；`load_resume` 验证原33局与新增25局的配对、策略、比分、原生结果、证据和冻结运行文件。续跑跳过58个已完成逻辑局，首批只启 056-attempt-002、059/060/061-attempt-001。
+- 协调器 `arena/runner.py` 现每次尝试完成即用 fsync + 原子替换写 `result.json`，并在 ignored `work/arena/.../checkpoints/after-attempt-NNN.json` 保留逐次完整快照。`tests/test_a5_components.py` 15项、`tests/test_a5_process.py` 1项通过；正式入口仍先执行 `tests/run_all.sh --milestone a5` 的完整前置回归。
+- 正式续跑由 `/usr/bin/nohup` + `start_new_session=True`（setsid）启动，PID/PGID及命令留在 `work/a5/acceptance-detached-100.process.json`，日志 `work/a5/acceptance-detached-100.log`；进程PPID为1。此节仅为中途检查点，不代表A5签收。
+
+### A5 暂停（2026-10-19 08:50，用户要求）
+- 指挥方按用户要求暂停：Codex 会话与擂台续跑均已停止，宿主全部清理。
+- 检查点：`arena/results/a5-paused-70-20261019.json`（70 个有效局 + 3 个看门狗 void，三张图各 1 个；源自 `work/arena/tournament-20261019-075030-340076/result.json`）。
+- 恢复时：用该检查点 `--resume` 续跑或直接按 70 局签收；先核对胜者到策略的映射（指挥方粗算 70 局得 high-ground 38 / rush 32，与 32 局时 28/4 不一致，需确认 outcome 与 role_to_policy 的含义）。

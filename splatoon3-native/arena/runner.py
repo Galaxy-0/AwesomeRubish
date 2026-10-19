@@ -6,6 +6,7 @@ import hashlib
 import json
 import math
 import multiprocessing
+import os
 from pathlib import Path
 import sys
 import time
@@ -28,6 +29,14 @@ from arena.scoring import compare_scores,SCORING_RULE
 from arena.checkpoint import load_resume,relative,sha256
 
 _STOP=None
+
+def write_json_atomic(path, data):
+    """Persist a complete checkpoint before replacing the previous version."""
+    path=Path(path);temporary=path.with_name(path.name+'.tmp')
+    with temporary.open('w') as stream:
+        json.dump(data,stream,indent=2)
+        stream.write('\n');stream.flush();os.fsync(stream.fileno())
+    os.replace(temporary,path)
 
 def initialize_worker(stop):
     global _STOP
@@ -169,7 +178,7 @@ def run_match(task):
     result['wall_seconds']=time.time()-started
     if result.get('controlled_start_wall'):
         result['controlled_seconds']=result.get('controlled_end_wall',time.time())-result['controlled_start_wall']
-    (out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
+    write_json_atomic(out/'result.json',result)
     return result
 
 
@@ -222,7 +231,9 @@ def tournament(policy_a,policy_b,games=100,parallel=4,timeout=7200,out=None,earl
         result['elapsed_wall_seconds']=prior.get('elapsed_wall_seconds',0)+result['segment_elapsed_wall_seconds']
         result['next_attempt_by_round']={str(n):max(prior.get('next_attempt_by_round',{}).get(str(n),0),
             max([m.get('attempt',0)+1 for m in matches if m['round']==n],default=0)) for n in range(games)}
-        (out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
+        checkpoints=out/'checkpoints';checkpoints.mkdir(exist_ok=True)
+        write_json_atomic(checkpoints/f'after-attempt-{len(matches):03d}.json',result)
+        write_json_atomic(out/'result.json',result)
         print(json.dumps(dict(valid=result['statistics']['valid_games'],void=result['statistics']['void_games'],requested=games,attempts=len(matches),stop_reason=reason)),flush=True)
     save(initial,None)
     try:
@@ -244,7 +255,7 @@ def tournament(policy_a,policy_b,games=100,parallel=4,timeout=7200,out=None,earl
     except BaseException as error:stop.set();result['errors'].append(repr(error))
     result['segment_elapsed_wall_seconds']=time.time()-started
     result['elapsed_wall_seconds']=prior.get('elapsed_wall_seconds',0)+result['segment_elapsed_wall_seconds']
-    (out/'result.json').write_text(json.dumps(result,indent=2)+'\n');return result
+    write_json_atomic(out/'result.json',result);return result
 
 
 if __name__=='__main__':
