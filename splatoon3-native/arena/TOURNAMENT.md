@@ -205,6 +205,15 @@ A7 原生开局为已签收的显式选项，默认入口仍使用已接受的�
 `--a8-hdr`是默认关闭的unsupported诊断开关，只可与`--a8-render camera`一起构建；不能用于擂台或A8签收。
 普通camera不启用HDR或已撤回的阴影原型。
 
+用户随后授权继续拷贝/更新路线，HDR仍停止。`--a8-copy coalesce|scatter`是独立实验编译选项，
+默认none；可在完整渲染下测量，避免混入主镜头减绘收益。coalesce只合并同一内存池中连续、地址相邻
+的inline uniform更新；scatter用字节掩码批量应用更新，保留间隙与最后一次写入值。两者在任何非更新
+命令前刷新，不跨绘制、copy、查询、事件或跳转；原生同步、涂墨、可写storage与samples均保留。
+当前尚在实机验收，不切换T1默认。来源诊断见`arena/results/a8-copy-profile-20261020.json`；
+`tests/analyze_a8_copies.py`保留混合来源编码器独立分组，并把CPU等待/非核心上传与GPU时间分开。
+本路线性能对照按`--repeats 9 --parallel 3`执行，即三房共九局，完整/候选各一组；
+相同源码、固定输入/种子、自噪声门和20%门槛均不变。
+
 A8使用单独构建，默认`upstream/dm/host/dmhost`保持原件。camera构建只在
 headless、RL受控InGame、1280×720/Depth32F主镜头且无模板/storage写入时跳过镜头draw，
 包括该镜头的深度预通道。1600×1600涂墨及其独立深度目标、原生样本计数、计算/拷贝和结算保留。

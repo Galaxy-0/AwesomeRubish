@@ -36,7 +36,7 @@ def audit(before,after,regression,components,capacity):
         if name=='a6-special':
             special=bound['build']
             require(special.get('test_only') and special['production_parent']['sha256']==sha(host),'special derivative parent mismatch')
-            require(special['render_mode']=='camera' and special['source_sha256']==build['source_sha256'],'special derivative renderer/source mismatch')
+            require(special['render_mode']==build['render_mode'] and special.get('copy_mode','none')==build.get('copy_mode','none') and special['source_sha256']==build['source_sha256'],'special derivative renderer/copy/source mismatch')
             commands=[]
             for b in (build,special):
                 cmd=list(b['command']);cmd[cmd.index('-o')+1]='<OUTPUT>'

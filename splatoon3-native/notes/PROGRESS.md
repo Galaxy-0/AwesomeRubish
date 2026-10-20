@@ -2692,3 +2692,20 @@ Metal4 SDK `queryTimestampFrequency`给出本机GPU频率24,000,000 ticks/s，�
 剩余选项（本轮不执行）：1）只读追踪上述640×360消费者及其跨帧/别名/可写storage/拷贝/读回后继，若能证明全链纯画面，再重新设计候选；2）独立评估内部渲染分辨率缩放，必须精确划分镜头/后处理与1600×1600涂墨，保留像素会话完整历史、fixed60/可见性/沙箱/原生结算，再从单房冒烟开始；3）更细分copy的实际字节/用途和同步耗时，先证明瓶颈性质，不能用40.15%直接推出可安全省掉40%。
 
 最终65项组件通过：A7 42、T1 10、结算4、渲染保护2、A8证据7；含时间戳24MHz单位反例、重叠区间去重、零跨度、底层别名/容量/释放、诊断不能签性能或容量。`--milestone a8`对旧v4 +19.18%对照仍以`score/trajectory equivalence or significant speedup failed`拒绝，不生成签收文件，未降低门槛。补丁、普通/显式HDR构建隔离及原件完整性在提交前复核；不提交游戏数据/图片/二进制，不改原存档与alpha/bravo，不覆盖默认宿主。
+
+
+### A8 转向拷贝/更新翻译开销（2026-10-20，用户新指示）
+
+HDR停止点获用户认可，保持unsupported。本轮只分解先前核心blit的40.15%，优先处理翻译层自身成本；原生samples/涂墨/判定依赖的命令不删除。先新增默认关闭的来源计数：核心B编码器记录实际调用函数、操作数、逻辑payload字节、未知格式数和编码器内屏障；单一来源才能独立分配其GPU时间线，混合来源单列，不按bytes/draw数猜耗时。CPU staging memcpy、replay fence wait、上传队列等待及非核心上传copy另记events流，CPU等待不能叠加到GPU时间中。正式性能对照仍拒绝所有插桩数据。
+
+完整渲染独立构建`dmhost-copy-profile-v11`的三房诊断为`work/a8/copy-profile-v11-three`，默认采样窗口保持600–611、3000–3011、8000–8011。早中窗口的核心B来源均为`mtl_sub_update`（游戏原生UpdateUniformBuffer经翻译后的CPU staging + GPU buffer copy），不是大量纹理资产上传；完整Winners及晚期采样结束后才出最终分布。旧frame1800逐命令记录413次uniform更新/6644字节，47组是连续7次小更新；离线只合并原顺序中的地址相邻区间，估计GPU copy调用413→143，保持全部写入字节。拟先验证此低风险合并，不能直接CPU写guest共享内存提前覆盖仍被GPU读取的版本，也不删除原生查询等待。
+
+
+三房v11诊断最终通过，批次593.265秒、216宿主采样帧。`arena/results/a8-copy-profile-20261020.json`绑定GPU与events原件。核心B编码器**12,192个、59,330次实际copy、977,672逻辑字节（全部已知）、0个编码器内屏障**，全部来源`mtl_sub_update`，占所有编码器区间去重后41.062951%；起止边界屏障24,384次。此轮核心B中原生B2B/T2T/B2T/T2B、翻译纹理升级/反馈快照/裁剪清零/temporal缓存/上传均0，不能把原生inline update的翻译成本称为资产上传带宽。CPU staging memcpy总计1.861261ms；replay fence wait计20,215次（9,359次进入等待），14.213591秒是多宿主CPU等待总和，含查询生产者/原生依赖，不当成可无条件删除；q_cb/finish的18次上传队列检查均未阻塞。旧队列像素readback不在核心B区间，不能从0占比推出其没有开销。
+
+第一候选只合并连续OP_UPDATE_UB中按原顺序地址相邻、总长≤4096的写入；不跨任一非update命令，不填间隙，不合并重叠/倒序；输入立即快照，保留原生guest buffer最终写入与原有编码器起止/内部依赖屏障。初次GPU夹具发现把flush钩子误放前瞻扫描而非实际回放，原生中间copy读到旧值，失败原件保留且尚未启动游戏；修正钩子后baseline/coalesce各101次真实提交、13,238,272字节全部吻合，含间隙/重叠/边界/命令内存复用/中间原生copy。额外原生render-enable/样本/像素读回套件148项通过。源码v13冻结，copy-only和control均完整渲染、pixels=True；不借用原主镜头减绘收益。先启动`copy-v13-smoke`单房；仅通过后依次跑control/copy各9局、parallel=3（本轮将“3房×3次”落实为共9局）。队列`work/a8/run_copy_v13.py`不自动启动第二候选或失败后的回归。
+
+
+v13单房最终通过双端Winners（372.658秒），不是最终源码验收。源码复核补充跨NVN内存池边界回退，原九局等待队列仅清理自己两个waiter，不中止正在跑的房间、不改旧结果。v14同时冻结control/coalesce/scatter三种相同C/ObjC/头文件构建：第一候选合并相邻区间；第二候选将连续更新的最终字节值及掩码打包为一次自有Metal compute写入，GPU只写mask=1的字节，间隙/最后写入值不变。两者遇到跨池或容量边界回退/分批，非update命令之前全部刷新；不改变原生copy、query/samples、CPU/GPU fence和fixed60规则。第二候选仅在第一候选语义通过但性能不足时先单房验证，再用同一冻结control对照。
+
+新增跨池后的无游戏数据GPU夹具：baseline/coalesce/scatter各102次提交、13,369,344字节精确核对全部通过；两优化模式各148项原生条件渲染/样本/像素读回断言通过。A7 42项及A8 12项组件通过。数字/日志/源码/二进制SHA检查点`arena/results/a8-copy-research-20261020.json`仍full_a8_passed=false。当前正在跑最终`coalesce-v14-smoke`；其成功后才运行control/coalesce各9局（parallel3），所有源码保持冻结，不将早期v13原件混入最终对照。HDR不开启，普通/优化都完整渲染与像素，未恢复T1。

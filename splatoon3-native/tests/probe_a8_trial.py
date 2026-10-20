@@ -32,10 +32,11 @@ def main(args):
     timings={str(p.relative_to(ROOT)):sha(p) for p in session.glob('player-*/gpu.tsv')}
     if len(timings)!=2:raise AssertionError('both host timing streams required')
     pass_timings={str(p.relative_to(ROOT)):sha(p) for p in session.glob('player-*/pass-gpu4.tsv')}
+    copy_events={str(p.relative_to(ROOT)):sha(p) for p in session.glob('player-*/pass-gpu4.tsv.events.tsv')}
     if args.pass_gpu and len(pass_timings)!=2:raise AssertionError('both Metal 4 pass timing streams required')
     write_json_atomic(args.out/'a8-run.json',dict(schema='arena.a8.trial-binding.v1',passed=code==0,
         trial_result=str(path),trial_sha256=sha(path),entry_sha256=entry,timing_sha256=timings,profile=args.profile,
-        pass_gpu=args.pass_gpu,pass_gpu_sha256=pass_timings,pass_gpu_ranges=args.pass_gpu_ranges))
+        pass_gpu=args.pass_gpu,pass_gpu_sha256=pass_timings,pass_gpu_ranges=args.pass_gpu_ranges,copy_event_sha256=copy_events))
     return code
 
 

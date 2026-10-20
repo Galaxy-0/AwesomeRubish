@@ -1,0 +1,115 @@
+{
+  "schema": "arena.a8.copy-research.v1",
+  "passed": false,
+  "full_a8_passed": false,
+  "status": "final_native_smoke_and_9_per_group_comparison_pending",
+  "profile": {
+    "path": "arena/results/a8-copy-profile-20261020.json",
+    "sha256": "2faf50ef4220befe8f006f5b75d9902a231869186ccd2b2feb85afd8c73e888c"
+  },
+  "gpu_byte_probes": [
+    {
+      "mode": "baseline",
+      "result": {
+        "passed": true,
+        "submissions": 102,
+        "checked_bytes": 13369344
+      },
+      "log": {
+        "path": "work/a8/probe-updates-baseline-v14.log",
+        "sha256": "bd5e2a5ef0ac1be72e45fd955d082804bb23aaf0dfd97a0d04d1a6386c289a52"
+      },
+      "binary": {
+        "path": "work/a8/probe-updates-baseline-v14",
+        "sha256": "a8aee2a4c40dfc286bb281b2a29b57d6f18595189681fae42a0c836c942a7e4f"
+      }
+    },
+    {
+      "mode": "coalesce",
+      "result": {
+        "passed": true,
+        "submissions": 102,
+        "checked_bytes": 13369344
+      },
+      "log": {
+        "path": "work/a8/probe-updates-coalesce-v14.log",
+        "sha256": "2a6fdfc453e2aa1dd1bd24a77195c8cacaf83edec92a1352bfd11d6a8676c237"
+      },
+      "binary": {
+        "path": "work/a8/probe-updates-coalesce-v14",
+        "sha256": "e240093dbeaf73ddd1a53a1204f4d34e1f10e91b64f7aa32015b43522227efe0"
+      }
+    },
+    {
+      "mode": "scatter",
+      "result": {
+        "passed": true,
+        "submissions": 102,
+        "checked_bytes": 13369344
+      },
+      "log": {
+        "path": "work/a8/probe-updates-scatter-v14.log",
+        "sha256": "e05a9440c6e135915d6e0874084a89435e6d52bb9257696fcb4a25e2f27dfb8c"
+      },
+      "binary": {
+        "path": "work/a8/probe-updates-scatter-v14",
+        "sha256": "adb333a449c5f2039a1ebcc348ffcbc720f3b0edeb69b00943ddeb1c01fe866f"
+      }
+    }
+  ],
+  "query_probes": [
+    {
+      "mode": "coalesce",
+      "checks": 148,
+      "passed": true,
+      "log": {
+        "path": "work/a8/render-enable-coalesce-v14.log",
+        "sha256": "93f87523c47a6d90cfc60ff1572745d0a96a7dbd938e3f71c520b51ac1915273"
+      },
+      "binary": {
+        "path": "work/a8/render-enable-coalesce-v14",
+        "sha256": "2f76b736fa539f594c0830d6186251e429b92296ae3c478575b28f827c3bfba0"
+      }
+    },
+    {
+      "mode": "scatter",
+      "checks": 148,
+      "passed": true,
+      "log": {
+        "path": "work/a8/render-enable-scatter-v14.log",
+        "sha256": "93f87523c47a6d90cfc60ff1572745d0a96a7dbd938e3f71c520b51ac1915273"
+      },
+      "binary": {
+        "path": "work/a8/render-enable-scatter-v14",
+        "sha256": "5e4026f76020f08a47848792e8d783d4edb68afec66920d87d1979358de08514"
+      }
+    }
+  ],
+  "probe_source": {
+    "path": "tests/probe_a8_updates.m",
+    "sha256": "bff368b7820d03c91890167c1da21706f33d84b3802b63ee902806e3d2a88f86"
+  },
+  "builds": {
+    "copy-control": {
+      "path": "work/a8/dmhost-copy-control-v14.build.json",
+      "sha256": "7e6ba6a49c60d898ea7f28efc913c3af1d97bcf362bb0e996a1a5ed4b87f52bd"
+    },
+    "coalesce": {
+      "path": "work/a8/dmhost-coalesce-v14.build.json",
+      "sha256": "1abbc4b6696d601ef8bcdaafb6910ba269bb41b819f1e3cb00d0370d9742ebc8"
+    },
+    "scatter": {
+      "path": "work/a8/dmhost-scatter-v14.build.json",
+      "sha256": "778960972c3671bd85d54f32410a671e708dc2249a29291c39a4fca072e4394d"
+    }
+  },
+  "thresholds": {
+    "controlled_fps_ratio": 1.2,
+    "comparison_rooms": 3,
+    "trials_per_group": 9
+  },
+  "limitations": [
+    "numeric/source checkpoint only; no final performance or A1-A6 regression acceptance yet",
+    "HDR remains unsupported and disabled; copy candidates preserve full rendering"
+  ]
+}

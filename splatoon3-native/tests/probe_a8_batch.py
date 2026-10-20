@@ -38,7 +38,7 @@ def main(args):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('host','patched','policies','out'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--repeats',type=int,choices=range(1,7),default=3)
+    p.add_argument('--repeats',type=int,choices=range(1,10),default=3)
     p.add_argument('--parallel',type=int,choices=range(1,7),default=3)
     p.add_argument('--pass-gpu',action='store_true');p.add_argument('--pass-gpu-ranges',default='600-611,3000-3011,8000-8011')
     raise SystemExit(main(p.parse_args()))
