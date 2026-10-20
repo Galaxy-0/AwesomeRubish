@@ -47,8 +47,12 @@ def perturb(env, seed):
     delta = []
     for p in env.players:
         d = rng.uniform([-.15,-.15,-.03], [.15,.15,.03])
-        p.position = env.terrain.move(p.position, np.array([d[0],0,d[1]]),
-                                     env.rules.terrain_radius, True, support_aware=True)
+        if env.opening_model is not None and env.frame==0:
+            p.position[[0,2]]+=d[:2]
+            p.opening_delta+=d[:2]
+        else:
+            p.position = env.terrain.move(p.position, np.array([d[0],0,d[1]]),
+                                         env.rules.terrain_radius, True, support_aware=True)
         p.yaw += float(d[2]); p.heading = p.yaw
         delta.append(d.tolist())
     env._observations = None

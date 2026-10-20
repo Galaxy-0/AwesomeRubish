@@ -2,7 +2,7 @@
 
 2026-10-21 S1 已进入用户批准的原生窗口。P0 专用入口是 `python -m sim.calibration.p0`，使用 A8 已签收的默认 v4 相机宿主、geometry 模式、每案例新进程，最多三房。默认 `python -m sim.calibration` 仍只读显示146项通用清单；通用全扫描没有运行，不把 P0 收集状态冒充全套通过。
 
-本轮原件、纹理、失败/取消记录、冻结采集源码及派生模型只在 `work/sim/window-20261021/`。`opening` 跳过450帧 warmup，采三图双侧中立/前推；`paint-retry` 采 Yagara 单轻挥、单蓄力与八轻挥到双方 Winners；`probes*` 采 AP0/19/57、局部脚下接触涂地扫描、伤害/重生。完整结果和剩余义务见 [COMPARISON](../COMPARISON.md)。
+本轮原件、纹理、失败/取消记录、冻结采集源码及派生模型只在 `work/sim/window-20261021/`。`opening` 跳过450帧 warmup，采三图双侧中立/前推；`paint-retry` 采 Yagara 单轻挥、单蓄力与八轻挥到双方 Winners；`probes*` 采 AP0/19/57、局部脚下接触涂地扫描；`validation` 有独立轻/满扫描与射程房，`respawn-control` 有900帧中立等待再按键的因果对照，`uv` 有无射击/仅role0轻挥/蓄力三房。32次尝试中22次collected、10次失败/取消，原件全部保留。完整结果和剩余义务见 [COMPARISON](../COMPARISON.md)。
 
 ```sh
 # 必须在用户另行批准的空档内给出绝对截止时间；不要照抄旧时间开启新窗口。
@@ -22,7 +22,10 @@
 .venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --paint --core-field
 .venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --full-paint --core-field
 .venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --air
-.venv/bin/python -m sim.calibration.analyze --directory work/sim/window-20261021
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --respawn
+.venv/bin/python -m sim.calibration.analyze --directory work/sim/window-20261021 --models models-v2
+.venv/bin/python -m sim.calibration.audit --directory work/sim/window-20261021
+.venv/bin/python -m sim.calibration.report --directory work/sim/window-20261021
 ```
 
 `--air` 把空中候选连同其它模型复制到 `models-v2/`，不会覆盖首轮模型；地图1/2角色0自由空中段拟合，地图3/另一角色留出。脚下墨半径是当前粗网格的有效半径，不等于原生精确笔刷；`--core-field` 为经扫描对照的 CoreIndex 整条墨刃终止候选，非核心球的场景碰撞仍各自永久遮断，不能复活穿墙。
@@ -31,9 +34,9 @@
 
 下文保留窗口前的通用清单与证据要求；其中 pending 描述以本轮对照报告的逐项状态为准。
 
-## 反例诊断后的最高优先级（先于下面146项通用扫描）
+## 窗口前登记的最高优先级与未完成部分
 
-这些义务已经列入 `plan.json.priority_followups`，当前均为 pending，**不计入已可执行案例或已覆盖机制**。
+这些原始义务列入 `plan.json.priority_followups`，其通用清单仍标 pending，不据P0子集自动签收整项。本轮首次发射/AP0重生、人形/AP锚点、自由空中和局部脚下墨已采；世界计分映射、精确拐角/相机状态仍 pending，详见下方报告和 [剩余清单](PENDING.md)。
 
 1. **P0 开局、重生与采样协议**：三图双侧，从首个受控帧起采 STEP1，比较中立/移动/开火输入；记录发射锁定、落地、首次重生、own 包和 HUD 的采样/交付时钟。A5 Yagara 的 high-ground 在飞行第36帧已经用完重规划次数，不能从地面起跑来验证这22局。R1/R2 own 包延迟1–5帧。现有 `Lab.start` 有450帧 warmup，**不能采这个项目**；空档执行前必须新增绕过 warmup 的专用 opening collector，并独立验证发射/重生模型。历史前缀重建只用于离线诊断。
 2. **P0 出生侧与高处涂地/计分域**：Yagara 原生实际落点两侧，先固定位置轻挥12/36，再转向扫射；再测 central_high 和 District00 坡道/侧线。逐次记录墨量、得分增量、局部画面及世界墨图/UV 映射，拆分脚下墨、沿途墨刃、碰撞喷溅和不计分区域。现有脚本无原生墨图传感，最终比分不足以识别这些项，须额外读回或审核标注。
@@ -90,4 +93,4 @@ dmhost/test_a5/t1_round/proficiency是否活跃；发现其它房间就拒绝，
 - 多个坡/阶材质与移动平台的泛化。脚本只采三图候选，不覆盖全部动态碰撞。
 
 这些项连同收集失败项进入同一summary审核。数据未确认前不自动写回sim参数，避免一次脚本运行
-把未知标签固化成看似精确的模型。运行完成后的拟合/短时域复验与策略排名复验是下一次任务。
+把未知标签固化成看似精确的模型。本轮专用P0的拟合、短时域与离线排名已单列报告；通用146项及其未测曲线仍留在后续清单。

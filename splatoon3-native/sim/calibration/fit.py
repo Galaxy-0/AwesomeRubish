@@ -80,7 +80,8 @@ def fit_air(directory):
         position=np.broadcast_to(row[[0,2]],(len(candidates),2)).copy();velocity=np.broadcast_to(initial,position.shape).copy()
         samples=set(run[2:])
         for f in range(anchor,int(run[-1])):
-            x,z=response(trace.actions[f,0,:2],0.,4.,'radial');yaw=row[4]
+            x,z=response(trace.actions[f,0,:2],0.,4.,'radial')
+            past=trace.past(f,0);yaw=trace.states[past[-1],0,4] if len(past) else row[4]
             target=np.array([-x*np.cos(yaw)+z*np.sin(yaw),x*np.sin(yaw)+z*np.cos(yaw)])[None,:]*candidates[:,0,None]
             rate=np.where(np.linalg.norm(target,axis=1)<np.linalg.norm(velocity,axis=1),candidates[:,2],candidates[:,1])
             velocity+=np.clip(target-velocity,-rate[:,None],rate[:,None]);position+=velocity
@@ -93,9 +94,31 @@ def fit_air(directory):
     model=json.loads((out/'motion.json').read_text());model['modes']['air'].update(speed=float(speed),exponent=4.,deadzone=0.,response_space='radial',acceleration=float(acceleration),braking=float(braking),
         status='P0 free-air episodes map1/2 role0; radial quartic, no collision/support labels fitted')
     model['native_calibration']['air_fit']=dict(training='P0 bends map1/2 role0 airborne episodes after frame240; first2 packets initialize velocity, predict rest',
-        validation='Map3 and all role1 episodes held out; complete collision/support assessed separately',episodes=len(episodes),samples=count,position_rmse=float(np.sqrt(loss[best]/count)),
+        validation='Map3 and all role1 episodes held out; complete collision/support assessed separately',camera='Causal held last-delivered native yaw during identification; not constant-yaw straight-line assumption',episodes=len(episodes),samples=count,position_rmse=float(np.sqrt(loss[best]/count)),
         coefficients=dict(speed=float(speed),acceleration=float(acceleration),braking=float(braking)))
     (out/'motion.json').write_text(json.dumps(model,indent=2)+'\n');print(json.dumps(model['native_calibration']['air_fit'],indent=2))
+
+
+def fit_respawn(directory):
+    directory=Path(directory).resolve();sources=[];observations=[]
+    for relative in ('bends-combat/p0-combat-dry-ap0','validation/p0-combat-range6-ap0'):
+        trace=load(directory/relative);ids=trace.samples[1];s=trace.states[ids,1]
+        death=int(ids[np.flatnonzero(s[:,10]==0)[0]])
+        ready=ids[(ids>death)&(s[:,1]>20)&(s[:,6]>.99)]
+        alive=ids[(ids>death)&(s[:,10]==1)]
+        edges=np.flatnonzero((trace.actions[:,1,7]>0)&(np.arange(trace.frames)>death))
+        observations.append(dict(death_sample=death,ready_sample=int(ready[0]),alive_sample=int(alive[0]),
+            pulses_relative_to_death=(edges-death).tolist()))
+        sources.append(trace.entry)
+    control=load(directory/'respawn-control/p0-respawn-neutral-then-edge')
+    if control.result.get('respawn_status')!='neutral_wait_then_ZR_launched' or control.result['respawn_after_neutral']['alive']:
+        raise ValueError('neutral waiting does not establish ZR launch causality')
+    cfg=dict(ready_delay=int(np.median([r['ready_sample']-r['death_sample'] for r in observations])),unlock_delay=460,
+        observed=observations,sources=sources,causal_control=control.entry,
+        interpretation='Effective packet-relative readiness392; unlock460 candidate consistent with failed434/457 and accepted464/487 pulses. Packet intervals leave several possible internal thresholds; no exact C++ timer claim. Neutral900-frame control remains dead/HP1 on launcher until fresh ZR.',
+        limitations=['AP0 only; respawn abilities not identified','unlock threshold still interval-censored','only stage1 true respawn measured; other maps reuse first-launch model'])
+    out=directory/'models-v2/opening.json';model=json.loads(out.read_text());model['respawn']=cfg
+    out.write_text(json.dumps(model,indent=2)+'\n');print(json.dumps(cfg,indent=2))
 
 
 def fit_paint(directory,full=False,core_only=False):
@@ -224,5 +247,5 @@ def fit(directory):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,default=ROOT/'work/sim/window-20261021');p.add_argument('--paint',action='store_true');p.add_argument('--full-paint',action='store_true');p.add_argument('--core-field',action='store_true');p.add_argument('--transitions',action='store_true');p.add_argument('--gear',action='store_true');p.add_argument('--air',action='store_true');a=p.parse_args()
-    fit_paint(a.directory,a.full_paint,a.core_field) if a.paint or a.full_paint else fit_transitions(a.directory) if a.transitions else fit_gear(a.directory) if a.gear else fit_air(a.directory) if a.air else fit(a.directory)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,default=ROOT/'work/sim/window-20261021');p.add_argument('--paint',action='store_true');p.add_argument('--full-paint',action='store_true');p.add_argument('--core-field',action='store_true');p.add_argument('--transitions',action='store_true');p.add_argument('--gear',action='store_true');p.add_argument('--air',action='store_true');p.add_argument('--respawn',action='store_true');a=p.parse_args()
+    fit_paint(a.directory,a.full_paint,a.core_field) if a.paint or a.full_paint else fit_transitions(a.directory) if a.transitions else fit_gear(a.directory) if a.gear else fit_air(a.directory) if a.air else fit_respawn(a.directory) if a.respawn else fit(a.directory)

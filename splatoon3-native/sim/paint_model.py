@@ -1,5 +1,6 @@
 """Optional native-calibrated foot splash; base blade grid stays explicit."""
 import json
+from pathlib import Path
 
 
 class PaintModel:
@@ -12,7 +13,7 @@ class PaintModel:
             if type(data[name])is not int or not 0<=data[name]<=60:raise ValueError('foot paint delay')
 
     @classmethod
-    def load(cls,path):return cls(json.loads(path.read_text()))
+    def load(cls,path):return cls(json.loads(Path(path).read_text()))
 
     def release(self,env,owner,full):
         kind='full' if full else 'weak'

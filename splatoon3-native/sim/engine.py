@@ -110,6 +110,8 @@ class Player:
     special_age: int = 0
     special_anchor: np.ndarray = field(default_factory=lambda: np.zeros(3))
     opening_delta: np.ndarray = field(default_factory=lambda: np.zeros(2))
+    launch_at: int | None = 0
+    respawn_ready_at: int = 0
 
 
 @dataclass
@@ -296,6 +298,8 @@ class Simulator:
         p.roll_left = p.surge_left = p.dash_left = p.wall_charge = 0
         p.wall_cling = False
         p.special_active = False
+        if self.opening_model is not None and self.opening_model.data.get('respawn'):
+            self.opening_model.on_death(self,target)
         self.events.append(dict(kind='knockdown', frame=self.frame, target=target,
                                 attacker=attacker, cause=cause))
 
@@ -307,6 +311,9 @@ class Simulator:
         p, r = self.players[i], self.rules
         b, sticks, gyro = action['buttons'], action['sticks'], action['gyro']
         if not p.alive:
+            if self.opening_model is not None and self.opening_model.data.get('respawn'):
+                self.opening_model.dead_step(self,i,action)
+                return
             if self.frame >= p.respawn_at:
                 side = i ^ self.swap
                 p.position = self.terrain.spawn[side].copy()

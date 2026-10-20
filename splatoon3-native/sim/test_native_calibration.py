@@ -113,5 +113,39 @@ class NativeCalibrationTests(unittest.TestCase):
         self.assertTrue(blocked);self.assertTrue(passed)
         self.assertEqual(e.players[1].hp,1.)
 
+    def test_respawn_waits_on_launcher_and_requires_new_unlocked_ZR_edge(self):
+        from .engine import Simulator,neutral
+        from .opening import OpeningModel
+        from .test_core import fixture
+        m=OpeningModel(dict(schema='sim.opening.v1',steer_start=0,steer_speed=0.,
+            stages={'1':dict(end_frame=4,ground_frame=4,knots=[[0,1,1,1],[4,1,0,1]],squid_start=1,squid_end=3)},
+            respawn=dict(ready_delay=3,unlock_delay=6)))
+        e=Simulator(1,terrain=fixture(),motion_model=model_fixture(),opening_model=m,duration_frames=40)
+        e.frame=10;e._kill(0,1,'test')
+        def step(zr):
+            a={f'player_{i}':neutral() for i in (0,1)};a['player_0']['buttons'][0]=zr;e.step(a,observe=False)
+        for _ in range(3):step(0)
+        self.assertFalse(e.players[0].alive);self.assertEqual(e.players[0].hp,1.)
+        np.testing.assert_allclose(e.players[0].position,[1,1,1])
+        for _ in range(5):step(1)  # press before unlock; holding cannot create another edge
+        self.assertFalse(e.players[0].alive)
+        step(0);step(1)
+        self.assertTrue(e.players[0].alive);self.assertEqual(e.players[0].launch_at,20)
+        step(0);self.assertFalse(e.players[0].grounded)
+        self.assertGreater(e.players[0].position[1],0.)
+
+    def test_launch_sensitivity_preserves_height_and_offset_after_first_frame(self):
+        from .engine import Simulator,neutral
+        from .opening import OpeningModel
+        from .ranking import perturb
+        from .test_core import fixture
+        m=OpeningModel(dict(schema='sim.opening.v1',steer_start=0,steer_speed=0.,
+            stages={'1':dict(end_frame=4,ground_frame=4,knots=[[0,1,10,1],[4,1,9,1]],squid_start=1,squid_end=3)}))
+        e=Simulator(1,terrain=fixture(),motion_model=model_fixture(),opening_model=m)
+        perturb(e,3);delta=e.players[0].opening_delta.copy()
+        self.assertEqual(e.players[0].position[1],10.)
+        e.step({f'player_{i}':neutral() for i in (0,1)},observe=False)
+        np.testing.assert_allclose(e.players[0].position[[0,2]],np.array([1,1])+delta)
+
 
 if __name__=='__main__':unittest.main()

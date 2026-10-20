@@ -91,6 +91,21 @@ def combat(lab,case):
         trial(lab,'measure-second-full',lambda obs:charge_slash(obs,21))
     lab.result['death_before_respawn']=lab.info(1);lab.save()
     death=not lab.info(1).get('alive',True);launched=False
+    wait=case['settings'].get('respawn_neutral_wait',0)
+    if death and wait:
+        sequence(lab,controls(),'measure-respawn-neutral-causal-control',wait)
+        lab.result['respawn_after_neutral']=lab.info(1)
+        if lab.info(1).get('alive'):
+            lab.result['respawn_status']='auto_alive_without_ZR';lab.save();return
+        a=controls();a['player_1']['buttons'][0]=1
+        sequence(lab,a,'measure-respawn-single-ZR-edge',1)
+        for _ in range(90):
+            lab.step(controls(),'measure-respawn-edge-response',1)
+            if lab.info(1).get('alive_valid') and lab.info(1)['alive']:
+                launched=True;break
+        if launched:sequence(lab,controls(),'measure-true-respawn-flight-land',240)
+        lab.result['respawn_status']='neutral_wait_then_ZR_launched' if launched else 'neutral_wait_ZR_no_launch'
+        lab.save();return
     if death:
         for f in range(1100):
             a=controls();i=lab.info(1)

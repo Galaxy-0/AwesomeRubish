@@ -15,6 +15,10 @@ from sim.horizon import action_dict,reset_native
 from sim.replay import stats
 from .data import load
 
+MODEL_SUBDIR="models"
+
+def model_path(base,name):return base/MODEL_SUBDIR/(name+".json")
+
 
 def release_intervals(trace):
     values=[]
@@ -52,8 +56,8 @@ def opening_comparison(base):
         trace=load(base/relative)
         for name in ('before','after'):
             env=Simulator(stage,parameters=Parameters.local(),terrain=Terrain.load(stage),
-                motion_model=MotionModel.load(base/'models/motion.json' if name=='after' else ROOT/'work/sim/fidelity/motion.json'),
-                opening_model=OpeningModel.load(base/'models/opening.json') if name=='after' else None)
+                motion_model=MotionModel.load(model_path(base,'motion') if name=='after' else ROOT/'work/sim/fidelity/motion.json'),
+                opening_model=OpeningModel.load(model_path(base,'opening')) if name=='after' else None)
             errors=[];early=[]
             for f in range(1,241):
                 env.step(action_dict(trace.actions[f-1]),observe=False)
@@ -85,6 +89,31 @@ def texture_summary(directory):
     return dict(threshold=20,targets=values,scope='Candidate UV paint targets, R/G not assigned to teams. No verified world mapping or scoring denominator; pixel counts are not world area.')
 
 
+def uv_control(base):
+    from PIL import Image
+    trials={name:texture_summary(base/'uv'/('p0-yagara-uv-'+name)) for name in ('neutral','sole-weak','sole-full')}
+    background=np.zeros((1600,1600),bool)
+    for target in trials['neutral']['targets']:
+        a=np.asarray(Image.open(ROOT/target['file']).convert('RGB'));background|=a[:,:,0]>20
+    values={};masks=[]
+    for name in ('sole-weak','sole-full'):
+        target=max(trials[name]['targets'],key=lambda t:t['channels'][0]['active_pixels'])
+        a=np.asarray(Image.open(ROOT/target['file']).convert('RGB'));mask=(a[:,:,0]>20)&~background;masks.append(mask)
+        seen=set(zip(*np.where(mask)));components=[]
+        while seen:
+            stack=[seen.pop()];count=0
+            while stack:
+                y,x=stack.pop();count+=1
+                for dy,dx in ((0,1),(0,-1),(1,0),(-1,0),(1,1),(-1,-1),(1,-1),(-1,1)):
+                    point=y+dy,x+dx
+                    if point in seen:seen.remove(point);stack.append(point)
+            components.append(count)
+        values[name]=dict(new_R_pixels=int(mask.sum()),component_pixels=sorted(components,reverse=True),G_active_pixels=target['channels'][1]['active_pixels'])
+    a,b=masks
+    return dict(trials=trials,comparison=values,cross_shot_uv_IoU=float((a&b).sum()/(a|b).sum()),
+        scope='Neutral / sole role0 shooting changes the large target R, G stays192. This identifies role0 paint support in UV space for these captures; no UV/world area mapping or simulated/native world IoU.')
+
+
 def paint_comparison(base,trace):
     starts=np.flatnonzero(np.char.startswith(trace.labels,'measure-paint-0-hold'))
     if not len(starts):return None
@@ -92,9 +121,9 @@ def paint_comparison(base,trace):
     values=[]
     for name in ('before','after'):
         env=Simulator(trace.entry['stage'],parameters=Parameters.local(),terrain=Terrain.load(trace.entry['stage']),duration_frames=trace.frames,
-            loadouts=trace.entry['loadouts'],motion_model=MotionModel.load(base/'models/motion.json'),
+            loadouts=trace.entry['loadouts'],motion_model=MotionModel.load(model_path(base,'motion')),
             weapon_model=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json'),
-            paint_model=PaintModel.load(base/'models/paint.json') if name=='after' else None)
+            paint_model=PaintModel.load(model_path(base,'paint')) if name=='after' else None)
         reset_native(env,trace,anchor)
         for f in range(anchor,end):env.step(action_dict(trace.actions[f]),observe=False)
         values.append(dict(model=name,turf_pp=[100*v for v in env.paint.ratios()],special=[p.special for p in env.players],
@@ -111,7 +140,7 @@ def motion_comparison(base,trace):
             starts=np.flatnonzero(trace.labels==f'measure-vector-{index}-accelerate')
             if not len(starts):continue
             anchor=int(starts[0]);env=Simulator(1,terrain=Terrain.load(1),duration_frames=trace.frames,loadouts=trace.entry['loadouts'],
-                motion_model=MotionModel.load(base/'models/motion.json' if name=='after' else ROOT/'work/sim/fidelity/motion.json'))
+                motion_model=MotionModel.load(model_path(base,'motion') if name=='after' else ROOT/'work/sim/fidelity/motion.json'))
             reset_native(env,trace,anchor);pulse=[]
             for f in range(anchor,min(anchor+75,trace.frames)):
                 env.step(action_dict(trace.actions[f]),observe=False);p=trace.states[f+1,0]
@@ -140,8 +169,8 @@ def combat_comparison(base,trace):
             weapon=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json')
             if name=='legacy-no-delay':weapon=WeaponModel({**weapon.data,'damage_delay':0})
             env=Simulator(1,terrain=Terrain.load(1),duration_frames=trace.frames,loadouts=trace.entry['loadouts'],
-                motion_model=MotionModel.load(base/'models/motion.json' if name=='after' else ROOT/'work/sim/fidelity/motion.json'),
-                weapon_model=weapon,paint_model=PaintModel.load(base/'models/paint.json') if name=='after' else None)
+                motion_model=MotionModel.load(model_path(base,'motion') if name=='after' else ROOT/'work/sim/fidelity/motion.json'),
+                weapon_model=weapon,paint_model=PaintModel.load(model_path(base,'paint')) if name=='after' else None)
             reset_native(env,trace,anchor);ink=[];hp_error=[];position=[]
             for f in range(anchor,end):
                 env.step(action_dict(trace.actions[f]),observe=False)
@@ -166,8 +195,8 @@ def scan_comparison(base,trace):
     anchor=int(np.flatnonzero(trace.labels=='measure-isolated-hold')[0]);values=[]
     for name in ('before','after'):
         env=Simulator(1,terrain=Terrain.load(1),duration_frames=trace.frames,loadouts=trace.entry['loadouts'],
-            motion_model=MotionModel.load(base/'models/motion.json'),weapon_model=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json'),
-            paint_model=PaintModel.load(base/'models/paint.json') if name=='after' else None)
+            motion_model=MotionModel.load(model_path(base,'motion')),weapon_model=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json'),
+            paint_model=PaintModel.load(model_path(base,'paint')) if name=='after' else None)
         reset_native(env,trace,anchor)
         for f in range(anchor,anchor+120):env.step(action_dict(trace.actions[f]),observe=False)
         samples={}
@@ -187,8 +216,34 @@ def scan_comparison(base,trace):
     return values
 
 
-def main(base):
-    base=base.resolve();report=dict(schema='sim.native.p0.analysis.v1',opening=opening_comparison(base),paint=[],motion=[],combat=[],scans=[])
+def respawn_comparison(base,trace):
+    ids=trace.samples[1];s=trace.states[ids,1]
+    death=int(ids[np.flatnonzero(s[:,10]==0)[0]])
+    ready=int(ids[(ids>death)&(s[:,1]>20)&(s[:,6]>.99)][0])
+    alive=int(ids[(ids>death)&(s[:,10]==1)][0]);values=[]
+    for name in ('before','after'):
+        env=Simulator(1,terrain=Terrain.load(1),duration_frames=trace.frames,
+            motion_model=MotionModel.load(model_path(base,'motion') if name=='after' else ROOT/'work/sim/fidelity/motion.json'),
+            opening_model=OpeningModel.load(model_path(base,'opening')) if name=='after' else None)
+        env.frame=death;env.players[1].position=trace.states[death,1,:3].copy();env._kill(1,0,'conditioned_native_death')
+        errors=[];mismatch=[]
+        for f in range(death,trace.frames):
+            env.step(action_dict(trace.actions[f]),observe=False);row=trace.states[f+1,1]
+            if f+1<ready or not np.isfinite(row[0]):continue
+            errors.append(float(np.linalg.norm(env.players[1].position-row[:3])))
+            if row[10]in(0,1):mismatch.append(int(env.players[1].alive!=bool(row[10])))
+        events=[e for e in env.events if e['kind']=='respawn']
+        values.append(dict(model=name,position_from_ready=stats(errors),alive_mismatch=stats(mismatch),respawn_events=events))
+    return dict(death_sample=death,ready_sample=ready,first_alive_sample=alive,comparisons=values,
+        scope='Conditioned on first native death sample; entire wait/launch/landing then uses recorded input and model. Readiness/unlock fit in first2 rooms; third neutral control establishes ZR causality. First-launch kinematics were fit in separate initial-opening rooms.')
+
+
+def main(base,models='models'):
+    global MODEL_SUBDIR
+    MODEL_SUBDIR=models
+    base=base.resolve();report=dict(schema='sim.native.p0.analysis.v1',models=models,
+        analysis_code_sha256=sha256(Path(__file__)),model_sha256={p.name:sha256(p) for p in (base/models).glob('*.json')},
+        opening=opening_comparison(base),paint=[],motion=[],combat=[],scans=[],respawn=[])
     for directory in sorted(base.glob('paint*/*')):
         if not (directory/'result.json').exists():continue
         result=json.loads((directory/'result.json').read_text())
@@ -204,20 +259,23 @@ def main(base):
         if result['case']['kind']=='p0_motion':
             trace=load(directory)
             report['motion'].append(dict(path=str(directory.relative_to(ROOT)),passed=result['passed'],case=result['case'],segments=motion_segments(trace),comparison=motion_comparison(base,trace)))
-    for directory in sorted([*base.glob('bends-combat/*'),*base.glob('validation/*')]):
+    for directory in sorted([*base.glob('bends-combat/*'),*base.glob('validation/*'),*base.glob('respawn-control/*')]):
         if not (directory/'result.json').exists():continue
         result=json.loads((directory/'result.json').read_text())
         if result['case']['kind']=='p0_combat' and result.get('passed'):
-            report['combat'].append(dict(path=str(directory.relative_to(ROOT)),cases=combat_comparison(base,load(directory)),respawn_status=result.get('respawn_status')))
+            trace=load(directory)
+            report['combat'].append(dict(path=str(directory.relative_to(ROOT)),cases=combat_comparison(base,trace),respawn_status=result.get('respawn_status')))
+            if models=='models-v2':report['respawn'].append(dict(path=str(directory.relative_to(ROOT)),**respawn_comparison(base,trace)))
     for directory in sorted([*base.glob('probes*/*'),*base.glob('validation/*')]):
         if not (directory/'result.json').exists():continue
         result=json.loads((directory/'result.json').read_text())
         if result['case']['kind']=='p0_scan' and result.get('passed'):
             report['scans'].append(dict(path=str(directory.relative_to(ROOT)),hold=result['case']['settings']['hold'],
                 independent_repeat=directory.parent.name=='validation',comparison=scan_comparison(base,load(directory))))
-    (base/'analysis.json').write_text(json.dumps(report,indent=2,allow_nan=False,default=lambda v:v.item() if isinstance(v,np.generic) else str(v))+'\n')
+    report['uv_control']=uv_control(base)
+    (base/('analysis-v2.json' if models=='models-v2' else 'analysis.json')).write_text(json.dumps(report,indent=2,allow_nan=False,default=lambda v:v.item() if isinstance(v,np.generic) else str(v))+'\n')
     print(json.dumps(dict(opening=report['opening'],paint_trials=len(report['paint']),motion_trials=len(report['motion'])),indent=2))
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,default=ROOT/'work/sim/window-20261021');a=p.parse_args();main(a.directory)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,default=ROOT/'work/sim/window-20261021');p.add_argument('--models',choices=('models','models-v2'),default='models');a=p.parse_args();main(a.directory,a.models)
