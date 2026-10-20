@@ -146,13 +146,14 @@ class Simulator:
     metadata = {'render_modes': [], 'name': 's1_core_v1'}
 
     def __init__(self, stage_id=1, *, parameters=None, terrain=None, assumptions=None,
-                 loadouts=None, duration_frames=10800, swap=False):
+                 loadouts=None, duration_frames=10800, swap=False, motion_model=None):
         if stage_id not in (1, 2, 3) or type(duration_frames) is not int or duration_frames < 1:
             raise ValueError('stage/duration')
         self.stage_id = stage_id
         self.params = parameters or Parameters.local()
         self.terrain = terrain or Terrain.load(stage_id)
         self.rules = assumptions or Assumptions()
+        self.motion_model = motion_model
         self.loadouts = loadouts or [None, None]
         if len(self.loadouts) != 2:
             raise ValueError('two loadouts required')
@@ -278,9 +279,12 @@ class Simulator:
             return
         p.cooldown = max(0, p.cooldown - 1)
         p.recover_stop = max(0, p.recover_stop - 1)
-        p.yaw = math.atan2(math.sin(p.yaw - sticks[2] * r.stick_yaw_gain + gyro[2] * r.gyro_yaw_gain),
-                           math.cos(p.yaw - sticks[2] * r.stick_yaw_gain + gyro[2] * r.gyro_yaw_gain))
-        p.pitch = float(np.clip(p.pitch - gyro[0] * r.gyro_pitch_gain + sticks[3] * .012, -.9, .9))
+        if self.motion_model is None:
+            p.yaw = math.atan2(math.sin(p.yaw - sticks[2] * r.stick_yaw_gain + gyro[2] * r.gyro_yaw_gain),
+                               math.cos(p.yaw - sticks[2] * r.stick_yaw_gain + gyro[2] * r.gyro_yaw_gain))
+            p.pitch = float(np.clip(p.pitch - gyro[0] * r.gyro_pitch_gain + sticks[3] * .012, -.9, .9))
+        else:
+            p.yaw, p.pitch = self.motion_model.camera(p.yaw, p.pitch, sticks, gyro)
         if b[5] and not p.previous[5]:
             p.yaw = p.heading
         previous_submerged = p.submerged
@@ -316,23 +320,37 @@ class Simulator:
             speed = min(speed, self.params.swing['WeakSwingMoveVelLimit'])
         target = np.array([-x * math.cos(p.yaw) + z * math.sin(p.yaw), 0.,
                             x * math.sin(p.yaw) + z * math.cos(p.yaw)]) * speed / norm
-        for axis in (0, 2):
-            p.velocity[axis] += float(np.clip(target[axis] - p.velocity[axis], -r.acceleration, r.acceleration))
-        if math.hypot(x, z) > .1 or b[0]:
-            p.heading = p.yaw
+        if self.motion_model is None:
+            for axis in (0, 2):
+                p.velocity[axis] += float(np.clip(target[axis] - p.velocity[axis], -r.acceleration, r.acceleration))
+            if math.hypot(x, z) > .1 or b[0]:
+                p.heading = p.yaw
+        else:
+            mode = self.motion_model.mode(p.squid, p.submerged, p.grounded, p.charge, p.cooldown)
+            multiplier = gear_factor('swim_speed_up', p.ap.get('swim_speed_up', 0)) if mode == 'squid_own' else 1.
+            p.velocity[[0, 2]], fitted_target = self.motion_model.advance(p.velocity, sticks, p.yaw, mode, multiplier)
+            if color not in (-1, i) and p.grounded:
+                p.velocity[[0, 2]] = np.clip(p.velocity[[0, 2]], -r.enemy_ink_speed, r.enemy_ink_speed)
+            if math.hypot(x, z) > .1 or b[0]:
+                desired_heading = p.yaw if b[0] or p.cooldown else math.atan2(fitted_target[0], fitted_target[1])
+                error = math.atan2(math.sin(desired_heading-p.heading), math.cos(desired_heading-p.heading))
+                limit = self.motion_model.data['camera']['heading_rate']
+                p.heading += max(-limit, min(limit, error))
+                p.heading = math.atan2(math.sin(p.heading), math.cos(p.heading))
         if b[4] and not p.previous[4] and p.grounded:
-            p.velocity[1] = r.jump_speed
+            p.velocity[1] = r.jump_speed if self.motion_model is None else self.motion_model.data['jump']['jump_speed']
             p.grounded = False
             p.submerged = False
             if p.squid:
                 self.unsupported['squid_roll_or_surge_as_ordinary_jump'] += 1
         old = p.position.copy()
-        p.position = self.terrain.move(p.position, p.velocity, r.terrain_radius, p.grounded)
+        p.position = self.terrain.move(p.position, p.velocity, r.terrain_radius, p.grounded,
+                                       support_aware=self.motion_model is not None)
         ground = self.terrain.human.floor(p.position[0], p.position[2], p.position[1] + .205)
         if p.grounded and (ground is None or p.position[1] - ground > .3):
             p.grounded = False
         if not p.grounded:
-            p.velocity[1] -= r.gravity
+            p.velocity[1] -= r.gravity if self.motion_model is None else self.motion_model.data['jump']['gravity']
             next_y = p.position[1] + p.velocity[1]
             # Head sweep prevents jumping through ceilings.
             if p.velocity[1] > 0 and not self.terrain.human.clear(p.position + [0, 1.3, 0],

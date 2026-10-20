@@ -10,7 +10,7 @@ import numpy as np
 
 from .corpus import Trace, WORK
 from .engine import Simulator
-from .parameters import Parameters, ROOT
+from .parameters import Parameters, ROOT, sha256
 from .replay import stats
 from .terrain import Terrain
 
@@ -84,6 +84,10 @@ def primary_entries(corpus):
 
 def evaluate(entries, horizons=(30, 60, 120, 300), *, model=None, max_windows=None,
              out=WORK / 'horizon-baseline.json'):
+    out = Path(out).resolve()
+    if ROOT / 'work' not in out.parents:
+        raise ValueError('raw horizon output must stay under work/')
+    sources = {str(p.relative_to(ROOT)): sha256(p) for p in (ROOT/'sim').glob('*.py')}
     parameters = Parameters.local()
     results = []
     for entry in entries:
@@ -132,7 +136,7 @@ def evaluate(entries, horizons=(30, 60, 120, 300), *, model=None, max_windows=No
                                 errors[name].append(value)
                                 window_errors[name].append(value)
                         last_values[role] = values
-                        moving |= np.linalg.norm(trace.actions[frame-1, role, :2]) > .2
+                        moving = bool(moving or np.linalg.norm(trace.actions[frame-1, role, :2]) > .2)
                 if not window_errors:
                     continue
                 for values in last_values.values():
@@ -151,15 +155,16 @@ def evaluate(entries, horizons=(30, 60, 120, 300), *, model=None, max_windows=No
                 wall_seconds=elapsed, windows=windows))
             print('horizon', entry['stage'], horizon, 'windows', counts['windows'],
                   'position RMSE', round(stats(errors['position'])['rmse'] or 0, 4), flush=True)
+            # Preserve completed horizons even if a later horizon fails.
+            partial = Path(out).with_suffix('.partial.json')
+            partial.parent.mkdir(parents=True, exist_ok=True)
+            partial.write_text(json.dumps(dict(results=results), allow_nan=False) + '\n')
     report = dict(schema='sim.horizon.v2', results=results,
                   protocol='Reset every N common frames; causal sample/velocity/input-history initialization; no truth within window.',
                   unknowns=['native world paint', 'projectile state', 'exact weapon/recovery phase'],
-                  model='legacy' if model is None else model.to_dict())
-    out = Path(out)
-    if ROOT / 'work' not in out.resolve().parents:
-        raise ValueError('raw horizon output must stay under work/')
+                  model='legacy' if model is None else model.to_dict(), code_sha256_at_start=sources)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(report, indent=2) + '\n')
+    out.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     return report
 
 

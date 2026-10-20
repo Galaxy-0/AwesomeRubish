@@ -109,6 +109,12 @@ class Terrain:
         for i, p in enumerate(self.points):
             self.columns[self.key(p[0], p[2])].append(i)
         self.spawn = np.array([atlas.spawns[k]['ground'] for k in ('alpha', 'bravo')], float)
+        normals = np.cross(human.triangles[:, 1]-human.triangles[:, 0], human.triangles[:, 2]-human.triangles[:, 0])
+        # Same .7 walkable-normal threshold as A4 atlas construction. Ground
+        # support is handled separately; a ramp must not be treated as a wall
+        # merely because a foot sphere touches its supporting plane.
+        walls = np.abs(normals[:, 1])/np.maximum(np.linalg.norm(normals, axis=1), 1e-12) < .7
+        self.obstacles = Mesh(human.triangles[walls]) if walls.any() else None
 
     @classmethod
     def load(cls, stage_id):
@@ -127,7 +133,7 @@ class Terrain:
         i = min(indices, key=lambda i: abs(self.points[i, 1] - y))
         return i if abs(self.points[i, 1] - y) <= tolerance and self.paintable[i] else None
 
-    def move(self, position, delta, radius=.3, grounded=True):
+    def move(self, position, delta, radius=.3, grounded=True, support_aware=False):
         """Slide against static walls; supported ramps/steps up to .2 units."""
         p = np.array(position, float)
         for axis in (0, 2):
@@ -136,10 +142,11 @@ class Terrain:
             floor = self.human.floor(q[0], q[2], p[1] + .205, p[1] - .5)
             target_y = floor if grounded and floor is not None else p[1]
             clear = True
+            collision = self.obstacles if support_aware else self.human
             for height in (radius + .02, .7, 1.3):
                 a = p + [0, height, 0]
                 b = q + [0, height + max(0., target_y - p[1]), 0]
-                if self.human.sweep(a, b, radius) < math.inf:
+                if collision is not None and collision.sweep(a, b, radius) < math.inf:
                     clear = False
                     break
             if clear:

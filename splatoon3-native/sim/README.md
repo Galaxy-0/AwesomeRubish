@@ -89,3 +89,11 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 `.venv/bin/python -m sim.horizon` 每隔30/60/120/300帧因果重置，报告位置、朝向、
 墨量、HP、形态的采样/窗口/末端误差分布。缓存与原始曲线仍只在work/。
 包龄、未知速度/武器中间态/墨图和排除的锚点均有明确口径；短时域为主，整局开环为辅。
+
+`.venv/bin/python -m sim.identify` 从训练会话拟合六种形态/武器阶段的杆量响应、
+速度上包络、加速/制动、相机转向及跳跃，验证集按模式决定是否采纳；稀疏速度激励
+保留独立先验，不能把堵墙后的慢速分位数当作自由最大速度。模型只写
+`work/sim/fidelity/motion.json`。使用 `Simulator(motion_model=MotionModel.load(path))`
+或 `.venv/bin/python -m sim.horizon --model work/sim/fidelity/motion.json --out work/sim/fidelity/horizon-fitted.json`。
+未传模型时保留第一阶段方程用于可复现基线。支持面与墙体分别处理，坡道不因脚部
+判定球碰到其支撑面而被误判成墙。人形所在墨色、完整AP曲线和台阶材质上限仍不可辨识。
