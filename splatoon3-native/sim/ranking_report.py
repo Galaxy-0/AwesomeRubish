@@ -22,7 +22,7 @@ def tau_b(x,y):
     if len(x)!=len(y) or len(x)<2:raise ValueError('paired rank vectors')
     concordant=discordant=tied_x=tied_y=tied_both=0
     for a,b in itertools.combinations(range(len(x)),2):
-        sx=int(x[a]>x[b])-int(x[a]<x[b]);sy=int(y[a]>y[b])-int(y[a]<y[b])
+        sx=sign(x[a]-x[b]);sy=sign(y[a]-y[b])
         if sx==0 and sy==0:tied_both+=1
         elif sx==0:tied_x+=1
         elif sy==0:tied_y+=1
@@ -55,8 +55,8 @@ def summary(games,weights=None):
     if (weights<0).any() or not weights.sum():raise ValueError('invalid weights')
     weights/=weights.sum()
     wins=[sum(g['winner']==i for g in games) for i in range(2)]
-    rate=[float(sum(w*(g['winner']==i) for g,w in zip(games,weights))) for i in range(2)]
-    draw=float(sum(w*(g['winner'] is None) for g,w in zip(games,weights)))
+    rate=[min(1.,max(0.,float(sum(w*(g['winner']==i) for g,w in zip(games,weights))))) for i in range(2)]
+    draw=min(1.,max(0.,float(sum(w*(g['winner'] is None) for g,w in zip(games,weights)))))
     result=dict(games=len(games),wins=wins,draws=sum(g['winner'] is None for g in games),win_rate=rate,
                 draw_rate=draw,strength=[r+.5*draw for r in rate])
     for name in ('turf_pp','hud_downs','environmental_downs'):
@@ -76,9 +76,12 @@ def compare_pair(native,simulated):
     for stage in (1,2,3):
         ng=[g for g in n if g['stage']==stage];sg=[g for g in s if g['stage']==stage]
         a,b=summary(ng),summary(sg)
-        rows.append(dict(stage=stage,native=a,simulated=b,
-                         same_direction=sign(a['strength'][0]-.5)==sign(b['strength'][0]-.5),
-                         margin_error_pp=(b['turf_pp'][0]-b['turf_pp'][1])-(a['turf_pp'][0]-a['turf_pp'][1])))
+        w=[strata[(g['stage'],g['swap'])]/counts[(g['stage'],g['swap'])] for g in sg]
+        matched=summary(sg,w)
+        rows.append(dict(stage=stage,native=a,simulated=b,simulated_native_strata_weighted=matched,
+                         same_direction=sign(a['strength'][0]-.5)==sign(matched['strength'][0]-.5),
+                         same_direction_balanced=sign(a['strength'][0]-.5)==sign(b['strength'][0]-.5),
+                         margin_error_pp=(matched['turf_pp'][0]-matched['turf_pp'][1])-(a['turf_pp'][0]-a['turf_pp'][1])))
     strata_results=[]
     for stage,swap in sorted(strata):
         a=summary([g for g in n if (g['stage'],g['swap'])==(stage,swap)])
@@ -93,7 +96,8 @@ def compare_pair(native,simulated):
                 simulated_fixed=fixed,by_map=rows,by_observed_native_seat=strata_results,
                 fixed_native_game_agreement=summary_agreement(matched_fixed),
                 strength_difference_pp=100*(weighted['strength'][0]-baseline['strength'][0]),
-                same_direction=sign(baseline['strength'][0]-.5)==sign(balanced['strength'][0]-.5),
+                same_direction=sign(baseline['strength'][0]-.5)==sign(weighted['strength'][0]-.5),
+                same_direction_balanced=sign(baseline['strength'][0]-.5)==sign(balanced['strength'][0]-.5),
                 turf_difference_pp=[b-a for a,b in zip(baseline['turf_pp'],weighted['turf_pp'])],
                 hud_down_difference_per_game=[b-a for a,b in zip(baseline['hud_downs'],weighted['hud_downs'])],
                 distinct_trajectories=len({g['trajectory_sha256'] for g in simulated}),
@@ -137,16 +141,18 @@ def render(report):
         '所有对阵使用同一冻结模型，三图、两出生侧、六组起点，每对阵36局，共216局；每局10800帧。'
         '原策略代码、配装、调用频率与沙箱超时保留。seed0为固定起点，另五组为预先登记的±.15单位XZ、±.03rad yaw敏感性。'
         '后者不是已辨识的原生随机分布，不作独立二项胜率区间。没有启动游戏。\n',
-        '| 对阵（顺序A/B） | 原生A胜:B胜 | 模拟A胜:B胜（平） | 固定起点A胜:B胜（平） | ΔA强度 pp¹ | 方向一致 |',
+        '| 对阵（顺序A/B） | 原生A胜:B胜 | 模拟A胜:B胜（平） | 固定起点A胜:B胜（平） | ΔA强度 pp¹ | 方向一致 匹配/均衡 |',
         '| --- | ---: | ---: | ---: | ---: | --- |']
     def wl(s):return f"{s['wins'][0]}:{s['wins'][1]} ({s['draws']})"
     for label,row in report['pairs'].items():
         a,b=row['policies'];r=row['native'];s=row['simulated_balanced'];f=row['simulated_fixed']
-        lines.append(f"| {label} {a} / {b} | {r['wins'][0]}:{r['wins'][1]} | {wl(s)} | {wl(f)} | {row['strength_difference_pp']:+.2f} | {'是' if row['same_direction'] else '否'} |")
+        direction='/'.join('是' if row[key] else '否' for key in ('same_direction','same_direction_balanced'))
+        lines.append(f"| {label} {a} / {b} | {r['wins'][0]}:{r['wins'][1]} | {wl(s)} | {wl(f)} | {row['strength_difference_pp']:+.2f} | {direction} |")
     rank=report['ranking'];lines.extend(['',
-        '¹强度=胜率+半数平局率；Δ使用原生地图/出生侧频数重加权的模拟强度减原生值。胜负计数列为均衡三图双侧原始计数。',
-        f"六条实测对阵边方向一致 **{rank['agree_edges']}/6**；逐地图方向一致 **{rank['agree_map_edges']}/18**。",
+        '¹强度=胜率+半数平局率；Δ及主方向指标使用原生地图/出生侧频数重加权。胜负计数列为均衡三图双侧原始计数，均衡方向另列。R1–R4原生每图仅一个出生侧，不能把原生版本变化和轮间换侧完全分离。',
+        f"匹配原生地图/侧后，六条实测对阵边方向一致 **{rank['agree_edges']}/6**；逐地图 **{rank['agree_map_edges']}/18**。均衡全部侧的对阵方向一致{rank['agree_edges_balanced']}/6。",
         f"同一bravo-v1对手下，alpha v1/v2/v3的原生强度为{rank['common_opponent']['native']}，模拟为{rank['common_opponent']['simulated']}；Kendall tau-b = **{rank['common_opponent']['kendall']['tau_b']}**。",
+        f"共同对手tau采用原生地图/侧频数匹配；均衡全部侧的模拟强度另为{rank['common_opponent']['simulated_balanced']}，对应tau-b={rank['common_opponent']['kendall_balanced']['tau_b']}。",
         'A5、R0和后续T1属于三个断开的对阵图；不为它们编造统一全局排名。tau只比较有共同对手的三版alpha；原生v1/v2同为1/3，保留并列。'
         'R1–R4各仅BO3，原生胜率本身不确定，不能把点估计方向或tau当严格强弱证明。',
         '', '| 对阵 | 原生平均占地% A/B | 模拟平均网格% A/B¹ | Δ占地pp A/B | 原生HUD敌倒/局 A/B | 模拟敌倒/局 A/B¹ |',
@@ -158,7 +164,7 @@ def render(report):
     lines.extend(['',
         '¹模拟均值按原生地图/侧频数加权。网格分母是A3导航可潜节点，原生结算分母/涂墨传播仍不同，因此Δ是诊断差，不是占地等价误差验收。'
         '模拟“敌倒”统计对手全部死亡，与原生观察者HUD口径靠近；原生没有最后一击归属，模拟归属击倒另外保存在JSON，不能混作同一实测指标。',
-        '', '| 对阵/图 | 原生A胜:B胜 | 模拟A胜:B胜（平） | 占地差值(A-B)误差pp |',
+        '', '| 对阵/图 | 原生A胜:B胜 | 模拟均衡A胜:B胜（平） | 匹配侧后的占地差值(A-B)误差pp |',
         '| --- | ---: | ---: | ---: |'])
     for label,row in report['pairs'].items():
         for m in row['by_map']:
@@ -166,7 +172,15 @@ def render(report):
             lines.append(f"| {label} / {m['stage']} | {n['wins'][0]}:{n['wins'][1]} | {wl(s)} | {m['margin_error_pp']:+.3f} |")
     lines.extend(['',
         report['conclusion'],
-        '', '该实验检验当前简化模型的策略外部有效性，没有按胜者反向校准。出生发射/重生过程、原生墨图与可涂分母、配装曲线和攀爬仍存在缺口；'
+        '', '| 对阵 | roll / surge / dash / bomb / zip事件（216局中的该对阵） | 未支持配装（每局初始化计数合计） |',
+        '| --- | --- | --- |'])
+    for label,row in report['pairs'].items():
+        counts=row['mechanics']
+        used=' / '.join(str(counts.get(k,0)) for k in ('squid_roll','squid_surge','dash','burst_bomb_throw','zip_activate_simplified'))
+        gear=', '.join(f"{k.removeprefix('gear:')}:{v}" for k,v in sorted(row['unsupported'].items()) if k.startswith('gear:')) or '无'
+        lines.append(f'| {label} | {used} | {gear} |')
+    lines.extend(['',
+        '该实验检验当前简化模型的策略外部有效性，没有按胜者反向校准。出生发射/重生过程、原生墨图与可涂分母、配装曲线和攀爬仍存在缺口；'
         '高级机制的A6同房重算不能替代策略胜负验证。详细逐图/实测出生侧/固定起点对照、机制使用与unsupported计数见JSON。',
         f"纯离线双worker以内执行；已完成组计算墙钟累计{report['group_wall_seconds']:.1f}秒，含策略/可见性/序列化的加总吞吐{report['aggregate_environment_fps']:.1f}环境帧/秒。"
         '累计组墙钟会把两个并发worker的时间相加，不能当实际总耗时；不等于第二阶段纯核心性能。',
@@ -180,11 +194,14 @@ def main(out=WORK):
     pairs={key:dict(policies=PAIRS[key],**compare_pair(source['references'][key]['matches'],games[key])) for key in PAIRS}
     common_keys=('R1','R2','R3')
     x=[pairs[k]['native']['strength'][0] for k in common_keys]
-    y=[pairs[k]['simulated_balanced']['strength'][0] for k in common_keys]
+    y=[pairs[k]['simulated_native_strata_weighted']['strength'][0] for k in common_keys]
+    balanced=[pairs[k]['simulated_balanced']['strength'][0] for k in common_keys]
     ranking=dict(agree_edges=sum(p['same_direction'] for p in pairs.values()),
+                 agree_edges_balanced=sum(p['same_direction_balanced'] for p in pairs.values()),
                  agree_map_edges=sum(m['same_direction'] for p in pairs.values() for m in p['by_map']),
                  common_opponent=dict(opponent='bravo-v1',policies=['alpha-v1','alpha-v2','alpha-v3'],
-                                      native=x,simulated=y,kendall=tau_b(x,y)))
+                                      native=x,simulated=y,kendall=tau_b(x,y),
+                                      simulated_balanced=balanced,kendall_balanced=tau_b(x,balanced)))
     conclusion=('当前模拟器未通过策略排名一致性检验，不能据此替代原生策略淘汰或配装选择。'
                 if ranking['agree_edges']<6 else
                 '六个观察到的对阵方向一致；BO3样本量、未验证初值分布及占地/机制残差仍不足以签收原生等价。')

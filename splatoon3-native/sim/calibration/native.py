@@ -126,6 +126,11 @@ def collect(lab,case):
                     a=neutral();a['buttons'][0]=1;series(lab,a,f'measure-hold-{hold}',hold)
                     series(lab,neutral(),'measure-release-reserve-refund',40)
             series(lab,neutral(),'measure-human-refill',240)
+            # A human-refill trace can already have reached full. Drain again
+            # before the submerged curve, rather than sampling a full tank.
+            for _ in range(3):
+                a=neutral();a['buttons'][0]=1;series(lab,a,'submerged-refill-drain-hold',21)
+                series(lab,neutral(),'submerged-refill-drain-release',40)
             a=neutral();a['buttons'][1]=1;series(lab,a,'measure-submerged-refill',240)
             lab.step(lab.actions(),'emerge',12)
     elif kind=='roll':
