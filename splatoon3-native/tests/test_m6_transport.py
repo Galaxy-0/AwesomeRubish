@@ -6,6 +6,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 
@@ -64,6 +65,17 @@ class TransportTest(unittest.TestCase):
         for health in (.57,0,1):
             self.client.send_step(neutral(),1);observation,_=self.client.receive()
             self.assertEqual(observation['hp_valid'],1)
+            self.assertAlmostEqual(float(observation['hp'][0]),health,places=6)
+
+    def test_explicit_geometry_mode_has_no_stale_pixels_and_preserves_ack_and_damage(self):
+        with patch.dict(os.environ,{'DM_RL_PIXELS':'0'}):observation,initial=self.start(mode='damage')
+        self.assertEqual(observation['pixels_valid'],0)
+        self.assertFalse(np.any(observation['pixels']))
+        frame=initial['frame']
+        for health in (.57,0,1):
+            self.client.send_step(neutral(),1);observation,info=self.client.receive();frame+=1
+            self.assertEqual(info['advanced'],1);self.assertEqual(info['frame'],frame)
+            self.assertEqual(observation['pixels_valid'],0);self.assertFalse(np.any(observation['pixels']))
             self.assertAlmostEqual(float(observation['hp'][0]),health,places=6)
 
     def test_referee_motion_metadata_is_separate_from_rl_observation(self):

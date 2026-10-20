@@ -195,3 +195,64 @@ A7 原生开局为已签收的显式选项，默认入口仍使用已接受的�
 ```
 
 跨图补测放在上述三项补跑之后串行执行（本次在补跑释放名额后启动，始终≤3房）。最终审计要求完整18项作业、相同生产宿主/运行文件、三份13/13分数表及原始轨迹独立复核、新鲜A5同图换侧同PID两局及额外跨图连续开局、历史70局精确审计、关闭日志后的乌贼滑对照校准。任何失败或哈希漂移均拒绝产生签收文件。
+
+## A8：保留涂墨路径的主镜头减绘（实验构建）
+
+A8使用单独构建，默认`upstream/dm/host/dmhost`保持原件。camera构建只在
+headless、RL受控InGame、1280×720主镜头且无深度/模板/storage写入时跳过颜色draw。
+1600×1600涂墨目标、深度预通道、原生样本计数、计算/拷贝和结算保留。
+若随后原生样本计数报告依赖已跳过draw，保护检查终止该房间，不能继续发布改变过的判定。
+
+```sh
+.venv/bin/python tools/build_a7_host.py --out work/a8/dmhost-full --a8-render none
+.venv/bin/python tools/build_a7_host.py --out work/a8/dmhost-camera --a8-render camera
+.venv/bin/python tests/t1_round.py \
+  --policy-a arena/policies/rush --policy-b arena/policies/high-ground \
+  --round 0 --out work/arena/a8-bo3 \
+  --native-host work/a8/dmhost-camera --native-patched work/a7/patched-seeds-v16
+```
+
+camera构建的擂台/熟练度默认显式`pixels=False`，仅使用已有几何策略观测。
+每次STEP仍保留GPU完成屏障，fixed60/帧预算、可见性、沙箱和原生结算规则不变。
+图像字段为零且`pixels_valid=0`，`render()`返回None；战报`screenshots_available=false`，
+不写零图冒充游戏画面。需要像素的Gym调用仍默认`pixels=True`，整个会话均完整渲染，
+保护中间帧的TAA历史；A3截图套件和额外M6像素回归也使用完整画面。
+普通用户像素请求不会得到经过减绘的镜头画面。实时世界墨图仍未实现，最终涂地比例来自原生Winners。
+
+重新测量时，以同一源码构建full/camera；两组依次各跑至少三局、同一固定输入与原生四字种子，
+各组三房并行且共用两个加载名额。以下原始目录必须尚不存在：
+
+```sh
+.venv/bin/python tests/probe_a8_batch.py --host work/a8/dmhost-full \
+  --patched work/a7/patched-seeds-v16 --policies work/a7/replay-policies \
+  --out work/a8/full-three --repeats 3 --parallel 3
+.venv/bin/python tests/probe_a8_batch.py --host work/a8/dmhost-camera \
+  --patched work/a7/patched-seeds-v16 --policies work/a7/replay-policies \
+  --out work/a8/camera-three --repeats 3 --parallel 3
+.venv/bin/python tests/analyze_a8.py --before work/a8/full-three \
+  --after work/a8/camera-three --out work/a8/comparison.json
+.venv/bin/python tests/regress_a7.py --host work/a8/dmhost-camera \
+  --patched work/a7/patched-seeds-v16 --out work/a8/final-regression \
+  --parallel 3 --pixel-interface
+```
+
+比分和最终涂地比例按逐策略“组均值差≤两组内部最大差之较大值”；位置/HP/墨量在完全相同
+受控帧网格比较“组均值轨迹RMS差≤组内最大两两RMS”，完整报告所有内部/跨组配对。
+必须先通过实际出生侧、种子消费、全部逐present输入及双端Winners核对。
+同三房负载受控present/s均值提高至少20%为预先声明的显著收益门槛。
+GPU占用为全机数值，GPU时间戳跨度不是独占执行耗时；吞吐使用整个批次有效局数/批次墙钟，
+不把单房速度简单乘房数。更高并发可用同一batch入口的`--parallel/--repeats 4..6`测量；
+M5新增swapout>2GiB或critical压力保护不放宽，触发时保留原件、降低房数。
+
+签收入口不会构建默认宿主，须先准备实际组件日志及最终原生证据：
+
+```sh
+bash tests/run_all.sh --milestone a8 --before work/a8/full-v3-three \
+  --after work/a8/camera-v3-three --regression work/a8/final-regression-v3/result.json \
+  --components work/a8/components-final.json --capacity arena/results/a8-capacity-20261020.json \
+  --out arena/results/a8-acceptance-20261020.json
+```
+
+入口会重算比分/轨迹对照，核对19项回归、默认像素接口、39次冻结熟练度原始轨迹、
+连续同PID换侧A5、特殊量测试派生父宿主及完整C/ObjC/头文件构建身份。
+A6卡片仍使用A6冻结的参考/alpha/bravo版本，不修改两位策略作者当前目录。

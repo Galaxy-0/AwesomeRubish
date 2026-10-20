@@ -37,6 +37,7 @@ def main(args):
     jobs=[]
     def fixture(name,script,*extra):jobs.append(dict(name=name,kind='fixture',script=script,args=list(extra)))
     for name in ('a1','a2','a3a'):fixture(name,'test_'+name+'.py','--timeout','2400')
+    if args.pixel_interface:fixture('pixel-interface','test_m6.py','--timeout','2400')
     fixture('damage','probe_a4_skills.py','--stage','1','--damage','--timeout','2400')
     fixture('a6-timing','probe_a6_refine.py','--timeout','2400')
     for suite in ('combat','combo_bomb','roll','aim_surge','special'):fixture('a6-'+suite,'probe_a6_regression.py','--suite',suite,'--timeout','2400')
@@ -110,4 +111,5 @@ def main(args):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--host',type=Path,required=True);p.add_argument('--patched',type=Path,required=True);p.add_argument('--special-host',type=Path,help='Test-only derivative; otherwise build one under --out');p.add_argument('--out',type=Path,required=True);p.add_argument('--parallel',type=int,choices=(1,2,3),default=3)
+    p.add_argument('--pixel-interface',action='store_true',help='Also exercise the default pixel interface on an A8 geometry-capable host')
     r=main(p.parse_args());print(json.dumps(r,indent=2));raise SystemExit(0 if r['passed'] else 1)

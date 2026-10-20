@@ -36,10 +36,12 @@ def catalogs():
 
 
 class Session:
-    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False, clock_mode='fixed60', loadouts=None, stall_timeout=120):
+    def __init__(self, players, mode, stage_id, weapons, timeout=2400, patched=None, state_dump=False, clock_mode='fixed60', loadouts=None, stall_timeout=120, pixels=True):
         if players not in (2,8): raise ValueError('M6 supports 2 or 8 players')
         if clock_mode not in ('realtime','fixed60'):raise ValueError('clock_mode must be realtime or fixed60')
         if not math.isfinite(stall_timeout) or not 0<stall_timeout<=86400:raise ValueError('stall_timeout must be in (0,86400]')
+        if type(pixels) is not bool:raise ValueError('pixels must be boolean')
+        self.pixels=pixels
         self.stall_timeout=stall_timeout
         self.clock_mode=clock_mode
         if loadouts is not None and len(loadouts)!=players:raise ValueError('one loadout required per player')
@@ -111,8 +113,9 @@ class Session:
     def press(self, player, button):self.send(player,button);self.frames(player)
 
     def host_options(self, player):
-        if self.loadouts is None or self.loadouts[player] is None:return {}
-        return {'DM_GEAR':self.loadouts[player]}
+        options={} if self.pixels else {'DM_RL_PIXELS':'0'}
+        if self.loadouts is not None and self.loadouts[player] is not None:options['DM_GEAR']=self.loadouts[player]
+        return options
 
     def host_command(self):
         return [str(ROOT/'upstream/dm/host/dmhost'),str(self.patched)]

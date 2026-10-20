@@ -33,15 +33,17 @@ class NativeParallelEnv(ParallelEnv):
     metadata={'name':'splatoon3_native_v1','render_modes':['rgb_array'],'is_parallelizable':True}
 
     def __init__(self, players=8, frame_skip=15, mode=0, stage_id=1, weapons=None,
-                 timeout=2400, step_timeout=None, patched=None, render_mode=None, state_dump=False, reward_fn=turf_kill_reward, clock_mode='fixed60', loadouts=None, stall_timeout=120, session_factory=None, session_releaser=None):
+                 timeout=2400, step_timeout=None, patched=None, render_mode=None, state_dump=False, reward_fn=turf_kill_reward, clock_mode='fixed60', loadouts=None, stall_timeout=120, session_factory=None, session_releaser=None, pixels=True):
         if players not in (2,8):raise ValueError('players must be 2 or 8')
         if clock_mode not in ('realtime','fixed60'):raise ValueError('clock_mode must be realtime or fixed60')
         if not isinstance(frame_skip,int) or not 1<=frame_skip<=3600:raise ValueError('frame_skip must be 1..3600')
+        if type(pixels) is not bool:raise ValueError('pixels must be boolean')
+        if not pixels and render_mode is not None:raise ValueError('render_mode requires pixels=True')
         if render_mode not in (None,'rgb_array'):raise ValueError('unsupported render_mode')
         if not math.isfinite(stall_timeout) or not 0<stall_timeout<=86400:raise ValueError('stall_timeout must be in (0,86400]')
         if step_timeout is None:step_timeout=stall_timeout+30
         self.possible_agents=[f'player_{n}' for n in range(players)];self.agents=[]
-        self.config=dict(players=players,mode=mode,stage_id=stage_id,weapons=weapons or [0]*players,timeout=timeout,patched=patched,state_dump=state_dump,clock_mode=clock_mode,loadouts=loadouts,stall_timeout=stall_timeout)
+        self.config=dict(players=players,mode=mode,stage_id=stage_id,weapons=weapons or [0]*players,timeout=timeout,patched=patched,state_dump=state_dump,clock_mode=clock_mode,loadouts=loadouts,stall_timeout=stall_timeout,pixels=pixels)
         if reward_fn is not None and not callable(reward_fn):raise ValueError('reward_fn must be callable or None')
         self.reward_fn=reward_fn
         self.frame_skip=frame_skip;self.step_timeout=step_timeout;self.render_mode=render_mode
@@ -51,7 +53,7 @@ class NativeParallelEnv(ParallelEnv):
 
     @lru_cache(None)
     def observation_space(self, agent):
-        return spaces.Dict({'pixels':spaces.Box(0,255,(72,128,3),np.uint8),
+        return spaces.Dict({'pixels_valid':spaces.Discrete(2),'pixels':spaces.Box(0,255,(72,128,3),np.uint8),
                             'frame':spaces.Box(0,np.iinfo(np.int64).max,(1,),np.int64),'phase':spaces.Discrete(4),
                             'position':spaces.Box(-256,256,(3,),np.float32),'position_valid':spaces.Discrete(2),
                             'ink':spaces.Box(0,1,(1,),np.float32),'ink_valid':spaces.Discrete(2),
@@ -155,7 +157,8 @@ class NativeParallelEnv(ParallelEnv):
         return self._advance({})
 
     def render(self):
-        return self.observations.get('player_0',{}).get('pixels')
+        row=self.observations.get('player_0',{})
+        return row.get('pixels') if row.get('pixels_valid',1) else None
 
     def close(self):
         if self.session:self.session.clock.resume()

@@ -45,7 +45,10 @@ class Client:
             raise RuntimeError('invalid frames_without_input')
         self.frame = info['frame']
         self.pending.popleft()
-        observation = dict(pixels=np.frombuffer(data, dtype=np.uint8).reshape(72,128,3).copy(),
+        pixel_valid=info.get('pixels_valid',1)
+        if type(pixel_valid) is not int or pixel_valid not in (0,1):raise RuntimeError('invalid native pixel validity')
+        if not pixel_valid and any(data):raise RuntimeError('unavailable pixels must not contain stale imagery')
+        observation = dict(pixels_valid=pixel_valid,pixels=np.frombuffer(data, dtype=np.uint8).reshape(72,128,3).copy(),
                            frame=np.array([info['frame']], dtype=np.int64), phase=info['phase'],
                            position=np.asarray(info.get('position',[0,0,0]),dtype=np.float32),
                            position_valid=int(info.get('position_valid',0)),

@@ -107,12 +107,14 @@ class NativeStartTests(unittest.TestCase):
 
     def test_coordinator_pool_is_process_local_and_explicitly_owned(self):
         native_runtime.close_pools()
-        with patch.object(native_runtime,'NativeSessionPool') as constructor,patch.object(native_runtime,'Finalize'):
+        with patch.object(native_runtime,'NativeSessionPool') as constructor,patch.object(native_runtime,'Finalize'), \
+             patch.object(Path,'read_text',return_value='{"render_mode":"camera"}'):
             pool=constructor.return_value;pool.patched=Path('/modules')
             runtime=dict(host='/host',patched='/modules')
             first=native_runtime.env_options(runtime);second=native_runtime.env_options(runtime)
             constructor.assert_called_once();self.assertEqual(first,second)
             self.assertEqual(first['session_factory'],pool.acquire)
+            self.assertFalse(first['pixels'])
             native_runtime.close_pools();pool.close.assert_called_once()
 
     def test_scorecard_cannot_cross_runtime_even_with_identical_policy(self):

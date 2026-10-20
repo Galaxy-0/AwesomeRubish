@@ -124,7 +124,7 @@ class NativeSessionPool:
 
     @staticmethod
     def equipment(config):
-        return json.dumps({key:config.get(key) for key in ('players','mode','weapons','loadouts','clock_mode','state_dump','stall_timeout')},sort_keys=True)
+        return json.dumps({key:config.get(key) for key in ('players','mode','weapons','loadouts','clock_mode','state_dump','stall_timeout','pixels')},sort_keys=True)
 
     def acquire(self,**config):
         if config['players']!=2 or config['mode']!=0 or config['stage_id'] not in MAPS:

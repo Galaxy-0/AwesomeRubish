@@ -38,6 +38,8 @@ def main(args):
         start_native(session)
         report['events'].append(dict(round=index,phase='ingame',wall=time.time(),generation=session.generation,status=session.status()));save()
     def factory(*a,**kw):
+        build=json.loads(pool.host.with_suffix('.build.json').read_text())
+        kw.setdefault('pixels',build.get('render_mode')!='camera')
         return NativeParallelEnv(*a,**kw,session_factory=pool.acquire,session_releaser=pool.release)
     print(out,flush=True);save()
     try:

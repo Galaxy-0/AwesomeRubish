@@ -170,7 +170,8 @@ def run_match(task):
             inputs.flush();native_trace.write(json.dumps(dict(frame=frame,wall_time=result['last_progress_wall'],infos=infos))+'\n');native_trace.flush()
             before=len(events.events);events.update(infos,frame)
             if len(events.events)>before or frame-last_capture>=600:
-                for agent,o in env.observations.items():Image.fromarray(o['pixels']).save(out/f'frame-{frame}-{agent}.png')
+                for agent,o in env.observations.items():
+                    if o.get('pixels_valid',1):Image.fromarray(o['pixels']).save(out/f'frame-{frame}-{agent}.png')
                 last_capture=frame
             if all(i['phase']==1 for i in infos.values()) and not settling:api.update(infos)
             else:settling=True
@@ -190,7 +191,9 @@ def run_match(task):
                       frames=frame,native_winners=True,source_hashes=[s.source_sha256 for s in specs])
         if any(v['enemy_hud_downs'] is None or v['own_hud_downs'] is None for v in result['hud_by_role'].values()):raise AssertionError('HUD event counters unavailable')
         (out/'hud-events.json').write_text(json.dumps(events.events,indent=2)+'\n')
-        for agent,o in env.observations.items():Image.fromarray(o['pixels']).save(out/f'winners-{agent}.png')
+        result['screenshots_available']=all(o.get('pixels_valid',1) for o in env.observations.values())
+        for agent,o in env.observations.items():
+            if o.get('pixels_valid',1):Image.fromarray(o['pixels']).save(out/f'winners-{agent}.png')
         result['controlled_end_wall']=time.time();result['passed']=not result['void']
     except BaseException as error:
         result['errors'].append(repr(error));result['traceback']=traceback.format_exc()

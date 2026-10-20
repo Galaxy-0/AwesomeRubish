@@ -1,6 +1,7 @@
 """Explicit coordinator opt-in for A7; no changes to policy observations."""
 from multiprocessing.util import Finalize
 from pathlib import Path
+import json
 
 from rl.native_start import NativeSessionPool,validate_runtime
 
@@ -37,7 +38,8 @@ def env_options(runtime):
         _POOLS[key]=NativeSessionPool(*key)
         if _FINALIZER is None:_FINALIZER=Finalize(None,close_pools,exitpriority=10)
     pool=_POOLS[key]
-    return dict(patched=pool.patched,session_factory=pool.acquire,session_releaser=pool.release)
+    build=json.loads(Path(runtime['host']).with_suffix('.build.json').read_text())
+    return dict(patched=pool.patched,session_factory=pool.acquire,session_releaser=pool.release,pixels=build.get('render_mode')!='camera')
 
 
 def close_pools():

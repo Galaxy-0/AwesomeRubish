@@ -59,6 +59,7 @@ def main(args):
         kw['patched']=modules;s=RegressionSession(host=host,**kw);sessions.append(s);return s
     def factory(*a,**kw):
         kw.setdefault('session_factory',session_factory)
+        kw.setdefault('pixels',build.get('render_mode')!='camera' or args.script.name in ('probe_a3_visibility.py','test_m6.py'))
         e=original(*a,**kw);environments.append(e);return e
     original_popen=subprocess.Popen
     def popen(command,*a,**kw):
