@@ -81,3 +81,11 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 本轮固定的对照结果见 [COMPARISON.md](COMPARISON.md)。当前 T1 长轨迹与
 最终占地差异明显，**未通过原生一致性验收**。本轮按要求在核心与报告完成后
 停止，实机校准及后续操作的清单在 `notes/PROGRESS.md`。
+
+## 第二阶段保真度
+
+`.venv/bin/python -m sim.corpus` 将本机历史输入与原生状态归一化并按完整会话划分
+训练/验证/测试；T1作为整个测试家族，不拆时间片进入训练。
+`.venv/bin/python -m sim.horizon` 每隔30/60/120/300帧因果重置，报告位置、朝向、
+墨量、HP、形态的采样/窗口/末端误差分布。缓存与原始曲线仍只在work/。
+包龄、未知速度/武器中间态/墨图和排除的锚点均有明确口径；短时域为主，整局开环为辅。

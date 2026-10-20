@@ -53,7 +53,9 @@ def initialize(env, barrier, origins, *, own_ink_fixture=False, previous_actions
         p.hurt_at = env.frame  # avoid inventing an observed recovery delay
         p.previous = list((previous_actions or {}).get(key, neutral())['buttons'])
         ages[key] = env.frame - (info['position_sample_frame'] - origins[key])
-        if own_ink_fixture or p.squid and motion.get('ground_contact') == 4:
+        # Match the accepted NativeRefereeAdapter: squid + contact 0 is
+        # submerged; 4 is non-submerged, 5 airborne. Never invert 0 and 4.
+        if own_ink_fixture or p.squid and motion.get('ground_contact') == 0:
             env.paint.disk(p.position, 1.5, i)
             p.submerged = p.squid
     env.projector = PolicyProjector(env.match_id, stage_id=env.stage_id)
