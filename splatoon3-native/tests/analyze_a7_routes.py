@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Audit frozen-input menu/native runs, retaining failed comparisons.
+"""Historical single-pair diagnostic, retaining failed comparisons.
 
 Cross-run Turf scores allow one native formatter quantum (0.1 percentage
 point). Winner, source/runtime identity, fixed60 and recorded input must agree.
 This does not change A5's per-game referee or its peer-score treatment.
+The revised A7/A8 acceptance uses probe_a7_repeatability.py (3+3 trials,
+actual spawn validation and empirical within-route scatter), not this gate.
 """
 import argparse
 import hashlib

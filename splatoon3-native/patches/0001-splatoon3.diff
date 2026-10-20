@@ -3926,10 +3926,10 @@ index 0000000..0877bf7
 +}
 diff --git a/dm/host/hle_spl3_scene.c b/dm/host/hle_spl3_scene.c
 new file mode 100644
-index 0000000..291083e
+index 0000000..90c4b5c
 --- /dev/null
 +++ b/dm/host/hle_spl3_scene.c
-@@ -0,0 +1,534 @@
+@@ -0,0 +1,553 @@
 +// A7 experimental scene-request adapter; no synthetic match phase or score.
 +#include "dm.h"
 +#include <mach/mach.h>
@@ -3953,7 +3953,7 @@ index 0000000..291083e
 +static _Atomic uintptr_t scene_request_manager;
 +typedef struct {char map[64];int rule,teams[2];} scene_match_params;
 +typedef struct {
-+    int configured,closed,commanded,private_started,params_read;
++    int configured,closed,commanded,private_started,params_read,teams_committed;
 +    scene_match_params params;
 +    uintptr_t private_model;
 +    unsigned model_previous;
@@ -4390,6 +4390,25 @@ index 0000000..291083e
 +    uintptr_t model=0,string=0;unsigned fields[15]={0};char name[128]="unavailable";
 +    if(!scene_read(r[0]+0x38,&model,8) || !model)return;
 +    if(!scene_read(model+0x1138,fields,4) || !scene_read(model+0x80,fields+1,20) || !scene_read(model+0x4b4,fields+6,16) || !scene_read(model+0x688,fields+10,4) || !scene_read(model+0x670,fields+11,16))return;
++    // MatchFix's native initialization (388f018..388f01c) resets
++    // model+10f0. Before prepare (3895274) would auto-assign teams, submit
++    // the requested selection through the same owned model/UI publisher.
++    // Never overwrite teams after loading or from a worker thread.
++    if(scene_direct_enabled==1 && scene_match.commanded &&
++       model==scene_match.private_model && fields[0]==5 &&
++       thr_cur_handle()==0x1001 && !scene_match.teams_committed) {
++        unsigned char *owned=(void *)model;
++        for(unsigned k=0;k<10;k++) {
++            int team=k<2 ? scene_match.params.teams[k] : 3,readback=-1;
++            memcpy(owned+0xdc0+4*k,&team,4);
++            if(!scene_read(model+0xdc0+4*k,&readback,4) || readback!=team)
++                die("A7_MATCH final team selection readback mismatch");
++        }
++        owned[0x10f0]=1;
++        ((void (*)(uintptr_t))(scene_main_base+0x3890410))(model);
++        scene_match.teams_committed=1;
++        LOG("A7_MATCH final_teams=%d,%d state=5 frame=%llu thread=%x",scene_match.params.teams[0],scene_match.params.teams[1],dm_guest_frame(),thr_cur_handle());
++    }
 +    if(have && !memcmp(previous,fields,sizeof fields))return;
 +    have=1;memcpy(previous,fields,sizeof fields);
 +    if(scene_read(model+0x468,&string,8))scene_name(string,name);

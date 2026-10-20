@@ -165,10 +165,22 @@ A7 原生开局为显式实验选项，默认入口仍使用已接受的菜单�
 
 2026-10-20阶段结果：两局同PID换图均到双方Winners；原生三图BO3通过（rush 0–3 high-ground、0 void），一份参考策略五项熟练度全部measured。单房旧流程695.789秒→原生375.279秒；三房BO3为633.589秒，尚未达到原10分钟目标。此阶段推荐最多三房，熟练度在BO3之后串行；原生路径未重新验证3＋1并发，不沿用旧菜单的四房结论。证据见`arena/results/a7-entry-smoke-20261020.json`。
 
-**A7未签收，按两轮未消除的比分卡点停止。** 首受控帧屏障修正后，同输入比分差0.200/0.150个百分点；再固定原生对战种子，11502条输入完全相同仍差0.000/0.300，超过预设0.1个百分点。两次均同胜者、有效Winners，但不能称判定等价。完整A1–A6新运行版本回归也未完成；历史分数表仍绑定各自运行哈希，不能用于当前源码的新版本验收。不要据此把实验路径设成正式T1默认，也未开展A8。
+**A7未签收，现按用户修订的自身复现波动口径重测中。** 此前首受控帧屏障修正后，同输入比分差0.200/0.150个百分点；再固定原生对战种子，11502条输入完全相同仍差0.000/0.300，超过当时预设0.1个百分点。旧单对照诊断保留；当前不再以0.1pp作为A7/A8验收阈值。完整A1–A6新运行版本回归仍待完成；历史分数表仍绑定各自运行哈希，不能用于当前源码的新版本验收。不要据此把实验路径设成正式T1默认，也未开展A8。
 
 离线入口：`tests/test_a7_scene.py`、`tests/test_a7_start.py`、`tests/test_a7_comparison.py`。严格比分审计示例（失败仍写JSON并返回非零）：
 
 ```sh
 .venv/bin/python tests/analyze_a7_routes.py --menu work/a7/baseline-20261020-144058-646609/result.json --native work/a7/baseline-20261020-144121-097488/result.json --out work/a7/frozen-input-seeded-v39.json
 ```
+
+当前复现性入口（原始数据只放work，最多3房）：
+
+```bash
+.venv/bin/python tests/probe_a7_repeatability.py --host work/a7/dmhost-team-v43 --patched work/a7/patched-seeds-v16 --policies work/a7/replay-policies --out work/a7/repeatability-v43 --parallel 3
+.venv/bin/python tests/probe_a7_repeatability.py --out work/a7/repeatability-v43 --analyze-only
+.venv/bin/python tests/regress_a7.py --host work/a7/dmhost-team-v43 --patched work/a7/patched-seeds-v16 --out work/a7/final-regression-v43 --parallel 3
+```
+
+输入须先冻结；旧Session菜单与生产NativeSession各至少3局，固定原生四字种子，并检查实际消费、实际出生位置/朝向/槽、全部逐present动作和双端Winners。逐策略比较两组均值差≤两组内部最大两两差的较大值；输出所有组内/跨组差和胜负频数。这是经验波动口径，不声称确定性或置信界。任何参数/运行失败都不得混入噪声分布。v42曾发现一局原生出生侧相反，整组不签收；v43在MatchFix初始化后重新提交游戏自身队伍选择并读回，仍待完整复测。
+
+最终回归不调用会重编默认dmhost的旧run_all分支；A1/A2/A3a与A4三图30路线使用原断言，伤害新测，A6重测支持操作/控制组/时序/射程/特殊量生命周期及三份冻结策略各13次试验的分数表（原始轨迹独立审计）。A5严格重审70局历史原件，再测当前运行版两局换侧、换图且要求同PIDs连续开局。全部通过才能签收A7，之后才开始A8。

@@ -1,0 +1,590 @@
+{
+  "schema": "arena.a7.repeatability.v1",
+  "passed": true,
+  "criterion": "per-role absolute difference of route means <= max of the two within-route ranges; no confidence/determinism claim",
+  "within": {
+    "menu": {
+      "scores": [
+        [
+          1.79999995,
+          0.800000012
+        ],
+        [
+          0.800000012,
+          2.0
+        ],
+        [
+          1.20000005,
+          2.0999999
+        ]
+      ],
+      "mean": [
+        1.2666666706666667,
+        1.633333304
+      ],
+      "range_pp": [
+        0.9999999379999999,
+        1.2999998879999999
+      ],
+      "pairwise": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "difference_pp": [
+            0.9999999379999999,
+            1.199999988
+          ]
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "difference_pp": [
+            0.5999998999999998,
+            1.2999998879999999
+          ]
+        },
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "difference_pp": [
+            0.40000003800000006,
+            0.09999989999999981
+          ]
+        }
+      ]
+    },
+    "native": {
+      "scores": [
+        [
+          0.800000012,
+          2.0999999
+        ],
+        [
+          3.0,
+          1.79999995
+        ],
+        [
+          0.800000012,
+          2.0999999
+        ]
+      ],
+      "mean": [
+        1.5333333413333334,
+        1.9999999166666664
+      ],
+      "range_pp": [
+        2.199999988,
+        0.2999999499999999
+      ],
+      "pairwise": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "difference_pp": [
+            2.199999988,
+            0.2999999499999999
+          ]
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "difference_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "difference_pp": [
+            2.199999988,
+            0.2999999499999999
+          ]
+        }
+      ]
+    }
+  },
+  "noise_upper_pp": [
+    2.199999988,
+    1.2999998879999999
+  ],
+  "mean_difference_pp": [
+    0.2666666706666667,
+    0.36666661266666645
+  ],
+  "cross_pairs": [
+    {
+      "menu": 0,
+      "native": 0,
+      "difference_pp": [
+        0.9999999379999999,
+        1.2999998879999999
+      ]
+    },
+    {
+      "menu": 0,
+      "native": 1,
+      "difference_pp": [
+        1.20000005,
+        0.9999999379999999
+      ]
+    },
+    {
+      "menu": 0,
+      "native": 2,
+      "difference_pp": [
+        0.9999999379999999,
+        1.2999998879999999
+      ]
+    },
+    {
+      "menu": 1,
+      "native": 0,
+      "difference_pp": [
+        0.0,
+        0.09999989999999981
+      ]
+    },
+    {
+      "menu": 1,
+      "native": 1,
+      "difference_pp": [
+        2.199999988,
+        0.2000000500000001
+      ]
+    },
+    {
+      "menu": 1,
+      "native": 2,
+      "difference_pp": [
+        0.0,
+        0.09999989999999981
+      ]
+    },
+    {
+      "menu": 2,
+      "native": 0,
+      "difference_pp": [
+        0.40000003800000006,
+        0.0
+      ]
+    },
+    {
+      "menu": 2,
+      "native": 1,
+      "difference_pp": [
+        1.79999995,
+        0.2999999499999999
+      ]
+    },
+    {
+      "menu": 2,
+      "native": 2,
+      "difference_pp": [
+        0.40000003800000006,
+        0.0
+      ]
+    }
+  ],
+  "maximum_cross_difference_pp": [
+    2.199999988,
+    1.2999998879999999
+  ],
+  "errors": [],
+  "trials": [
+    {
+      "name": "menu-0",
+      "route": "menu",
+      "result": "work/a7/repeatability-v43/menu-0/result.json",
+      "sha256": "4bfd5b814e8b8065357c0c8181a96624c341df1bda1865af694a20dea5487344",
+      "actual_spawn": {
+        "player_0": {
+          "position": [
+            2.6,
+            35,
+            118.45
+          ],
+          "heading": 3.142,
+          "self_slot": 0
+        },
+        "player_1": {
+          "position": [
+            -2.6,
+            35,
+            -118.45
+          ],
+          "heading": 0,
+          "self_slot": 1
+        }
+      },
+      "scores": [
+        1.79999995,
+        0.800000012
+      ],
+      "outcome": "a",
+      "frames": 11502,
+      "input_rows": 11502,
+      "first_input_difference": null,
+      "phase_wall_seconds": {
+        "boot": 117.49863290786743,
+        "room": 303.0074739456177,
+        "loading": 53.6810200214386,
+        "controlled": 522.105950832367,
+        "settlement": 16.530282258987427,
+        "cleanup": 0.1637420654296875
+      },
+      "controlled_fps": 21.168117280372613,
+      "seed_consumption_count_by_peer": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "native-0",
+      "route": "native",
+      "result": "work/a7/repeatability-v43/native-0/result.json",
+      "sha256": "c5b4d0548cdde0c574ab9630284d5b3ea82f69ba4b6217aa0d51fb5f588d8744",
+      "actual_spawn": {
+        "player_0": {
+          "position": [
+            2.6,
+            35,
+            118.45
+          ],
+          "heading": 3.142,
+          "self_slot": 0
+        },
+        "player_1": {
+          "position": [
+            -2.6,
+            35,
+            -118.45
+          ],
+          "heading": 0,
+          "self_slot": 1
+        }
+      },
+      "scores": [
+        0.800000012,
+        2.0999999
+      ],
+      "outcome": "b",
+      "frames": 11502,
+      "input_rows": 11502,
+      "first_input_difference": null,
+      "phase_wall_seconds": {
+        "boot": 8.75812578201294,
+        "room": 12.305781126022339,
+        "loading": 17.528967142105103,
+        "controlled": 425.403856754303,
+        "settlement": 14.279436111450195,
+        "cleanup": 0.11525201797485352
+      },
+      "controlled_fps": 25.980018339098446,
+      "seed_consumption_count_by_peer": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "menu-1",
+      "route": "menu",
+      "result": "work/a7/repeatability-v43/menu-1/result.json",
+      "sha256": "c5a43756603b0c4323cc2cd791da72a44ee91dbce03f1ec6a1d668be283a29a2",
+      "actual_spawn": {
+        "player_0": {
+          "position": [
+            2.6,
+            35,
+            118.45
+          ],
+          "heading": 3.142,
+          "self_slot": 0
+        },
+        "player_1": {
+          "position": [
+            -2.6,
+            35,
+            -118.45
+          ],
+          "heading": 0,
+          "self_slot": 1
+        }
+      },
+      "scores": [
+        0.800000012,
+        2.0
+      ],
+      "outcome": "b",
+      "frames": 11520,
+      "input_rows": 11520,
+      "first_input_difference": null,
+      "phase_wall_seconds": {
+        "boot": 117.43715190887451,
+        "room": 308.4542832374573,
+        "loading": 59.313931941986084,
+        "controlled": 522.2341959476471,
+        "settlement": 15.296643018722534,
+        "cleanup": 0.08559083938598633
+      },
+      "controlled_fps": 21.13994082667604,
+      "seed_consumption_count_by_peer": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "native-1",
+      "route": "native",
+      "result": "work/a7/repeatability-v43/native-1/result.json",
+      "sha256": "86d1384ec7ad106ebd823bcc3a760de1a1a44d8b7569b864d49b5c741a8f202f",
+      "actual_spawn": {
+        "player_0": {
+          "position": [
+            2.6,
+            35,
+            118.45
+          ],
+          "heading": 3.142,
+          "self_slot": 0
+        },
+        "player_1": {
+          "position": [
+            -2.6,
+            35,
+            -118.45
+          ],
+          "heading": 0,
+          "self_slot": 1
+        }
+      },
+      "scores": [
+        3.0,
+        1.79999995
+      ],
+      "outcome": "a",
+      "frames": 11538,
+      "input_rows": 11538,
+      "first_input_difference": null,
+      "phase_wall_seconds": {
+        "boot": 8.912296056747437,
+        "room": 15.679060935974121,
+        "loading": 18.603355169296265,
+        "controlled": 510.2528100013733,
+        "settlement": 11.676422834396362,
+        "cleanup": 0.14954900741577148
+      },
+      "controlled_fps": 21.730404581152936,
+      "seed_consumption_count_by_peer": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "menu-2",
+      "route": "menu",
+      "result": "work/a7/repeatability-v43/menu-2/result.json",
+      "sha256": "d06a15d13c04164f2c639f6b0ea8fd51617bd6c6327636eba1b4bda47f08d208",
+      "actual_spawn": {
+        "player_0": {
+          "position": [
+            2.6,
+            35,
+            118.45
+          ],
+          "heading": 3.142,
+          "self_slot": 0
+        },
+        "player_1": {
+          "position": [
+            -2.6,
+            35,
+            -118.45
+          ],
+          "heading": 0,
+          "self_slot": 1
+        }
+      },
+      "scores": [
+        1.20000005,
+        2.0999999
+      ],
+      "outcome": "b",
+      "frames": 11520,
+      "input_rows": 11520,
+      "first_input_difference": null,
+      "phase_wall_seconds": {
+        "boot": 106.7589099407196,
+        "room": 248.00284504890442,
+        "loading": 46.35683512687683,
+        "controlled": 331.62275981903076,
+        "settlement": 10.567145109176636,
+        "cleanup": 0.10221576690673828
+      },
+      "controlled_fps": 33.29083928384354,
+      "seed_consumption_count_by_peer": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "native-2",
+      "route": "native",
+      "result": "work/a7/repeatability-v43/native-2/result.json",
+      "sha256": "35e72fed05f489b7c1c33313ea4640c931e2cbad1ae3bc95256a3e46d3b913dc",
+      "actual_spawn": {
+        "player_0": {
+          "position": [
+            2.6,
+            35,
+            118.45
+          ],
+          "heading": 3.142,
+          "self_slot": 0
+        },
+        "player_1": {
+          "position": [
+            -2.6,
+            35,
+            -118.45
+          ],
+          "heading": 0,
+          "self_slot": 1
+        }
+      },
+      "scores": [
+        0.800000012,
+        2.0999999
+      ],
+      "outcome": "b",
+      "frames": 11502,
+      "input_rows": 11502,
+      "first_input_difference": null,
+      "phase_wall_seconds": {
+        "boot": 7.708200931549072,
+        "room": 14.760215044021606,
+        "loading": 17.658167123794556,
+        "controlled": 350.9452359676361,
+        "settlement": 11.432919979095459,
+        "cleanup": 0.08257794380187988
+      },
+      "controlled_fps": 31.49209297435571,
+      "seed_consumption_count_by_peer": [
+        1,
+        1
+      ]
+    }
+  ],
+  "runtime_identity": {
+    "host_sha256": "533c6e1bcc634141d723773e162db6088ce98bcd329b36a87012ab489cb00063",
+    "runtime_sha256": {
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43": "533c6e1bcc634141d723773e162db6088ce98bcd329b36a87012ab489cb00063",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43.build.json": "92b2f0dea88251a8e36b4ebfce288b385cb67de19a04ea0fc9277b657feaa2f8",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/runner.py": "f5ec0d2fcef81c051f81698ace5cf2c09e2047d83505305d42e23ab438689ae0",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/scoring.py": "2aa661e607543a731755ff9afbd241f6bf05d0a964a1c1d20d4d1056ea3bc460",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/process.py": "6c99d57f9a29326d8cb148588a13a8f4829251197b16d3d5b78605f3ab62cfe8",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/referee_api.py": "9d87d9b25e9b6d50f80b91cbb1df70e5990b29cf970392aaca8f416504ee216c",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/visibility.py": "028ff4105f57fe7db9ef622b92dbb9775571afa1a0cbddd5239c9de24e43fe26",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/rl/env.py": "7116423a6defbb1de2c3f67521033d47933bd7dd1177f87527019bb43bcfa4a0",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/rl/protocol.py": "39232c1dfdaad6260a2b5c968c976eee1a2a5da7acece8b38f62e8323d105cb8",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/rl/clock.py": "beb14de74b1b885547f4c458b7aded395d3dbb73e0fe4862655065b7b2688758",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/rl/native_start.py": "147f99046b8e847b879f80a9d2b2ae36417952dfbb2088ed4749544e5d921a81",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/rl/session.py": "a77d31ccd095104b33d94fb1e6599b2a7fd446e1296e99de07668e2d3c433e4b",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/rl/__init__.py": "5566ca2ce69e7a30c942ed3a277c249983e132b4e0f56e1b906f4a92cdd14224",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/rl/loadout.py": "4a467181bbf2d7fcd04af077a443ab9e7b7d6e32e780fcc9ad5cda29820f4962",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/sdk.gates.tsv": "b8a423e96ef3e974536ac76daedfd36bfb4f8c5c53202b1f75b44cab0c3422a4",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/main.cuts.tsv": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/main.patched.bin": "adff249da62265e72714a38805616f3f3acc05f3e577e2520767acf317514d45",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/main.params.tsv": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/sdk.cuts.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/sdk.params.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/sdk.sites.tsv": "47133c275153917e458eb79052939ae2ae864c1e1624c89c7dc5724932c0964e",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/sdk.patched.bin": "80f9323eea986f5fd28f722115c16629b0ad00a02bd79b64487f1e25cc03c96b",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/main.sites.tsv": "5bd67b1fc42cd0711c22bf91fb3002c68bd2338d29058a86700dd7300d9dbbea",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/build_src.sha256": "4aba136be39846f2d26640e106045f3bf067fe36e6e6594e849f0e699050e290",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/sdk.obs.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/main.gates.tsv": "520efddfda63566b5539fcf33eae72a6bded594733322db31c01630186cc00bc",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/main.obs.tsv": "b509055acdb2caf06bce9037e67b7cbf1122fb1a25d56fb410d37ab9dda61cf1",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/main.fixups.tsv": "6f83f654b9d6c3bd04b91557667e9d64c1e83357ecd14e3cc5afe7c8118dcab7",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16/sdk.fixups.tsv": "63cebe532bd9f6c81d6944caa7bfc66befc226e816e42adfcf9d07da53ea071b"
+    },
+    "source_hashes": [
+      "94645b99623c778f95035e66a5b08d65042532b79554bcf15bfdd1a595090106",
+      "da2d2176e5202106396db84e7675b04bdd20a135073f1ab55969bb599e90c989"
+    ],
+    "policy_step_frames": [
+      12,
+      12
+    ],
+    "stage": 2,
+    "seed_words": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "input_comparison": "All executed actions equal over their union after neutral padding of post-Winners tails; settlement labels are not input. Every trial executed the full 10920-frame non-neutral frozen plan.",
+  "plan_sha256": "4ddc8e4ca26b6036f141104d168a5ec4c68ed245004a0579385b38cbd4c6aaf0",
+  "full_a7_passed": false,
+  "outcomes": {
+    "menu": {
+      "a": 1,
+      "b": 2,
+      "draw": 0
+    },
+    "native": {
+      "a": 1,
+      "b": 2,
+      "draw": 0
+    }
+  },
+  "raw_result": "work/a7/repeatability-v43/result.json",
+  "raw_result_sha256": "b239bea6306b1732b72db70382232fbffb47dfde7192d2ae6a497983259df459",
+  "scope": "A7 score equivalence and startup measurement passed; final-version A1-A6 regression pending; not A7 acceptance.",
+  "all_cross_pairs_within_noise": true,
+  "phase_wall_mean_seconds": {
+    "menu": {
+      "boot": 113.89823158582051,
+      "room": 286.4882007439931,
+      "loading": 53.11726236343384,
+      "controlled": 458.6543021996816,
+      "settlement": 14.131356795628866,
+      "cleanup": 0.11718289057413737
+    },
+    "native": {
+      "boot": 8.459540923436483,
+      "room": 14.24835236867269,
+      "loading": 17.930163145065308,
+      "controlled": 428.8673009077708,
+      "settlement": 12.462926308314005,
+      "cleanup": 0.11579298973083496
+    }
+  },
+  "performance_scope": "Three-worker mixed-route batch with shared two-loader limit; varying room overlap. Group FPS/total means are descriptive, not isolated GPU speedup.",
+  "controlled_fps_group_mean": {
+    "menu": 25.19963246363073,
+    "native": 26.4008386315357
+  },
+  "excluded_parameter_failure_group": {
+    "result": "work/a7/repeatability-v42/result.json",
+    "sha256": "4b66d06e0223cdfc57864093a723279ef5f27f533901fb1a9d946d954bc451f1",
+    "passed": false,
+    "errors": [
+      "actual spawn/heading mismatch native-0"
+    ],
+    "reason": "Actual spawn side mismatch; entire v42 group excluded rather than selecting score samples."
+  }
+}

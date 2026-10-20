@@ -3,11 +3,12 @@
 
 A5 retains the exact historical accepted70 audit and adds two fresh swapped
 single-room games. A6 reruns supported operations/controls, range brackets,
-charge thresholds, full/infinite lifecycles, and all three frozen five-trial
+charge thresholds, full/infinite lifecycles, and all three frozen thirteen-trial
 scorecards. Unsupported weapon/fixture claims remain inherited explicitly.
 """
 import argparse
-from concurrent.futures import ThreadPoolExecutor,as_completed
+from concurrent.futures import ThreadPoolExecutor,wait,FIRST_COMPLETED
+from collections import deque
 import json
 from pathlib import Path
 import subprocess
@@ -19,6 +20,8 @@ from arena.proficiency import matching_card
 from arena.config import PolicySpec
 from rl.native_start import validate_runtime
 from probe_a7_trial import sha
+from test_a6 import audit_cards
+from analyze_a6_timing import analyze as analyze_timing
 
 
 def main(args):
@@ -35,14 +38,15 @@ def main(args):
     fixture('a6-moving-emerge','benchmark_a6.py','--policy',str(ROOT/'work/a6/frozen-policies-20261019-150539/arena/proficiency-reference'),'--scenario','approach','--repeats','1','--verify-emerge','--emerge-frames','26','--out',str(out/'moving-emerge-card.json'),'--timeout','2400')
     for name,path in [('reference','arena/proficiency-reference'),('alpha','arena/policies/alpha'),('bravo','arena/policies/bravo')]:jobs.append(dict(name='card-'+name,kind='card',policy=str(ROOT/'work/a6/frozen-policies-20261019-150539'/path)))
     jobs.append(dict(name='a5',kind='a5'))
-    write_json_atomic(out/'plan.json',dict(schema='arena.a7.regression-plan.v1',jobs=jobs,parallel=args.parallel,host=str(host),patched=str(modules),host_sha256=sha(host),entry_sha256=sha(__file__)))
+    routes=dict(name='a4',kind='fixture',script='test_a4.py',args=['--timeout','2400','--existing-maps','--damage-job',str(out/'damage.json')])
+    write_json_atomic(out/'plan.json',dict(schema='arena.a7.regression-plan.v1',jobs=jobs,dependent_jobs=[dict(job=routes,after='damage')],parallel=args.parallel,host=str(host),patched=str(modules),host_sha256=sha(host),entry_sha256=sha(__file__)))
     report=dict(schema='arena.a7.regression.v1',passed=False,jobs={},errors=[],started_wall=time.time(),parallel=args.parallel,host_sha256=sha(host))
     def save():report['wall_seconds']=time.time()-report['started_wall'];write_json_atomic(out/'result.json',report)
     def run(job):
         name=job['name'];record=out/(name+'.json')
         before=set((ROOT/'work/arena').glob('tournament-*')) if job['kind']=='a5' else set()
         if job['kind']=='fixture':command=[sys.executable,str(ROOT/'tests/run_native_regression.py'),'--host',str(host),'--patched',str(modules),'--record',str(record),'--shared-load-slots',str(slots),str(ROOT/'tests'/job['script']),*job['args']]
-        elif job['kind']=='card':command=[sys.executable,str(ROOT/'tests/proficiency.py'),'--policy',job['policy'],'--out',str(out/(name+'-scorecard.json')),'--repeats','1','--native-host',str(host),'--native-patched',str(modules),'--timeout','2400','--shared-load-slots',str(slots)]
+        elif job['kind']=='card':command=[sys.executable,str(ROOT/'tests/proficiency.py'),'--policy',job['policy'],'--out',str(out/(name+'-scorecard.json')),'--repeats','3','--native-host',str(host),'--native-patched',str(modules),'--timeout','2400','--shared-load-slots',str(slots)]
         else:command=[sys.executable,str(ROOT/'tests/test_a5.py'),'--games','2','--parallel','1','--native-host',str(host),'--native-patched',str(modules),'--timeout','2400']
         with (out/(name+'.log')).open('w') as log:code=subprocess.call(command,stdout=log,stderr=subprocess.STDOUT)
         result=dict(exit_code=code,passed=code==0,command=command,log_sha256=sha(out/(name+'.log')))
@@ -51,24 +55,50 @@ def main(args):
             if len(made)!=1:raise AssertionError('fresh A5 evidence ambiguous')
             path=made.pop()/'result.json';value=json.loads(path.read_text())
             result.update(evidence=str(path),evidence_sha256=sha(path),passed=bool(value['phase_passed'] and value['statistics']['valid_games']==2 and {tuple(m['role_to_policy']) for m in value['matches'] if m['passed']}=={(0,1),(1,0)}))
+            valid=[m for m in value['matches'] if m['passed']]
+            result['continuous_same_pids']=len(valid)==2 and valid[0]['host_pids']==valid[1]['host_pids']
+            result['passed']=result['passed'] and result['continuous_same_pids']
         if record.exists():result['record']=str(record);result['record_sha256']=sha(record)
+        if job['kind']=='fixture' and code==0:
+            bound=json.loads(record.read_text())
+            if not bound['passed']:result['passed']=False
+            if name=='a6-timing':
+                evidence=bound['evidence']
+                if len(evidence)!=1:raise AssertionError('fresh timing evidence ambiguous')
+                path=Path(evidence[0]['path']);native=json.loads(path.read_text())
+                expected={'standing-charge':21,'surface-charge':26}
+                result['thresholds']=native.get('thresholds')
+                if native.get('thresholds')!=expected or analyze_timing(path)['minimum_observed_full_release']!=expected:result['passed']=False
         print(name,'exit',code,flush=True)
         return name,result
     save()
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:
-        for future in as_completed([pool.submit(run,job) for job in jobs]):
-            name,result=future.result();report['jobs'][name]=result;save()
-    if report['jobs']['damage']['passed']:
-        job=dict(name='a4',kind='fixture',script='test_a4.py',args=['--timeout','2400','--existing-maps','--damage-job',str(out/'damage.json')])
-        name,value=run(job);report['jobs'][name]=value;save()
-    else:report['errors'].append('fresh A4 damage failed; full routes not signed')
+        pending=deque(jobs);running=set()
+        while pending or running:
+            while pending and len(running)<args.parallel:running.add(pool.submit(run,pending.popleft()))
+            done,_=wait(running,return_when=FIRST_COMPLETED)
+            for future in done:
+                running.remove(future);name,result=future.result();report['jobs'][name]=result;save()
+                if name=='damage':
+                    if result['passed']:pending.appendleft(routes)
+                    else:report['errors'].append('fresh A4 damage failed; full routes not signed')
     runtime=dict(host=str(host),patched=str(modules))
+    cards=[];card_items=[]
     for job in jobs:
         if job['kind']=='card' and report['jobs'][job['name']]['passed']:
             value=matching_card(out/(job['name']+'-scorecard.json'),PolicySpec.load(job['policy']),runtime)
             if value['status']!='available':report['errors'].append('fresh scorecard binding failed '+job['name'])
             card=json.loads((out/(job['name']+'-scorecard.json')).read_text())
-            if card['measured']!=card['total'] or card['total']!=5:report['errors'].append('fresh five-trial card incomplete '+job['name'])
+            if card['measured']!=card['total'] or card['total']!=13:report['errors'].append('fresh thirteen-trial card incomplete '+job['name'])
+            cards.append(card);card_items.append(dict(policy_root=job['policy']))
+    if len(cards)==3:
+        try:audit_cards(dict(scorecards=card_items),cards);report['a6_independent_card_audit']=True
+        except Exception as error:report['errors'].append('independent A6 card audit: '+repr(error))
+    else:report['errors'].append('three fresh scorecards required')
+    command=[sys.executable,str(ROOT/'tests/audit_a5_historical.py'),'--out',str(out/'a5-historical.json')]
+    with (out/'a5-historical.log').open('w') as log:code=subprocess.call(command,stdout=log,stderr=subprocess.STDOUT)
+    report['a5_historical_audit']=dict(exit_code=code,path=str(out/'a5-historical.json'))
+    if code:report['errors'].append('historical A5 70-game archive audit failed')
     report['passed']=all(x['passed'] for x in report['jobs'].values()) and not report['errors'];save();return report
 
 
