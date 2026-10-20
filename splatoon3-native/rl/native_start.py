@@ -12,7 +12,7 @@ import subprocess
 import sys
 import time
 
-from .session import Session, ROOT
+from .session import Session, ROOT, NativeProcessExitError
 
 MAPS={1:'Vss_Yunohana',2:'Vss_District00',3:'Vss_Yagara'}
 
@@ -120,7 +120,7 @@ class NativeSessionPool:
     """
     def __init__(self,host,patched):
         self.host,self.patched=validate_runtime(host,patched);self.held=None
-        self.identity=None;self.starts=0;self.reuses=0
+        self.identity=None;self.starts=0;self.reuses=0;self.rebuilds=[]
 
     @staticmethod
     def equipment(config):
@@ -130,6 +130,14 @@ class NativeSessionPool:
         if config['players']!=2 or config['mode']!=0 or config['stage_id'] not in MAPS:
             raise ValueError('A7 currently supports two-player arena Turf')
         equipment=self.equipment(config)
+        if self.held and (self.held.closed or any(process.poll() is not None for _,process,_ in self.held.hosts)):
+            stale=self.held;self.held=None
+            record=dict(reason='retained native process exited',artifacts=str(stale.out))
+            try:stale.close()
+            except NativeProcessExitError as error:record['cleanup_error']=repr(error)
+            # A crash may be rebuilt; reference/save integrity errors must
+            # still abort, even when close also reports the process failure.
+            stale.check_saves();self.rebuilds.append(record)
         if self.held and equipment!=self.identity:self.close()
         if self.held:
             session=self.held;self.held=None;self.reuses+=1

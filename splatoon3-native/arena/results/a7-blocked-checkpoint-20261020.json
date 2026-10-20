@@ -1,0 +1,547 @@
+{
+  "schema": "arena.a7.blocked-checkpoint.v1",
+  "full_a7_passed": false,
+  "status": "blocked_after_two_score_equivalence_attempts",
+  "blocker": "Same fixed60 per-present inputs still produce different native Turf scores across menu and direct startup. Early InGame alignment and fixed native match seeds did not resolve this. Root cause remains unknown; no claim of GPU or RNG causality.",
+  "comparisons": [
+    {
+      "schema": "arena.a7.frozen-input-comparison.v1",
+      "full_a7_passed": false,
+      "passed": false,
+      "checks": {
+        "completed": true,
+        "same_winner": true,
+        "score_within_one_quantum": false,
+        "same_inputs": true,
+        "same_runtime_and_parameters": true
+      },
+      "score_difference_pp": [
+        0.20000004399999993,
+        0.15000003500000014
+      ],
+      "score_tolerance_pp": 0.1,
+      "score_tolerance_basis": "one native PaintPercent/10 display quantum",
+      "evidence": [
+        {
+          "path": "work/a7/baseline-20261020-133952-400089/result.json",
+          "sha256": "9f69871e1f4467a5ae02450c785eeae5cd3f641dfc6be2da94dfcc30c5585184"
+        },
+        {
+          "path": "work/a7/baseline-20261020-133956-723758/result.json",
+          "sha256": "c6263c8f00c13f503589fe7bb782487ed7d752de0140c444fca7d62c7315d29a"
+        },
+        {
+          "path": "work/a7/baseline-20261020-133952-400089/match/inputs-per-present.jsonl",
+          "sha256": "f868e471a328a068e6fb9f1ef96e61f8eecb24900f1fc521172ad49bd1ec523b"
+        },
+        {
+          "path": "work/a7/baseline-20261020-133956-723758/match/inputs-per-present.jsonl",
+          "sha256": "f868e471a328a068e6fb9f1ef96e61f8eecb24900f1fc521172ad49bd1ec523b"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-133952-441482/player-0/input.json",
+          "sha256": "dba9011f451e7858d1ce54cda283c3eeb15c7340f718ab4e6655539ce6e71848"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-133952-441482/player-1/input.json",
+          "sha256": "8bac0048aba8a08fb3f7cd46762f7d8a05a8b503d587f218c742b268461bd867"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-133956-769939/player-0/input.json",
+          "sha256": "3052538409f83b296505744bc367e738dce98a3bcb56d557e4f0e4b7eb06dfe2"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-133956-769939/player-1/input.json",
+          "sha256": "6147d34402096a5f084db4e4e679873e7fe264384412caf7eaf73068ab8dbb4c"
+        }
+      ],
+      "menu": "work/a7/baseline-20261020-133952-400089/result.json",
+      "native": "work/a7/baseline-20261020-133956-723758/result.json",
+      "identity_scope": "Recorded host SHA, policy sources/step, map, role mapping, fixed60, early InGame barrier, equipment, seed parameters. Rewritten-module identity is archived separately; old baseline reports do not embed module hashes.",
+      "input_present_counts": [
+        11520,
+        11520
+      ],
+      "first_input_difference": null,
+      "scores": [
+        [
+          1.10000002,
+          2.0
+        ],
+        [
+          0.899999976,
+          1.8499999649999999
+        ]
+      ],
+      "outcomes": [
+        "b",
+        "b"
+      ]
+    },
+    {
+      "schema": "arena.a7.frozen-input-comparison.v1",
+      "full_a7_passed": false,
+      "passed": false,
+      "checks": {
+        "completed": true,
+        "same_winner": true,
+        "score_within_one_quantum": false,
+        "same_inputs": true,
+        "same_runtime_and_parameters": true
+      },
+      "score_difference_pp": [
+        0.0,
+        0.2999999499999999
+      ],
+      "score_tolerance_pp": 0.1,
+      "score_tolerance_basis": "one native PaintPercent/10 display quantum",
+      "evidence": [
+        {
+          "path": "work/a7/baseline-20261020-144058-646609/result.json",
+          "sha256": "90ef023eed1ec7573f05b789e50254905f20e9770b9d9545aa8113f93ff1b999"
+        },
+        {
+          "path": "work/a7/baseline-20261020-144121-097488/result.json",
+          "sha256": "addfacd655fbc0384538d4b9383bb4ddead4873ed2543ef4d54167428532a5c0"
+        },
+        {
+          "path": "work/a7/baseline-20261020-144058-646609/match/inputs-per-present.jsonl",
+          "sha256": "e0e6775870f9fc26dbc18ae8e2f9d7707aafc031b23dfd757e001918d0a07063"
+        },
+        {
+          "path": "work/a7/baseline-20261020-144121-097488/match/inputs-per-present.jsonl",
+          "sha256": "e0e6775870f9fc26dbc18ae8e2f9d7707aafc031b23dfd757e001918d0a07063"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-144058-683450/player-0/input.json",
+          "sha256": "1773620f298601f778cd6b3bf7efa257b81aa3726afe9de706b5335bbbc448ca"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-144058-683450/player-1/input.json",
+          "sha256": "eab22bc434b84178ed0fd1f9d8c73e6e7a4d60b284527b7672c0cea9effcb078"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-144121-137321/player-0/input.json",
+          "sha256": "4cb087fe061150662c03368e5c167e00a9ec5336ff710a71a91b3fdb81dc302e"
+        },
+        {
+          "path": "work/tests/m6-2p-20261020-144121-137321/player-1/input.json",
+          "sha256": "4c7b99a7992b942c43ded4d2aeb18f0e252304ff23c5979252d42c7ace9d780a"
+        }
+      ],
+      "menu": "work/a7/baseline-20261020-144058-646609/result.json",
+      "native": "work/a7/baseline-20261020-144121-097488/result.json",
+      "identity_scope": "Recorded host SHA, policy sources/step, map, role mapping, fixed60, early InGame barrier, equipment, seed parameters. Rewritten-module identity is archived separately; old baseline reports do not embed module hashes.",
+      "input_present_counts": [
+        11502,
+        11502
+      ],
+      "first_input_difference": null,
+      "scores": [
+        [
+          0.800000012,
+          1.79999995
+        ],
+        [
+          0.800000012,
+          2.0999999
+        ]
+      ],
+      "outcomes": [
+        "b",
+        "b"
+      ]
+    }
+  ],
+  "tolerance_pp": 0.1,
+  "tolerance_changed": false,
+  "continuous": {
+    "passed": true,
+    "clock_mode": "fixed60",
+    "host_sha256": "3ff5c66440700396358bf79d5e85330ad12eeda3a0b9e8699c8a325fa975665c",
+    "pool": {
+      "starts": 1,
+      "reuses": 1
+    },
+    "matches": [
+      {
+        "passed": true,
+        "stage": 2,
+        "outcome": "b",
+        "score_by_role": [
+          0.100000001,
+          1.39999998
+        ],
+        "score_peers_native_order": [
+          [
+            0.100000001,
+            1.39999998
+          ],
+          [
+            1.39999998,
+            0.100000001
+          ]
+        ],
+        "frames": 11520,
+        "settlement_frames": 480,
+        "native_winners": true,
+        "host_pids": [
+          6387,
+          6489
+        ],
+        "void": false,
+        "errors": []
+      },
+      {
+        "passed": true,
+        "stage": 3,
+        "outcome": "b",
+        "score_by_role": [
+          1.10000002,
+          1.5
+        ],
+        "score_peers_native_order": [
+          [
+            1.10000002,
+            1.5
+          ],
+          [
+            1.5,
+            1.10000002
+          ]
+        ],
+        "frames": 11532,
+        "settlement_frames": 480,
+        "native_winners": true,
+        "host_pids": [
+          6387,
+          6489
+        ],
+        "void": false,
+        "errors": []
+      }
+    ]
+  },
+  "seed_probe": {
+    "passed": true,
+    "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261020-150205-404465",
+    "errors": [],
+    "evidence": {
+      "0": [
+        "[dm] A7_SEEDS origin=consume_probe pointer=71926d0c18 vtable=110dc1f70 expected_vtable=110dc1f70",
+        "[dm] A7_SEEDS origin=consumed frame=92 thread=1027 generated=0 seeds=1,0,0,0 requested_match=0",
+        "[dm] A7_SEEDS origin=private_fix model=717ba24300 state=1 frame=815 thread=1001 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=717ba24300 state=3 frame=816 thread=1001 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=717ba24300 state=4 frame=817 thread=1001 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=717ba24300 state=5 frame=819 thread=1001 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=generated frame=824 thread=1023 seeds=974846822,1629533994,958733999,1396856402 override=1",
+        "[dm] A7_SEEDS origin=parameter frame=824 thread=1023 seeds=1,2,3,4",
+        "[dm] A7_SEEDS origin=private_fix model=717ba24300 state=6 frame=824 thread=1023 seeds=1,2,3,4",
+        "[dm] A7_SEEDS origin=private_fix model=717ba24300 state=7 frame=825 thread=1001 seeds=1,2,3,4",
+        "[dm] A7_SEEDS origin=private_fix model=717ba24300 state=10 frame=832 thread=1022 seeds=1,2,3,4",
+        "[dm] A7_SEEDS origin=scene_request frame=874 thread=1001 settings=71926f7c48 time=180 seeds=1,2,3,4 color=838073 bgm=0",
+        "[dm] A7_SEEDS origin=consume_probe pointer=71926d0c18 vtable=110dc1f70 expected_vtable=110dc1f70",
+        "[dm] A7_SEEDS origin=consumed frame=929 thread=1027 generated=1 seeds=1,2,3,4 requested_match=1"
+      ],
+      "1": [
+        "[dm] A7_SEEDS origin=consume_probe pointer=7316ed0c18 vtable=10cb19f70 expected_vtable=10cb19f70",
+        "[dm] A7_SEEDS origin=consumed frame=93 thread=1027 generated=0 seeds=1,0,0,0 requested_match=0",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=1 frame=452 thread=1001 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=3 frame=453 thread=1023 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=4 frame=454 thread=1001 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=5 frame=458 thread=1001 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=6 frame=459 thread=1022 seeds=1,0,0,0",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=6 frame=464 thread=1022 seeds=1,2,3,4",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=7 frame=465 thread=1023 seeds=1,2,3,4",
+        "[dm] A7_SEEDS origin=private_fix model=7300224300 state=10 frame=471 thread=1001 seeds=1,2,3,4",
+        "[dm] A7_SEEDS origin=scene_request frame=511 thread=1022 settings=7316ef7c48 time=180 seeds=1,2,3,4 color=838073 bgm=0",
+        "[dm] A7_SEEDS origin=consume_probe pointer=7316ed0c18 vtable=10cb19f70 expected_vtable=10cb19f70",
+        "[dm] A7_SEEDS origin=consumed frame=566 thread=1027 generated=0 seeds=1,2,3,4 requested_match=1"
+      ]
+    },
+    "scope": "Final v42 host/v16 modules: normal native publication and both in-game seed-read callbacks see 1,2,3,4 after 120 neutral frames. This is a short integration probe, not a repeated full score comparison or proof that every RNG stream is fixed."
+  },
+  "pending": [
+    "Strict old-route score equivalence",
+    "Complete fresh A1-A6 acceptance on final source/runtime",
+    "Public Python native seed API",
+    "Cross-CLI persistent T1 room service"
+  ],
+  "fresh_regression": {
+    "a1_v34": "work/tests/a1-20261020-133824-973059/result.json",
+    "a2_v32": "work/tests/a2-20261020-133112-770364/result.json",
+    "components": "A1 clock/waits/watchdog and A2-A6 component gates passed. Final A7 suite: 30 tests passed. Five-trial reference scorecard is historical evidence bound to its actual v34 runtime; subsequent source changes invalidate reuse under current evaluation hashes."
+  },
+  "evidence": [
+    {
+      "path": "work/a7/native-pool-20261020-134000-766082/result.json",
+      "sha256": "5099f9186b07296884c383e466d014fae59a20d4e8e801ff6189061796eba118"
+    },
+    {
+      "path": "work/a7/seed-param-reader-v42-result.json",
+      "sha256": "b2f7a859f6b50fe9862a7a308c5a559daec78edfbbad09d79ecb33b187a01fba"
+    },
+    {
+      "path": "work/a7/dmhost-seed-reader-v42.build.json",
+      "sha256": "db2f29c50b92952e8a4788a5459b213db63f6ecbe6092cf2017b1f65c15ce8fc"
+    },
+    {
+      "path": "work/a7/dmhost-seed-params-v39.build.json",
+      "sha256": "7576d68bc57f2955b9bef70d7dd47684355082b24421c71305f4c6581e5e7a1a"
+    },
+    {
+      "path": "work/a7/dmhost-barrier-v34.build.json",
+      "sha256": "32d458f1653e5c87a6b8ef03b7babcb76c32f99586a7d4417e6899e3d392fd9e"
+    },
+    {
+      "path": "work/a7/a7-final-components.log",
+      "sha256": "cfb5e4701ceae3471cd2cb2686eab5ad62c81edc614f97b544444b77a054ae8c"
+    },
+    {
+      "path": "work/a7/frozen-input-comparison-v34.json",
+      "sha256": "b796a54d0c4f1d21815d91c3e16f89025cfec2e4f80e78cd64b252534d710f06"
+    },
+    {
+      "path": "work/a7/frozen-input-seeded-v39.json",
+      "sha256": "f67fe4a15cd32c883df1f3bdf7ef0a80a6fe42f046423ca10c5196b22eb85c68"
+    },
+    {
+      "path": "work/a7/frozen-input-aa-v34.json",
+      "sha256": "bf1c0fddeda6ee4e996ef23b58cdc4c0147433a8062527db0ca6f5daf0374aa5"
+    },
+    {
+      "path": "work/tests/a1-20261020-133824-973059/result.json",
+      "sha256": "ad2c5daaca8579a3f3023e25c8b16ae5aac0e000a6081a108398c840152e9bca"
+    },
+    {
+      "path": "work/tests/a2-20261020-133112-770364/result.json",
+      "sha256": "ffc346e053ec481946aabd62a337f79b7caa363f40d6d38f2eb704f4fe8e239a"
+    }
+  ],
+  "comparison_modules": {
+    "patched-setting-v12": [
+      {
+        "path": "work/a7/patched-setting-v12/build_src.sha256",
+        "sha256": "87f26ee0beceb1bd0fa664564fd430a85bf2cd6c48107430467a5c76ad31029c"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/main.cuts.tsv",
+        "sha256": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/main.fixups.tsv",
+        "sha256": "6f83f654b9d6c3bd04b91557667e9d64c1e83357ecd14e3cc5afe7c8118dcab7"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/main.gates.tsv",
+        "sha256": "41a28c36412fbe1e0da49ecbc5a32e536a247d8ab4fe32a4eb10dbeee7ae33b5"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/main.obs.tsv",
+        "sha256": "a32d78a1d402aebab6a320dd2ebb5573e78396251a3f420941e161265f7dd8c8"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/main.params.tsv",
+        "sha256": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/main.patched.bin",
+        "sha256": "474b7c34592d0cb325fa8288528f2ee91e6b820101c83182492d00c281841dc1"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/main.sites.tsv",
+        "sha256": "5bd67b1fc42cd0711c22bf91fb3002c68bd2338d29058a86700dd7300d9dbbea"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/sdk.cuts.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/sdk.fixups.tsv",
+        "sha256": "63cebe532bd9f6c81d6944caa7bfc66befc226e816e42adfcf9d07da53ea071b"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/sdk.gates.tsv",
+        "sha256": "b8a423e96ef3e974536ac76daedfd36bfb4f8c5c53202b1f75b44cab0c3422a4"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/sdk.obs.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/sdk.params.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/sdk.patched.bin",
+        "sha256": "80f9323eea986f5fd28f722115c16629b0ad00a02bd79b64487f1e25cc03c96b"
+      },
+      {
+        "path": "work/a7/patched-setting-v12/sdk.sites.tsv",
+        "sha256": "47133c275153917e458eb79052939ae2ae864c1e1624c89c7dc5724932c0964e"
+      }
+    ],
+    "patched-seeds-v15": [
+      {
+        "path": "work/a7/patched-seeds-v15/build_src.sha256",
+        "sha256": "8f9b87e5d4b0f82e905bdcf5781711ea012a5f1e77584e30114fb79c375c047e"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/main.cuts.tsv",
+        "sha256": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/main.fixups.tsv",
+        "sha256": "6f83f654b9d6c3bd04b91557667e9d64c1e83357ecd14e3cc5afe7c8118dcab7"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/main.gates.tsv",
+        "sha256": "a3161320e9f14480f43cd673d1ddd2f18d40a8da62372b0c7608f46beb507b45"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/main.obs.tsv",
+        "sha256": "bf195e9dcc2878f0f7fb0cf0ca247a57a2b9fa5eb6fd2d7566ad5641167e4bd2"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/main.params.tsv",
+        "sha256": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/main.patched.bin",
+        "sha256": "b8970c0ef7d57a1d0d645b8c83e66bfa7693ede88b5a3f8f5f2dc5c044a3999e"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/main.sites.tsv",
+        "sha256": "5bd67b1fc42cd0711c22bf91fb3002c68bd2338d29058a86700dd7300d9dbbea"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/sdk.cuts.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/sdk.fixups.tsv",
+        "sha256": "63cebe532bd9f6c81d6944caa7bfc66befc226e816e42adfcf9d07da53ea071b"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/sdk.gates.tsv",
+        "sha256": "b8a423e96ef3e974536ac76daedfd36bfb4f8c5c53202b1f75b44cab0c3422a4"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/sdk.obs.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/sdk.params.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/sdk.patched.bin",
+        "sha256": "80f9323eea986f5fd28f722115c16629b0ad00a02bd79b64487f1e25cc03c96b"
+      },
+      {
+        "path": "work/a7/patched-seeds-v15/sdk.sites.tsv",
+        "sha256": "47133c275153917e458eb79052939ae2ae864c1e1624c89c7dc5724932c0964e"
+      }
+    ],
+    "patched-seeds-v16": [
+      {
+        "path": "work/a7/patched-seeds-v16/build_src.sha256",
+        "sha256": "4aba136be39846f2d26640e106045f3bf067fe36e6e6594e849f0e699050e290"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/main.cuts.tsv",
+        "sha256": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/main.fixups.tsv",
+        "sha256": "6f83f654b9d6c3bd04b91557667e9d64c1e83357ecd14e3cc5afe7c8118dcab7"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/main.gates.tsv",
+        "sha256": "520efddfda63566b5539fcf33eae72a6bded594733322db31c01630186cc00bc"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/main.obs.tsv",
+        "sha256": "b509055acdb2caf06bce9037e67b7cbf1122fb1a25d56fb410d37ab9dda61cf1"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/main.params.tsv",
+        "sha256": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/main.patched.bin",
+        "sha256": "adff249da62265e72714a38805616f3f3acc05f3e577e2520767acf317514d45"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/main.sites.tsv",
+        "sha256": "5bd67b1fc42cd0711c22bf91fb3002c68bd2338d29058a86700dd7300d9dbbea"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/sdk.cuts.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/sdk.fixups.tsv",
+        "sha256": "63cebe532bd9f6c81d6944caa7bfc66befc226e816e42adfcf9d07da53ea071b"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/sdk.gates.tsv",
+        "sha256": "b8a423e96ef3e974536ac76daedfd36bfb4f8c5c53202b1f75b44cab0c3422a4"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/sdk.obs.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/sdk.params.tsv",
+        "sha256": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/sdk.patched.bin",
+        "sha256": "80f9323eea986f5fd28f722115c16629b0ad00a02bd79b64487f1e25cc03c96b"
+      },
+      {
+        "path": "work/a7/patched-seeds-v16/sdk.sites.tsv",
+        "sha256": "47133c275153917e458eb79052939ae2ae864c1e1624c89c7dc5724932c0964e"
+      }
+    ]
+  },
+  "runtime_scope_note": "Old baseline reports embed host SHA but not module digests; the identical explicitly selected v15 modules are independently hashed here. Seeded full comparisons used v39, final seed-reader-only probe used v42. They are not the same binary.",
+  "default_host_unchanged_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+  "seeded_full_match_scene_seed_evidence": [
+    {
+      "baseline": "work/a7/baseline-20261020-144058-646609",
+      "player": 0,
+      "lines": [
+        "[dm] A7_SEEDS origin=scene_request frame=16239 thread=1022 settings=71926f7c48 time=180 seeds=1,2,3,4 color=903609 bgm=0"
+      ],
+      "log_sha256": "483b6b191f658a8c0bfb909b6545e56c51a86b193374bb80c35628c7039c815f"
+    },
+    {
+      "baseline": "work/a7/baseline-20261020-144058-646609",
+      "player": 1,
+      "lines": [
+        "[dm] A7_SEEDS origin=scene_request frame=9530 thread=1001 settings=7998ef7c48 time=180 seeds=1,2,3,4 color=903609 bgm=0"
+      ],
+      "log_sha256": "4ddf863dbc88f39e7fee428171908e99a4f9b1d4f6643120e8003d93971dc341"
+    },
+    {
+      "baseline": "work/a7/baseline-20261020-144121-097488",
+      "player": 0,
+      "lines": [
+        "[dm] A7_SEEDS origin=scene_request frame=829 thread=1023 settings=71926f7c48 time=180 seeds=1,2,3,4 color=903609 bgm=0"
+      ],
+      "log_sha256": "874bc22b1596c626cefc707e7de14c0996b604f8496053b78b311591caabf910"
+    },
+    {
+      "baseline": "work/a7/baseline-20261020-144121-097488",
+      "player": 1,
+      "lines": [
+        "[dm] A7_SEEDS origin=scene_request frame=484 thread=1023 settings=71926f7c48 time=180 seeds=1,2,3,4 color=903609 bgm=0"
+      ],
+      "log_sha256": "f0f749d640b07c7ad4a75acb82cbc5693c65eff9934a36081ff9496709199415"
+    }
+  ],
+  "frozen_original_host_module_files_verified": 1,
+  "final_runtime_validated": true
+}

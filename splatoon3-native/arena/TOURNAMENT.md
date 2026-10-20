@@ -159,8 +159,16 @@ A7 原生开局为显式实验选项，默认入口仍使用已接受的菜单�
 .venv/bin/python tests/proficiency.py --policy arena/policies/rush --out work/arena/rush-native-card --repeats 1 --native-host work/a7/dmhost-native --native-patched work/a7/patched-native
 ```
 
-两个native参数必须一起提供；宿主可执行文件、构建源哈希、原生观察门均校验后才开局。当前适配层只开放两人占地与三张擂台地图。阵营固定player_0/1为0/1，轮次换侧继续由原有roles映射策略，outcome a/b口径不变。没有游戏原生RNG种子控制；Gym seed仅动作空间种子。
+两个native参数必须一起提供；宿主可执行文件、构建源哈希、原生观察门均校验后才开局。当前适配层只开放两人占地与三张擂台地图。阵营固定player_0/1为0/1，轮次换侧继续由原有roles映射策略，outcome a/b口径不变。Python入口尚不开放原生种子参数；Gym seed仅动作空间种子。底层`DM_SCENE_SEEDS`四个uint32的实验已验证原生发布/两端读取，但固定这些值仍未使新旧流程比分等价，不可当作完整确定性控制。
 
-复用池由协调进程持有，完整双方Winners且有效比分后才可保留。下一局换图仍经游戏场景、Create/Find/Join、私房设置发布和MatchFix流程。装备/配装变化、未到Winners的训练夹具或取消会关闭原进程再建房；不在旧进程里冒充热更新装备。A5同一worker的连续任务可复用；当前t1_round CLI一轮退出会回收三个worker及其宿主，不声称跨CLI命令保存房间。熟练度夹具通常提前结束，因此使用统一原生开局但关闭未结算房间。
+复用池由协调进程持有，完整双方Winners且有效比分后才可保留。下一局换图仍经游戏场景、Create/Find/Join、私房设置发布和MatchFix流程。装备/配装变化、未到Winners的训练夹具或取消会关闭原进程再建房；不在旧进程里冒充热更新装备。已保留房间的进程若意外退出，下一次租用先完整清理再重建；存档/参考文件完整性异常继续报错，不能被恢复逻辑吞掉。A5同一worker的连续任务可复用；当前t1_round CLI一轮退出会回收三个worker及其宿主，不声称跨CLI命令保存房间。熟练度夹具通常提前结束，因此使用统一原生开局但关闭未结算房间。
 
-以上入口仍在A7原生实机回归中。已完成首局Winners与单房旧流程耗时对照，但同策略对照胜者不同，不作为同输入比分回归通过；后续接受状态以PROGRESS及arena/results中的证据为准。离线入口：tests/test_a7_scene.py、tests/test_a7_start.py。
+2026-10-20阶段结果：两局同PID换图均到双方Winners；原生三图BO3通过（rush 0–3 high-ground、0 void），一份参考策略五项熟练度全部measured。单房旧流程695.789秒→原生375.279秒；三房BO3为633.589秒，尚未达到原10分钟目标。此阶段推荐最多三房，熟练度在BO3之后串行；原生路径未重新验证3＋1并发，不沿用旧菜单的四房结论。证据见`arena/results/a7-entry-smoke-20261020.json`。
+
+**A7未签收，按两轮未消除的比分卡点停止。** 首受控帧屏障修正后，同输入比分差0.200/0.150个百分点；再固定原生对战种子，11502条输入完全相同仍差0.000/0.300，超过预设0.1个百分点。两次均同胜者、有效Winners，但不能称判定等价。完整A1–A6新运行版本回归也未完成；历史分数表仍绑定各自运行哈希，不能用于当前源码的新版本验收。不要据此把实验路径设成正式T1默认，也未开展A8。
+
+离线入口：`tests/test_a7_scene.py`、`tests/test_a7_start.py`、`tests/test_a7_comparison.py`。严格比分审计示例（失败仍写JSON并返回非零）：
+
+```sh
+.venv/bin/python tests/analyze_a7_routes.py --menu work/a7/baseline-20261020-144058-646609/result.json --native work/a7/baseline-20261020-144121-097488/result.json --out work/a7/frozen-input-seeded-v39.json
+```

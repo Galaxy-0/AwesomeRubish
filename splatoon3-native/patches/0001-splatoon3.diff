@@ -1967,7 +1967,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..7d7e4b9 100644
+index fda33ac..87db9d8 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1975,7 +1975,7 @@ index fda33ac..7d7e4b9 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_SPL3_BOOT_SCENE = 33, OBS_SPL3_SCENE_REQUEST = 34, OBS_SPL3_LOCAL_CREATE = 35, OBS_SPL3_LOCAL_JOIN = 36, OBS_SPL3_LOCAL_PROGRESS = 37, OBS_SPL3_MATCH_MENU = 38, OBS_SPL3_MATCH_FIX = 39, OBS_SPL3_PRIVATE_UI = 40, OBS_SPL3_NET_ROOT = 41, OBS_SPL3_NET_EVENT = 42, OBS_SPL3_PRIVATE_SETTING = 43, OBS_MAX = 44 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_SPL3_BOOT_SCENE = 33, OBS_SPL3_SCENE_REQUEST = 34, OBS_SPL3_LOCAL_CREATE = 35, OBS_SPL3_LOCAL_JOIN = 36, OBS_SPL3_LOCAL_PROGRESS = 37, OBS_SPL3_MATCH_MENU = 38, OBS_SPL3_MATCH_FIX = 39, OBS_SPL3_PRIVATE_UI = 40, OBS_SPL3_NET_ROOT = 41, OBS_SPL3_NET_EVENT = 42, OBS_SPL3_PRIVATE_SETTING = 43, OBS_SPL3_MATCH_SEEDS = 44, OBS_SPL3_SEED_CONSUME = 45, OBS_MAX = 46 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -3926,10 +3926,10 @@ index 0000000..0877bf7
 +}
 diff --git a/dm/host/hle_spl3_scene.c b/dm/host/hle_spl3_scene.c
 new file mode 100644
-index 0000000..600ea08
+index 0000000..291083e
 --- /dev/null
 +++ b/dm/host/hle_spl3_scene.c
-@@ -0,0 +1,472 @@
+@@ -0,0 +1,534 @@
 +// A7 experimental scene-request adapter; no synthetic match phase or score.
 +#include "dm.h"
 +#include <mach/mach.h>
@@ -3967,6 +3967,20 @@ index 0000000..600ea08
 +}
 +static uintptr_t scene_main_base;
 +static _Atomic uintptr_t scene_main_controller;
++static int scene_seed_override;
++static unsigned scene_seed_words[4];
++static _Atomic unsigned scene_seed_generations;
++
++static void scene_parse_seeds(const char *text,unsigned words[4]) {
++    const char *p=text;
++    for(unsigned n=0;n<4;n++) {
++        if(*p<'0' || *p>'9')die("DM_SCENE_SEEDS requires four decimal uint32 values");
++        char *end=NULL;unsigned long long value=strtoull(p,&end,10);
++        if(value>UINT32_MAX || !end || (n<3 ? *end!=',' : *end!=0))die("DM_SCENE_SEEDS requires four decimal uint32 values");
++        words[n]=(unsigned)value;p=end+(n<3);
++    }
++    if(!(words[0]|words[1]|words[2]|words[3]))die("DM_SCENE_SEEDS cannot be an all-zero xorshift state");
++}
 +
 +static int scene_parse_params(const char *path,scene_match_params *params) {
 +    FILE *file=fopen(path,"rb");if(!file)return 0;
@@ -3994,6 +4008,43 @@ index 0000000..600ea08
 +    }
 +    return 0;
 +}
++static void scene_seed_trace(const char *origin) {
++    uintptr_t slot=0,system=0,modules=0,settings=0,vt=0;unsigned fields[7]={0};
++    if(!scene_main_base || !scene_read(scene_main_base+0x5f351a0,&slot,8) || !scene_read(slot,&system,8) ||
++       !scene_read(system+0xd8,&modules,8) || !scene_read(modules+0x6688,&settings,8) ||
++       !scene_read(settings,&vt,8) || vt!=scene_main_base+0x5dadf70 || !scene_read(settings+0xa0,fields,sizeof fields))return;
++    // VersusSettings serializer 35189e8..3518a60: Time, RandomSeed0..3,
++    // TeamColorHash, BgmId. Snapshot only; do not change native RNG here.
++    LOG("A7_SEEDS origin=%s frame=%llu thread=%x settings=%lx time=%u seeds=%u,%u,%u,%u color=%u bgm=%u",origin,dm_guest_frame(),thr_cur_handle(),(unsigned long)settings,fields[0],fields[1],fields[2],fields[3],fields[4],fields[5],fields[6]);
++}
++static void scene_seed_generate(const uint64_t *r) {
++    // site_obs saves 16 bytes and dm_gate saves 800 bytes (entry.S).
++    // This is the game's own temporary CommonMatchInfo, still under its
++    // native input lock, immediately before native publication/synchronization.
++    uintptr_t sp=(uintptr_t)r+816,vt=0;unsigned words[4]={0};
++    if(!scene_read(sp+0x20,&vt,8) || vt!=scene_main_base+0x5df67e0 || !scene_read(sp+0x258,words,sizeof words)) {
++        if(scene_seed_override)die("A7 seed parameter stack layout mismatch");
++        LOG("A7_SEEDS origin=generated unavailable=1");return;
++    }
++    LOG("A7_SEEDS origin=generated frame=%llu thread=%x seeds=%u,%u,%u,%u override=%d",dm_guest_frame(),thr_cur_handle(),words[0],words[1],words[2],words[3],scene_seed_override);
++    if(scene_seed_override) {
++        memcpy((void *)(sp+0x258),scene_seed_words,sizeof scene_seed_words);
++        if(!scene_read(sp+0x258,words,sizeof words) || memcmp(words,scene_seed_words,sizeof words))die("A7 seed parameter readback mismatch");
++        LOG("A7_SEEDS origin=parameter frame=%llu thread=%x seeds=%u,%u,%u,%u",dm_guest_frame(),thr_cur_handle(),words[0],words[1],words[2],words[3]);
++    }
++    scene_seed_generations++;
++}
++static void scene_seed_consume(const uint64_t *r) {
++    static _Atomic unsigned calls;
++    uintptr_t vt=0;unsigned words[4]={0};
++    unsigned count=atomic_fetch_add(&calls,1);
++    if(count>=64)return;
++    if(!scene_read(r[11],&vt,8) || vt!=scene_main_base+0x5dadf70 || !scene_read(r[11]+0xa4,words,sizeof words)) {
++        LOG("A7_SEEDS origin=consume_probe unavailable=1 pointer=%llx",r[11]);return;
++    }
++    LOG("A7_SEEDS origin=consume_probe pointer=%llx vtable=%lx expected_vtable=%lx",r[11],(unsigned long)vt,(unsigned long)(scene_main_base+0x5dadf70));
++    LOG("A7_SEEDS origin=consumed frame=%llu thread=%x generated=%u seeds=%u,%u,%u,%u requested_match=%d",dm_guest_frame(),thr_cur_handle(),atomic_load(&scene_seed_generations),words[0],words[1],words[2],words[3],scene_seed_override && !memcmp(words,scene_seed_words,sizeof words));
++}
 +static void scene_boot_request(const uint64_t *r) {
 +    char name[128];
 +    if(!scene_name(r[1],name))die("A7_SCENE invalid boot scene argument");
@@ -4006,6 +4057,7 @@ index 0000000..600ea08
 +    if(!scene_read(r[1],&address,sizeof address) || !scene_name(address,name))
 +        die("A7_SCENE invalid native scene string");
 +    scene_requests++;
++    if(!strncmp(name,"Vss_",4))scene_seed_trace("scene_request");
 +    const char *effective=name;
 +    if(!scene_replaced && strcmp(scene_boot,"trace") && !strcmp(name,"Plaza")) {
 +        // Native entry dereferences x1 and immediately copies this C string.
@@ -4212,7 +4264,7 @@ index 0000000..600ea08
 +    }
 +    if(!match->private_started) {
 +        int accepted=((int (*)(uintptr_t,int))(scene_main_base+0x388ebd0))(match->private_model,2);
-+        LOG("A7_MATCH private_model_initialize accepted=%d frame=%llu",accepted,dm_guest_frame());match->private_started=1;return;
++        LOG("A7_MATCH private_model_initialize accepted=%d model=%lx frame=%llu",accepted,(unsigned long)match->private_model,dm_guest_frame());match->private_started=1;return;
 +    }
 +    if(!match->configured && model_state!=1)return;
 +    if(!match->configured) {
@@ -4334,31 +4386,41 @@ index 0000000..600ea08
 +static void scene_menu(const uint64_t *r){scene_flow(r,1,"menu");}
 +static void scene_fix(const uint64_t *r){
 +    scene_flow(r,2,"fix");
-+    static unsigned previous[11];static int have;
-+    uintptr_t model=0,string=0;unsigned fields[11]={0};char name[128]="unavailable";
++    static unsigned previous[15];static int have;
++    uintptr_t model=0,string=0;unsigned fields[15]={0};char name[128]="unavailable";
 +    if(!scene_read(r[0]+0x38,&model,8) || !model)return;
-+    if(!scene_read(model+0x1138,fields,4) || !scene_read(model+0x80,fields+1,20) || !scene_read(model+0x4b4,fields+6,16) || !scene_read(model+0x688,fields+10,4))return;
++    if(!scene_read(model+0x1138,fields,4) || !scene_read(model+0x80,fields+1,20) || !scene_read(model+0x4b4,fields+6,16) || !scene_read(model+0x688,fields+10,4) || !scene_read(model+0x670,fields+11,16))return;
 +    if(have && !memcmp(previous,fields,sizeof fields))return;
 +    have=1;memcpy(previous,fields,sizeof fields);
 +    if(scene_read(model+0x468,&string,8))scene_name(string,name);
 +    LOG("A7_FIX_MODEL state=%u input=%u,%u,%u,%u,%u parameters=%u,%u,%u,%u hash=%u scene=%s frame=%llu",fields[0],fields[1],fields[2],fields[3],fields[4],fields[5],fields[6],fields[7],fields[8],fields[9],fields[10],name,dm_guest_frame());
++    LOG("A7_SEEDS origin=private_fix model=%lx state=%u frame=%llu thread=%x seeds=%u,%u,%u,%u",(unsigned long)model,fields[0],dm_guest_frame(),thr_cur_handle(),fields[11],fields[12],fields[13],fields[14]);
 +}
 +static void scene_private(const uint64_t *r){scene_flow(r,3,"private");}
 +
 +void spl3_scene_install(void) {
 +    scene_boot=getenv("DM_SCENE_BOOT");
 +    if(!scene_boot) {
-+        if(getenv("DM_SCENE_DIRECT") || getenv("DM_SCENE_UPPER") || getenv("DM_SCENE_MATCH"))die("A7 direct options require DM_SCENE_BOOT");
++        if(getenv("DM_SCENE_DIRECT") || getenv("DM_SCENE_UPPER") || getenv("DM_SCENE_MATCH") || getenv("DM_SCENE_SEEDS") || getenv("DM_SCENE_TRACE_SEEDS"))die("A7 direct options require DM_SCENE_BOOT");
 +        return;
 +    }
 +    if(strcmp(scene_boot,"trace") && strcmp(scene_boot,"ShootingRange") && strcmp(scene_boot,"LobbyLocal"))
 +        die("DM_SCENE_BOOT prototype requires trace, ShootingRange or LobbyLocal");
 +    if(strcmp(dm_main_build(),"28c4287aee36f7499da60f3e68b54c70"))
 +        die("DM_SCENE_BOOT requires verified Splatoon 3 11.3.0 main");
++    for(int k=0;k<g_nmod;k++)if(!strcmp(g_mod[k].name,"main"))scene_main_base=(uintptr_t)g_mod[k].base;
 +    if(!gate_obs_present(OBS_SPL3_BOOT_SCENE) || !gate_obs_present(OBS_SPL3_SCENE_REQUEST))
 +        die("DM_SCENE_BOOT requires A7 scene gates");
 +    gate_obs_set(OBS_SPL3_BOOT_SCENE,scene_boot_request);
 +    gate_obs_set(OBS_SPL3_SCENE_REQUEST,scene_request);
++    const char *seeds=getenv("DM_SCENE_SEEDS"),*seed_trace=getenv("DM_SCENE_TRACE_SEEDS");
++    if(seed_trace && strcmp(seed_trace,"0") && strcmp(seed_trace,"1"))die("DM_SCENE_TRACE_SEEDS must be 0 or 1");
++    if(seeds || (seed_trace && !strcmp(seed_trace,"1"))) {
++        if(!gate_obs_present(OBS_SPL3_MATCH_SEEDS) || !gate_obs_present(OBS_SPL3_SEED_CONSUME))die("DM_SCENE_SEEDS requires A7 native seed gates");
++        if(seeds){scene_parse_seeds(seeds,scene_seed_words);scene_seed_override=1;}
++        gate_obs_set(OBS_SPL3_MATCH_SEEDS,scene_seed_generate);
++        gate_obs_set(OBS_SPL3_SEED_CONSUME,scene_seed_consume);
++    }
 +    const char *network=getenv("DM_SCENE_TRACE_NETWORK");
 +    if(network && strcmp(network,"0") && strcmp(network,"1"))die("DM_SCENE_TRACE_NETWORK must be 0 or 1");
 +    if(network && !strcmp(network,"1")) {
@@ -5538,10 +5600,10 @@ index 0000000..bf88ab5
 +}
 diff --git a/dm/host/tests/t_spl3_scene.c b/dm/host/tests/t_spl3_scene.c
 new file mode 100644
-index 0000000..1483c68
+index 0000000..746e757
 --- /dev/null
 +++ b/dm/host/tests/t_spl3_scene.c
-@@ -0,0 +1,82 @@
+@@ -0,0 +1,111 @@
 +// A7 argument adapter contracts only; native scene loading is a separate gate.
 +#include "../hle_spl3_scene.c"
 +module_t g_mod[MAX_MOD];int g_nmod=1;
@@ -5549,17 +5611,46 @@ index 0000000..1483c68
 +int dm_rl_match_phase(void) { return 0; }
 +int dm_rl_active(void) { return 0; }
 +static void (*callbacks[OBS_MAX])(const uint64_t *);
-+static int missing,missing_network,missing_flow;
++static int missing,missing_network,missing_flow,missing_seed;
 +int gate_obs_present(int id) {
 +    return !missing && (id==OBS_SPL3_BOOT_SCENE || id==OBS_SPL3_SCENE_REQUEST ||
 +        (!missing_network && (id==OBS_SPL3_LOCAL_CREATE || id==OBS_SPL3_LOCAL_JOIN)) ||
-+        (!missing_flow && id>=OBS_SPL3_LOCAL_PROGRESS && id<=OBS_SPL3_PRIVATE_SETTING));
++        (!missing_flow && id>=OBS_SPL3_LOCAL_PROGRESS && id<=OBS_SPL3_PRIVATE_SETTING) ||
++        (!missing_seed && (id==OBS_SPL3_MATCH_SEEDS || id==OBS_SPL3_SEED_CONSUME)));
 +}
 +void gate_obs_set(int id,void (*fn)(const uint64_t *)) {if(id<=0 || id>=OBS_MAX)abort();callbacks[id]=fn;}
 +uint64_t dm_guest_frame(void) {return 1234;}
 +int main(int argc,char **argv) {
 +    strcpy(g_mod[0].name,"main");strcpy(g_mod[0].build_id,"28c4287aee36f7499da60f3e68b54c70");
 +    const char *mode=argc>1 ? argv[1] : "";
++    if(!strcmp(mode,"parse-seeds")) {
++        unsigned words[4];if(argc!=3)return 2;scene_parse_seeds(argv[2],words);
++        printf("%u,%u,%u,%u\n",words[0],words[1],words[2],words[3]);return 0;
++    }
++    if(!strcmp(mode,"seed-consume") || !strcmp(mode,"seed-consume-bad")) {
++        unsigned char settings[0xc0]={0},copy[sizeof settings];
++        uint64_t r[31]={0},before[31];uintptr_t vt=0x5dadf70;
++        if(!strcmp(mode,"seed-consume-bad"))vt=0;
++        scene_seed_override=1;scene_parse_seeds("1,2,3,4",scene_seed_words);
++        memcpy(settings,&vt,8);memcpy(settings+0xa4,scene_seed_words,sizeof scene_seed_words);
++        memcpy(copy,settings,sizeof copy);r[11]=(uintptr_t)settings;memcpy(before,r,sizeof r);
++        scene_seed_consume(r);
++        return memcmp(copy,settings,sizeof copy) || memcmp(before,r,sizeof r);
++    }
++    if(!strcmp(mode,"seed-buffer") || !strcmp(mode,"seed-buffer-bad")) {
++        uint64_t context[256]={0},before[256];uintptr_t vt=0x5df67e0;
++        unsigned original[4]={11,22,33,44};unsigned char *bytes=(void *)context;
++        memcpy(bytes+816+0x20,&vt,8);memcpy(bytes+816+0x258,original,sizeof original);memcpy(before,context,sizeof before);
++        scene_seed_generate(context);if(memcmp(before,context,sizeof before))return 20;
++        scene_seed_override=1;scene_parse_seeds("101,202,303,404",scene_seed_words);
++        if(!strcmp(mode,"seed-buffer-bad")){vt=0;memcpy(bytes+816+0x20,&vt,8);}
++        scene_seed_generate(context);
++        memcpy((unsigned char *)before+816+0x258,scene_seed_words,sizeof scene_seed_words);
++        if(memcmp(before,context,sizeof before))return 21;
++        return 0;
++    }
++    if(!strcmp(mode,"seed-no-boot") || !strcmp(mode,"seed-missing"))setenv("DM_SCENE_SEEDS","1,2,3,4",1);
++    if(!strcmp(mode,"seed-missing"))missing_seed=1;
 +    if(!strcmp(mode,"parse")) {
 +        scene_match_params params;
 +        if(argc!=3 || !scene_parse_params(argv[2],&params))return 2;
@@ -5793,10 +5884,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..847d662 100644
+index 837700c..7cd1c3a 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,33 @@ CUTS = {
+@@ -162,6 +162,35 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -5826,11 +5917,13 @@ index 837700c..847d662 100644
 +    (0x1506cd4, 41, 'd10383ff', 'Splatoon 3 game network root update; A7 producer trace'),
 +    (0x14d184c, 42, 'd10103ff', 'Splatoon 3 game FSM request; A7 producer trace'),
 +    (0x3d7ccd0, 43, 'b9402008', 'Splatoon 3 private setting comparison; A7 canonical-setting survey'),
++    (0x38958e0, 44, '91486508', 'Splatoon 3 private match seed parameters before native submit; A7'),
++    (0x19890e8, 45, 'b940a568', 'Splatoon 3 game RNG consumes VersusSettings seed state; A7 readback'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +659,7 @@ for fa, fb in funcs:
+@@ -632,7 +661,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -5839,7 +5932,7 @@ index 837700c..847d662 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +753,14 @@ for off, oid, ow, why in obs:
+@@ -726,7 +755,17 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25
@@ -5850,7 +5943,10 @@ index 837700c..847d662 100644
 +    # x9-x17 are dead; the original LDR restores d8 before the native return.
 +    # 0x3572074 precedes the native gear-copy BL: x0 is its owned-row arg;
 +    # x9-x17 and w8 are dead, x1 is assigned next from callee-saved roots.
-+    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27),(0x2920760,28),(0x4011c64,29),(0x4011e28,30),(0x3572074,32))
++    # A7 seed sites are explicit exceptions, checked against the words above.
++    # entry.S now restores x9-x17 and NZCV as well: 38958e0 is after the four
++    # stores to the native temporary parameter; 19890e8 reads its live x11.
++    spl3_prologue = BUILD_ID == '28c4287aee36f7499da60f3e68b54c70' and (off, oid) in ((0x3db55d4,21),(0x3dcc714,22),(0x3dd9374,23),(0x27fca14,24),(0x3ef6934,25),(0x3f6d6a4,26),(0x3f6df34,27),(0x2920760,28),(0x4011c64,29),(0x4011e28,30),(0x3572074,32),(0x38958e0,44),(0x19890e8,45))
 +    assert off in set(starts) or after_bl or (oid == 6 and off == 0x43ecc8) or spl3_prologue, f'private obs point not approved {off:#x}'
      assert off < TEXT_END and off not in kinds and not any(lo <= off < hi for wseg in windows for lo, hi in [(wseg[0].address, wseg[-1].address + 4)]), f'观测门与改写点冲突 {off:#x}'
      put_branch(off, site_obs(off, oid, w)); stat('obs')

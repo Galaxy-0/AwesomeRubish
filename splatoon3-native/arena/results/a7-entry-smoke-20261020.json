@@ -1,0 +1,326 @@
+{
+  "schema": "arena.a7.entry-smoke.v1",
+  "passed": true,
+  "full_a7_passed": false,
+  "strict_score_equivalence_passed": false,
+  "scope": "Three-map BO3 and version-bound five-trial proficiency entry. These were sequential; proficiency uses the frozen public reference, not a BO3 participant.",
+  "summary": {
+    "schema": "arena.t1.summary.v1",
+    "round": 0,
+    "policies": [
+      "rush",
+      "high-ground"
+    ],
+    "source_hashes": [
+      "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+      "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+    ],
+    "passed": true,
+    "complete": true,
+    "games": [
+      {
+        "fixture": 0,
+        "stage": 1,
+        "map": "Yunohana",
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "winner": "b",
+        "winner_name": "high-ground",
+        "score_by_role": [
+          1.10000002,
+          2.0999999
+        ],
+        "score_by_policy": {
+          "a": 1.10000002,
+          "b": 2.0999999
+        },
+        "hud_by_policy": {
+          "a": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          },
+          "b": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          }
+        },
+        "suspect": false,
+        "attempt": 0,
+        "artifacts": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/arena/t1-native-a7-v38/game-0-attempt-000"
+      },
+      {
+        "fixture": 1,
+        "stage": 2,
+        "map": "District00",
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "winner": "b",
+        "winner_name": "high-ground",
+        "score_by_role": [
+          0.5,
+          0.600000024
+        ],
+        "score_by_policy": {
+          "a": 0.5,
+          "b": 0.600000024
+        },
+        "hud_by_policy": {
+          "a": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          },
+          "b": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          }
+        },
+        "suspect": false,
+        "attempt": 0,
+        "artifacts": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/arena/t1-native-a7-v38/game-1-attempt-000"
+      },
+      {
+        "fixture": 2,
+        "stage": 3,
+        "map": "Yagara",
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "winner": "b",
+        "winner_name": "high-ground",
+        "score_by_role": [
+          1.20000005,
+          1.29999995
+        ],
+        "score_by_policy": {
+          "a": 1.20000005,
+          "b": 1.29999995
+        },
+        "hud_by_policy": {
+          "a": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          },
+          "b": {
+            "enemy_hud_downs": 0,
+            "own_hud_downs": 0,
+            "enemy_environmental_downs": 0,
+            "own_environmental_downs": 0,
+            "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+          }
+        },
+        "suspect": false,
+        "attempt": 0,
+        "artifacts": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/arena/t1-native-a7-v38/game-2-attempt-000"
+      }
+    ],
+    "wins": {
+      "a": 0,
+      "b": 3,
+      "draw": 0
+    },
+    "round_winner": "b",
+    "round_winner_name": "high-ground",
+    "void_attempts": 0,
+    "errors": []
+  },
+  "bo3_wall_seconds": 633.5892779827118,
+  "concurrency_windows": [
+    {
+      "start_wall": 1792477473.9346628,
+      "end_wall": 1792477989.00251,
+      "overlap_seconds": 515.0678472518921,
+      "rooms": 3,
+      "hosts": 6,
+      "host_pids": [
+        99798,
+        509,
+        99796,
+        510,
+        99797,
+        508
+      ],
+      "attempts": [
+        {
+          "round": 0,
+          "attempt": 0
+        },
+        {
+          "round": 1,
+          "attempt": 0
+        },
+        {
+          "round": 2,
+          "attempt": 0
+        }
+      ]
+    }
+  ],
+  "native_runtime": {
+    "host": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-seed-params-v38",
+    "patched": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-setting-v12"
+  },
+  "matches": [
+    {
+      "stage": 1,
+      "passed": true,
+      "outcome": "b",
+      "score_by_role": [
+        1.10000002,
+        2.0999999
+      ],
+      "score_max_difference_pp": 0.0,
+      "frames": 11532,
+      "settlement_frames": 480,
+      "native_winners": true,
+      "host_pids": [
+        99798,
+        509
+      ],
+      "void": false,
+      "errors": []
+    },
+    {
+      "stage": 2,
+      "passed": true,
+      "outcome": "b",
+      "score_by_role": [
+        0.5,
+        0.600000024
+      ],
+      "score_max_difference_pp": 0.0,
+      "frames": 11520,
+      "settlement_frames": 480,
+      "native_winners": true,
+      "host_pids": [
+        99796,
+        510
+      ],
+      "void": false,
+      "errors": []
+    },
+    {
+      "stage": 3,
+      "passed": true,
+      "outcome": "b",
+      "score_by_role": [
+        1.20000005,
+        1.29999995
+      ],
+      "score_max_difference_pp": 0.0,
+      "frames": 11532,
+      "settlement_frames": 480,
+      "native_winners": true,
+      "host_pids": [
+        99797,
+        508
+      ],
+      "void": false,
+      "errors": []
+    }
+  ],
+  "proficiency": {
+    "policy": "proficiency-reference",
+    "source_sha256": "c6f89806a95a7db5ad09e509a9b636cd2902cbf1aa2563cacffc6c71a6b0bd8f",
+    "native_runtime": {
+      "host": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-barrier-v34",
+      "patched": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-setting-v12"
+    },
+    "measured": 5,
+    "total": 5,
+    "aggregate_score": 30.667,
+    "wall_seconds": 789.6883492469788,
+    "trials": [
+      {
+        "scenario": "stationary",
+        "nominal_distance": 6.0,
+        "status": "measured",
+        "score": 53.333,
+        "down_frame": null
+      },
+      {
+        "scenario": "lateral",
+        "nominal_distance": 6.0,
+        "status": "measured",
+        "score": 100.0,
+        "down_frame": null
+      },
+      {
+        "scenario": "lateral",
+        "nominal_distance": 12.0,
+        "status": "measured",
+        "score": 0.0,
+        "down_frame": null
+      },
+      {
+        "scenario": "lateral",
+        "nominal_distance": 18.0,
+        "status": "measured",
+        "score": 0.0,
+        "down_frame": null
+      },
+      {
+        "scenario": "approach",
+        "nominal_distance": 6.0,
+        "status": "measured",
+        "score": 0.0,
+        "down_frame": null
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "path": "work/arena/t1-native-a7-v38/result.json",
+      "sha256": "3d61043ae1e071e3d871f49fa20846fd2b8b972fbb7c452e636f555ba44bf29d"
+    },
+    {
+      "path": "work/arena/t1-native-a7-v38/summary.json",
+      "sha256": "75065989f86fb26d45d8e0fd9fa212757227639c13e63243a4ef05690a36c39c"
+    },
+    {
+      "path": "work/arena/t1-native-a7-v38/runtime-sha256.json",
+      "sha256": "407c24c1462671a35eb8588f6feab84c053210a9e6444942406ddc56a8e1af24"
+    },
+    {
+      "path": "work/arena/proficiency-20261020-134914-622839/result.json",
+      "sha256": "506c8b8ddda3efc3aa0a9b31ae579ef9afe1ba09516e7857336d3d633080a196"
+    },
+    {
+      "path": "work/a7/proficiency-reference-v34/scorecard.json",
+      "sha256": "8e3f33442714d96771c775a2d33f8c98582fb381159abdd74aff92e15ca6e495"
+    },
+    {
+      "path": "work/a7/proficiency-reference-v34/scorecard.md",
+      "sha256": "7e2284b8c5cc78e510f689ca1af4fbf299d8b9ea719f0019eb62e72c7ce7935f"
+    }
+  ],
+  "owned_host_pids": [
+    99798,
+    509,
+    99796,
+    510,
+    99797,
+    508
+  ],
+  "all_bo3_owned_hosts_closed": true,
+  "performance_note": "BO3 took 10m33.589s; misses the original 10-minute target by 33.589s. One CPU-only NSO rewrite overlapped this smoke. No rendering optimization was performed."
+}

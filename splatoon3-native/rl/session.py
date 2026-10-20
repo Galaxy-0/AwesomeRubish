@@ -22,6 +22,10 @@ SAVE_HASH = '89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd'
 FAILURE = re.compile(r'CRASH|FATAL|GPU.*(?:执行错误|execution error)|内存看门狗')
 
 
+class NativeProcessExitError(RuntimeError):
+    """Owned hosts were cleaned up but one did not exit normally."""
+
+
 def catalogs():
     # Local BYML package already used by M4/M5. No remote catalog or game data.
     from tools.byml import read
@@ -168,4 +172,4 @@ class Session:
         (self.out/'resources-summary.json').write_text(json.dumps(self.monitor.summary(),indent=2)+'\n')
         self.clock.close()
         self.tmp.cleanup()
-        if errors:raise RuntimeError('; '.join(errors))
+        if errors:raise NativeProcessExitError('; '.join(errors))

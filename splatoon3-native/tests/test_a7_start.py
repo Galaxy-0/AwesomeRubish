@@ -16,6 +16,7 @@ from rl.native_start import room_ready,write_control,NativeSessionPool,NativeSes
 from arena import native_runtime
 from rl.clock import SharedClock
 from rl.protocol import Client
+from rl.session import NativeProcessExitError
 
 
 class NativeStartTests(unittest.TestCase):
@@ -67,13 +68,26 @@ class NativeStartTests(unittest.TestCase):
         with patch('rl.native_start.validate_runtime',return_value=(Path('/host'),Path('/modules'))):
             pool=NativeSessionPool('/host','/modules')
         config=dict(players=2,mode=0,stage_id=2,weapons=[8000,8000],timeout=900)
-        session=Mock();pool.held=session;pool.identity=pool.equipment(config)
+        session=Mock(closed=False);session.hosts=[(0,Mock(poll=Mock(return_value=None)),None)]
+        pool.held=session;pool.identity=pool.equipment(config)
         self.assertIs(pool.acquire(**(config|dict(stage_id=3))),session)
         self.assertEqual(session.native_stage,3);self.assertTrue(session.pending_repeat)
         pool.held=session
         with patch('rl.native_start.NativeSession') as constructor:
             pool.acquire(**(config|dict(loadouts=[None,None])))
             constructor.assert_called_once();session.close.assert_called_once()
+
+    def test_dead_retained_room_rebuilds_but_save_integrity_never_gets_swallowed(self):
+        with patch('rl.native_start.validate_runtime',return_value=(Path('/host'),Path('/modules'))):
+            pool=NativeSessionPool('/host','/modules')
+        config=dict(players=2,mode=0,stage_id=2,weapons=[8000,8000],timeout=900)
+        stale=Mock(closed=False);stale.hosts=[(0,Mock(poll=Mock(return_value=-6)),None)]
+        stale.close.side_effect=NativeProcessExitError('unclean exit -6');pool.held=stale
+        with patch('rl.native_start.NativeSession') as constructor:
+            self.assertIs(pool.acquire(**config),constructor.return_value)
+            self.assertEqual(len(pool.rebuilds),1);self.assertEqual(stale.check_saves.call_count,1)
+        stale.check_saves.side_effect=RuntimeError('reference hash changed');pool.held=stale
+        with self.assertRaisesRegex(RuntimeError,'reference hash changed'):pool.acquire(**config)
 
     def test_status_keeps_native_scene_and_last_match_phase_distinct(self):
         session=NativeSession.__new__(NativeSession);session.generation=1

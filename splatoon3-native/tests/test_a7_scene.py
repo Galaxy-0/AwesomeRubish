@@ -24,6 +24,30 @@ class SceneAdapterTests(unittest.TestCase):
 
     def test_disabled_has_no_callbacks(self):self.assertEqual(self.call().returncode,0)
 
+    def test_seed_parameters_are_bounded_and_not_all_zero(self):
+        for value,valid in [('1,2,3,4',True),('4294967295,0,0,1',True),
+                            ('0,0,0,0',False),('-1,2,3,4',False),('4294967296,2,3,4',False),
+                            ('1,2,3',False),('1,2,3,4,5',False),('1,2,3,4x',False)]:
+            result=subprocess.run([str(self.binary),'parse-seeds',value],capture_output=True,text=True)
+            with self.subTest(value=value):
+                if valid:self.assertEqual(result.returncode,0,result.stderr)
+                else:self.assertNotEqual(result.returncode,0)
+
+    def test_seed_parameter_hook_changes_only_verified_native_seed_buffer(self):
+        result=self.call(mode='seed-buffer');self.assertEqual(result.returncode,0,result.stderr)
+        self.assertIn('origin=parameter',result.stderr)
+        self.assertNotEqual(self.call(mode='seed-buffer-bad').returncode,0)
+
+    def test_seed_options_require_build_gates_and_explicit_boot(self):
+        self.assertNotEqual(self.call(mode='seed-no-boot').returncode,0)
+        self.assertNotEqual(self.call('trace','seed-missing').returncode,0)
+
+    def test_seed_consumer_is_read_only_and_requires_verified_settings_type(self):
+        result=self.call(mode='seed-consume');self.assertEqual(result.returncode,0,result.stderr)
+        self.assertIn('requested_match=1',result.stderr)
+        bad=self.call(mode='seed-consume-bad');self.assertEqual(bad.returncode,0,bad.stderr)
+        self.assertIn('unavailable=1',bad.stderr);self.assertNotIn('origin=consumed ',bad.stderr)
+
     def test_native_match_configuration_validates_maps_rules_teams_and_payload(self):
         cases=[(b'', 'Vss_District00 0 0 1'),
                (b'A7v1 Vss_Yagara 0 1 0\n','Vss_Yagara 0 1 0'),
