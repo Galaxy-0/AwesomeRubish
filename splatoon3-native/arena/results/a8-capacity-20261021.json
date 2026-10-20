@@ -1,0 +1,459 @@
+{
+  "schema": "arena.a8.capacity.v1",
+  "passed": true,
+  "before": {
+    "path": "work/a8/accept-v15-full-nine",
+    "plan_sha256": "b04b81ee3e9c325a9c239d457829761b51ce63100aec5c41b637566bbe7501d9",
+    "completed_sha256": "f8f7a195fdc662054df9e541a93343ed938a20bae0894381094dad2dda3b6dc1",
+    "host_sha256": "0f1981db8a026e573e2c15bfbe3cf2334670d419c7c2bfd8a0b44189e072f30f",
+    "rooms": 3,
+    "attempted": 9,
+    "valid": 9,
+    "stable": true,
+    "batch_wall_seconds": 1740.9289500713348,
+    "games_per_hour": 18.610753758028096,
+    "controlled_fps_mean": 21.492526241082885,
+    "concurrency_windows": [
+      {
+        "start_wall": 1792509685.400855,
+        "end_wall": 1792510206.568871,
+        "overlap_seconds": 521.1680159568787,
+        "rooms": 3,
+        "hosts": 6,
+        "host_pids": [
+          33993,
+          35192,
+          33991,
+          35200,
+          33996,
+          35189
+        ],
+        "attempts": [
+          {
+            "round": 0,
+            "attempt": 0
+          },
+          {
+            "round": 0,
+            "attempt": 0
+          },
+          {
+            "round": 0,
+            "attempt": 0
+          }
+        ]
+      },
+      {
+        "start_wall": 1792510265.737937,
+        "end_wall": 1792510775.6076338,
+        "overlap_seconds": 509.86969685554504,
+        "rooms": 3,
+        "hosts": 6,
+        "host_pids": [
+          63893,
+          64939,
+          64940,
+          65498,
+          64915,
+          65494
+        ],
+        "attempts": [
+          {
+            "round": 0,
+            "attempt": 0
+          },
+          {
+            "round": 0,
+            "attempt": 0
+          },
+          {
+            "round": 0,
+            "attempt": 0
+          }
+        ]
+      },
+      {
+        "start_wall": 1792510845.611539,
+        "end_wall": 1792511345.137037,
+        "overlap_seconds": 499.5254981517792,
+        "rooms": 3,
+        "hosts": 6,
+        "host_pids": [
+          93009,
+          94330,
+          94597,
+          94673,
+          94619,
+          95163
+        ],
+        "attempts": [
+          {
+            "round": 0,
+            "attempt": 0
+          },
+          {
+            "round": 0,
+            "attempt": 0
+          },
+          {
+            "round": 0,
+            "attempt": 0
+          }
+        ]
+      }
+    ],
+    "actual_overlap_seconds": 1530.5632109642029,
+    "max_new_swapout_bytes": 0,
+    "max_pressure": 1,
+    "trials": [
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-0/result.json",
+        "sha256": "8f796cc37b0f691992900f59ef06d4165e5fa5f4b43f8dfe7b40de9e2f8460f5",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.39295154377515,
+        "wall_seconds": 581.6403460502625
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-1/result.json",
+        "sha256": "b389d201072175a896a0a63a682e849e903284f36d8ceacf1368302347905354",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.403724210658805,
+        "wall_seconds": 589.1730649471283
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-2/result.json",
+        "sha256": "521085a86fa20ad99a803d990385e9dd826b8ae112c359698e3712a3835f861c",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.445857266672668,
+        "wall_seconds": 588.5982701778412
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-3/result.json",
+        "sha256": "9832bd7d0e702844475747993a3c0bab68b22d45c96e5d25bf1426ef489f5b77",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.53161063192096,
+        "wall_seconds": 568.5140249729156
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-4/result.json",
+        "sha256": "ad2c57dba02a18fa9e0687a989912807bcc8b5b2284fc78c0125ed90d2459350",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.488371644904213,
+        "wall_seconds": 579.4051678180695
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-5/result.json",
+        "sha256": "2974b9cf77c37191ef19fa17e7b0c7f5e10d35f9488dc5263d4609078cee38ff",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.441801875213745,
+        "wall_seconds": 579.8144619464874
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-6/result.json",
+        "sha256": "0f2535454700f70f6f8a1533aef87bcd8e1588a5450557579c9b6dc506b1c960",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.606535521190374,
+        "wall_seconds": 569.0382959842682
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-7/result.json",
+        "sha256": "2395198820a68a3e0bd3dabc38a014decebd1c2d5a7f10b30cce79024774e7e3",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.513875406155908,
+        "wall_seconds": 565.0464062690735
+      },
+      {
+        "path": "work/a8/accept-v15-full-nine/trial-8/result.json",
+        "sha256": "ecde113a0caffad7416dd5b776969b67addd5ef151aae0bedea319ecb6a3efb3",
+        "passed": true,
+        "errors": [],
+        "controlled_fps": 21.608008069254133,
+        "wall_seconds": 570.8028120994568
+      }
+    ]
+  },
+  "after": [
+    {
+      "path": "work/a8/accept-v15-camera-nine",
+      "plan_sha256": "a2ec790493764a8dc13ad83eb3d83d1d8718180d3a75357420648914215e676d",
+      "completed_sha256": "ff783eccfb954093ad870bed2710021451ecdaa0a55cd2a18b2f7750fff4a5b2",
+      "host_sha256": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "rooms": 3,
+      "attempted": 9,
+      "valid": 9,
+      "stable": true,
+      "batch_wall_seconds": 1520.8697118759155,
+      "games_per_hour": 21.303600003997875,
+      "controlled_fps_mean": 24.986446723891287,
+      "concurrency_windows": [
+        {
+          "start_wall": 1792511424.86631,
+          "end_wall": 1792511874.672916,
+          "overlap_seconds": 449.80660605430603,
+          "rooms": 3,
+          "hosts": 6,
+          "host_pids": [
+            25193,
+            25748,
+            25194,
+            25749,
+            25195,
+            25747
+          ],
+          "attempts": [
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            }
+          ]
+        },
+        {
+          "start_wall": 1792511931.87674,
+          "end_wall": 1792512371.881122,
+          "overlap_seconds": 440.0043821334839,
+          "rooms": 3,
+          "hosts": 6,
+          "host_pids": [
+            51754,
+            51838,
+            51825,
+            52371,
+            51837,
+            52386
+          ],
+          "attempts": [
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            }
+          ]
+        },
+        {
+          "start_wall": 1792512439.9526122,
+          "end_wall": 1792512865.19242,
+          "overlap_seconds": 425.239807844162,
+          "rooms": 3,
+          "hosts": 6,
+          "host_pids": [
+            74850,
+            74915,
+            76435,
+            76524,
+            76456,
+            76525
+          ],
+          "attempts": [
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            }
+          ]
+        }
+      ],
+      "actual_overlap_seconds": 1315.050796031952,
+      "max_new_swapout_bytes": 0,
+      "max_pressure": 1,
+      "trials": [
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-0/result.json",
+          "sha256": "95dd03cf2b52cee8cfa9fa179fbd852c7bc98a25a96ea2fd3e2089d2168cd735",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 24.78301761703493,
+          "wall_seconds": 508.62082695961
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-1/result.json",
+          "sha256": "40fd1f6bce484e34363e6f7e128f9a823fb2785c278af6aee8b168fd7dc5d0e1",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 24.872958244365208,
+          "wall_seconds": 515.6539101600647
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-2/result.json",
+          "sha256": "5e5f320b8cd4bea5a4d642e801ed5fce5e0ee25f8d4fddc453949086e89665e6",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 24.788893555568038,
+          "wall_seconds": 515.2357640266418
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-3/result.json",
+          "sha256": "09c4e95b24a77a7cae7e03281a1d3b07db8ab4a43bba96cd4240e76435112d54",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 24.9575086747233,
+          "wall_seconds": 496.69186782836914
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-4/result.json",
+          "sha256": "876a53c777224be1ae4302a47e58222f5fdebbf5fd54dd71c176334118f36950",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 24.9502395701661,
+          "wall_seconds": 506.43029618263245
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-5/result.json",
+          "sha256": "c8166bb6a0c1ee8225a20ac723ae791a47b1b57dea2911853805e0e1ef093076",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 24.919418637487784,
+          "wall_seconds": 506.2760589122772
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-6/result.json",
+          "sha256": "9eeb1b52cbc1cb1ee285c354faf49d680f954e2261d65b0e7ee8a28670f3205b",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 25.228966866313478,
+          "wall_seconds": 492.8292841911316
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-7/result.json",
+          "sha256": "d85f335ff9e1d1533f18935dd20acee7ae2945351741a46f4465e97562b5279a",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 25.117520757642268,
+          "wall_seconds": 490.7700798511505
+        },
+        {
+          "path": "work/a8/accept-v15-camera-nine/trial-8/result.json",
+          "sha256": "7c9a82b9e42038c6fe99f76794eb23498f41930bc66cbd5c969466d64108234d",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 25.25949659172048,
+          "wall_seconds": 497.74212622642517
+        }
+      ]
+    },
+    {
+      "path": "work/a8/accept-v15-four",
+      "plan_sha256": "f31e37f5f56b941b8375e565c2691fc541c644c19663f40dc199acc933966d71",
+      "completed_sha256": "5ceb3ca7efcbe52df1bd483cd152210af3d51139a93a8b0e2b5cad731cd427e0",
+      "host_sha256": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "rooms": 4,
+      "attempted": 4,
+      "valid": 4,
+      "stable": true,
+      "batch_wall_seconds": 671.1822159290314,
+      "games_per_hour": 21.45468049994133,
+      "controlled_fps_mean": 19.600108792796902,
+      "concurrency_windows": [
+        {
+          "start_wall": 1792512987.342327,
+          "end_wall": 1792513513.634378,
+          "overlap_seconds": 526.2920508384705,
+          "rooms": 4,
+          "hosts": 8,
+          "host_pids": [
+            2949,
+            3048,
+            2950,
+            3049,
+            2948,
+            3051,
+            2951,
+            3050
+          ],
+          "attempts": [
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            },
+            {
+              "round": 0,
+              "attempt": 0
+            }
+          ]
+        }
+      ],
+      "actual_overlap_seconds": 526.2920508384705,
+      "max_new_swapout_bytes": 0,
+      "max_pressure": 1,
+      "trials": [
+        {
+          "path": "work/a8/accept-v15-four/trial-0/result.json",
+          "sha256": "1116fd709c5e7d843017385c445fc6bd5745efbd8c87c81ab1ca0034d09dc62c",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 19.094977940218236,
+          "wall_seconds": 659.9506356716156
+        },
+        {
+          "path": "work/a8/accept-v15-four/trial-1/result.json",
+          "sha256": "3401662e2aff7234a2848dc01e5fc5d10611c256a13e0e177d33c98f516fa37e",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 19.90020773731983,
+          "wall_seconds": 626.024019241333
+        },
+        {
+          "path": "work/a8/accept-v15-four/trial-2/result.json",
+          "sha256": "a8d5c7170e9038bf3070bce8e8761809cb39d3177405e1c141494740be79e6b8",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 20.016858064360243,
+          "wall_seconds": 614.6808860301971
+        },
+        {
+          "path": "work/a8/accept-v15-four/trial-3/result.json",
+          "sha256": "bcf1cbffd135d49365080ac5b8723e04eb704d4e2f6ca203a12e893082e237c8",
+          "passed": true,
+          "errors": [],
+          "controlled_fps": 19.3883914292893,
+          "wall_seconds": 670.7932298183441
+        }
+      ]
+    }
+  ],
+  "maximum_completed_rooms": 4,
+  "recommended_rooms": 4,
+  "recommendation_scope": "Measured frozen-input workload; choose the best completed batch throughput. No claim for untested heavier policy workloads.",
+  "guards": {
+    "max_new_swapout_bytes": 2147483648,
+    "critical_pressure": 4
+  },
+  "interpretation": "Failed/guarded attempts remain in the report. Do not extrapolate single-room FPS to aggregate throughput."
+}

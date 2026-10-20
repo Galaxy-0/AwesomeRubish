@@ -1,0 +1,29 @@
+{
+  "schema": "arena.default-runtime.v1",
+  "host": "work/a8/dmhost-arena-v15",
+  "host_sha256": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+  "patched": "work/a7/patched-seeds-v16",
+  "render_mode": "camera",
+  "copy_mode": "none",
+  "geometry_pixels": false,
+  "pixel_sessions": "complete_rendering_for_entire_session",
+  "selection": "v4 functionality candidate; activation requires complete A8 regression certificate, currently blocked on common A7 return",
+  "patched_sha256": {
+    "sdk.gates.tsv": "b8a423e96ef3e974536ac76daedfd36bfb4f8c5c53202b1f75b44cab0c3422a4",
+    "main.cuts.tsv": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f",
+    "main.patched.bin": "adff249da62265e72714a38805616f3f3acc05f3e577e2520767acf317514d45",
+    "main.params.tsv": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f",
+    "sdk.cuts.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+    "sdk.params.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+    "sdk.sites.tsv": "47133c275153917e458eb79052939ae2ae864c1e1624c89c7dc5724932c0964e",
+    "sdk.patched.bin": "80f9323eea986f5fd28f722115c16629b0ad00a02bd79b64487f1e25cc03c96b",
+    "main.sites.tsv": "5bd67b1fc42cd0711c22bf91fb3002c68bd2338d29058a86700dd7300d9dbbea",
+    "build_src.sha256": "4aba136be39846f2d26640e106045f3bf067fe36e6e6594e849f0e699050e290",
+    "sdk.obs.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+    "main.gates.tsv": "520efddfda63566b5539fcf33eae72a6bded594733322db31c01630186cc00bc",
+    "main.obs.tsv": "b509055acdb2caf06bce9037e67b7cbf1122fb1a25d56fb410d37ab9dda61cf1",
+    "main.fixups.tsv": "6f83f654b9d6c3bd04b91557667e9d64c1e83357ecd14e3cc5afe7c8118dcab7",
+    "sdk.fixups.tsv": "63cebe532bd9f6c81d6944caa7bfc66befc226e816e42adfcf9d07da53ea071b"
+  },
+  "acceptance": "arena/results/a8-acceptance-20261021.json"
+}

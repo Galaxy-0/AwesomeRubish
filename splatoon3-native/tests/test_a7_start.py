@@ -108,7 +108,9 @@ class NativeStartTests(unittest.TestCase):
         self.assertEqual(status['scene'],'LobbyLocal');self.assertEqual(status['last_match_phase'],'winners')
 
     def test_native_opt_in_requires_a_pair_and_never_changes_default_environment(self):
-        self.assertIsNone(native_runtime.from_args(SimpleNamespace(native_host=None,native_patched=None)))
+        with patch.object(native_runtime,'default_runtime',return_value={'host':'/selected','patched':'/modules'}):
+            self.assertEqual(native_runtime.from_args(SimpleNamespace(native_host=None,native_patched=None)),{'host':'/selected','patched':'/modules'})
+        self.assertIsNone(native_runtime.from_args(SimpleNamespace(native_host=None,native_patched=None,legacy_menu=True)))
         self.assertEqual(native_runtime.env_options(None),{})
         for host,patched in [('/host',None),(None,'/modules')]:
             with self.assertRaises(ValueError):native_runtime.from_args(SimpleNamespace(native_host=host,native_patched=patched))

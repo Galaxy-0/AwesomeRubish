@@ -16,11 +16,25 @@ from arena.config import PolicySpec
 from test_a6 import audit_cards
 
 
-def audit(before,after,regression,components,capacity):
+def acceptance_basis(comparison,host,build,user_decision=None):
+    """Keep the automatic 20% result distinct from an explicit user decision."""
+    if user_decision is None:
+        require(comparison['passed'],'score/trajectory equivalence or significant speedup failed')
+        return dict(kind='automatic_20_percent_gate',automatic_performance_passed=True,accepted_by_user=False)
+    decision=read(user_decision)
+    require(decision.get('schema')=='arena.a8.user-decision.v1' and decision.get('decision')=='user_acceptance_below_20_percent','explicit user decision required')
+    require(decision.get('decision_date')=='2026-10-20' and decision.get('automatic_fps_ratio_threshold')==1.2,'user decision cannot change automatic threshold')
+    require(decision.get('host_sha256')==sha(host) and decision.get('host_build_sha256')==sha(host.with_suffix('.build.json')),'user decision host mismatch')
+    require(comparison['equivalence_passed'] and comparison['performance']['fps_ratio']>1,'user decision cannot waive semantic equivalence or accept a slowdown')
+    require(build['render_mode']=='camera' and build.get('copy_mode','none')=='none' and not build.get('experimental_hdr') and not build.get('test_only'),'user decision applies only to the camera production host')
+    return dict(kind=decision['decision'],automatic_performance_passed=comparison['significant_speedup'],accepted_by_user=True,decision=reference(user_decision))
+
+
+def audit(before,after,regression,components,capacity,user_decision=None):
     comparison=analyze(before.resolve(),after.resolve())
-    require(comparison['passed'],'score/trajectory equivalence or significant speedup failed')
-    r=read(regression);plan=read(regression.parent/'plan.json')
     candidate=read(after/'plan.json');host=Path(candidate['host']);build=read(host.with_suffix('.build.json'))
+    basis=acceptance_basis(comparison,host,build,user_decision)
+    r=read(regression);plan=read(regression.parent/'plan.json')
     current(read(after/'trial-0/result.json')['runtime_sha256'])
     require(r['passed'] and not r['errors'],'complete final A1-A6 regressions required')
     require(r['host_sha256']==sha(host)==build['output_sha256'],'regression host mismatch')
@@ -44,6 +58,14 @@ def audit(before,after,regression,components,capacity):
             require(commands[0]==commands[1] and '-DSPL3_A6_TEST_SPECIAL=1' in special['command'],'special derivative changed flags')
         else:require(bound['host_sha256']==sha(host),'fixture host mismatch '+name)
     require(r['jobs']['a5']['continuous_same_pids'],'same-process A5 regression required')
+    pixel=read(r['jobs']['pixel-interface']['record'])
+    require(pixel['owned_sessions'],'default pixel M6 has no native sessions')
+    for session in pixel['owned_sessions']:
+        for player in (0,1):
+            directory=Path(session)/f'player-{player}'
+            options=read(directory/'input.json');log=(directory/'host.log').read_text(errors='replace')
+            require(options.get('DM_RL_PIXELS','1')=='1' and 'RL_PIXELS enabled=1 ' in log,'default pixel M6 must enable native pixels')
+            require('A8_CAMERA skipped=' not in log,'pixel session skipped camera history')
     a5job=r['jobs']['a5'];require(sha(a5job['evidence'])==a5job['evidence_sha256'],'changed A5 evidence')
     a5=read(a5job['evidence']);valid=[m for m in a5['matches'] if m['passed']]
     require(len(valid)==2 and all(m['native_winners'] and not m['void'] for m in valid),'two fresh paired Winners required')
@@ -61,7 +83,8 @@ def audit(before,after,regression,components,capacity):
         require(card['measured']==card['total']==13,'thirteen trials required '+name)
         spec=PolicySpec.load(card['policy_version']['snapshot'])
         require(matching_card(path,spec,runtime)['status']=='available','scorecard/runtime mismatch '+name)
-        audit_cards([path]);cards[name]=dict(**reference(path),source_sha256=card['source_sha256'],score=card['aggregate_score'])
+        audit_cards(dict(scorecards=[dict(policy_root=str(spec.root))]),[card])
+        cards[name]=dict(**reference(path),source_sha256=card['source_sha256'],score=card['aggregate_score'])
     for name,digest in build['source_sha256'].items():require(sha(Path(__file__).resolve().parents[1]/name)==digest,'compile source changed '+name)
     root=Path(__file__).resolve().parents[1]
     require(build['default_unchanged'] and sha(root/'upstream/dm/host/dmhost')==build['default_sha256'],'default host changed')
@@ -72,7 +95,12 @@ def audit(before,after,regression,components,capacity):
     c=read(capacity)
     require(c['passed'] and c['after'][0]['host_sha256']==sha(host),'capacity renderer mismatch')
     require(c==capacity_analysis(Path(c['before']['path']),Path(c['after'][0]['path']),[Path(p['path']) for p in c['after'][1:]]),'capacity evidence changed')
-    return dict(schema='arena.a8.acceptance.v1',passed=True,full_a8_passed=True,comparison=comparison,
+    from arena.native_runtime import default_runtime
+    # The certificate produced by this successful audit activates the CLI;
+    # do not require that output file before it has been written.
+    selected=default_runtime(require_accepted=False)
+    require(Path(selected['host'])==host.resolve() and Path(selected['patched'])==Path(candidate['patched']).resolve(),'default arena runtime differs from validated candidate')
+    return dict(schema='arena.a8.acceptance.v1',passed=True,full_a8_passed=True,acceptance_basis=basis,default_runtime=selected,comparison=comparison,
         regression=reference(regression),components=reference(components),capacity=reference(capacity),capacity_summary=c,scorecards=cards,host_build=build,
         auditor=reference(__file__),limitations=comparison['limitations'])
 
@@ -80,4 +108,5 @@ def audit(before,after,regression,components,capacity):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('before','after','regression','components','capacity','out'):p.add_argument('--'+name,type=Path,required=True)
-    a=p.parse_args();r=audit(a.before,a.after,a.regression,a.components,a.capacity);write_json_atomic(a.out,r);print(a.out)
+    p.add_argument('--user-decision',type=Path,help='Explicit version-bound user acceptance; automatic 20%% result remains unchanged')
+    a=p.parse_args();r=audit(a.before,a.after,a.regression,a.components,a.capacity,a.user_decision);write_json_atomic(a.out,r);print(a.out)

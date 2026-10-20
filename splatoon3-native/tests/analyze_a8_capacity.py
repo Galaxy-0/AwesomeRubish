@@ -6,27 +6,31 @@ from pathlib import Path
 import statistics
 from probe_a7_trial import ROOT,sha
 from arena.runner import write_json_atomic
+from arena.schedule import overlap_windows
 
 
 def batch(out):
     plan=json.loads((out/'plan.json').read_text());done=json.loads((out/'completed.json').read_text())
     if plan.get('pass_gpu'):raise ValueError('instrumented diagnostic batch cannot certify capacity')
     if done['plan_sha256']!=sha(out/'plan.json'):raise ValueError('capacity plan changed')
-    trials=[];resources=[]
+    trials=[];resources=[];matches=[]
     for n in range(plan['repeats']):
         path=out/f'trial-{n}/result.json';r=json.loads(path.read_text());match=r.get('match',{})
         if r['host_sha256']!=sha(Path(plan['host'])):raise ValueError('capacity host mismatch')
         passed=bool(r['passed'] and match.get('native_winners') and not match.get('void') and not match.get('errors'))
+        if passed:matches.append(match)
         source=Path(match['session'])/'resources-summary.json' if match.get('session') else None
         if source and source.exists():resources.append(json.loads(source.read_text()))
         trials.append(dict(path=str(path),sha256=sha(path),passed=passed,errors=r['errors']+match.get('errors',[]),
             controlled_fps=r.get('controlled_fps'),wall_seconds=r.get('wall_seconds')))
     valid=sum(t['passed'] for t in trials)
-    stable=bool(done['passed'] and valid==plan['repeats'] and len(resources)==len(trials))
+    windows=overlap_windows(matches,plan['parallel'])
+    stable=bool(done['passed'] and valid==plan['repeats'] and len(resources)==len(trials) and windows)
     return dict(path=str(out),plan_sha256=sha(out/'plan.json'),completed_sha256=sha(out/'completed.json'),
         host_sha256=sha(Path(plan['host'])),rooms=plan['parallel'],attempted=len(trials),valid=valid,stable=stable,
         batch_wall_seconds=done['wall_seconds'],games_per_hour=3600*valid/done['wall_seconds'],
         controlled_fps_mean=statistics.mean(t['controlled_fps'] for t in trials if t['passed']) if valid else None,
+        concurrency_windows=windows,actual_overlap_seconds=sum(w['overlap_seconds'] for w in windows),
         max_new_swapout_bytes=max((r['max_new_swapout_bytes'] for r in resources),default=None),
         max_pressure=max((r['max_pressure'] for r in resources),default=None),trials=trials)
 

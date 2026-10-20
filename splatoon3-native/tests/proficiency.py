@@ -25,10 +25,16 @@ import benchmark_a6
 
 def episodes(repeats):
     if repeats not in (1,2,3):raise ValueError('repeats must be 1..3')
-    # Small smoke combines three distances; full cards split by distance to
-    # avoid exhausting the ordinary 180-second match during repeated setup.
+    # A kill can require almost a minute of ordinary game time to respawn and
+    # reposition the target. Static repeats need separate matches; otherwise
+    # a capable policy can exhaust 180 seconds before the third scored window.
+    # Keep the same trial count, inputs, per-trial budget and scoring rules.
     lateral=[[6.,12.,18.]] if repeats==1 else [[6.],[12.],[18.]]
-    return [('stationary',None),*[('lateral',d) for d in lateral],('approach',None)]
+    return [('stationary',None)]*repeats+[('lateral',d) for d in lateral]+[('approach',None)]
+
+
+def episode_repeats(scenario,repeats):
+    return 1 if scenario in ('stationary','approach') else repeats
 
 
 def run(policy,out,repeats=3,timeout=3600,shared_slots=DEFAULT_SLOTS,native_runtime=None):
@@ -80,7 +86,7 @@ def run(policy,out,repeats=3,timeout=3600,shared_slots=DEFAULT_SLOTS,native_runt
             for n,(scenario,distances) in enumerate(jobs):
                 path=artifacts/f'card-{n}-{scenario}.json'
                 args=argparse.Namespace(policy=spec.root,scenario=scenario,
-                    repeats=1 if scenario=='approach' else repeats,distances=distances,
+                    repeats=episode_repeats(scenario,repeats),distances=distances,
                     out=path,timeout=timeout,roll_calibration=ROOT/'work/a6/roll-calibration.json',
                     verify_emerge=False,emerge_frames=26,native_runtime=native_runtime)
                 if benchmark_a6.main(args)!=0:raise RuntimeError('native proficiency episode failed: '+scenario+'; see retained raw result')

@@ -1,0 +1,14 @@
+{
+  "schema": "arena.a8.user-decision.v1",
+  "decision_date": "2026-10-20",
+  "decision": "user_acceptance_below_20_percent",
+  "host_sha256": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+  "host_build_sha256": "409f01d51a8a68310dc2302c09424a504927485e92dba079047759b861b56259",
+  "automatic_fps_ratio_threshold": 1.2,
+  "historical_v4_fps_ratio": 1.191791770720349,
+  "reason": "User explicitly accepts the best semantically equivalent camera-only build below 20 percent after two stopped HDR/copy routes; no copy stacking. Fresh equivalence, four-room resource probe, final A1-A6 and default-pixel M6 remain mandatory.",
+  "required_equivalence": true,
+  "required_final_regression": true,
+  "required_pixel_interface": true,
+  "required_capacity": true
+}

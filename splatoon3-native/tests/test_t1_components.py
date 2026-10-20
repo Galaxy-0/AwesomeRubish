@@ -136,8 +136,10 @@ class T1Tests(unittest.TestCase):
     def test_proficiency_full_and_smoke_cover_all_three_scenarios(self):
         for repeats,expected in ((1,5),(2,9),(3,13)):
             jobs=proficiency.episodes(repeats)
-            count=sum((1 if scenario=='approach' else repeats)*(len(distances) if distances else 1) for scenario,distances in jobs)
+            count=sum(proficiency.episode_repeats(scenario,repeats)*(len(distances) if distances else 1) for scenario,distances in jobs)
             self.assertEqual(count,expected)
+            self.assertEqual(sum(s=='stationary' for s,_ in jobs),repeats)
+            self.assertTrue(all(proficiency.episode_repeats(s,repeats)==1 for s,_ in jobs if s=='stationary'))
             self.assertEqual([d for s,ds in jobs if s=='lateral' for d in ds],[6.,12.,18.])
 
 

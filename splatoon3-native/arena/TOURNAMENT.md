@@ -196,9 +196,11 @@ A7 原生开局为已签收的显式选项，默认入口仍使用已接受的�
 
 跨图补测放在上述三项补跑之后串行执行（本次在补跑释放名额后启动，始终≤3房）。最终审计要求完整18项作业、相同生产宿主/运行文件、三份13/13分数表及原始轨迹独立复核、新鲜A5同图换侧同PID两局及额外跨图连续开局、历史70局精确审计、关闭日志后的乌贼滑对照校准。任何失败或哈希漂移均拒绝产生签收文件。
 
-## A8：保留涂墨路径的主镜头减绘（实验构建）
+## A8：保留涂墨路径的主镜头减绘
 
-**当前未签收，T1保持暂停。** v4三房自身波动对照通过，但present/s仅提高19.18%，未达预声明20%。
+**2026-10-20 用户接受低于20%的性能结果；2026-10-21 收尾被共同连续开局卡点阻塞，候选默认未激活，T1保持暂停。**
+旧v4三房自身波动对照通过，present/s提高19.179177%，未达预声明20%；此事实保留。
+下面HDR和copy停止记录是此前研究结果，最新默认选择与用户接受方式见本节末尾。
 恢复后的三房GPU诊断与两轮HDR单房失败见`arena/results/a8-gpu-profile-20261020.json`及
 `arena/results/a8-blocker-20261020.json`。两轮均触发保留消费者/地址别名保护，按停止规则不再开房；
 本轮没有安全候选进入三房对照，4房资源探测和最终A1–A6回归未跑。
@@ -290,3 +292,45 @@ bash tests/run_all.sh --milestone a8 --before work/a8/full-v4-three \
 入口会重算比分/轨迹对照，核对19项回归、默认像素接口、39次冻结熟练度原始轨迹、
 连续同PID换侧A5、特殊量测试派生父宿主及完整C/ObjC/头文件构建身份。
 A6卡片仍使用A6冻结的参考/alpha/bravo版本，不修改两位策略作者当前目录。
+
+### 用户接受与默认宿主（2026-10-20）
+
+`arena/default-runtime.json`绑定独立的`work/a8/dmhost-arena-v15`及
+`work/a7/patched-seeds-v16`的SHA。它采用v4的主镜头颜色+深度减绘，HDR与copy实验关闭。
+`tests/t1_round.py`、`tests/test_a5.py`、`tests/proficiency.py`及`python -m arena.runner`
+不传宿主参数时均读取这份候选配置。配置还要求`arena/results/a8-acceptance-20261021.json`
+是完整通过且绑定该宿主的签收报告；当前报告未生成，CLI会报`A8 default is not activated`并拒绝开房。
+这是最终功能验收的自动激活条件，不需要另一次人工批准。配置缺失、宿主/源码/模块变更也拒绝运行。
+显式`--native-host/--native-patched`仍可指定对照宿主；`--legacy-menu`只用于诊断旧菜单流程。
+原`upstream/dm/host/dmhost`继续保留，不能通过旧`run_all.sh`的通用构建分支覆盖它。
+
+几何对战默认`pixels=False`；Gym像素接口仍默认`pixels=True`，从开局到结束完整渲染全部历史帧。
+由几何会话转为像素会话时重建进程，不复用减绘历史。最终默认像素M6除了原像素/状态/动作/重置断言，
+还要求所有宿主`RL_PIXELS enabled=1`且整个日志没有`A8_CAMERA skipped=`。
+
+用户决定单列在`arena/a8-user-decision-20261020.json`，绑定所接受宿主和构建SHA。
+`tests/analyze_a8.py`继续原样执行`fps_ratio >= 1.2`，没有降低门槛。
+不传用户决定时，A8入口仍拒绝低于20%的候选；显式传入时仍须通过同源自身波动等价、
+4房探测审计、19项A1–A6/像素回归及组件检查，并把自动性能结果与用户接受分别输出。
+
+```sh
+bash tests/run_all.sh --milestone a8 \
+  --before work/a8/accept-v15-full-nine --after work/a8/accept-v15-camera-nine \
+  --regression work/a8/accept-v15-regression/result.json \
+  --components work/a8/accept-v15-components.json --capacity work/a8/accept-v15-capacity.json \
+  --user-decision arena/a8-user-decision-20261020.json \
+  --out arena/results/a8-acceptance-20261021.json
+```
+
+本次同源确认每组9局、三房并发×三批，独立4房探测随后执行。资源保护仍为新增swapout超过2GiB
+或critical压力即停止；四房是否完成及推荐并发以最终容量报告为准，不能用三房FPS外推。
+收尾完成后停止，不自动启动S1校准或alpha/bravo的T1研究。
+
+当前结果：同源完整/相机各9局自噪声等价通过，受控present/s提升16.256444%，4房探测4/4有效，
+默认像素M6两次会话都全程完整渲染。最终回归仅14项通过，尚未满足19项门：A4温泉一次原生120秒
+停帧；冻结alpha第三次静止靶遇到正常180秒比赛结束，静止重复现已拆为新局，评分与13次总数不变，
+但新版三份完整卡片未重测；连续A5相机两次及同源完整渲染一次都停于LobbyLocal返回state30，
+没有Progress/下一代次，第二局实际未开局。全部失败和主动取消原件保留，不能视为策略输赢或成功回归。
+没有继续开房、没有测真实三图BO3墙钟，也未宣称camera-v3能解决这个共同路径问题。
+卡点汇总见`arena/results/a8-closeout-blocked-20261021.json`。修复共同返回流程后须跑最终版本完整回归，
+不能直接沿用修复前的14项成功记录。诊断补测草案保存在ignored work，未作为已验证的生产入口提交。

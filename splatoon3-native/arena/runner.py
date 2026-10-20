@@ -27,7 +27,7 @@ from arena.statistics import tournament_statistics,meets_a5_threshold
 from arena.schedule import schedule,overlap_windows
 from arena.scoring import compare_scores,SCORING_RULE
 from arena.checkpoint import load_resume,relative,sha256
-from arena.native_runtime import env_options,runtime_files
+from arena.native_runtime import env_options,runtime_files,add_arguments,from_args
 
 _STOP=None
 SETTLEMENT_MAX_FRAMES=30*60
@@ -310,10 +310,14 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
     return result
 
 
-if __name__=='__main__':
+def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--policy-a',type=Path,default=ROOT/'arena/policies/rush')
     p.add_argument('--policy-b',type=Path,default=ROOT/'arena/policies/high-ground');p.add_argument('--games',type=int,default=70)
     p.add_argument('--parallel',type=int,choices=(1,2,3,4),default=4);p.add_argument('--timeout',type=float,default=7200)
     p.add_argument('--resume',type=Path)
-    args=p.parse_args();report=tournament(args.policy_a,args.policy_b,args.games,args.parallel,args.timeout,resume=args.resume)
-    print(json.dumps({k:v for k,v in report.items() if k!='matches'},indent=2));raise SystemExit(0 if report['passed'] else 1)
+    add_arguments(p)
+    args=p.parse_args(argv);report=tournament(args.policy_a,args.policy_b,args.games,args.parallel,args.timeout,resume=args.resume,native_runtime=from_args(args))
+    print(json.dumps({k:v for k,v in report.items() if k!='matches'},indent=2));return 0 if report['passed'] else 1
+
+
+if __name__=='__main__':raise SystemExit(main())
