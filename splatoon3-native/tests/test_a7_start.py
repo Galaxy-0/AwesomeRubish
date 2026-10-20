@@ -2,6 +2,10 @@
 from pathlib import Path
 import sys
 import tempfile
+import json
+import os
+import subprocess
+import time
 import unittest
 from unittest.mock import Mock,patch
 from types import SimpleNamespace
@@ -10,6 +14,8 @@ ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from rl import NativeParallelEnv
 from rl.native_start import room_ready,write_control,NativeSessionPool,NativeSession
 from arena import native_runtime
+from rl.clock import SharedClock
+from rl.protocol import Client
 
 
 class NativeStartTests(unittest.TestCase):
@@ -94,6 +100,50 @@ class NativeStartTests(unittest.TestCase):
             constructor.assert_called_once();self.assertEqual(first,second)
             self.assertEqual(first['session_factory'],pool.acquire)
             native_runtime.close_pools();pool.close.assert_called_once()
+
+    def test_scorecard_cannot_cross_runtime_even_with_identical_policy(self):
+        from arena.proficiency import matching_card
+        runtime=dict(host='/native-host',patched='/native-modules')
+        spec=SimpleNamespace(name='fixture',source_sha256='same-policy',loadout={},step_frames=12)
+        card=dict(schema='arena.proficiency.v1',policy=spec.name,source_sha256=spec.source_sha256,
+                  loadout={},policy_step_frames=12,library_sha256={},evaluation_sha256={'route':'native'},native_runtime=runtime)
+        with tempfile.TemporaryDirectory() as directory,patch('arena.proficiency.library_hashes',return_value={}),\
+             patch('arena.proficiency.evaluation_hashes',side_effect=lambda r=None:{'route':'native' if r else 'menu'}):
+            path=Path(directory)/'card.json';path.write_text(json.dumps(card))
+            self.assertEqual(matching_card(path,spec,runtime)['status'],'available')
+            self.assertEqual(matching_card(path,spec)['status'],'unavailable')
+            card['native_runtime']=None;path.write_text(json.dumps(card))
+            self.assertEqual(matching_card(path,spec,runtime)['status'],'unavailable')
+
+
+class AttachBarrierTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        subprocess.run(['make','-C',str(ROOT/'upstream/dm/host/tests'),'GAME=0100C2500FC20000','build/t_rl'],check=True,stdout=subprocess.DEVNULL)
+
+    def test_first_native_present_waits_for_delayed_attachment(self):
+        starts=[]
+        for delay in (.1,.35):
+            with tempfile.TemporaryDirectory() as directory:
+                path=Path(directory);clock=SharedClock(path/'clock');client=None
+                env={k:v for k,v in os.environ.items() if not k.startswith('DM_')}
+                env.update(DM_RL_WAIT_INGAME='1',DM_RL_CLOCK_MODE='fixed60',DM_RL_CLOCK_FILE=str(clock.path))
+                process=subprocess.Popen([str(ROOT/'upstream/dm/host/tests/build/t_rl'),str(path/'p.sock')],env=env,stderr=subprocess.PIPE)
+                try:
+                    deadline=time.monotonic()+5
+                    while not (path/'p.sock').exists():
+                        if process.poll() is not None or time.monotonic()>deadline:raise RuntimeError('barrier fixture failed')
+                        time.sleep(.01)
+                    time.sleep(delay);client=Client(path/'p.sock',3)
+                    _,info=client.receive();starts.append(info['frame'])
+                    self.assertEqual(info['phase'],1)
+                    from test_m6_transport import neutral
+                    client.send_step(neutral(),7);_,after=client.receive()
+                    self.assertEqual(after['frame']-info['frame'],7);self.assertEqual(after['advanced'],7)
+                finally:
+                    if client:client.close()
+                    process.terminate();process.communicate(timeout=5);clock.close()
+        self.assertEqual(starts,[1,1])
 
 
 if __name__=='__main__':unittest.main()

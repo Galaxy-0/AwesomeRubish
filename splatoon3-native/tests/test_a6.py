@@ -70,7 +70,7 @@ def audit_cards(manifest,cards):
         if any(card.get(k)!=v for k,v in approach_summary(card['trials']).items()):
             raise AssertionError('approach rates differ from measured trials')
         if card.get('library_sha256')!=library_hashes():raise AssertionError('scorecard public library changed')
-        if card.get('evaluation_sha256')!=evaluation_hashes():raise AssertionError('scorecard evaluator changed')
+        if card.get('evaluation_sha256')!=evaluation_hashes(card.get('native_runtime')):raise AssertionError('scorecard evaluator changed')
         spec=PolicySpec.load(ROOT/item['policy_root'])
         if card['source_sha256']!=spec.source_sha256 or card['loadout']!=spec.loadout:raise AssertionError('scorecard policy changed')
         if card['policy_step_frames']!=spec.step_frames:raise AssertionError('scorecard cadence changed')

@@ -22,7 +22,7 @@ def library_hashes():
     return hashes
 
 
-def evaluation_hashes():
+def evaluation_hashes(native_runtime=None):
     paths=[ROOT/'upstream/dm/host/dmhost']+list((ROOT/'rl').glob('*.py'))
     # Hash local licensed assets without copying or publishing their contents.
     paths += [ROOT/'work/data/v720896/ExeFS/main',ROOT/'work/build/patched_v720896/main.patched.bin',
@@ -34,6 +34,9 @@ def evaluation_hashes():
                'policy','process','config','referee','referee_api','native_referee','visibility','geometry')]
     paths += [ROOT/'tests'/name for name in ('benchmark_a6.py','a6_lab.py','a6_metrics.py','a6_motion.py','probe_a6_combat.py')]
     paths += [ROOT/f'work/arena/maps/{stage}/{name}' for stage in ('Yunohana','District00','Yagara') for name in ('navigation.json','sight.npz')]
+    if native_runtime is not None:
+        from .native_runtime import runtime_files
+        paths += runtime_files(native_runtime)+[ROOT/'arena/native_runtime.py',ROOT/'tests/proficiency.py']
     return {str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 
 
@@ -152,23 +155,23 @@ def table(card):
     return '\n'.join(lines)+'\n'
 
 
-def matching_card(path, spec):
+def matching_card(path, spec, native_runtime=None):
     """Report integration fails closed when policy source/loadout changed."""
     path = Path(path)
     if not path.is_file():
         return dict(status='unavailable', reason='run proficiency benchmark for this policy revision')
     card = json.loads(path.read_text())
-    if card.get('schema') != SCHEMA or card.get('policy') != spec.name or card.get('source_sha256') != spec.source_sha256 or card.get('loadout') != spec.loadout or card.get('policy_step_frames')!=spec.step_frames or card.get('library_sha256') != library_hashes() or card.get('evaluation_sha256') != evaluation_hashes():
+    if card.get('schema') != SCHEMA or card.get('policy') != spec.name or card.get('source_sha256') != spec.source_sha256 or card.get('loadout') != spec.loadout or card.get('policy_step_frames')!=spec.step_frames or card.get('library_sha256') != library_hashes() or card.get('evaluation_sha256') != evaluation_hashes(native_runtime) or card.get('native_runtime')!=native_runtime:
         return dict(status='unavailable', reason='scorecard source/loadout mismatch')
     return dict(status='available', scorecard=card, sha256=hashlib.sha256(path.read_bytes()).hexdigest())
 
 
-def report_cards(specs,directory=None):
+def report_cards(specs,directory=None,native_runtime=None):
     """Optional report metadata never changes native validity or win scoring."""
     directory=Path(directory) if directory is not None else ROOT/'arena/results/proficiency'
     cards={}
     for spec in specs:
-        try:cards[spec.name]=matching_card(directory/(spec.root.name+'.json'),spec)
+        try:cards[spec.name]=matching_card(directory/(spec.root.name+'.json'),spec,native_runtime)
         except (OSError,ValueError,KeyError,TypeError):
             cards[spec.name]=dict(status='unavailable',reason='invalid or incompatible scorecard')
     return cards
@@ -195,7 +198,7 @@ def attach_report(source,out,paths=None):
     for name,digest,path in zip(names,hashes,paths):
         try:
             card=json.loads(Path(path).read_text())
-            if card['schema']!=SCHEMA or card['policy']!=name or card['source_sha256']!=digest or card['library_sha256']!=library_hashes() or card['evaluation_sha256']!=evaluation_hashes():
+            if card['schema']!=SCHEMA or card['policy']!=name or card['source_sha256']!=digest or card['library_sha256']!=library_hashes() or card['evaluation_sha256']!=evaluation_hashes(report.get('native_runtime')) or card.get('native_runtime')!=report.get('native_runtime'):
                 raise ValueError('incompatible source/runtime')
             cards[name]=dict(status='available',scorecard=card,sha256=hashlib.sha256(Path(path).read_bytes()).hexdigest())
         except (OSError,ValueError,KeyError,TypeError):
@@ -213,7 +216,7 @@ def merge_cards(paths):
     if not cards:raise ValueError('no scorecards')
     first=cards[0]
     for card in cards:
-        if any(card.get(k)!=first.get(k) for k in ('schema','policy','source_sha256','policy_step_frames','loadout','library_sha256','evaluation_sha256','definitions','fixture_constraints','fixture')):
+        if any(card.get(k)!=first.get(k) for k in ('schema','policy','source_sha256','policy_step_frames','loadout','library_sha256','evaluation_sha256','definitions','fixture_constraints','fixture','native_runtime')):
             raise ValueError('incompatible scorecards')
     rows=[row for card in cards for row in card['trials']]
     proofs=[row['native_evidence'] for row in rows if row.get('native_evidence')]

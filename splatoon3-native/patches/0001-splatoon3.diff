@@ -3273,10 +3273,10 @@ index 61cf410..d5d2001 100644
      if (on) g_gfz_reasons |= 1u << reason; else g_gfz_reasons &= ~(1u << reason);
 diff --git a/dm/host/hle_rl.c b/dm/host/hle_rl.c
 new file mode 100644
-index 0000000..9f35711
+index 0000000..0806e50
 --- /dev/null
 +++ b/dm/host/hle_rl.c
-@@ -0,0 +1,472 @@
+@@ -0,0 +1,499 @@
 +// Frame-boundary controller and cropped internal pixels over a POSIX Unix socket.
 +// The game consumes input on its own thread. The IPC thread never advances it.
 +#include "hle.h"
@@ -3289,6 +3289,7 @@ index 0000000..9f35711
 +#include <sys/stat.h>
 +#include <sys/time.h>
 +#include <fcntl.h>
++#include <poll.h>
 +#include <unistd.h>
 +#include <errno.h>
 +#include <math.h>
@@ -3314,6 +3315,8 @@ index 0000000..9f35711
 +static int rl_have_image;
 +static dm_rl_clock *rl_clock;
 +static int rl_fixed_clock;
++static int rl_wait_ingame;
++static _Atomic int rl_ingame_clock_armed;
 +static pthread_mutex_t rl_state_mu = PTHREAD_MUTEX_INITIALIZER;
 +static float rl_position[3], rl_ink, rl_heading, rl_hp, rl_special;
 +static float rl_view_yaw, rl_view_pitch;
@@ -3370,6 +3373,10 @@ index 0000000..9f35711
 +    rl_form_squid=rl_ground_contact=-1;
 +    for(int i=0;i<8;i++){rl_hud_node[i]=0;rl_hud_status[i]=2;rl_hud_seen[i]=rl_hud_ever[i]=rl_hud_special[i]=0;rl_hud_frame[i]=rl_hud_touch[i]=rl_hud_downs[i]=0;}
 +    pthread_mutex_unlock(&rl_state_mu);
++    if(rl_wait_ingame && !dm_rl_active()) {
++        dm_guest_clock_share(rl_clock);atomic_store(&rl_ingame_clock_armed,1);
++        LOG("RL_INGAME_BARRIER armed frame=%llu",dm_guest_frame());
++    }
 +    atomic_store(&rl_phase, 1);
 +}
 +static void phase_judge(const uint64_t *r) {
@@ -3557,6 +3564,10 @@ index 0000000..9f35711
 +    }
 +    const char *clock_mode=getenv("DM_RL_CLOCK_MODE");
 +    rl_fixed_clock=clock_mode && !strcmp(clock_mode,"fixed60");
++    const char *wait=getenv("DM_RL_WAIT_INGAME");
++    if(wait && strcmp(wait,"0") && strcmp(wait,"1"))die("RL wait-ingame must be 0 or 1");
++    rl_wait_ingame=wait && !strcmp(wait,"1");
++    if(rl_wait_ingame && (!rl_fixed_clock || !rl_clock))die("RL wait-ingame requires fixed60 shared clock");
 +    if(rl_fixed_clock && !rl_clock) die("RL fixed60 requires a shared clock file for attachment");
 +    if(rl_fixed_clock) {
 +        const char *value=getenv("DM_RL_STALL_SECONDS");
@@ -3689,7 +3700,17 @@ index 0000000..9f35711
 +void dm_rl_present(uint64_t frame) {
 +    if (!atomic_load(&rl_enabled) || !frame) return;
 +    if (rl_peer < 0) {
-+        rl_peer = accept(rl_listener, NULL, NULL);
++        do {
++            rl_peer = accept(rl_listener, NULL, NULL);
++            if(rl_peer>=0)break;
++            if(errno!=EAGAIN && errno!=EWOULDBLOCK && errno!=EINTR)die("RL accept: %s",strerror(errno));
++            if(!rl_wait_ingame || atomic_load(&rl_phase)!=1)break;
++            // Hold the first native InGame present until the coordinator
++            // connects. Loading and PIA remain native; no phase is invented.
++            struct pollfd pending={.fd=rl_listener,.events=POLLIN};
++            int ready=poll(&pending,1,100);
++            if(ready<0 && errno!=EINTR)die("RL wait-ingame poll: %s",strerror(errno));
++        } while(1);
 +        if (rl_peer < 0) {
 +            if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) die("RL accept: %s", strerror(errno));
 +            return;
@@ -3702,7 +3723,13 @@ index 0000000..9f35711
 +        rl_request = 0; rl_step_start = frame;rl_without_input=0;rl_input_floor=frame;rl_budget_end=frame;atomic_store(&rl_input_repeats,0);
 +        atomic_store(&rl_last_input,UINT64_MAX);
 +        atomic_store(&rl_controlled, 1); atomic_store(&rl_remaining, 0);
-+        if (rl_clock) dm_guest_clock_share(rl_clock);
++        if (rl_clock) {
++            // The pre-attachment barrier may already have advanced one native
++            // tick. Rebase the ACK epoch so relative client budgets retain
++            // floor(N*1e9/60), including one-frame requests and remainders.
++            if(atomic_exchange(&rl_ingame_clock_armed,0))dm_guest_clock_release();
++            dm_guest_clock_share(rl_clock);
++        }
 +        LOG("RL_ATTACH frame=%llu", frame);
 +    } else {
 +        uint64_t previous=atomic_load(&rl_frame);

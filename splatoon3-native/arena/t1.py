@@ -69,7 +69,7 @@ def run_round(policy_a,policy_b,number,out,timeout=7200,shared_slots=DEFAULT_SLO
     out.mkdir(parents=True,exist_ok=False)
     specs=[snapshot_policy(path,out/'policies'/label) for path,label in ((policy_a,'a'),(policy_b,'b'))]
     if specs[0].name==specs[1].name:raise ValueError('policy names must differ')
-    shared=loader_slots(shared_slots);profiles=report_cards(specs);frozen=runtime_hashes(native_runtime)
+    shared=loader_slots(shared_slots);profiles=report_cards(specs,native_runtime=native_runtime);frozen=runtime_hashes(native_runtime)
     write_json_atomic(out/'runtime-sha256.json',frozen)
     report=dict(schema='arena.t1.round.v1',round=number,passed=False,full_a5_passed=False,
         scoring_rule=SCORING_RULE,games_requested=3,parallel_games=3,global_loader_slots=2,

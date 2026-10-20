@@ -1,0 +1,313 @@
+{
+  "schema": "arena.a7.continuous-checkpoint.v1",
+  "passed": true,
+  "full_a7_passed": false,
+  "scope": "Native no-HID process reuse, District00 to Yagara, each through paired native Winners; score equivalence and complete A7 remain pending.",
+  "source_checkpoint": "8d2f862",
+  "host_sha256": "00e02ac6d5580fc9aa7be052d6269a5777800527c9dbeffa95fcdddade243619",
+  "host_build": {
+    "schema": "arena.a7.host-build.v1",
+    "output": "work/a7/dmhost-repeat-v32",
+    "output_sha256": "00e02ac6d5580fc9aa7be052d6269a5777800527c9dbeffa95fcdddade243619",
+    "default_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+    "default_unchanged": true,
+    "command": [
+      "clang",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wno-unused-function",
+      "-I../gfx/nvn/include",
+      "-Igen/0100C2500FC20000/",
+      "-I../games/0100C2500FC20000",
+      "-I../third_party/libvpx",
+      "-I../third_party/stb_vorbis",
+      "-fobjc-arc",
+      "-o",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-repeat-v32",
+      "main.c",
+      "loader.c",
+      "hle.c",
+      "host_stubs.c",
+      "crash.c",
+      "probe.c",
+      "thread.c",
+      "memstat.m",
+      "../ios/Sources/dm_touch_controls.c",
+      "hle_account.c",
+      "hle_audio.c",
+      "hle_audren.c",
+      "hle_bigstack.c",
+      "hle_codec.c",
+      "hle_count.c",
+      "hle_fdstat.c",
+      "hle_friends.c",
+      "hle_fs.c",
+      "hle_guestthread.c",
+      "hle_hid.c",
+      "hle_ldn.c",
+      "hle_lifecycle.c",
+      "hle_misc.c",
+      "hle_movie.c",
+      "hle_net.c",
+      "hle_nvdrv.c",
+      "hle_oe.c",
+      "hle_offline.c",
+      "hle_os.c",
+      "hle_rl.c",
+      "hle_ro.c",
+      "hle_sdk16.c",
+      "hle_sdkinit.c",
+      "hle_spl3.c",
+      "hle_spl3_gear.c",
+      "hle_spl3_scene.c",
+      "hle_spl3_unlock.c",
+      "hle_svc.c",
+      "hle_swkbd.c",
+      "hle_table.c",
+      "hle_thread.c",
+      "hle_time.c",
+      "hle_touch.c",
+      "front_mac.m",
+      "entry.S",
+      "dm_i18n.c",
+      "../gfx/hle_nv.c",
+      "../gfx/hle_vi.c",
+      "../gfx/nvn/hle_nvn.c",
+      "../gfx/nvn/nvn_cmdwatch.c",
+      "../gfx/nvn/nvn_dirty.c",
+      "../gfx/nvn/nvn_entry.S",
+      "../gfx/nvn/nvn_mtl.m",
+      "../gfx/nvn/nvn_refl.m",
+      "../gfx/nvn/nvn_tex.c",
+      "../gfx/nvn/nvn_thunks.S",
+      "../gfx/tex/nvn_bcdec.c",
+      "../gfx/tex/nvn_deswizzle.c",
+      "../gfx/tex/nvn_deswizzle_gpu.m",
+      "../gfx/tex/nvn_fmt_mtl.c",
+      "gen/vpx/libvpx.a",
+      "-framework",
+      "Cocoa",
+      "-framework",
+      "QuartzCore",
+      "-framework",
+      "Metal",
+      "-framework",
+      "AudioToolbox",
+      "-framework",
+      "ImageIO",
+      "-framework",
+      "UniformTypeIdentifiers"
+    ],
+    "source_sha256": {
+      "upstream/dm/host/hle_spl3_scene.c": "e206769dbb13f569cef8d6bff772a4f23898181a7da5a71886678df1d85d955e",
+      "upstream/dm/host/hle_rl.c": "0204d1776f00ad2d7e87959e4ad6a0ea69144ac03582ca120887c3ebc8ae0646",
+      "upstream/dm/host/hle_os.c": "852e77df65c7b130e4775080b2554858f002db9a0e3e3a6c6ee9aefe9af00edd",
+      "upstream/dm/host/hle.h": "e6fded4117e720a334f9d08fd9979bba73b0f7e78cc42222c4f2686f5da0f8ab",
+      "upstream/dm/host/main.c": "d6d18c46b0a37d5f5a801941f3710779abf2e086672bdfdc3e57390e844d45fd",
+      "upstream/dm/host/dm.h": "60a89032a955c5992b34a7b3478d31d21eeec67ed41333ece83d9fc1cc41820c",
+      "upstream/dm/tools/patch_nso.py": "15370cc9e73c0d911bd46d4fd67536e7f87c9108e7b96faa9e9b5a1f109de474"
+    }
+  },
+  "evidence": [
+    {
+      "path": "work/a7/native-pool-20261020-131556-493436/result.json",
+      "sha256": "ccc11d933246bc89f3078273bd0fb69b4b5b9e47bec0b23b7d3643d0145c6598"
+    },
+    {
+      "path": "work/a7/probe_native_pool.py",
+      "sha256": "2cf802e3dfbf40ac08b6c7429d04106ae6a30e92dbd06d60491f15f5e028e335"
+    },
+    {
+      "path": "work/a7/native-pool-20261020-131556-493436/match-0/result.json",
+      "sha256": "1f81de8fe27be02ebc870f213bea08443a7ad6aea9f4cffd0e9a0c65d4cd71fe"
+    },
+    {
+      "path": "work/a7/native-pool-20261020-131556-493436/match-0/native-barriers.jsonl",
+      "sha256": "2edca7637352d77cefdbef3dc559ffe0d4460d960a50aca0efaf82f94227555e"
+    },
+    {
+      "path": "work/a7/native-pool-20261020-131556-493436/match-0/inputs-per-present.jsonl",
+      "sha256": "c26750d92cd7eae14cfb4100c5193173e8e7d51135d696d22c7c5dfd2a0e654b"
+    },
+    {
+      "path": "work/a7/native-pool-20261020-131556-493436/match-1/result.json",
+      "sha256": "e931fbcfb87f238c90e5be242d9fab0741a94b27f6d9da0989b5a08d99ea5f66"
+    },
+    {
+      "path": "work/a7/native-pool-20261020-131556-493436/match-1/native-barriers.jsonl",
+      "sha256": "cf6fc5e4cb5b28c98d69ad53aa426b6773f8a46461175cc4802580c818fa8fc7"
+    },
+    {
+      "path": "work/a7/native-pool-20261020-131556-493436/match-1/inputs-per-present.jsonl",
+      "sha256": "971bac33d960a490fc91e561c39cefa2f8251315a3dc45cb6e98d834ba349213"
+    },
+    {
+      "path": "work/tests/m6-2p-20261020-131556-534634/player-0/host.log",
+      "sha256": "c7c418a4b545407bbc161bca5fbff53dc3a7c5faad27e50718f3801522bbce71"
+    },
+    {
+      "path": "work/tests/m6-2p-20261020-131556-534634/player-1/host.log",
+      "sha256": "15ab27cb19e8b14972d998ac481acb9d24e15c3e84eaf0e48204f493633ebccf"
+    }
+  ],
+  "matches": [
+    {
+      "stage": 2,
+      "passed": true,
+      "native_winners": true,
+      "score_by_role": [
+        0.5,
+        0.100000001
+      ],
+      "score_peers_by_role": [
+        [
+          0.5,
+          0.100000001
+        ],
+        [
+          0.5,
+          0.100000001
+        ]
+      ],
+      "outcome": "a",
+      "host_pids": [
+        26992,
+        27057
+      ],
+      "frames": 11520,
+      "settlement_frames": 480,
+      "errors": [],
+      "void": false
+    },
+    {
+      "stage": 3,
+      "passed": true,
+      "native_winners": true,
+      "score_by_role": [
+        1.0,
+        3.0999999
+      ],
+      "score_peers_by_role": [
+        [
+          1.0,
+          3.0999999
+        ],
+        [
+          1.0,
+          3.0999999
+        ]
+      ],
+      "outcome": "b",
+      "host_pids": [
+        26992,
+        27057
+      ],
+      "frames": 11520,
+      "settlement_frames": 480,
+      "errors": [],
+      "void": false
+    }
+  ],
+  "startup_wall_seconds": [
+    37.665923833847046,
+    30.170501232147217
+  ],
+  "timing_note": "Two fixed-input regression rooms overlapped portions of this run; do not use these times as a single-room throughput benchmark.",
+  "clock_mode": "fixed60",
+  "pregame_controller_inputs": [],
+  "ocr_used": false,
+  "stages": [
+    2,
+    3
+  ],
+  "pool": {
+    "starts": 1,
+    "reuses": 1
+  },
+  "second_match_first_step": {
+    "player_0": {
+      "request": 1,
+      "phase": 1,
+      "score": [
+        0,
+        0
+      ],
+      "score_valid": 0,
+      "remaining_time": 179.633331,
+      "position": [
+        -3.60001183,
+        33.5,
+        -103.949997
+      ],
+      "hud_downs": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "frame": 13846
+    },
+    "player_1": {
+      "request": 1,
+      "phase": 1,
+      "score": [
+        0,
+        0
+      ],
+      "score_valid": 0,
+      "remaining_time": 179.666672,
+      "position": [
+        3.60000277,
+        33.5,
+        103.949997
+      ],
+      "hud_downs": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "frame": 13459
+    }
+  },
+  "targeted_native_regressions": {
+    "a1_v32": {
+      "path": "work/tests/a1-20261020-132954-823546/result.json",
+      "sha256": "d2d0481b6c54bea558dadedc8e10308a484d67e1d828439c82d070d9ae9bb856",
+      "passed": true
+    },
+    "a2_v32": {
+      "path": "work/tests/a2-20261020-133112-770364/result.json",
+      "sha256": "ffc346e053ec481946aabd62a337f79b7caa363f40d6d38f2eb704f4fe8e239a",
+      "passed": true
+    },
+    "a1_barrier_v34": {
+      "path": "work/tests/a1-20261020-133824-973059/result.json",
+      "sha256": "ad2c5daaca8579a3f3023e25c8b16ae5aac0e000a6081a108398c840152e9bca",
+      "passed": true
+    }
+  },
+  "negative_attempts": [
+    {
+      "path": "work/a7/baseline-20261020-130715-337973/result.json",
+      "sha256": "7cff5fe848e92ae6862af361dffb52392e2843dae44fefba50ea374d7c9f140c"
+    },
+    {
+      "path": "work/tests/a1-20261020-133647-336096/result.json",
+      "sha256": "15a4cdc7529361b8f6d4e4d7401886c6389f274000d3c3f48b5f02770361776b"
+    },
+    {
+      "path": "work/a7/baseline-20261020-131619-960888/result.json",
+      "sha256": "0b872787b1f870c23e37a9493264b61985b2de11b238a3a826a613ff7c235d71"
+    }
+  ]
+}

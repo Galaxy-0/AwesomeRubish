@@ -62,6 +62,7 @@ class NativeSession(Session):
 
     def host_options(self,player):
         return super().host_options(player)|dict(DM_KEYS='',DM_SCENE_BOOT='LobbyLocal',
+            DM_RL_WAIT_INGAME='1',
             DM_SCENE_UPPER='1',DM_SCENE_DIRECT='create' if player==0 else 'join',
             DM_SCENE_MATCH=str(self.out/'go'),DM_SCENE_TRACE_FLOW='1',DM_SCENE_TRACE_NETWORK='1',
             DM_PROBE='main:14f44cc@x1,main:3db55d0,main:3dcc710,main:3dd9370,main:3571e24@x21+e8',

@@ -48,10 +48,11 @@ def reset_target(lab,position,distance):
 
 def main(args):
     spec=PolicySpec.load(args.policy)
-    libraries=library_hashes();evaluation=evaluation_hashes()
-    lab=Lab('benchmark-'+args.scenario,args.timeout,loadouts=[spec.loadout,uniform_loadout()],native_runtime=getattr(args,'native_runtime',None))
+    native_runtime=getattr(args,'native_runtime',None)
+    libraries=library_hashes();evaluation=evaluation_hashes(native_runtime)
+    lab=Lab('benchmark-'+args.scenario,args.timeout,loadouts=[spec.loadout,uniform_loadout()],native_runtime=native_runtime)
     lab.result.update(policy=spec.name,policy_root=str(spec.root),policy_source_sha256=spec.source_sha256,
-                      policy_step_frames=spec.step_frames,library_sha256=libraries,evaluation_sha256=evaluation)
+                      policy_step_frames=spec.step_frames,library_sha256=libraries,evaluation_sha256=evaluation,native_runtime=native_runtime)
     try:
         calibration=None
         if args.scenario=='approach' and args.roll_calibration.is_file():
@@ -174,7 +175,7 @@ def main(args):
                        released_attack_cycle=cycle_closed if args.scenario=='lateral' else None,
                        native_evidence=str(evidence),native_evidence_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),first_visible_frame=first_visible)
             trials.append(trial);lab.add(trial)
-        if PolicySpec.load(spec.root).source_sha256!=spec.source_sha256 or library_hashes()!=libraries or evaluation_hashes()!=evaluation:
+        if PolicySpec.load(spec.root).source_sha256!=spec.source_sha256 or library_hashes()!=libraries or evaluation_hashes(native_runtime)!=evaluation:
             raise AssertionError('policy/public library/evaluation changed during benchmark')
         lab.result.update(passed=True,probe_completed=True,scorecard=str(args.out),trials=trials)
     except BaseException as e:
@@ -185,6 +186,7 @@ def main(args):
         complete=[dict(t,native_run_result=str(proof),native_run_sha256=digest) for t in trials]
         card=scorecard(spec.name,spec.source_sha256,spec.loadout,complete,
                        library_sha256=libraries,evaluation_sha256=evaluation,step_frames=spec.step_frames)
+        if native_runtime is not None:card['native_runtime']=native_runtime
         write_card(args.out,card);Path(args.out).with_suffix('.md').write_text(table(card))
     print(lab.out,flush=True)
     return 0 if lab.result['passed'] and not lab.result['errors'] else 1

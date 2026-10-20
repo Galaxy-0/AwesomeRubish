@@ -240,7 +240,7 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
     if parallel not in (1,2,3,4):raise ValueError('parallel games must be 1, 2, 3 or 4')
     specs=[PolicySpec.load(policy_a),PolicySpec.load(policy_b)]
     if specs[0].name==specs[1].name:raise ValueError('policy names must differ')
-    profiles=report_cards(specs)
+    profiles=report_cards(specs,native_runtime=native_runtime)
     prior=load_resume(resume,specs,games) if resume is not None else {}
     initial=prior.get('matches',[]);valid_rounds={m['round'] for m in initial if m.get('passed')}
     out=Path(out) if out is not None else ROOT/'work/arena'/datetime.datetime.now().strftime('tournament-%Y%m%d-%H%M%S-%f')
@@ -251,7 +251,7 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
     for n in range(2):(shared_slots/f'slot-{n}').touch()
     started=time.time()
     result=dict(passed=False,full_a5_passed=False,scoring_rule=SCORING_RULE,games_requested=games,parallel_games=parallel,
-                global_loader_slots=2,policies=[s.name for s in specs],source_hashes=[s.source_sha256 for s in specs],matches=[],concurrency_windows=[],errors=[],artifacts=str(out),started_wall=started,
+                global_loader_slots=2,policies=[s.name for s in specs],source_hashes=[s.source_sha256 for s in specs],matches=[],concurrency_windows=[],errors=[],artifacts=str(out),started_wall=started,native_runtime=native_runtime,
                 first_started_wall=prior.get('first_started_wall',prior.get('started_wall',started)),
                 evidence_sha256=prior.get('evidence_sha256',{}),immutable_runtime_sha256=prior.get('immutable_runtime_sha256',{}),
                 excluded_attempts=prior.get('excluded_attempts',[]),proficiency_by_policy=profiles,
