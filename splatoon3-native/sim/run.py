@@ -12,7 +12,8 @@ from .engine import Simulator
 from .parameters import ROOT, sha256
 
 
-def run(policy_paths, stage_id=1, frames=10800, out=ROOT / 'work/sim/policy-run', *, motion_path=None, weapon_path=None):
+def run(policy_paths, stage_id=1, frames=10800, out=ROOT / 'work/sim/policy-run', *, motion_path=None, weapon_path=None,
+        advanced_path=None, swap=False):
     specs = [PolicySpec.load(path) for path in policy_paths]
     out = Path(out).resolve()
     if ROOT / 'work' not in out.parents:
@@ -20,9 +21,11 @@ def run(policy_paths, stage_id=1, frames=10800, out=ROOT / 'work/sim/policy-run'
     out.mkdir(parents=True, exist_ok=True)
     from .motion import MotionModel
     from .weapon import WeaponModel
+    from .advanced import AdvancedModel
     env = Simulator(stage_id, loadouts=[s.loadout for s in specs], duration_frames=frames,
                     motion_model=MotionModel.load(motion_path) if motion_path else None,
-                    weapon_model=WeaponModel.load(weapon_path) if weapon_path else None)
+                    weapon_model=WeaponModel.load(weapon_path) if weapon_path else None,
+                    advanced_model=AdvancedModel.load(advanced_path) if advanced_path else None, swap=swap)
     cadence = math.gcd(*(s.step_frames for s in specs))
     start = time.perf_counter()
     with ExitStack() as stack:
@@ -39,7 +42,8 @@ def run(policy_paths, stage_id=1, frames=10800, out=ROOT / 'work/sim/policy-run'
     result = dict(**env.info(), wall_seconds=seconds, frames_per_second=frames / seconds,
                   policy_sha256=[s.source_sha256 for s in specs], stage=stage_id,
                   model_sha256=dict(motion=sha256(motion_path) if motion_path else None,
-                                    weapon=sha256(weapon_path) if weapon_path else None),
+                                    weapon=sha256(weapon_path) if weapon_path else None,
+                                    advanced=sha256(advanced_path) if advanced_path else None),swap=bool(swap),
                   note='simulator outcome only; uncalibrated mechanics cannot establish native policy strength')
     (out / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
@@ -53,5 +57,8 @@ if __name__ == '__main__':
     p.add_argument('--out', type=Path, default=ROOT / 'work/sim/policy-run')
     p.add_argument('--motion-model', type=Path)
     p.add_argument('--weapon-model', type=Path)
+    p.add_argument('--advanced-model', type=Path)
+    p.add_argument('--swap',action='store_true')
     args = p.parse_args()
-    print(json.dumps(run(args.policies,args.stage,args.frames,args.out,motion_path=args.motion_model,weapon_path=args.weapon_model),indent=2))
+    print(json.dumps(run(args.policies,args.stage,args.frames,args.out,motion_path=args.motion_model,weapon_path=args.weapon_model,
+                         advanced_path=args.advanced_model,swap=args.swap),indent=2))

@@ -2364,3 +2364,13 @@ caffeinate -i .venv/bin/python tests/probe_a7_baseline.py \
 受控11040 presents、33.543 presents/秒；结算480 presents；比分按角色为**1.600% / 1.200%**，两端对齐后差值0，outcome=a，HUD自身/敌方倒下均0。新增swapout=0，宿主RSS之和峰值3344 MiB。所有正常退出，默认dmhost仍`628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d`。12项组件测试通过，新增原生设置诊断只读/去重及上层入口依赖拒绝测试。已证明的范围是首局开局与原A5完整裁判链；没有渲染优化或并行度收益声明。
 
 复现首局：先用`tools/build_a7_host.py --out work/a7/dmhost-native-new`与`tools/prepare_a7.py --out work/a7/patched-native-new`构建独立路径，再运行`tests/probe_a7_native_match.py --host work/a7/dmhost-native-new --patched work/a7/patched-native-new --stage 2`。该检查点暂限District00/占地/两个进程；`tests/probe_a7_direct_room.py --upper`另可只验证上层建房/搜索/加入，不打整局。所有full_a7_passed仍false，继续连续局与同参数旧流程对照。
+
+### S1 第三阶段检查点 3：排名执行器与待执行原生校准批次（2026-10-20）
+
+- sim/ranking.py复用ControlProcess沙箱、每版本原始cadence/timeout与配装；六局NumPy运动批量，完整武器/涂地/可见性仍执行。216局计划在结果前登记；每组核心/模型/策略SHA绑定，恢复拒绝混模型。sim/ranking_report.py要求六对阵各完整36个唯一情景，缺局/重复局拒绝最终排名。报告使用原生role_to_policy、同地图/出生侧加权，区分固定起点和敏感性，HUD敌倒与模拟最后一击归属分列。
+- 排名口径：A5、R0、后续T1三个对阵图断开，不能识别跨组件总排名；输出六条实测边方向一致率、18条地图边，以及固定bravo-v1对手下alpha v1/v2/v3的Kendall tau-b（原生v1/v2保留并列）。BO3不作严格统计强弱证明，扰动场次不当作原生独立二项样本。
+- 初始单worker完成A5/R0图1各12局；为缩短等待且不占满机器，仅中断本任务自己的离线sim.ranking进程（PID及完整命令已核验），保存中断日志和未完成批次目录；没有向任何游戏进程发信号。续跑按互斥对阵集合拆为最多2个模拟worker，每个BLAS线程1、六局批量，策略沙箱各自独立。当前仍在执行；本检查点不提前发布排名结论。
+- sim/calibration新增146个案例、392个外层重复的声明清单：人形/乌贼×己/敌/无墨、杆量/起停/反向/跳落/转向，run/swim/resistance/main/sub/recovery/intensify的AP0/3/10/19/38/57，三图坡/阶候选，接触距离、回血、冲刺/炸弹分包、自然特殊生命周期。roll含助跑×反向角完整短扫，surge含B1/20/30/40/44/45/46/60。
+- **只运行了默认清单/--write-plan和离线测试，没有执行原生分支**。未来统一命令/案例表/输入输出/审核前提在sim/calibration/README.md。显式--execute-native和A7_A8_IDLE窗口、活动原生房间只读检测、串行锁、一房两人、配装读回、测量STEP1、原始包去重口径、每案例9000受控帧、失败保留/继续及同SHA断点恢复均已写好；原生运行可靠性仍未验证，未来A7接口改变可能需适配。
+- 脚下无墨/敌墨不能仅凭当前接口确认，输出surface_confirmation=unknown，保留前后截图和准备过程，未按速度反推墨色；己墨只允许由真实潜墨确认起点。原生占地分母/墨图映射、roll/surge护甲、真实关节/物理命中与网络采样分离、移动平台仍列pending，不声称一次脚本能消除缺失传感器。采集完成collected不等于机制accepted，也不自动回写sim模型。
+- 新增9个纯离线检验通过：tau并列/反序、完整36格、角色映射、平局/加权、缺局拒绝，精确AP合法性、默认入口不导入collector、无窗口拒绝在导入前发生、活动宿主变体的只读ps检测。sim.run新增显式advanced模型与换侧；新CLI 60帧真实沙箱smoke通过，未启动游戏。A5/R0依赖的atlas.py/skills.py与历史git实现无变化，后增stamper文件不被v0导入。

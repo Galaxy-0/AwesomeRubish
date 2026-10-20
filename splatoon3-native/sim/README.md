@@ -1,8 +1,9 @@
 # S1 offline 1v1 simulator
 
 Python + NumPy，只做工作刮水刀、占地、Yunohana / District00 / Yagara。
-第二阶段已加入历史辨识、短时域主评估、预扣/退款和完整核心的批量运动查询；原生一致性仍未签收。
-此目录的程序不构建宿主、不启动游戏、不修改原生擂台或策略。
+已加入历史辨识、短时域评估、预扣/退款、批量运动、A6高级机制与历史策略排名检验；原生一致性仍未签收。
+默认入口完全离线，不构建宿主、不启动游戏、不修改原生擂台或策略。
+`sim/calibration`另含显式开关门控的未来原生收集分支，本阶段没有执行。
 从项目目录用 `.venv/bin/python -m sim.parameters` 开始。
 
 参数从本机 `work/data/v720896/RomFS` 只读提取；碰撞/导航复用
@@ -15,7 +16,7 @@ Python + NumPy，只做工作刮水刀、占地、Yunohana / District00 / Yagara
 也不能当成世界坐标射程。A6 实测边界与参数计数分开使用。
 
 推进顺序：参数 → 核心移动/粗涂地/墨刃/HP/重生/墨量 → 历史同输入对照。
-乌贼滑、墙蓄跳、冲刺斩、快速炸弹、触手喷射留在本轮核心对照后的阶段。
+第三阶段以显式可选AdvancedModel补入乌贼滑、墙蓄跳、冲刺斩、快速炸弹；触手喷射仅简化启动/消耗/回归。
 
 ## 核心接口
 
@@ -37,13 +38,13 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 
 `Assumptions` 集中所有未提取默认值；A2 的 AP19 游速与 AP38 主墨效只是两个
 经验锚点，其间线性插值不代表原生技能曲线。其他配装效果在 `unsupported`
-中列出。输入 R/RS 会记录未实现操作；乌贼+B只执行普通跳跃并标记不支持，
-不会把它计为已实现乌贼滑。冲刺斩尚未实现；前推满蓄目前仍按普通蓄斩处理。
+中列出。未传AdvancedModel时仍保留旧核心：R/RS只记录未实现、乌贼+B为普通跳、前推满蓄为普通蓄斩。
+传入后启用A6有效模型；触发门槛、局部墙墨和炸弹抛物线仍有未辨识项，见COMPARISON。
 
 地形来自已提取的 `human.npz`，视线来自 `sight.npz`；多射线扫掠加端点球体距离
 近似碰撞。涂地以导航节点为带高度层的粗格，墙阻断传播、同队重复涂色不再次
 充能；计分分母含未涂格。节点可潜游性不等于原生可计分地面，原生纹理/涂点
-映射仍未知。特殊量有近似面积充能，大招效果留待后续。出生从导航落地点开始，
+映射仍未知。特殊量有近似面积充能，触手喷射钩索位移仍unsupported。出生从导航落地点开始，
 重生直接回落地点，不模拟发射台飞行。移动/跳跃已有离线辨识，回血回墨和重生等仍待实机校准。
 
 观测复用 `PolicyProjector`、`GeometricVision` 和 typed own-special encoder，
@@ -110,3 +111,28 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 预扣曲线66点属于校准重算，独立combat房另报验证。5帧HP延迟是对端包反馈的有效模型，
 不是已分解的物理命中时间；接触斩关节起点仍是A1校准候选。原始模型JSON、历史曲线与
 证据哈希只在work/。单/双CPU吞吐分别报计算和进程启动成本，最多两个worker，BLAS线程1。
+
+## 第三阶段：高级机制与排名
+
+```sh
+.venv/bin/python -m sim.ranking_sources
+.venv/bin/python -m sim.advanced
+.venv/bin/python -m sim.advanced_report
+.venv/bin/python -m sim.ranking
+.venv/bin/python -m sim.ranking_report
+.venv/bin/python -m unittest sim.test_advanced sim.test_ranking sim.test_calibration -v
+```
+
+排名用git show提取到work/的历史版本，不读取当前策略作为替代。R0用精确v0，
+R1–R4运行文件与原生冻结策略核对；A5采用接受70局检查点。当前公开atlas/skills与
+A5/R0历史实现无修改，后来新增stamper文件不被它们导入。
+每对阵36个完整180秒模拟：三图、交换侧、固定起点及五组预登记起点敏感性。
+保持原沙箱、原配装/频率/超时；六局批量，BLAS单线程。最多两个模拟worker，
+分别指定互斥`--pairs A5 R0 R1`与`--pairs R2 R3 R4`，同组禁止并发写。
+每组绑定核心、模型、策略SHA；恢复时校验原计划，最终报告拒绝缺局/重复局/混模型。
+原生不是完整全互打，故报告六条实测边方向、逐图差异及固定bravo-v1对手下alpha三版的tau-b，
+不编造跨A5/R0/T1的统一全局排名。敏感性场次不当原生独立随机样本。
+
+单局可用`sim.run ... --advanced-model work/sim/advanced/model.json --swap`启用高级模型与换侧。
+详见[COMPARISON.md](COMPARISON.md)。待实机项目已编入[校准清单与脚本](calibration/README.md)，
+默认`python -m sim.calibration --write-plan`只生成清单，不执行游戏。
