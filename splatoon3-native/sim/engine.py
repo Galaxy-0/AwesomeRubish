@@ -97,6 +97,18 @@ class Player:
     reserved: float = 0.
     previous: list = field(default_factory=lambda: [0] * 6)
     ap: dict = field(default_factory=dict)
+    roll_left: int = 0
+    roll_direction: np.ndarray = field(default_factory=lambda: np.zeros(2))
+    wall_charge: int = 0
+    wall_cling: bool = False
+    surge_left: int = 0
+    surge_speed: float = 0.
+    dash_left: int = 0
+    dash_end_frame: int = -1
+    dash_direction: np.ndarray = field(default_factory=lambda: np.zeros(2))
+    special_active: bool = False
+    special_age: int = 0
+    special_anchor: np.ndarray = field(default_factory=lambda: np.zeros(3))
 
 
 @dataclass
@@ -147,7 +159,8 @@ class Simulator:
     metadata = {'render_modes': [], 'name': 's1_core_v1'}
 
     def __init__(self, stage_id=1, *, parameters=None, terrain=None, assumptions=None,
-                 loadouts=None, duration_frames=10800, swap=False, motion_model=None, weapon_model=None):
+                 loadouts=None, duration_frames=10800, swap=False, motion_model=None, weapon_model=None,
+                 advanced_model=None):
         if stage_id not in (1, 2, 3) or type(duration_frames) is not int or duration_frames < 1:
             raise ValueError('stage/duration')
         self.stage_id = stage_id
@@ -156,6 +169,7 @@ class Simulator:
         self.rules = assumptions or Assumptions()
         self.motion_model = motion_model
         self.weapon_model = weapon_model
+        self.advanced_model = advanced_model
         self.loadouts = loadouts or [None, None]
         if len(self.loadouts) != 2:
             raise ValueError('two loadouts required')
@@ -179,6 +193,7 @@ class Simulator:
             self.players.append(Player(self.terrain.spawn[side].copy(), yaw, yaw,
                                        ap=gear_ap(self.loadouts[team])))
         self.projectiles, self.slashes, self.scheduled = [], [], []
+        self.bombs, self.wall_ink = [], {}
         self.damage_queue = []
         self.events = []
         self.unsupported = Counter()
@@ -219,10 +234,10 @@ class Simulator:
                                max(0, (self.duration - self.frame) / 60), public_status=tuple(public))
 
     def typed_observation(self, team):
-        self.observations()
+        self._ensure_typed()
         return self._typed[team]
 
-    def observations(self):
+    def _ensure_typed(self):
         if self._observations is None:
             truth = self.truth()
             self._typed, self._observations = {}, {}
@@ -230,6 +245,13 @@ class Simulator:
                 observer = f'player_{i}'
                 obs = self.projector.observe(truth, observer, self.vision.witnesses(truth, observer))
                 self._typed[i] = obs
+
+    def observations(self):
+        self._ensure_typed()
+        if not self._observations:
+            for i, p in enumerate(self.players):
+                observer = f'player_{i}'
+                obs = self._typed[i]
                 self._observations[observer] = json.loads(encode_control(obs, OwnSpecial(observer, self.frame, p.special)))
         # Caller cannot mutate subsequent observations or simulator state.
         return json.loads(json.dumps(self._observations))
@@ -261,6 +283,9 @@ class Simulator:
         p.reserved = 0.
         p.velocity[:] = 0
         p.squid = p.submerged = False
+        p.roll_left = p.surge_left = p.dash_left = p.wall_charge = 0
+        p.wall_cling = False
+        p.special_active = False
         self.events.append(dict(kind='knockdown', frame=self.frame, target=target,
                                 attacker=attacker, cause=cause))
 
@@ -318,10 +343,13 @@ class Simulator:
                 p.reserved += increment
         elif not b[0] and p.previous[0] and p.charge:
             self._release(i, dash=sticks[1] >= .9)
-        if b[2] and not p.previous[2]:
-            self.unsupported['burst_bomb'] += 1
-        if b[3] and not p.previous[3]:
-            self.unsupported['zipcaster'] += 1
+        if self.advanced_model is not None:
+            self.advanced_model.prepare(self, i, action)
+        else:
+            if b[2] and not p.previous[2]:
+                self.unsupported['burst_bomb'] += 1
+            if b[3] and not p.previous[3]:
+                self.unsupported['zipcaster'] += 1
         return True
 
     def _finish_player(self, i, action, horizontal=None, position=None, floor_hint=None):
@@ -329,6 +357,7 @@ class Simulator:
         b, sticks = action['buttons'], action['sticks']
         color = self.paint.at(p.position)
         x, z = sticks[:2]
+        old_velocity = p.velocity.copy()
         norm = max(1., math.hypot(x, z))
         speed = r.walk_speed
         if p.submerged:
@@ -361,11 +390,16 @@ class Simulator:
                 limit = self.motion_model.data['camera']['heading_rate']
                 p.heading += max(-limit, min(limit, error))
                 p.heading = math.atan2(math.sin(p.heading), math.cos(p.heading))
-        if b[4] and not p.previous[4] and p.grounded:
+        advanced_jump = (self.advanced_model.motion(self, i, action, old_velocity)
+                         if self.advanced_model is not None else False)
+        if advanced_jump or p.dash_left:
+            # Batch precomputed positions describe ordinary motion only.
+            position = floor_hint = None
+        if b[4] and not p.previous[4] and p.grounded and not advanced_jump:
             p.velocity[1] = r.jump_speed if self.motion_model is None else self.motion_model.data['jump']['jump_speed']
             p.grounded = False
             p.submerged = False
-            if p.squid:
+            if p.squid and self.advanced_model is None:
                 self.unsupported['squid_roll_or_surge_as_ordinary_jump'] += 1
         old = p.position.copy()
         p.position = (self.terrain.move(p.position, p.velocity, r.terrain_radius, p.grounded,
@@ -375,7 +409,8 @@ class Simulator:
         if p.grounded and (ground is None or p.position[1] - ground > .3):
             p.grounded = False
         if not p.grounded:
-            p.velocity[1] -= r.gravity if self.motion_model is None else self.motion_model.data['jump']['gravity']
+            p.velocity[1] -= (self.advanced_model.gravity(self, p) if self.advanced_model is not None else
+                              (r.gravity if self.motion_model is None else self.motion_model.data['jump']['gravity']))
             next_y = p.position[1] + p.velocity[1]
             # Head sweep prevents jumping through ceilings.
             if p.velocity[1] > 0 and not self.terrain.human.clear(p.position + [0, 1.3, 0],
@@ -391,6 +426,8 @@ class Simulator:
             self._kill(i, None, 'fall')
         if p.grounded:
             p.velocity[[0, 2]] = (p.position - old)[[0, 2]]
+        if self.advanced_model is not None and self.frame == p.dash_end_frame:
+            p.velocity[[0, 2]] = 0.  # step has no ground slip (sparse SideStepParam)
         color = self.paint.at(p.position)
         p.submerged = p.squid and p.grounded and color == i
         if color not in (-1, i) and p.grounded and self.frame >= p.protected_until:
@@ -398,14 +435,14 @@ class Simulator:
             p.hurt_at = self.frame
         elif self.frame - p.hurt_at > r.hp_recover_delay:
             p.hp = min(1., p.hp + r.hp_recover)
-        if not p.recover_stop and not p.charge and not b[0]:
+        if not p.recover_stop and not p.charge and not b[0] and not p.special_active:
             p.ink = min(1., p.ink + (r.squid_recover if p.submerged else r.human_recover))
         p.previous = list(b)
 
     def _release(self, owner, dash=False):
         p = self.players[owner]
         full = p.charge >= self.params.charge['ChargeFrameFullCharge'] + 1
-        if full and dash:
+        if full and dash and self.advanced_model is None:
             self.unsupported['dash_as_ordinary_charge'] += 1
         cost = (self.params.charge['InkConsumeFullCharge'] if full else self.params.swing['InkConsume'])
         cost *= gear_factor('ink_saver_main', p.ap.get('ink_saver_main', 0))
@@ -420,9 +457,13 @@ class Simulator:
         p.recover_stop = self.params.swing['InkRecoverStop']
         p.cooldown = (self.params.swing['ChargeSwingFrame'] + self.params.swing['ChargeSwingPostDelayFrame']
                       if full else self.rules.light_input_period - 1)
+        if full and dash and self.advanced_model is not None:
+            self.advanced_model.dash(self, owner)
         prefix = 'Charge' if full else 'Weak'
         for kind, suffix in (('projectile', 'Bullet'), ('slash', 'Slash')):
             delay = self.params.swing[f'{prefix}SwingShot{suffix}Frame']
+            if full and dash and self.advanced_model is not None:
+                delay = self.advanced_model.data['dash_projectile_frame' if kind == 'projectile' else 'dash_slash_frame']
             self.scheduled.append((self.frame + delay, owner, full, kind))
         self.events.append(dict(kind='release', frame=self.frame, player=owner, full=full, cost=cost))
 
@@ -492,9 +533,12 @@ class Simulator:
         if floor is not None and 0 <= position[1] - floor < 3.1:
             area = self.paint.disk((position[0], floor, position[2]), radius, owner)
             p = self.players[owner]
-            p.special = min(1., p.special + area * self.rules.points_per_world_area / self.params.data['weapon_info']['SpecialPoint'])
+            if not p.special_active:
+                p.special = min(1., p.special + area * self.rules.points_per_world_area / self.params.data['weapon_info']['SpecialPoint'])
 
     def _weapons(self):
+        if self.advanced_model is not None:
+            self.advanced_model.weapons(self)
         outstanding = []
         for frame, target, amount, owner, cause in self.damage_queue:
             if frame <= self.frame:
@@ -537,6 +581,10 @@ class Simulator:
                 hits.append((target, profile['DamageParam']['HitDamage'] / 1000, shot.owner, 'ink_blade'))
             fraction = min(1., field_hit / max(1e-9, np.linalg.norm(end - shot.position)))
             paint_end = shot.position + (end - shot.position) * fraction
+            if self.advanced_model is not None and math.isfinite(field_hit) and self.terrain.obstacles is not None:
+                wall_hit = self.terrain.obstacles.hits(shot.position, end+shot.direction*2.5, .00001)
+                if len(wall_hit):
+                    self.advanced_model.paint_wall(self, shot.position+shot.direction*wall_hit[0], shot.owner)
             self._paint(shot.owner, paint_end, profile['PaintParam']['WidthHalf'])
             shot.age += 1
             shot.position = end

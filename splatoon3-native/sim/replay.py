@@ -67,12 +67,14 @@ def initialize(env, barrier, origins, *, own_ink_fixture=False, previous_actions
                 rest_of_paint='unpainted approximation; native paint unavailable')
 
 
-def compare(env, intervals, barriers, start_index, end_frame, *, own_ink_fixture=False):
+def compare(env, intervals, barriers, start_index, end_frame, *, own_ink_fixture=False, setup=None):
     first = barriers[start_index]
     origins = {key: info['frame'] - first['frame'] for key, info in first['infos'].items()}
     previous = next((row['actions'] for row in intervals
                      if row['frame_interval'][0] < first['frame'] <= row['frame_interval'][1]), None)
     initialization = initialize(env, first, origins, own_ink_fixture=own_ink_fixture, previous_actions=previous)
+    if setup is not None:
+        initialization['additional_fixture_precondition'] = setup(env)
     end_frame = min(end_frame, barriers[-1]['frame'], env.duration)
     if end_frame <= env.frame:
         raise ValueError('empty comparison window')
