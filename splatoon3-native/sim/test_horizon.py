@@ -54,6 +54,27 @@ class HorizonTests(unittest.TestCase):
         reset_native(env, trace, 8)
         self.assertFalse(env.players[0].submerged)
 
+    def test_landing_interval_velocity_cannot_extrapolate_grounded_packet_under_floor(self):
+        trace=self.trace()
+        trace.states[0,:,1]=.4
+        trace.states[4,:,1]=0.
+        trace.states[4,:,9]=4
+        env=Simulator(parameters=Parameters.local(),terrain=fixture())
+        reset_native(env,trace,8)
+        self.assertAlmostEqual(env.players[0].position[1],0.)
+        self.assertEqual(env.players[0].velocity[1],0.)
+        self.assertTrue(env.players[0].grounded)
+
+    def test_air_packet_extrapolation_lands_on_intervening_support(self):
+        trace=self.trace()
+        trace.states[0,:,1]=.6
+        trace.states[4,:,1]=.2
+        trace.states[4,:,9]=5
+        env=Simulator(parameters=Parameters.local(),terrain=fixture())
+        reset_native(env,trace,8)
+        self.assertAlmostEqual(env.players[0].position[1],0.)
+        self.assertTrue(env.players[0].grounded)
+
     def test_angular_difference_wraps_at_pi(self):
         self.assertAlmostEqual(angle_error(np.pi-.01, -np.pi+.01), .02)
 

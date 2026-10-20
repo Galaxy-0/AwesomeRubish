@@ -63,10 +63,25 @@ def reset_native(env, trace, anchor):
         if np.linalg.norm(velocity) > 1.5 or not np.isfinite(velocity).all():
             velocity = np.zeros(3)  # teleport/launch cannot identify velocity
         p.velocity[:] = velocity
-        p.position += age * velocity  # propagate stale packet to boundary causally
+        p.squid, p.grounded, p.alive = bool(row[8]), row[9] != 5, bool(row[10])
+        # The preceding interval can span a landing. Its mean downward speed
+        # is not a current vertical velocity once the latest packet says
+        # grounded. Unconstrained extrapolation used to put anchors UNDER the
+        # floor, where subsequent downward rays could no longer find support.
+        for _ in range(age):
+            if p.grounded:
+                p.velocity[1] = 0.
+                p.position = env.terrain.move(p.position,p.velocity,env.rules.terrain_radius,
+                                              True,support_aware=env.motion_model is not None)
+            else:
+                predicted = p.position+p.velocity
+                floor = env.terrain.human.floor(predicted[0],predicted[2],p.position[1]+.205)
+                if p.velocity[1]<=0 and floor is not None and predicted[1]<=floor<=p.position[1]+.05:
+                    predicted[1]=floor;p.velocity[1]=0.;p.grounded=True
+                p.position=predicted
+        if p.grounded:p.velocity[1]=0.
         p.heading, p.yaw, p.pitch = row[3:6]
         p.hp, p.ink = row[6:8]
-        p.squid, p.grounded, p.alive = bool(row[8]), row[9] != 5, bool(row[10])
         p.submerged = p.squid and row[9] == 0
         p.special = float(row[11]) if np.isfinite(row[11]) else 0.
         p.hurt_at = anchor  # unobserved recovery clock remains conservative
@@ -85,6 +100,7 @@ def reset_native(env, trace, anchor):
         if p.submerged:
             env.paint.disk(p.position, 1.5, role)
         metadata.append(dict(sample_age=int(age), velocity_estimated_from_past=True,
+                             support_constrained_extrapolation=True,
                              weapon_phase_estimated=True, native_paint_available=False))
     env.projectiles, env.slashes, env.scheduled, env.events, env.damage_queue = [], [], [], [], []
     if env.weapon_model is not None:

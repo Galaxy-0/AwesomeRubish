@@ -29,6 +29,7 @@ def main(argv=None):
         out.mkdir(parents=True,exist_ok=True)
         (out/'plan.json').write_text(json.dumps(plan,indent=2)+'\n')
     print(json.dumps(dict(native_started=False,cases=len(plan['cases']),
+                         priority_followups=[dict(id=c['id'],priority=c['priority'],status=c['status']) for c in plan['priority_followups']],
                          measurement_repeats=sum(c['repeats'] for c in plan['cases']),
                          kinds=sorted({c['kind'] for c in plan['cases']}),
                          output=str(out),surface_truth=plan['surface_truth']),indent=2))

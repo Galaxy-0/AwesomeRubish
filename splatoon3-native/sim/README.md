@@ -143,3 +143,38 @@ A5/R0历史实现无修改，后来新增stamper文件不被它们导入。
 单局可用`sim.run ... --advanced-model work/sim/advanced/model.json --swap`启用高级模型与换侧。
 详见[COMPARISON.md](COMPARISON.md)。待实机项目已编入[校准清单与脚本](calibration/README.md)，
 默认`python -m sim.calibration --write-plan`只生成清单，不执行游戏。
+
+## 离线反例诊断：A5 Yagara、R1/R2
+
+```sh
+.venv/bin/python -m sim.diagnosis --inventory
+.venv/bin/python -m sim.diagnosis --run --seeds 1 --out work/sim/diagnosis/ground-new
+.venv/bin/python -m sim.diagnosis --run --mode prefix --seeds 1 --out work/sim/diagnosis/prefix-new
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv/bin/python -m sim.diagnosis --run --mode prefix-clock --seeds 6 --workers 2 --out work/sim/diagnosis/clock-new
+.venv/bin/python -m sim.diagnosis_horizon
+.venv/bin/python -m sim.diagnosis_report --baseline work/sim/diagnosis/ground-new --prefix work/sim/diagnosis/prefix-new --clock work/sim/diagnosis/clock-new
+.venv/bin/python -m unittest sim.test_diagnosis sim.test_horizon -v
+```
+
+所有命令都只运行 Python 模拟/策略沙箱，不导入原生对战执行器。`inventory`审核原生28局
+（A5 Yagara22局、R1/R2各三局）；模拟NPZ逐帧留位置/朝向/相机/墨量/HP/形态、输入、
+可见性和网格占地；JSON另含伤害/击倒事件。原生重复包按自己的采样帧去重，不能声称
+每present都有新位置。高台用公共central_high的XZ半径2、层差.3；同时统计Skills的.7/.3到达条件。
+停留以短采样间隔左保持估计，ZR时长/松开只代表涂地机会，真实涂地时长/面积仍unknown。
+
+`ground`复现原排名基线；`prefix`在前120帧用历史**白名单观测**恢复同一策略的内部记忆，
+逐次核对输出与历史动作，然后只在第120帧重置一次可观测模拟状态。此后没有原生状态纠正。
+`prefix-clock`再使用历史**时间戳**，只从模拟器过去的快照生成延迟观测，不从原生复制后续位置/HP。
+这些是条件诊断干预，**不等于实现了发射、重生或网络生成模型**。初始世界墨图/投射物/真实速度
+仍未知；过去速度、武器阶段和潜墨脚下小墨块是显式估计。六个seed在第120帧施加原预登记扰动，
+不能与原地面seed逐个当作同一随机事件，也不能充当原生独立胜率试验。
+
+A5按每侧首局重建、另外原生局用于审计；T1只重建实测出生侧，未把另一侧镜像成新原生证据。
+报告保留原216局排名结果并另列条件对照，拒绝缺局/混时域/改动原件的报告。
+模拟地面模式默认同时交换出生侧，重建模式只用已有原生侧。每个输出目录登记代码、模型、
+冻结策略和原件绑定；重复运行先校验计划，源码变化应选择新目录。失败留下failure.json，
+不会推断一场胜负。原实验原件与新输出都只在ignored work/，不提交游戏数据。
+
+短时域状态外推现在遵守已知地面支撑，避免把“已落地”的最新包按上一段下落平均速度推进
+地板下；空中预测跨过静态支撑时也会落地。修复和剩余残差见[COMPARISON.md](COMPARISON.md)。
+`diagnosis_horizon`会更新早期窗口结果；本轮修复前副本另存early-horizon-before.json，需保留以复核前后表。

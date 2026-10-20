@@ -21,6 +21,8 @@ class CalibrationTests(unittest.TestCase):
         self.assertEqual(len(ids),len(set(ids)))
         self.assertEqual({c['stage'] for c in plan['cases']},{1,2,3})
         self.assertFalse(plan['active_native_execution'])
+        self.assertEqual(plan['priority_followups'][0]['id'],'opening-and-observation-protocol')
+        self.assertTrue(all(p['priority']=='P0' and p['status'].startswith('pending') for p in plan['priority_followups']))
 
     def test_default_entry_does_not_import_native_collector(self):
         with patch.dict(sys.modules,{'sim.calibration.native':None}):
