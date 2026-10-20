@@ -650,7 +650,7 @@ index 0000000..a3e9e45
 +void nvn_cmdwatch_publish(uint64_t fence, int kind, uint64_t address);
 +void nvn_cmdwatch_end(void);
 diff --git a/dm/gfx/nvn/nvn_mtl.m b/dm/gfx/nvn/nvn_mtl.m
-index 10c5eac..a56c780 100644
+index 10c5eac..060748e 100644
 --- a/dm/gfx/nvn/nvn_mtl.m
 +++ b/dm/gfx/nvn/nvn_mtl.m
 @@ -1,11 +1,13 @@
@@ -1195,13 +1195,14 @@ index 10c5eac..a56c780 100644
                      if (!ps) { MLOG("【红】后台建计算管线失败：%s", e.localizedDescription.UTF8String); continue; }
                      WarmItem *item = [WarmItem new]; item->kind = 2; item->key = key; item->shader = cs; item->object = ps;
                      warm_enqueue(item); g_warm_cps++;
-@@ -4757,9 +4953,43 @@ static void fb_prepare(NvProg *pr) {
+@@ -4757,9 +4953,44 @@ static void fb_prepare(NvProg *pr) {
          } }
      if (g_fb_n) { g_fb_seq = g_draw_seq; args_dirty_all(); g_fb_rebind = 1; }
  }
 +// A8 is a separately built experiment, never enabled in the default host.
-+// Do not drop depth/stencil producers, writable resources, compute, copies or
-+// paint targets. Any skipped contribution to a subsequently reported samples
++// Keep stencil producers, writable resources, compute, copies and independent
++// paint/depth targets. Main-camera depth prepasses are intentionally elided.
++// Any skipped contribution to a subsequently reported samples
 +// counter aborts the room instead of silently changing a native query result.
 +#if defined(SPL3_A8_CAMERA) && SPL3_A8_CAMERA
 +extern int dm_rl_match_phase(void) __attribute__((weak_import));
@@ -1226,7 +1227,7 @@ index 10c5eac..a56c780 100644
 +    }
 +    if (g_vis_counting) g_a8_counter_tainted=1;
 +    if (++g_a8_camera_skips==1 || g_a8_camera_skips%100000==0)
-+        MLOG("A8_CAMERA skipped=%llu frame=%llu depth=%u %ux%u writes=0 storage=0",g_a8_camera_skips,(unsigned long long)atomic_load(&g_cur_frame),state.format,state.width,state.height);
++        MLOG("A8_CAMERA skipped=%llu frame=%llu depth=%u %ux%u depth_write=%d stencil/storage=0",g_a8_camera_skips,(unsigned long long)atomic_load(&g_cur_frame),state.format,state.width,state.height,S.ds.dw);
 +    return 1;
 +}
 +#endif
@@ -1239,7 +1240,7 @@ index 10c5eac..a56c780 100644
      if (g_ruler_truth == 0) {   // Ruler negative control (DM_NVN_RULER_NEG=<fragment key>): in the mode under test drop this shader's draws, and the ruler must report non-equivalence
          static const char *neg; static int ng = -1; if (ng < 0) { neg = getenv("DM_NVN_RULER_NEG"); ng = neg && *neg; }
          if (ng && pr) for (int st = 0; st < 5; st++) { __unsafe_unretained NvShader *sh = pr->sh[st]; if (sh && sh->stage == 1 && !strncmp(sh->key, neg, strlen(neg))) { static int once; if (!once++) MLOG("DM_NVN_RULER_NEG：被测模式丢弃着色器 %s 的绘制", sh->key); return; } }
-@@ -5074,12 +5304,12 @@ static void warm_claim(void) {
+@@ -5074,12 +5305,12 @@ static void warm_claim(void) {
              if (!vs) { vs = item->vs; g_shcache[item->vs_key] = vs; }
              if (item->fs_key.length && !fs) { fs = item->fs; g_shcache[item->fs_key] = fs; }
              item->pso.vs = (__bridge void *)vs; item->pso.fs = (__bridge void *)fs;
@@ -1254,7 +1255,7 @@ index 10c5eac..a56c780 100644
          }
      }
  }
-@@ -5132,12 +5362,12 @@ static void dispatch(const p_dispatch *dp) {
+@@ -5132,12 +5363,12 @@ static void dispatch(const p_dispatch *dp) {
      const void *k = (__bridge const void *)cs;
      id<MTLComputePipelineState> ps = hm_get_id(&g_cps, &k);
      if (!ps) {
@@ -1269,7 +1270,7 @@ index 10c5eac..a56c780 100644
      }
      if (cs->builtin) {   // Built-in compute kernel: n = uniform buffer 0, src = storage buffer 0, dst = storage buffer 1
          const p_bind_buf *u = &S.ubo[5][0], *a0 = &S.ssbo[5][0], *a1 = &S.ssbo[5][1];
-@@ -5712,11 +5942,16 @@ static void sub_cut(void) {
+@@ -5712,11 +5943,16 @@ static void sub_cut(void) {
  }
  
  void mtl_exec(const uint8_t *p) {
@@ -1286,7 +1287,7 @@ index 10c5eac..a56c780 100644
          g_exec_cur = p;   // Scan start point of the store lookahead: the operation that ends the render pass (inclusive)
          if (p == g_defer_pend) { for (int gi = 0; gi < 4; gi++) if (g_defer_slots[gi].active && g_defer_slots[gi].p_end_op == p) g_defer_slots[gi].in_p = 0; g_defer_pend = NULL; }
          sdx_seq(p);
-@@ -5728,7 +5963,32 @@ void mtl_exec(const uint8_t *p) {
+@@ -5728,7 +5964,32 @@ void mtl_exec(const uint8_t *p) {
          if (g_allocprof) { static uint64_t last; static int prev = -1; uint64_t now = g_dev.currentAllocatedSize; if (prev >= 0 && prev < 64 && now > last) g_ap_bytes[prev] += now - last; last = now; prev = h.op; }
          if (g_hoist_n && hoist_take(p)) { if (g_fz.active && p == g_fz.rt2_op) { g_fz.phase = 2; g_rt_merged = 0; PD("F %llu 合并通道进入后一个通道的绘制", g_stat_pass); } p += h.size; continue; }   // A pure-clear render pass already executed early / the start of a later pass already merged in   // Entering the later pass: the same-target continuation of the earlier pass ends here; the later pass reading the earlier pass's attachment is proven to be same-pixel by fz_p2_draw, and is no longer split by the continuation rule
          const void *a = p + 8;
@@ -1319,7 +1320,7 @@ index 10c5eac..a56c780 100644
              case OP_END: g_exec_cur = NULL;
                  if (g_hoist_n && !g_ret_n && !g_nrest) {
                      if (g_fz.active) fz_unskip();
-@@ -5744,6 +6004,9 @@ void mtl_exec(const uint8_t *p) {
+@@ -5744,6 +6005,9 @@ void mtl_exec(const uint8_t *p) {
                  PD("Y signal_event cmd=%p dst=%p mode=%u value=%u", p, val, m, v); mtl_sub_event(val, m, v); break; }
              case OP_REPORT_COUNTER: { uint64_t t, ad; memcpy(&t, a, 8); memcpy(&ad, (const uint8_t *)a + 8, 8); g_cnt_report[t & 31]++;
                  PD("Q report type=%llu cmd=%p dst=%#llx", (unsigned long long)t, p, (unsigned long long)ad);
@@ -1329,7 +1330,7 @@ index 10c5eac..a56c780 100644
                  if (t == NVN_COUNTER_TYPE_SAMPLES_PASSED) { post((post_op){3, NULL, 0, 0, ad, (uint32_t)t, vis_snapshot()}); g_vis_cur = -1; }
                  else mtl_sub_counter(ad, (uint32_t)t);
                  break; }
-@@ -5751,6 +6014,9 @@ void mtl_exec(const uint8_t *p) {
+@@ -5751,6 +6015,9 @@ void mtl_exec(const uint8_t *p) {
                  if (t == NVN_COUNTER_TYPE_SAMPLES_PASSED) {
  #ifdef NVN_RT_RANGE_TEST
                      rr_reset();
@@ -1339,7 +1340,7 @@ index 10c5eac..a56c780 100644
  #endif
                      g_vis_on = 1; g_vis_counting = 1; vis_clear(); }
                  break; }
-@@ -5824,6 +6090,7 @@ void mtl_exec(const uint8_t *p) {
+@@ -5824,6 +6091,7 @@ void mtl_exec(const uint8_t *p) {
  static id<MTLRenderPipelineState> g_blit_pso; static MTLPixelFormat g_blit_fmt;
  static id<MTLSamplerState> g_blit_samp;
  static uint64_t g_present_n;
@@ -1347,7 +1348,7 @@ index 10c5eac..a56c780 100644
  uint64_t mtl_present_count(void) { return g_present_n; }   // Actual present count (heat attribution DM_HEAT computes the present frame rate)
  void mtl_res_snapshot(mtl_res_count *out) {
      memset(out, 0, sizeof *out);
-@@ -5866,6 +6133,16 @@ static int present_encode_m4(id<MTL4CommandBuffer> cb, id<MTLTexture> src, id<MT
+@@ -5866,6 +6134,16 @@ static int present_encode_m4(id<MTL4CommandBuffer> cb, id<MTLTexture> src, id<MT
  // Game picture needed by the whole-window screenshot (front end window_shot; no longer does drawViewHierarchy on a Metal layer with the display link attached): at the next present, the present thread draws the same frame
  // with the same encoding as the present (present_encode) into an offscreen texture of the same size as the swapchain, and after the GPU finishes hands out a CGImage in the completion callback (the callback does not block the present). Guarded by g_shotq_mu
  static void (^g_grab_cb)(CGImageRef img);
@@ -1364,7 +1365,7 @@ index 10c5eac..a56c780 100644
  void mtl_grab_next_present(void (^cb)(CGImageRef img)) { pthread_mutex_lock(&g_shotq_mu); g_grab_cb = [cb copy]; pthread_mutex_unlock(&g_shotq_mu); }
  static void grab_present(id<MTLTexture> src, const int crop[4], CGSize sz) {
      pthread_mutex_lock(&g_shotq_mu); void (^cb)(CGImageRef) = g_grab_cb; g_grab_cb = nil; pthread_mutex_unlock(&g_shotq_mu);
-@@ -5901,7 +6178,7 @@ static void shot(id<MTLTexture> src, const char *path, int screen, const int cro
+@@ -5901,7 +6179,7 @@ static void shot(id<MTLTexture> src, const char *path, int screen, const int cro
          if (e && sscanf(e, "%d%c%d%c", &w, &sep, &h, &extra) == 3 && sep == 'x' && w > 0 && h > 0) { out_w = w; out_h = h; }
      }
      id<MTLTexture> read = src;
@@ -1373,7 +1374,7 @@ index 10c5eac..a56c780 100644
          MTLTextureDescriptor *d = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:out_w height:out_h mipmapped:NO];
          d.usage = MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead; d.storageMode = MTLStorageModePrivate;
          id<MTLTexture> out = [g_dev newTextureWithDescriptor:d];
-@@ -6129,6 +6406,7 @@ static id<MTLTexture> present_raw_src(id<MTLTexture> src) {
+@@ -6129,6 +6407,7 @@ static id<MTLTexture> present_raw_src(id<MTLTexture> src) {
      return v;
  }
  static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTexture> dst, const int crop[4]) {
@@ -1381,7 +1382,7 @@ index 10c5eac..a56c780 100644
      NSUInteger cx = 0, cy = 0, cw = src.width, ch = src.height;
      if (crop && (crop[2] || crop[3])) {
          if (crop[0] < 0 || crop[1] < 0 || crop[2] <= 0 || crop[3] <= 0 ||
-@@ -6167,6 +6445,7 @@ static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTex
+@@ -6167,6 +6446,7 @@ static int present_encode(id<MTLCommandBuffer> cb, id<MTLTexture> src, id<MTLTex
      return 1;
  }
  static int present_encode_m4(id<MTL4CommandBuffer> cb, id<MTLTexture> src, id<MTLTexture> dst, const int crop[4], int uv_i) {
@@ -1389,7 +1390,7 @@ index 10c5eac..a56c780 100644
      NSUInteger cx = 0, cy = 0, cw = src.width, ch = src.height;
      if (crop && (crop[2] || crop[3])) {
          if (crop[0] < 0 || crop[1] < 0 || crop[2] <= 0 || crop[3] <= 0 ||
-@@ -6205,6 +6484,8 @@ static double g_link_it_tin;   // Enqueue time of the frame the display-link cal
+@@ -6205,6 +6485,8 @@ static double g_link_it_tin;   // Enqueue time of the frame the display-link cal
  static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t ticket, const int crop[4], id<CAMetalDrawable> supplied, double target_ts) {
      if (g_present_stall_ns) { struct timespec ts = {0, (long)g_present_stall_ns}; nanosleep(&ts, NULL); }
      g_present_n++;
@@ -1398,7 +1399,7 @@ index 10c5eac..a56c780 100644
      if (g_use != USE_OFF && g_use != USE_DONE) use_tick();
      if (bootprof() && (g_present_n == 1 || g_present_n % 120 == 0)) {
          if (g_present_n == 1) g_bp_first_present = bp_now() - g_bp_t0;
-@@ -6250,6 +6531,12 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
+@@ -6250,6 +6532,12 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
      for (int i = 0; i < g_nshotq;) if (g_present_n >= g_shotq[i].frame) { mtl_finish_gpu(); shot(src, g_shotq[i].path, 1, crop); g_shotq[i] = g_shotq[--g_nshotq]; } else i++;
      pthread_mutex_unlock(&g_shotq_mu);
  
@@ -1411,7 +1412,7 @@ index 10c5eac..a56c780 100644
      CAMetalLayer *layer = (__bridge CAMetalLayer *)front_metal_layer();
      if (!layer) return 0;
      if (g_present_layer_resident != layer) { [g_q4 addResidencySet:layer.residencySet]; g_present_layer_resident = layer; }
-@@ -6281,6 +6568,7 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
+@@ -6281,6 +6569,7 @@ static int present_now(const tex_t *t, double period, uint64_t frame, uint64_t t
      }];
      id<MTL4CommandBuffer> buffers[] = {cb};
      pthread_mutex_lock(&g_pq_mu); g_pq_inflight++; pthread_mutex_unlock(&g_pq_mu);
@@ -1419,7 +1420,7 @@ index 10c5eac..a56c780 100644
      [g_q4 commit:buffers count:1 options:o];
      if (target_ts > 0) {
          static double leads[300], e2e[300];   // e2e: game enqueue -> system-scheduled present (including the time waiting in the queue for the display-link callback), the full span of input latency that our side can read
-@@ -6463,8 +6751,56 @@ void mtl_link_pause(int on);
+@@ -6463,8 +6752,56 @@ void mtl_link_pause(int on);
  // When turned on, also clear the frames already queued: the system first stops the display-link callback and only afterwards notifies about going to the background, and in that gap the game has already filled the swapchain and is stuck at "before acquiring the next texture, wait for its previous present to be processed"
  // (hle_nvn.c nvnWindowAcquireTexture -> mtl_present_wait). Without clearing, the game cannot advance a single tick during those 2.5 seconds of waiting for the save, and the save is not written (the same pattern three times in player logs: 3 frames queued, 0 submits)
  void mtl_present_discard(int on) { atomic_store(&g_present_discard, on != 0); if (on) present_drop_for_suspend(); }
@@ -1590,11 +1591,11 @@ index 0000000..3585f92
 +}
 diff --git a/dm/gfx/nvn/nvn_spl3_a8.h b/dm/gfx/nvn/nvn_spl3_a8.h
 new file mode 100644
-index 0000000..dbd7ce1
+index 0000000..2bec401
 --- /dev/null
 +++ b/dm/gfx/nvn/nvn_spl3_a8.h
 @@ -0,0 +1,14 @@
-+// A8 experimental headless camera-color elision. Paint and depth writes stay.
++// A8 experimental headless main-camera elision. Independent paint depth stays.
 +#pragma once
 +#include <stdint.h>
 +typedef struct {
@@ -1606,7 +1607,7 @@ index 0000000..dbd7ce1
 +    // must remain untouched even though it too has a depth attachment.
 +    return s.headless && s.active && s.phase==1 && !s.capture && s.color &&
 +        s.width==1280 && s.height==720 && s.format==0x34 &&
-+        !s.depth_write && !s.stencil_write && !s.storage;
++        !s.stencil_write && !s.storage;
 +}
 diff --git a/dm/gfx/tests/Makefile b/dm/gfx/tests/Makefile
 index 41be22b..466976d 100644

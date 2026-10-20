@@ -199,8 +199,8 @@ A7 原生开局为已签收的显式选项，默认入口仍使用已接受的�
 ## A8：保留涂墨路径的主镜头减绘（实验构建）
 
 A8使用单独构建，默认`upstream/dm/host/dmhost`保持原件。camera构建只在
-headless、RL受控InGame、1280×720主镜头且无深度/模板/storage写入时跳过颜色draw。
-1600×1600涂墨目标、深度预通道、原生样本计数、计算/拷贝和结算保留。
+headless、RL受控InGame、1280×720/Depth32F主镜头且无模板/storage写入时跳过镜头draw，
+包括该镜头的深度预通道。1600×1600涂墨及其独立深度目标、原生样本计数、计算/拷贝和结算保留。
 若随后原生样本计数报告依赖已跳过draw，保护检查终止该房间，不能继续发布改变过的判定。
 
 ```sh
@@ -247,8 +247,8 @@ M5新增swapout>2GiB或critical压力保护不放宽，触发时保留原件、�
 签收入口不会构建默认宿主，须先准备实际组件日志及最终原生证据：
 
 ```sh
-bash tests/run_all.sh --milestone a8 --before work/a8/full-v3-three \
-  --after work/a8/camera-v3-three --regression work/a8/final-regression-v3/result.json \
+bash tests/run_all.sh --milestone a8 --before work/a8/full-v4-three \
+  --after work/a8/camera-v4-three --regression work/a8/final-regression-v4/result.json \
   --components work/a8/components-final.json --capacity arena/results/a8-capacity-20261020.json \
   --out arena/results/a8-acceptance-20261020.json
 ```

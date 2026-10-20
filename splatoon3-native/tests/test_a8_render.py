@@ -1,4 +1,4 @@
-"""Camera elision guards must retain paint, depth/stencil and storage producers."""
+"""Main-camera depth may be elided; independent paint and storage must stay."""
 import subprocess
 import tempfile
 from pathlib import Path
@@ -14,7 +14,8 @@ int main(void) {
     nvn_a8_camera_state s={.width=1280,.height=720,.format=0x34,.headless=1,.active=1,.phase=1,.color=1};
     assert(nvn_a8_camera_candidate(s));
     nvn_a8_camera_state p=s;p.width=p.height=1600;p.format=0x36;assert(!nvn_a8_camera_candidate(p));
-    p=s;p.depth_write=1;assert(!nvn_a8_camera_candidate(p));
+    p=s;p.depth_write=1;assert(nvn_a8_camera_candidate(p));
+    p=s;p.width=p.height=1600;p.format=0x36;p.depth_write=1;assert(!nvn_a8_camera_candidate(p));
     p=s;p.stencil_write=1;assert(!nvn_a8_camera_candidate(p));
     p=s;p.storage=1;assert(!nvn_a8_camera_candidate(p));
     p=s;p.capture=1;assert(!nvn_a8_camera_candidate(p));

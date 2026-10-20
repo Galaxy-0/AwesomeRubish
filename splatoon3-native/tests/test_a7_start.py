@@ -89,6 +89,17 @@ class NativeStartTests(unittest.TestCase):
         stale.check_saves.side_effect=RuntimeError('reference hash changed');pool.held=stale
         with self.assertRaisesRegex(RuntimeError,'reference hash changed'):pool.acquire(**config)
 
+    def test_enabling_pixels_rebuilds_instead_of_reusing_elided_temporal_history(self):
+        with patch('rl.native_start.validate_runtime',return_value=(Path('/host'),Path('/modules'))):
+            pool=NativeSessionPool('/host','/modules')
+        config=dict(players=2,mode=0,stage_id=2,weapons=[8000,8000],timeout=900,pixels=False)
+        previous=Mock(closed=False);previous.hosts=[(0,Mock(poll=Mock(return_value=None)),None)]
+        pool.held=previous;pool.identity=pool.equipment(config)
+        with patch('rl.native_start.NativeSession') as constructor:
+            self.assertIs(pool.acquire(**(config|dict(pixels=True))),constructor.return_value)
+            previous.close.assert_called_once();constructor.assert_called_once()
+            self.assertTrue(constructor.call_args.kwargs['pixels'])
+
     def test_status_keeps_native_scene_and_last_match_phase_distinct(self):
         session=NativeSession.__new__(NativeSession);session.generation=1
         session.hosts=[(0,Mock(pid=17),None)]
