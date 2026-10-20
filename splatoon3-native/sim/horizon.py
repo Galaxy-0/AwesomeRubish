@@ -70,7 +70,11 @@ def reset_native(env, trace, anchor):
             env.paint.disk(p.position, 1.5, role)
         metadata.append(dict(sample_age=int(age), velocity_estimated_from_past=True,
                              weapon_phase_estimated=True, native_paint_available=False))
-    env.projectiles, env.slashes, env.scheduled, env.events = [], [], [], []
+    env.projectiles, env.slashes, env.scheduled, env.events, env.damage_queue = [], [], [], [], []
+    if env.weapon_model is not None:
+        from .engine import gear_factor
+        for p in env.players:
+            p.reserved = env.weapon_model.reserve(env.params, p.charge)*gear_factor('ink_saver_main', p.ap.get('ink_saver_main', 0))
     env._observations = None
     return metadata
 
@@ -172,6 +176,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--corpus', type=Path, default=WORK / 'corpus.json')
     p.add_argument('--model', type=Path)
+    p.add_argument('--weapon-model', type=Path)
+    p.add_argument('--vector-batch', type=int, default=0)
     p.add_argument('--out', type=Path, default=WORK / 'horizon-baseline.json')
     p.add_argument('--max-windows', type=int)
     args = p.parse_args()
@@ -180,7 +186,18 @@ def main():
         from .motion import MotionModel
         model = MotionModel.load(args.model)
     corpus = json.loads(args.corpus.read_text())
-    evaluate(primary_entries(corpus), model=model, max_windows=args.max_windows, out=args.out)
+    if args.vector_batch:
+        if model is None or args.vector_batch < 1 or args.max_windows is not None:
+            p.error('vector mode needs a model, positive batch size and complete window grid')
+        from .horizon_batch import evaluate_vector
+        from .weapon import WeaponModel
+        weapon = WeaponModel.load(args.weapon_model) if args.weapon_model else None
+        evaluate_vector(primary_entries(corpus),(30,60,120,300),model=model,weapon_model=weapon,
+                        batch_size=args.vector_batch,out=args.out)
+    else:
+        if args.weapon_model:
+            p.error('use --vector-batch for combined weapon/model evaluation')
+        evaluate(primary_entries(corpus), model=model, max_windows=args.max_windows, out=args.out)
 
 
 if __name__ == '__main__':

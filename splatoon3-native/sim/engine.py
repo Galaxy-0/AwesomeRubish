@@ -94,6 +94,7 @@ class Player:
     hurt_at: int = -10000
     respawn_at: int = 0
     protected_until: int = 0
+    reserved: float = 0.
     previous: list = field(default_factory=lambda: [0] * 6)
     ap: dict = field(default_factory=dict)
 
@@ -146,7 +147,7 @@ class Simulator:
     metadata = {'render_modes': [], 'name': 's1_core_v1'}
 
     def __init__(self, stage_id=1, *, parameters=None, terrain=None, assumptions=None,
-                 loadouts=None, duration_frames=10800, swap=False, motion_model=None):
+                 loadouts=None, duration_frames=10800, swap=False, motion_model=None, weapon_model=None):
         if stage_id not in (1, 2, 3) or type(duration_frames) is not int or duration_frames < 1:
             raise ValueError('stage/duration')
         self.stage_id = stage_id
@@ -154,6 +155,7 @@ class Simulator:
         self.terrain = terrain or Terrain.load(stage_id)
         self.rules = assumptions or Assumptions()
         self.motion_model = motion_model
+        self.weapon_model = weapon_model
         self.loadouts = loadouts or [None, None]
         if len(self.loadouts) != 2:
             raise ValueError('two loadouts required')
@@ -177,6 +179,7 @@ class Simulator:
             self.players.append(Player(self.terrain.spawn[side].copy(), yaw, yaw,
                                        ap=gear_ap(self.loadouts[team])))
         self.projectiles, self.slashes, self.scheduled = [], [], []
+        self.damage_queue = []
         self.events = []
         self.unsupported = Counter()
         supported_gear = {'swim_speed_up', 'ink_saver_main', 'quick_super_jump', 'ninja_squid'}
@@ -255,12 +258,17 @@ class Simulator:
         p.respawn_at = self.frame + self.rules.respawn_frames
         p.special *= self.rules.death_special_retention
         p.charge = 0
+        p.reserved = 0.
         p.velocity[:] = 0
         p.squid = p.submerged = False
         self.events.append(dict(kind='knockdown', frame=self.frame, target=target,
                                 attacker=attacker, cause=cause))
 
     def _player(self, i, action):
+        if self._prepare_player(i, action):
+            self._finish_player(i, action)
+
+    def _prepare_player(self, i, action):
         p, r = self.players[i], self.rules
         b, sticks, gyro = action['buttons'], action['sticks'], action['gyro']
         if not p.alive:
@@ -296,15 +304,30 @@ class Simulator:
         elif p.emerge:
             p.emerge -= 1
         if p.squid:
+            if self.weapon_model is not None:
+                p.ink = min(1., p.ink+p.reserved)
+                p.reserved = 0.
             p.charge = 0  # no charge keep
         elif b[0] and not p.cooldown and not p.emerge:
             p.charge += 1
+            if self.weapon_model is not None:
+                required = self.weapon_model.reserve(self.params, p.charge)
+                required *= gear_factor('ink_saver_main', p.ap.get('ink_saver_main', 0))
+                increment = min(p.ink, max(0., required-p.reserved))
+                p.ink -= increment
+                p.reserved += increment
         elif not b[0] and p.previous[0] and p.charge:
             self._release(i, dash=sticks[1] >= .9)
         if b[2] and not p.previous[2]:
             self.unsupported['burst_bomb'] += 1
         if b[3] and not p.previous[3]:
             self.unsupported['zipcaster'] += 1
+        return True
+
+    def _finish_player(self, i, action, horizontal=None, position=None, floor_hint=None):
+        p, r = self.players[i], self.rules
+        b, sticks = action['buttons'], action['sticks']
+        color = self.paint.at(p.position)
         x, z = sticks[:2]
         norm = max(1., math.hypot(x, z))
         speed = r.walk_speed
@@ -328,7 +351,8 @@ class Simulator:
         else:
             mode = self.motion_model.mode(p.squid, p.submerged, p.grounded, p.charge, p.cooldown)
             multiplier = gear_factor('swim_speed_up', p.ap.get('swim_speed_up', 0)) if mode == 'squid_own' else 1.
-            p.velocity[[0, 2]], fitted_target = self.motion_model.advance(p.velocity, sticks, p.yaw, mode, multiplier)
+            p.velocity[[0, 2]], fitted_target = (self.motion_model.advance(p.velocity, sticks, p.yaw, mode, multiplier)
+                                                if horizontal is None else horizontal)
             if color not in (-1, i) and p.grounded:
                 p.velocity[[0, 2]] = np.clip(p.velocity[[0, 2]], -r.enemy_ink_speed, r.enemy_ink_speed)
             if math.hypot(x, z) > .1 or b[0]:
@@ -344,9 +368,10 @@ class Simulator:
             if p.squid:
                 self.unsupported['squid_roll_or_surge_as_ordinary_jump'] += 1
         old = p.position.copy()
-        p.position = self.terrain.move(p.position, p.velocity, r.terrain_radius, p.grounded,
-                                       support_aware=self.motion_model is not None)
-        ground = self.terrain.human.floor(p.position[0], p.position[2], p.position[1] + .205)
+        p.position = (self.terrain.move(p.position, p.velocity, r.terrain_radius, p.grounded,
+                                       support_aware=self.motion_model is not None) if position is None else position.copy())
+        ground = (self.terrain.human.floor(p.position[0], p.position[2], p.position[1] + .205)
+                  if floor_hint is None else (float(floor_hint) if math.isfinite(floor_hint) else None))
         if p.grounded and (ground is None or p.position[1] - ground > .3):
             p.grounded = False
         if not p.grounded:
@@ -385,6 +410,9 @@ class Simulator:
         cost = (self.params.charge['InkConsumeFullCharge'] if full else self.params.swing['InkConsume'])
         cost *= gear_factor('ink_saver_main', p.ap.get('ink_saver_main', 0))
         p.charge = 0
+        if self.weapon_model is not None:
+            p.ink = min(1., p.ink+p.reserved)
+            p.reserved = 0.
         if p.ink + 1e-9 < cost:
             self.events.append(dict(kind='dry', frame=self.frame, player=owner))
             return
@@ -422,6 +450,11 @@ class Simulator:
             profile = self.params.weapon[f'BulletSaberSlash{suffix}Param']
             offset = self.params.swing['ShotSlashOffset_Vertical' if full else 'ShotSlashOffset_L']
             position = p.position + right * offset['X'] + [0, offset['Y'], 0] + forward * offset['Z']
+            if self.weapon_model is not None and self.weapon_model.data['contact_muzzle_anchor']:
+                # Effective joint anchor candidate: slash offset relative to
+                # projectile muzzle rather than the player's foot origin.
+                muzzle = self.params.swing['ShotBulletOffset_Vertical' if full else 'ShotBulletOffset_L']
+                position += forward*muzzle['Z']
             self.slashes.append(Slash(owner, position, right, forward, profile,
                                       self.frame + profile['MoveParam']['AliveFrame']))
 
@@ -438,6 +471,13 @@ class Simulator:
         return p.position + vec('CenterA'), p.position + vec('CenterB'), shape['Radius']
 
     def _damage(self, target, amount, owner, cause):
+        delay = self.weapon_model.delay(cause) if self.weapon_model is not None else 0
+        if delay:
+            self.damage_queue.append((self.frame+delay, target, amount, owner, cause))
+        else:
+            self._deliver_damage(target, amount, owner, cause)
+
+    def _deliver_damage(self, target, amount, owner, cause):
         p = self.players[target]
         if p.alive and self.frame >= p.protected_until:
             p.hp = max(0., p.hp - amount)
@@ -455,6 +495,13 @@ class Simulator:
             p.special = min(1., p.special + area * self.rules.points_per_world_area / self.params.data['weapon_info']['SpecialPoint'])
 
     def _weapons(self):
+        outstanding = []
+        for frame, target, amount, owner, cause in self.damage_queue:
+            if frame <= self.frame:
+                self._deliver_damage(target, amount, owner, cause)
+            else:
+                outstanding.append((frame, target, amount, owner, cause))
+        self.damage_queue = outstanding
         pending = []
         for frame, owner, full, kind in self.scheduled:
             if frame == self.frame:

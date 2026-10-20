@@ -28,7 +28,7 @@ def compact(report):
     return result
 
 
-def a1(parameters, terrain):
+def a1(parameters, terrain, weapon_model=None):
     path = ROOT / 'work/tests/a4-stage1-20261018-231611-601829/result.json'
     sources = provenance([path, path.with_name('steps.jsonl')])
     data = json.loads(path.read_text())
@@ -38,7 +38,7 @@ def a1(parameters, terrain):
         index = next(i for i, row in enumerate(rows) if row['label'] == label)
         before = dict(frame=0, infos=rows[index-1]['infos'])
         origins = {k: v['frame'] for k, v in before['infos'].items()}
-        env = Simulator(parameters=parameters, terrain=terrain, duration_frames=60)
+        env = Simulator(parameters=parameters, terrain=terrain, duration_frames=60, weapon_model=weapon_model)
         initialize(env, before, origins, own_ink_fixture=True)
         for index, count in enumerate((1, 7, 7, 15, 15, 15)):
             a = neutral()

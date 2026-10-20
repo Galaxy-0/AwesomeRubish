@@ -179,7 +179,7 @@ def tournament(directory, frames=600, *, parameters=None, terrain=None):
     return report
 
 
-def a6_case(directory, prefix, *, parameters=None, terrain=None):
+def a6_case(directory, prefix, *, parameters=None, terrain=None, weapon_model=None):
     directory = Path(directory)
     path = directory / 'steps.jsonl'
     sources = provenance([directory / 'result.json', path])
@@ -198,7 +198,7 @@ def a6_case(directory, prefix, *, parameters=None, terrain=None):
             indices.append(i)
     if not indices or indices[0] == 0:
         raise ValueError('missing case/precondition barrier')
-    env = Simulator(1, parameters=parameters, terrain=terrain, duration_frames=frame)
+    env = Simulator(1, parameters=parameters, terrain=terrain, duration_frames=frame, weapon_model=weapon_model)
     report = compare(env, intervals, barriers, indices[0] - 1, barriers[indices[-1]]['frame'], own_ink_fixture=True)
     report.update(kind='A6 same-input isolated fixture', case=prefix,
                   sources=sources, turf_error_pp=None,
