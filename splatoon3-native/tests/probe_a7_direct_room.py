@@ -33,7 +33,7 @@ def main(args):
     out=ROOT/'work/a7'/datetime.datetime.now().strftime('direct-room-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
     session=Session(2,0,1,[8000,8000],timeout=args.timeout,loadouts=[uniform_loadout()]*2,patched=patched)
     result=dict(schema='arena.a7.direct-room.v1',passed=False,full_a7_passed=False,errors=[],
-                scope='native create and guest '+args.guest_action,artifacts=str(out),session=str(session.out),
+                scope='native '+('controller' if args.upper else 'game request')+' create and guest '+args.guest_action,artifacts=str(out),session=str(session.out),
                 started_wall=time.time(),host_sha256=sha(host),source_sha256=build['source_sha256'],
                 default_host_sha256=default_hash,menu_inputs=[],ocr_used=False)
     (ROOT/'work/a7/direct-room-current.json').write_text(json.dumps(dict(out=str(out),session=str(session.out))))
@@ -42,10 +42,12 @@ def main(args):
         if str(command[0])==str(default):command=[str(host),*command[1:]]
         return original_popen(command,*a,**kw)
     def options(s,player):
-        return dict(original_options(s,player),DM_KEYS='',DM_SCENE_BOOT='LobbyLocal',
+        options=dict(original_options(s,player),DM_KEYS='',DM_SCENE_BOOT='LobbyLocal',
                     DM_SCENE_TRACE_FLOW='1',DM_SCENE_TRACE_NETWORK='1',DM_SCENE_TRACE_STACK='1',
                     DM_SCENE_DIRECT='create' if player==0 else args.guest_action,
                     DM_NVN_SHMAP=str(ROOT/'upstream/dm/games/0100C2500FC20000/shader_map.tsv'))
+        if args.upper:options['DM_SCENE_UPPER']='1'
+        return options
     def save():(out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     print(out,flush=True);save()
     try:
@@ -78,7 +80,7 @@ def main(args):
     finally:
         try:session.close()
         except BaseException as error:result['errors'].append('cleanup: '+repr(error))
-    result['native_events']={str(n):[x for x in session.text(n).splitlines() if any(k in x for k in ['A7_DIRECT','A7_NET_ROOT','LDN state='])]
+    result['native_events']={str(n):[x for x in session.text(n).splitlines() if any(k in x for k in ['A7_DIRECT','A7_UPPER','A7_NET_ROOT','LDN state='])]
                              for n,_,_ in session.hosts}
     for n,_,_ in session.hosts:
         text=session.text(n)
@@ -97,4 +99,5 @@ if __name__=='__main__':
     p.add_argument('--patched',type=Path,default=ROOT/'work/a7/patched-producer-v6')
     p.add_argument('--timeout',type=float,default=300)
     p.add_argument('--guest-action',choices=('scan','join'),default='join')
+    p.add_argument('--upper',action='store_true',help='use native game matchmaking-controller entry points')
     raise SystemExit(main(p.parse_args()))

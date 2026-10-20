@@ -1967,7 +1967,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..184869a 100644
+index fda33ac..7d7e4b9 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1975,7 +1975,7 @@ index fda33ac..184869a 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_SPL3_BOOT_SCENE = 33, OBS_SPL3_SCENE_REQUEST = 34, OBS_SPL3_LOCAL_CREATE = 35, OBS_SPL3_LOCAL_JOIN = 36, OBS_SPL3_LOCAL_PROGRESS = 37, OBS_SPL3_MATCH_MENU = 38, OBS_SPL3_MATCH_FIX = 39, OBS_SPL3_PRIVATE_UI = 40, OBS_SPL3_NET_ROOT = 41, OBS_SPL3_NET_EVENT = 42, OBS_MAX = 43 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_SPL3_BOOT_SCENE = 33, OBS_SPL3_SCENE_REQUEST = 34, OBS_SPL3_LOCAL_CREATE = 35, OBS_SPL3_LOCAL_JOIN = 36, OBS_SPL3_LOCAL_PROGRESS = 37, OBS_SPL3_MATCH_MENU = 38, OBS_SPL3_MATCH_FIX = 39, OBS_SPL3_PRIVATE_UI = 40, OBS_SPL3_NET_ROOT = 41, OBS_SPL3_NET_EVENT = 42, OBS_SPL3_PRIVATE_SETTING = 43, OBS_MAX = 44 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -3874,15 +3874,16 @@ index 0000000..0877bf7
 +}
 diff --git a/dm/host/hle_spl3_scene.c b/dm/host/hle_spl3_scene.c
 new file mode 100644
-index 0000000..61928c5
+index 0000000..cbda921
 --- /dev/null
 +++ b/dm/host/hle_spl3_scene.c
-@@ -0,0 +1,233 @@
+@@ -0,0 +1,401 @@
 +// A7 experimental scene-request adapter; no synthetic match phase or score.
 +#include "dm.h"
 +#include <mach/mach.h>
 +#include <mach/mach_vm.h>
 +#include <stdatomic.h>
++#include <unistd.h>
 +extern uint32_t thr_cur_handle(void);
 +
 +static const char *scene_boot;
@@ -3890,8 +3891,10 @@ index 0000000..61928c5
 +static int scene_replaced;
 +static _Atomic unsigned scene_net_requests;
 +static _Atomic int scene_progress_seen;
-+static int scene_direct_enabled,scene_direct_stage;
++static int scene_direct_enabled,scene_direct_stage,scene_upper_enabled,scene_direct_released;
++static const char *scene_match_control;
 +static uintptr_t scene_main_base;
++static _Atomic uintptr_t scene_main_controller;
 +
 +static int scene_read(uintptr_t address, void *out, size_t length) {
 +    mach_vm_size_t copied=0;
@@ -3957,6 +3960,10 @@ index 0000000..61928c5
 +            }
 +        }
 +    }
++    uintptr_t base=0,slot=0,data_root=0,input=0;unsigned values[12]={0};
++    for(int k=0;k<g_nmod;k++)if(!strcmp(g_mod[k].name,"main"))base=(uintptr_t)g_mod[k].base;
++    if(base && scene_read(base+0x5f2b548,&slot,8) && scene_read(slot,&data_root,8) && scene_read(data_root+0x219070,&input,8) && scene_read(input,values,sizeof values))
++        LOG("A7_INPUT kind=%s fields=%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u frame=%llu",kind,values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],dm_guest_frame());
 +    // Bounded, best-effort diagnostic: never retain the native pointer or
 +    // change its bytes. Raw bytes stay in ignored logs, never the policy wire.
 +    unsigned char data[0x200];char hex[sizeof data*2+1];
@@ -3998,7 +4005,47 @@ index 0000000..61928c5
 +    ((void (*)(void *))(scene_main_base+0xa1910))((char *)&params+0x38);
 +    return params;
 +}
++static void scene_upper_tick(const uint32_t key[6]) {
++    static unsigned previous=~0u;static int search_seen,join_done,search_ack;
++    uintptr_t controller=0;
++    controller=scene_main_controller;
++    if(!controller)return;
++    unsigned state=0;unsigned char flags[8]={0};scene_read(controller+0x30,&state,4);scene_read(controller+0x208,flags,8);
++    if(state!=previous){LOG("A7_UPPER state=%u flags=%u,%u,%u,%u frame=%llu",state,flags[0],flags[1],flags[2],flags[3],dm_guest_frame());previous=state;}
++    if(!atomic_load(&scene_progress_seen) || thr_cur_handle()!=0x1001)return;
++    unsigned char input[0x40]={0};((void (*)(void *))(scene_main_base+0x32d5840))(input);unsigned mode=6;memcpy(input,&mode,4);
++    // The normal create/join UI constructs this explicit-selection flag.
++    input[8]=1;
++    if(scene_direct_stage==0) {
++        int value=((int (*)(uintptr_t,void *,int,int))(scene_main_base+0x38a7fb0))(controller,input,1,1);
++        LOG("A7_UPPER initialize result=%d frame=%llu",value,dm_guest_frame());scene_direct_stage=1;return;
++    }
++    if(scene_direct_stage==1 && key[0]==34 && !key[4]) {
++        int accepted=scene_direct_enabled==1 ?
++            ((int (*)(uintptr_t,void *,int,void *,int))(scene_main_base+0x38a9180))(controller,input,1,NULL,0) :
++            ((int (*)(uintptr_t,void *,int,int))(scene_main_base+0x38a8890))(controller,input,0,0);
++        if(accepted){scene_direct_stage=2;LOG("A7_UPPER request=%s accepted=%d frame=%llu",scene_direct_enabled==1 ? "create" : "search",accepted,dm_guest_frame());}
++        return;
++    }
++    if(scene_direct_enabled>=2 && scene_direct_stage==2 && key[0]==13)search_seen=1;
++    if(scene_direct_enabled>=2 && scene_direct_stage==2 && search_seen && key[0]==34 && !key[4]) {
++        uintptr_t list=((uintptr_t (*)(int))(scene_main_base+0x15278e0))(1),array=0;unsigned index=0,count=0;
++        if(list && scene_read(list+0x18,&index,4) && scene_read(list+8+8*(index<2 ? index : 0),&array,8) && array)scene_read(array+0x18,&count,4);
++        if(!join_done){LOG("A7_DIRECT search_complete count=%u list=%lx",count,(unsigned long)list);join_done=1;}
++        if(scene_direct_enabled==3 && count>0) {
++            if(!search_ack && state==3) {
++                ((void (*)(uintptr_t))(scene_main_base+0x38a7e44))(controller);search_ack=1;
++                LOG("A7_UPPER search_bookkeeping_reset frame=%llu",dm_guest_frame());return;
++            }
++            char empty[1]={0};struct {uintptr_t vtable;char *buffer;int capacity,pad;} password={0,empty,1,0};
++            int accepted=((int (*)(uintptr_t,void *,int,int,int,const char *,const char *,void *,int))(scene_main_base+0x38a9498))(controller,input,0,1,0,empty,empty,&password,0);
++            if(accepted){scene_direct_stage=3;LOG("A7_UPPER request=join accepted=%d frame=%llu",accepted,dm_guest_frame());}
++        }
++    }
++}
 +static void scene_direct_tick(const uint64_t *r,const uint32_t key[6]) {
++    if(scene_direct_released)return;
++    if(scene_upper_enabled){scene_upper_tick(key);return;}
 +    if(scene_direct_enabled>=2 && scene_direct_stage==2 && key[0]==13)scene_direct_work_seen=1;
 +    if(scene_direct_enabled>=2 && scene_direct_stage==2 && scene_direct_work_seen && key[0]==34 && !key[4]) {
 +        uintptr_t list=((uintptr_t (*)(int))(scene_main_base+0x15278e0))(1),array=0;
@@ -4042,11 +4089,101 @@ index 0000000..61928c5
 +    ((void (*)(void *))(scene_main_base+0xa1c04))((char *)&params+0x38);
 +    if(!request || id<0)die("A7_DIRECT game request rejected");
 +}
++// Opt-in B prototype: commit native private settings, then request native AINB.
++static uintptr_t scene_global(unsigned got) {
++    uintptr_t slot=0,value=0;
++    if(scene_read(scene_main_base+got,&slot,8))scene_read(slot,&value,8);
++    return value;
++}
++static void scene_match_tick(const uint32_t key[6]) {
++    static int configured,closed,commanded,private_started;static uintptr_t private_model;static unsigned model_previous=~0u;
++    if(scene_direct_released)return;
++    const char *control=scene_match_control;
++    if(!control || access(control,F_OK) || !scene_direct_enabled || scene_direct_stage<2 || key[0]!=34 || key[4] || thr_cur_handle()!=0x1001)return;
++    if(!private_model) {
++        uintptr_t owner=0;
++        if(!scene_main_controller || !scene_read(scene_main_controller+0x20,&owner,8) || !owner)return;
++        private_model=((uintptr_t (*)(uintptr_t))(scene_main_base+0x38b8ba0))(owner);
++        if(!private_model)die("A7_MATCH private model unavailable");
++    }
++    if(private_started && !commanded && scene_direct_enabled!=1)
++        ((void (*)(uintptr_t))(scene_main_base+0x3891660))(private_model);
++    unsigned model_state=0;scene_read(private_model+0x1138,&model_state,4);
++    if(model_state!=model_previous){
++        unsigned fields[4]={0},hash=0;uintptr_t string=0;char name[128]="unavailable";
++        scene_read(private_model+0x4b4,fields,sizeof fields);scene_read(private_model+0x688,&hash,4);
++        if(scene_read(private_model+0x468,&string,8))scene_name(string,name);
++        LOG("A7_MATCH private_model_state=%u parameters=%u,%u,%u,%u hash=%u scene=%s frame=%llu",model_state,fields[0],fields[1],fields[2],fields[3],hash,name,dm_guest_frame());model_previous=model_state;
++    }
++    if(!private_started) {
++        int accepted=((int (*)(uintptr_t,int))(scene_main_base+0x388ebd0))(private_model,2);
++        LOG("A7_MATCH private_model_initialize accepted=%d frame=%llu",accepted,dm_guest_frame());private_started=1;return;
++    }
++    if(!configured && model_state!=1)return;
++    if(!configured) {
++        uintptr_t data=scene_global(0x5f2b548),input=0,system=scene_global(0x5f351a0),modules=0,settings=0,vt=0;
++        if(!data || !scene_read(data+0x219070,&input,8) || !input || !system || !scene_read(system+0xd8,&modules,8) || !scene_read(modules+0x6688,&settings,8) || !scene_read(settings,&vt,8) || vt!=scene_main_base+0x5dadf70)die("A7_MATCH native settings unavailable");
++        void (*lock)(uintptr_t)=(void *) (scene_main_base+0x4e8bf30);
++        void (*unlock)(uintptr_t)=(void *) (scene_main_base+0x4e8bf40);
++        lock(data+0x219098);unsigned mode=6,rule=0;memcpy((void *)input,&mode,4);memcpy((void *)(input+4),&rule,4);unlock(data+0x219098);
++        lock(system+0x100);memcpy((void *)(settings+0x40),&mode,4);unlock(system+0x100);
++        uintptr_t manager=0,info=0;unsigned setting_flags=0;scene_read(scene_main_base+0x6098e88,&manager,8);
++        if(!manager || !scene_read(manager+0xb8,&info,8) || !info)die("A7_MATCH user info unavailable");
++        ((void (*)(uintptr_t))(scene_main_base+0x4e8b190))(manager+0xc0);
++        ((void (*)(uintptr_t))(scene_main_base+0x39047d0))(info);
++        if(!scene_read(info+0x454,&setting_flags,4))die("A7_MATCH native room flags unavailable");
++        ((void (*)(uintptr_t))(scene_main_base+0x4e8b1b0))(manager+0xc0);
++        // Normal map selection (38fa304..38fa3e4) writes this owned
++        // SafeString and copies the native default-room flags before publish.
++        uintptr_t map_buffer=0;unsigned map_capacity=0;
++        if(!scene_read(private_model+0x30,&map_buffer,8) || !scene_read(private_model+0x38,&map_capacity,4) || map_buffer!=private_model+0x3c || map_capacity!=64)die("A7_MATCH private map string layout mismatch");
++        memcpy((void *)map_buffer,"Vss_District00",sizeof "Vss_District00");
++        unsigned char specific=0;memcpy((void *)(private_model+0x84),&specific,1);
++        memcpy((void *)(private_model+0x90),&setting_flags,4);
++        LOG("A7_MATCH native_map=Vss_District00 setting_flags=%x frame=%llu",setting_flags,dm_guest_frame());
++        if(scene_direct_enabled==1) {
++            // The native UI publisher owns locking, comparison and replication;
++            // the input is the game-owned private model returned by its getter.
++            unsigned char *model=(void *)private_model;unsigned private_step=1,pool_count=0;
++            memcpy(model+0x80,&private_step,4);memcpy(model+0x88,&pool_count,4);model[0x10f0]=1;
++            for(unsigned k=0;k<10;k++){int team=k<2 ? (int)k : 3;memcpy(model+0xdc0+4*k,&team,4);}
++            ((void (*)(void *))(scene_main_base+0x3890410))(model);
++        }
++        unsigned ready=2;memcpy((void *)(private_model+0x94),&ready,4);
++        configured=1;LOG("A7_MATCH configured mode=6 requested_rule=0 map=Vss_District00 teams=0,1 frame=%llu",dm_guest_frame());
++        return;
++    }
++    // The driver advances the second control file only after both peers have
++    // configured their native local mode and the host publisher has run.
++    char fix[1024];snprintf(fix,sizeof fix,"%s.fix",control);
++    if(access(fix,F_OK))return;
++    if(scene_direct_enabled==1 && !closed) {
++        int accepted=((int (*)(uintptr_t))(scene_main_base+0x38a9b0c))(scene_main_controller);
++        if(!accepted)return;
++        closed=1;LOG("A7_MATCH upper_start accepted=1 frame=%llu",dm_guest_frame());return;
++    }
++    if(scene_direct_enabled==1 && closed==1) {
++        unsigned state=0;scene_read(scene_main_controller+0x30,&state,4);if(state!=3)return;
++        closed=2;LOG("A7_MATCH native_fix_complete frame=%llu",dm_guest_frame());
++    }
++    char command[1024];snprintf(command,sizeof command,"%s.command",control);if(access(command,F_OK))return;
++    if(commanded)return;
++    unsigned char ready=0;scene_read(private_model+0x10f0,&ready,1);if(!ready)return;
++    uintptr_t actor=((uintptr_t (*)(void))(scene_main_base+0x159b590))();
++    if(!actor)return;
++    const char *name=(const char *)(scene_main_base+0x4fdd92a);uintptr_t delegate=0;
++    if(!scene_read(scene_main_base+0x5f1e848,&delegate,8) || !delegate)die("A7_MATCH native delegate unavailable");
++    delegate+=0x10;
++    int accepted=((int (*)(uintptr_t,const void *,const void *))(scene_main_base+0x15999fc))(actor,&name,&delegate);
++    if(!accepted)die("A7_MATCH native scene command rejected");
++    commanded=1;scene_direct_released=1;LOG("A7_MATCH command=MatchFix accepted=%d frame=%llu thread=%x actor=%lx",accepted,dm_guest_frame(),thr_cur_handle(),(unsigned long)actor);
++}
 +static void scene_net_tick(const uint64_t *r) {
 +    static uint32_t previous[6];
 +    uint32_t key[6]={0};
 +    if(!scene_read(r[0]+0x28,key,4) || !scene_read(r[0]+0x130,key+1,20))return;
 +    scene_direct_tick(r,key);
++    scene_match_tick(key);
 +    if(scene_net_root==r[0] && !memcmp(previous,key,sizeof key))return;
 +    scene_net_root=r[0];memcpy(previous,key,sizeof key);
 +    LOG("A7_NET_ROOT self=%llx frame=%llu state=%u mode=%u request=%u context=%u pending=%u aux=%u",r[0],dm_guest_frame(),key[0],key[1],key[2],key[3],key[4],key[5]);
@@ -4058,15 +4195,37 @@ index 0000000..61928c5
 +    LOG("A7_NET_EVENT self=%llx frame=%llu target=%llu caller=%lx",r[0],dm_guest_frame(),r[1],(unsigned long)caller);
 +}
 +
-+static void scene_progress(const uint64_t *r){atomic_store(&scene_progress_seen,1);scene_flow(r,0,"progress");}
++static void scene_setting(const uint64_t *r) {
++    static uint32_t previous[15];static int have;
++    uint32_t values[15]={0};
++    unsigned char tail=0;
++    if(!scene_read(r[0]+0x20,values,16) || !scene_read(r[0]+0x30,&tail,1))return;
++    values[4]=tail;
++    for(unsigned k=0;k<10;k++)if(!scene_read(r[0]+0x70+0x28*k,values+5+k,4))return;
++    if(have && !memcmp(previous,values,sizeof values))return;
++    have=1;memcpy(previous,values,sizeof values);
++    LOG("A7_PRIVATE_SETTING self=%llx peer=%llx frame=%llu header=%u,%u,%u,%u,%u slots=%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",r[0],r[1],dm_guest_frame(),values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14]);
++}
++
++static void scene_progress(const uint64_t *r){uintptr_t controller=0;if(scene_read(r[0]+0x30,&controller,8))atomic_store(&scene_main_controller,controller);atomic_store(&scene_progress_seen,1);scene_flow(r,0,"progress");}
 +static void scene_menu(const uint64_t *r){scene_flow(r,1,"menu");}
-+static void scene_fix(const uint64_t *r){scene_flow(r,2,"fix");}
++static void scene_fix(const uint64_t *r){
++    scene_flow(r,2,"fix");
++    static unsigned previous[11];static int have;
++    uintptr_t model=0,string=0;unsigned fields[11]={0};char name[128]="unavailable";
++    if(!scene_read(r[0]+0x38,&model,8) || !model)return;
++    if(!scene_read(model+0x1138,fields,4) || !scene_read(model+0x80,fields+1,20) || !scene_read(model+0x4b4,fields+6,16) || !scene_read(model+0x688,fields+10,4))return;
++    if(have && !memcmp(previous,fields,sizeof fields))return;
++    have=1;memcpy(previous,fields,sizeof fields);
++    if(scene_read(model+0x468,&string,8))scene_name(string,name);
++    LOG("A7_FIX_MODEL state=%u input=%u,%u,%u,%u,%u parameters=%u,%u,%u,%u hash=%u scene=%s frame=%llu",fields[0],fields[1],fields[2],fields[3],fields[4],fields[5],fields[6],fields[7],fields[8],fields[9],fields[10],name,dm_guest_frame());
++}
 +static void scene_private(const uint64_t *r){scene_flow(r,3,"private");}
 +
 +void spl3_scene_install(void) {
 +    scene_boot=getenv("DM_SCENE_BOOT");
 +    if(!scene_boot) {
-+        if(getenv("DM_SCENE_DIRECT"))die("DM_SCENE_DIRECT requires DM_SCENE_BOOT");
++        if(getenv("DM_SCENE_DIRECT") || getenv("DM_SCENE_UPPER") || getenv("DM_SCENE_MATCH"))die("A7 direct options require DM_SCENE_BOOT");
 +        return;
 +    }
 +    if(strcmp(scene_boot,"trace") && strcmp(scene_boot,"ShootingRange") && strcmp(scene_boot,"LobbyLocal"))
@@ -4088,7 +4247,7 @@ index 0000000..61928c5
 +    const char *flow=getenv("DM_SCENE_TRACE_FLOW");
 +    if(flow && strcmp(flow,"0") && strcmp(flow,"1"))die("DM_SCENE_TRACE_FLOW must be 0 or 1");
 +    if(flow && !strcmp(flow,"1")) {
-+        for(int id=OBS_SPL3_LOCAL_PROGRESS;id<=OBS_SPL3_NET_EVENT;id++)
++        for(int id=OBS_SPL3_LOCAL_PROGRESS;id<=OBS_SPL3_PRIVATE_SETTING;id++)
 +            if(!gate_obs_present(id))die("DM_SCENE_TRACE_FLOW requires A7 flow gates");
 +        gate_obs_set(OBS_SPL3_LOCAL_PROGRESS,scene_progress);
 +        gate_obs_set(OBS_SPL3_MATCH_MENU,scene_menu);
@@ -4096,14 +4255,23 @@ index 0000000..61928c5
 +        gate_obs_set(OBS_SPL3_PRIVATE_UI,scene_private);
 +        gate_obs_set(OBS_SPL3_NET_ROOT,scene_net_tick);
 +        gate_obs_set(OBS_SPL3_NET_EVENT,scene_net_event);
++        gate_obs_set(OBS_SPL3_PRIVATE_SETTING,scene_setting);
 +    }
++    const char *upper=getenv("DM_SCENE_UPPER");
++    if(upper && strcmp(upper,"0") && strcmp(upper,"1"))die("DM_SCENE_UPPER must be 0 or 1");
++    scene_upper_enabled=upper && !strcmp(upper,"1");
 +    const char *direct=getenv("DM_SCENE_DIRECT");
++    if(scene_upper_enabled && !direct)die("DM_SCENE_UPPER requires DM_SCENE_DIRECT");
++    scene_match_control=getenv("DM_SCENE_MATCH");
++    if(scene_match_control && (!scene_upper_enabled || !direct || !strcmp(direct,"scan") || scene_match_control[0]!='/' || strlen(scene_match_control)>900))
++        die("DM_SCENE_MATCH requires upper create/join and an absolute control path");
 +    if(direct) {
 +        if((strcmp(direct,"create") && strcmp(direct,"scan") && strcmp(direct,"join")) || strcmp(scene_boot,"LobbyLocal") || !flow || strcmp(flow,"1"))
 +            die("DM_SCENE_DIRECT prototype requires create/scan/join, LobbyLocal and flow gates");
 +        for(int k=0;k<g_nmod;k++)if(!strcmp(g_mod[k].name,"main"))scene_main_base=(uintptr_t)g_mod[k].base;
-+        const struct {unsigned offset,word;} helpers[]={{0x1507bf4,0xa9bb7bfd},{0x32c1d20,0xd10403ff},{0xa1910,0xf900001f},{0xa1c04,0xa9bf4ffe},{0x15278e0,0xa9bd7bfd},{0x1507d54,0xa9bb7bfd}};
-+        for(unsigned k=0;k<sizeof helpers/sizeof helpers[0];k++) {
++        const struct {unsigned offset,word;} helpers[]={{0x1507bf4,0xa9bb7bfd},{0x32c1d20,0xd10403ff},{0xa1910,0xf900001f},{0xa1c04,0xa9bf4ffe},{0x15278e0,0xa9bd7bfd},{0x1507d54,0xa9bb7bfd},{0x4e8bf30,0x900086d0},{0x4e8bf40,0x900086d0},{0x4e8b190,0x900086d0},{0x4e8b1b0,0x900086d0},{0x39047d0,0xd10643ff},{0x3890410,0xa9ba7bfd},{0x159b590,0xa9be7bfd},{0x15999fc,0xd10143ff},{0x32d5840,0xd10083ff},{0x38a7fb0,0xd10243ff},{0x38a9180,0xb9403008},{0x38a8890,0xb9403008},{0x38a9498,0xb9403008},{0x38a7e44,0xa9bc7bfd},{0x38b8ba0,0xd10183ff},{0x388ebd0,0xa9bb7bfd},{0x3899c80,0xa9ba7bfd},{0x38a9b0c,0xb9403008},{0x3891660,0xa9bb7bfd}};
++        unsigned helper_count=scene_upper_enabled ? sizeof helpers/sizeof helpers[0] : 6;
++        for(unsigned k=0;k<helper_count;k++) {
 +            uint32_t word=0;if(!scene_read(scene_main_base+helpers[k].offset,&word,4) || word!=helpers[k].word)
 +                die("DM_SCENE_DIRECT native helper mismatch at %x",helpers[k].offset);
 +        }
@@ -5234,10 +5402,10 @@ index 0000000..bf88ab5
 +}
 diff --git a/dm/host/tests/t_spl3_scene.c b/dm/host/tests/t_spl3_scene.c
 new file mode 100644
-index 0000000..c82c24e
+index 0000000..d1cbe52
 --- /dev/null
 +++ b/dm/host/tests/t_spl3_scene.c
-@@ -0,0 +1,61 @@
+@@ -0,0 +1,75 @@
 +// A7 argument adapter contracts only; native scene loading is a separate gate.
 +#include "../hle_spl3_scene.c"
 +module_t g_mod[MAX_MOD];int g_nmod=1;
@@ -5247,7 +5415,7 @@ index 0000000..c82c24e
 +int gate_obs_present(int id) {
 +    return !missing && (id==OBS_SPL3_BOOT_SCENE || id==OBS_SPL3_SCENE_REQUEST ||
 +        (!missing_network && (id==OBS_SPL3_LOCAL_CREATE || id==OBS_SPL3_LOCAL_JOIN)) ||
-+        (!missing_flow && id>=OBS_SPL3_LOCAL_PROGRESS && id<=OBS_SPL3_NET_EVENT));
++        (!missing_flow && id>=OBS_SPL3_LOCAL_PROGRESS && id<=OBS_SPL3_PRIVATE_SETTING));
 +}
 +void gate_obs_set(int id,void (*fn)(const uint64_t *)) {if(id<=0 || id>=OBS_MAX)abort();callbacks[id]=fn;}
 +uint64_t dm_guest_frame(void) {return 1234;}
@@ -5257,6 +5425,9 @@ index 0000000..c82c24e
 +    if(!strncmp(mode,"direct",6))setenv("DM_SCENE_DIRECT","create",1);
 +    if(!strcmp(mode,"direct-invalid"))setenv("DM_SCENE_DIRECT","pia",1);
 +    if(!strcmp(mode,"direct-helper"))setenv("DM_SCENE_TRACE_FLOW","1",1);
++    if(!strcmp(mode,"upper-no-boot") || !strcmp(mode,"upper-no-direct"))setenv("DM_SCENE_UPPER","1",1);
++    if(!strcmp(mode,"upper-invalid"))setenv("DM_SCENE_UPPER","yes",1);
++    if(!strncmp(mode,"match-",6))setenv("DM_SCENE_MATCH",!strcmp(mode,"match-relative") ? "relative" : "/tmp/a7-contract-control",1);
 +    if(!strncmp(mode,"flow",4))setenv("DM_SCENE_TRACE_FLOW","1",1);
 +    if(!strcmp(mode,"flow-missing"))missing_flow=1;
 +    if(!strcmp(mode,"flow-invalid"))setenv("DM_SCENE_TRACE_FLOW","yes",1);
@@ -5296,6 +5467,17 @@ index 0000000..c82c24e
 +        }
 +        if(memcmp(before,r,sizeof r))return 9;
 +        for(unsigned n=0;n<sizeof data;n++)if(data[n])return 10;
++    }
++    if(!strcmp(mode,"flow-setting")) {
++        unsigned char data[0x1e0]={0},copy[sizeof data];
++        unsigned stage=25;memcpy(data+0x20,&stage,4);
++        for(unsigned n=0;n<10;n++){int team=n<2 ? (int)n : 3;memcpy(data+0x70+0x28*n,&team,4);}
++        memcpy(copy,data,sizeof data);r[0]=(uintptr_t)data;r[1]=0x1234;
++        uint64_t before[31];memcpy(before,r,sizeof r);
++        callbacks[OBS_SPL3_PRIVATE_SETTING](r);callbacks[OBS_SPL3_PRIVATE_SETTING](r);
++        if(memcmp(before,r,sizeof r) || memcmp(copy,data,sizeof data))return 11;
++        stage=0;memcpy(data+0x20,&stage,4);callbacks[OBS_SPL3_PRIVATE_SETTING](r);
++        r[0]=1;callbacks[OBS_SPL3_PRIVATE_SETTING](r);
 +    }
 +    puts("spl3-scene: one-shot redirect, immutable request and register isolation passed");return 0;
 +}
@@ -5468,10 +5650,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..c464d69 100644
+index 837700c..847d662 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,32 @@ CUTS = {
+@@ -162,6 +162,33 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -5500,11 +5682,12 @@ index 837700c..c464d69 100644
 +    (0x38f8930, 40, 'a9ba7bfd', 'Splatoon 3 private UI update; A7 read-only flow trace'),
 +    (0x1506cd4, 41, 'd10383ff', 'Splatoon 3 game network root update; A7 producer trace'),
 +    (0x14d184c, 42, 'd10103ff', 'Splatoon 3 game FSM request; A7 producer trace'),
++    (0x3d7ccd0, 43, 'b9402008', 'Splatoon 3 private setting comparison; A7 canonical-setting survey'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +658,7 @@ for fa, fb in funcs:
+@@ -632,7 +659,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -5513,7 +5696,7 @@ index 837700c..c464d69 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +752,14 @@ for off, oid, ow, why in obs:
+@@ -726,7 +753,14 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25

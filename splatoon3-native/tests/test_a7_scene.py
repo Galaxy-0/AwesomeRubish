@@ -42,9 +42,26 @@ class SceneAdapterTests(unittest.TestCase):
                             ('ShootingRange','direct-helper'),('LobbyLocal','direct-helper')]:
             with self.subTest(target=target,mode=mode):self.assertNotEqual(self.call(target,mode).returncode,0)
 
+    def test_upper_and_match_prototypes_require_explicit_dependencies(self):
+        for target,mode,error in [(None,'upper-no-boot','require DM_SCENE_BOOT'),
+                                  ('trace','upper-no-direct','requires DM_SCENE_DIRECT'),
+                                  ('trace','upper-invalid','must be 0 or 1'),
+                                  (None,'match-no-boot','require DM_SCENE_BOOT'),
+                                  ('trace','match-relative','absolute control path'),
+                                  ('trace','match-no-upper','requires upper create/join')]:
+            with self.subTest(target=target,mode=mode):
+                result=self.call(target,mode);self.assertNotEqual(result.returncode,0)
+                self.assertIn(error,result.stderr)
+
     def test_flow_trace_preserves_memory_registers_and_deduplicates(self):
         result=self.call('trace','flow');self.assertEqual(result.returncode,0,result.stdout+result.stderr)
         self.assertEqual(result.stderr.count('A7_FLOW kind='),4)
+
+    def test_private_setting_diagnostic_is_read_only_bounded_and_deduplicates(self):
+        result=self.call('trace','flow-setting');self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+        self.assertEqual(result.stderr.count('A7_PRIVATE_SETTING '),2)
+        self.assertIn('header=25,',result.stderr);self.assertIn('header=0,',result.stderr)
+        self.assertIn('slots=0,1,3,3,3,3,3,3,3,3',result.stderr)
 
     def test_flow_trace_requires_valid_flag_and_gates(self):
         for mode in ('flow-missing','flow-invalid'):
