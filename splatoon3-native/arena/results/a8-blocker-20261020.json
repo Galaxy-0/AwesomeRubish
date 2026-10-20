@@ -1,0 +1,148 @@
+{
+  "schema": "arena.a8.blocker.v1",
+  "passed": false,
+  "full_a8_passed": false,
+  "status": "blocked_after_two_guarded_native_smokes",
+  "profile": {
+    "path": "arena/results/a8-gpu-profile-20261020.json",
+    "sha256": "64ff0eb3ee771f3a8496bf7f6d1d74c96c0f0abf71b987517152cfa330e5a89a"
+  },
+  "rounds": [
+    {
+      "version": 8,
+      "passed": false,
+      "batch": "work/a8/hdr-v8-smoke",
+      "completed_sha256": "6b1f77b9f3ba07bae22d8aac7cc2645e3821730cc5ec7aed73aef5f5ebf4d096",
+      "result_sha256": "e8a8ff010daf099c5d513c8a2cd9d762e341eb73584bb5c4cbde2709de1245cc",
+      "host_sha256": "17163858ff8f2dde949ac99604c613fae22d4ebd2459bb1fae1d121e5264c3d0",
+      "wall_seconds": 35.48573303222656,
+      "hosts": [
+        {
+          "player": 0,
+          "log": "work/tests/m6-2p-20261020-204107-971910/player-0/host.log",
+          "sha256": "949592782581888186a4b360291f689ca3002ad20f4f044f78f2da4bcb2d53c5",
+          "guard": "retained render texture or overlapping allocation",
+          "consumer_targets": []
+        },
+        {
+          "player": 1,
+          "log": "work/tests/m6-2p-20261020-204107-971910/player-1/host.log",
+          "sha256": "3de29a97fcbbad31e5baad3dc10dd00888e3611ba72f6db157ded92d7c6d355c",
+          "guard": "retained render texture or overlapping allocation",
+          "consumer_targets": []
+        }
+      ]
+    },
+    {
+      "version": 9,
+      "passed": false,
+      "batch": "work/a8/hdr-v9-smoke",
+      "completed_sha256": "6e9a25ac25490521a8a4819d13b997eca75f74cee1b3d0667884801f49e9dba3",
+      "result_sha256": "b95b1448411ae351cb3169e87bf6d9cbb0b42ccdb53e6b3c8f04eea5b96468ed",
+      "host_sha256": "4a8ce04e98aa7c7fc67e3d7058ba892f5349a05c14b420ffc831110cc7de0c87",
+      "wall_seconds": 35.159817934036255,
+      "hosts": [
+        {
+          "player": 0,
+          "log": "work/tests/m6-2p-20261020-204302-206776/player-0/host.log",
+          "sha256": "707fb3a263bc84384c76f93a3dfcd17d09ffcda3c6a49063c1bb3ae9394ccce0",
+          "guard": "retained render texture or overlapping allocation",
+          "consumer_targets": [
+            {
+              "size": "640x360",
+              "native_format": 63
+            }
+          ]
+        },
+        {
+          "player": 1,
+          "log": "work/tests/m6-2p-20261020-204302-206776/player-1/host.log",
+          "sha256": "d099bf7b472d6954512c2c6afcee83012fce83ecf03b383891264151ef84b9d9",
+          "guard": "retained render texture or overlapping allocation",
+          "consumer_targets": [
+            {
+              "size": "640x360",
+              "native_format": 63
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "path": "work/a8/a7-components-resume-final.log",
+      "sha256": "ed600fdeb6605ce4443714e19b66c19c7f739023b5e48f6599d6fb04bf624e82",
+      "passed": true,
+      "tests": 42
+    },
+    {
+      "path": "work/a8/t1-components-resume-final.log",
+      "sha256": "f035860ac8cca162f7ffd1a21d9c031a703001e7ed474e5715797c4fc126ce19",
+      "passed": true,
+      "tests": 10
+    },
+    {
+      "path": "work/a8/settlement-components-resume-final.log",
+      "sha256": "a97217b33865849aba4ee600d53f6f186d9703fbcb81d096c6a9081a6f36946a",
+      "passed": true,
+      "tests": 4
+    },
+    {
+      "path": "work/a8/render-components-resume-final.log",
+      "sha256": "433cca1308e3dd32ae06ca97eee7077fe2095e311ee863aebe8260475df23a77",
+      "passed": true,
+      "tests": 2
+    },
+    {
+      "path": "work/a8/evidence-components-resume-final.log",
+      "sha256": "a0e67d7aaa97945412f78ddfa8105eee4fcefa2bd8b213fc7c5bb61218028646",
+      "passed": true,
+      "tests": 7
+    }
+  ],
+  "parked_builds": {
+    "full": {
+      "path": "work/a8/dmhost-full-v10.build.json",
+      "sha256": "a33dff1095a1a038b0f2ec93d0ed13c6c517d2cf2f6cbb81f172d2f1da6ee706",
+      "host_sha256": "1eab0ece74dad229a036a8488ff8f13694d38ba79cb2878b1ecd6520b90fc28e",
+      "experimental_hdr": false
+    },
+    "camera": {
+      "path": "work/a8/dmhost-camera-v10.build.json",
+      "sha256": "7401edf452b9f1ccadc437fd828d7a3e47d8b617de82e9736be429a5cbd0854a",
+      "host_sha256": "fffe4efb6980eb2c8317cad7dff33eb62932773bb5ddb4d8e9308a47c1ce5376",
+      "experimental_hdr": false
+    },
+    "hdr": {
+      "path": "work/a8/dmhost-hdr-v10.build.json",
+      "sha256": "0793a5c6a437196c8c63d225ff7d1debb476aa4a09a0274d7be7bf9e60452da5",
+      "host_sha256": "785590b7a9c1be5a74630c06c55477d5935e69aa2e0b986e188b9566ff2c7a52",
+      "experimental_hdr": true
+    }
+  },
+  "source_snapshot": {
+    "path": "work/a8/hdr-v9-source-snapshot/sha256.json",
+    "sha256": "1f50d33e56ff1627cd35f1b1d781b50a95db2c575f905b47e64b86d3805a1f7f"
+  },
+  "four_room_probe": "not run: no smoke-valid candidate; stop rule reached",
+  "final_a1_a6_regression": "not run: no candidate accepted for full comparison",
+  "limitations": [
+    "guard detects a retained texture consumer or allocation alias, not proof of a gameplay dependency",
+    "sparse GPU timestamp intervals include contention and profiler overhead, not exclusive GPU execution time",
+    "v8/v9 raw builds predate the new opt-in HDR flag; v10 isolates the same candidate behind --a8-hdr, build-only verification"
+  ],
+  "next_options": [
+    "trace the 640x360 Depth32F consumer and its transitive storage/copy/readback dependencies without weakening aborts",
+    "assess internal-resolution scaling in a separate candidate while preserving 1600x1600 paint, pixel sessions, fixed60 and self-noise gates"
+  ],
+  "acceptance_negative": {
+    "passed": true,
+    "exit_code": 1,
+    "log": "work/a8/acceptance-negative-final.log",
+    "sha256": "b2fad2f7ba5ff864dda81835dc83bfcda65650a45e144dee43b453b98fbfaa89",
+    "acceptance_created": false
+  },
+  "build_isolation_verified": true,
+  "default_host_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d"
+}

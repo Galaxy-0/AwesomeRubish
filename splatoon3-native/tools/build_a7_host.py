@@ -31,8 +31,10 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--out',type=Path,default=ROOT/'work/a7/dmhost-scene')
     p.add_argument('--a8-render',choices=('none','camera'),default='none',help='Experimental A8 renderer build, default unchanged')
+    p.add_argument('--a8-hdr',action='store_true',help='UNSUPPORTED diagnostic candidate: guarded HDR bloom elision; native smoke aborts')
     p.add_argument('--test-special-of',type=Path,help='Build an explicit test-only derivative of this production A7 host')
     args=p.parse_args();out=args.out.resolve();parent=None
+    if args.a8_hdr and (args.a8_render!='camera' or args.test_special_of):p.error('--a8-hdr requires --a8-render camera and no production parent')
     if args.test_special_of:
         source=args.test_special_of.resolve();parent=json.loads(source.with_suffix('.build.json').read_text())
         if source==out or parent.get('test_only') or sha(source)!=parent['output_sha256']:p.error('invalid production parent')
@@ -54,6 +56,7 @@ def main():
     command[command.index('-o')+1]=str(out)
     if parent:command.insert(1,'-DSPL3_A6_TEST_SPECIAL=1')
     elif args.a8_render=='camera':command.insert(1,'-DSPL3_A8_CAMERA=1')
+    if args.a8_hdr:command.insert(1,'-DSPL3_A8_HDR=1')
     sources=build_inputs(command)
     frozen={str(path.relative_to(ROOT)):sha(path) for path in sources}
     if parent and any(frozen.get(name)!=digest for name,digest in parent['source_sha256'].items()):p.error('production compile inputs changed')
@@ -67,6 +70,7 @@ def main():
                 default_sha256=before,default_unchanged=True,command=command,
                 source_sha256=frozen,complete_build_inputs=True,
                 render_mode=parent.get('render_mode','none') if parent else args.a8_render,entry_sha256=sha(Path(__file__)))
+    record['experimental_hdr']=parent.get('experimental_hdr',False) if parent else args.a8_hdr
     if parent:
         if any(record['source_sha256'].get(name)!=digest for name,digest in parent['source_sha256'].items()):raise AssertionError('derivative changed production sources')
         record.update(test_only=True,test_feature='special_meter',production_parent=dict(path=str(source.relative_to(ROOT)),sha256=parent['output_sha256']))

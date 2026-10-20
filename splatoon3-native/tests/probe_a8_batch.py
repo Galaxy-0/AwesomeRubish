@@ -19,11 +19,13 @@ def main(args):
     plan=dict(schema='arena.a8.batch.v1',host=str(args.host.resolve()),patched=str(args.patched.resolve()),
         policies=str(args.policies.resolve()),repeats=args.repeats,parallel=args.parallel,
         entry_sha256=sha(__file__),trial_entry_sha256=sha(ROOT/'tests/probe_a8_trial.py'),
+        pass_gpu=args.pass_gpu,pass_gpu_ranges=args.pass_gpu_ranges,
         seed_words=[1,2,3,4],stage=2,started_wall=time.time())
     write_json_atomic(out/'plan.json',plan)
     def run(n):
         command=[sys.executable,str(ROOT/'tests/probe_a8_trial.py'),'--host',plan['host'],'--patched',plan['patched'],
             '--policies',plan['policies'],'--out',str(out/f'trial-{n}'),'--shared-load-slots',str(slots)]
+        if args.pass_gpu:command+=['--pass-gpu','--pass-gpu-ranges',args.pass_gpu_ranges]
         with (out/f'trial-{n}.log').open('w') as log:code=subprocess.call(command,stdout=log,stderr=subprocess.STDOUT)
         print(n,code,flush=True);return code
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:codes=list(pool.map(run,range(args.repeats)))
@@ -38,4 +40,5 @@ if __name__=='__main__':
     for name in ('host','patched','policies','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--repeats',type=int,choices=range(1,7),default=3)
     p.add_argument('--parallel',type=int,choices=range(1,7),default=3)
+    p.add_argument('--pass-gpu',action='store_true');p.add_argument('--pass-gpu-ranges',default='600-611,3000-3011,8000-8011')
     raise SystemExit(main(p.parse_args()))

@@ -55,12 +55,14 @@ def trajectory_comparison(before,after):
 
 def load_group(out):
     plan=json.loads((out/'plan.json').read_text());done=json.loads((out/'completed.json').read_text())
+    if plan.get('pass_gpu'):raise ValueError('instrumented diagnostic batch cannot certify performance')
     if not done['passed'] or plan['repeats']<3:raise ValueError('complete three-trial batch required')
     if done.get('plan_sha256')!=sha(out/'plan.json'):raise ValueError('batch plan changed')
     trials=[];identity=None
     for n in range(plan['repeats']):
         directory=out/f'trial-{n}';path=directory/'result.json';r=json.loads(path.read_text());m=r['match']
         bind=json.loads((directory/'a8-run.json').read_text())
+        if bind.get('pass_gpu') or bind.get('profile'):raise ValueError('instrumented trial cannot certify performance')
         if not (r['passed'] and bind['passed'] and m['native_winners'] and not m['void'] and not m['errors']):raise ValueError('invalid trial '+str(path))
         if bind['trial_sha256']!=sha(path) or bind['entry_sha256']!=plan['trial_entry_sha256']:raise ValueError('trial binding changed')
         for file,digest in bind['timing_sha256'].items():
@@ -82,15 +84,19 @@ def load_group(out):
         if not samples or any(any(not inf[k+'_valid'] for k in ('position','hp','ink')) for v in samples.values() for inf in v.values()):raise ValueError('missing native measurement')
         inputs=[json.loads(line)['actions'] for line in (directory/'match/inputs-per-present.jsonl').read_text().splitlines()]
         if len(inputs)<10920:raise ValueError('fixed input plan truncated')
-        session=Path(m['session']);skips=[]
+        session=Path(m['session']);skips=[];shadows=[];hdr=[]
         for player in (0,1):
             home=session/f'player-{player}';options=json.loads((home/'input.json').read_text());log=(home/'host.log').read_text(errors='replace')
             if options.get('DM_SCENE_SEEDS')!='1,2,3,4' or options.get('DM_RL_CLOCK_MODE')!='fixed60' or options.get('DM_TEST_SPECIAL'):raise ValueError('wrong native runtime settings')
+            if options.get('DM_NVN_PASSGPU4') or options.get('DM_NVN_PASSGPU'):raise ValueError('GPU instrumentation cannot certify performance')
             if not any('A7_SEEDS origin=consumed ' in s and 'requested_match=1' in s for s in log.splitlines()):raise ValueError('missing native seed consumption')
             if 'A8_CAMERA unsafe samples report' in log:raise ValueError('camera affected native query')
+            if 'A8_HDR unsafe consumer=' in log:raise ValueError('HDR output escaped into a retained consumer')
             skips.append([s for s in log.splitlines() if 'A8_CAMERA skipped=' in s])
+            shadows.append([s for s in log.splitlines() if 'A8_SHADOW layer=' in s])
+            hdr.append([s for s in log.splitlines() if 'A8_HDR skipped=' in s])
         trials.append(dict(result=r,path=str(path),sha256=sha(path),spawn=spawn_identity(barriers[0]['infos']),
-            samples=samples,inputs=inputs,skips=skips,native_turf=native_turf,gpu_timings=gpu_timings(session,barriers)))
+            samples=samples,inputs=inputs,skips=skips,shadows=shadows,hdr=hdr,native_turf=native_turf,gpu_timings=gpu_timings(session,barriers)))
     return plan,trials
 
 
@@ -98,6 +104,7 @@ def analyze(before,after):
     plans,trials=zip(*(load_group(p) for p in (before,after)))
     if plans[0]['parallel']!=3 or plans[1]['parallel']!=3:raise ValueError('significant-speedup gate requires two three-room batches')
     builds=[json.loads(Path(p['host']).with_suffix('.build.json').read_text()) for p in plans]
+    if any(b.get('experimental_hdr') for b in builds):raise ValueError('unsupported HDR candidate cannot certify A8; resolve the native-smoke consumer guard first')
     if builds[0]['render_mode']!='none' or builds[1]['render_mode']!='camera':raise ValueError('expected full-render control and camera-elision candidate')
     if builds[0]['source_sha256']!=builds[1]['source_sha256']:raise ValueError('full/camera compile sources differ')
     if any(not p.get('complete_build_inputs') for p in builds):raise ValueError('complete renderer build identity required')
@@ -120,6 +127,10 @@ def analyze(before,after):
             if (t['inputs'][i] if i<len(t['inputs']) else tail)!=(reference['inputs'][i] if i<len(reference['inputs']) else tail):raise ValueError('executed input differs at '+str(i))
     for t in trials[1]:
         if not all(t['skips']):raise ValueError('candidate did not actually skip camera draws on both players')
+        if b'A8_SHADOW layer=%d' in Path(plans[1]['host']).read_bytes():
+            if not all(all(any(f'A8_SHADOW layer={layer} ' in line for line in lines) for layer in (0,1)) for lines in t['shadows']):raise ValueError('both shadow layers must actually be skipped on both players')
+        if b'A8_HDR skipped=%llu' in Path(plans[1]['host']).read_bytes():
+            if not all(t['hdr']):raise ValueError('HDR candidate did not actually run on both players')
     score=compare(*[[t['result']['match']['score_by_role'] for t in group] for group in trials])
     turf=compare(*[[t['native_turf'] for t in group] for group in trials])
     measurements={}
@@ -140,7 +151,7 @@ def analyze(before,after):
         frames_compared=list(reference['samples']),actual_spawn=reference['spawn'],
         batch_plans=[dict(path=str(p/'plan.json'),sha256=sha(p/'plan.json')) for p in (before,after)],
         trials=[[dict(path=t['path'],sha256=t['sha256'],scores=t['result']['match']['score_by_role'],outcome=t['result']['match']['outcome'],
-            controlled_fps=t['result']['controlled_fps'],wall_seconds=t['result']['wall_seconds'],camera_skip_logs=t['skips'],gpu_timings=t['gpu_timings']) for t in group] for group in trials],
+            controlled_fps=t['result']['controlled_fps'],wall_seconds=t['result']['wall_seconds'],camera_skip_logs=t['skips'],shadow_skip_logs=t['shadows'],hdr_skip_logs=t['hdr'],gpu_timings=t['gpu_timings']) for t in group] for group in trials],
         limitations=['empirical noise gate, not determinism or a statistical bound','native final turf ratio; real-time world paint map remains unknown','GPU utilization is whole-machine; GPU timeline span is not exclusive execution time'])
 
 

@@ -10,6 +10,7 @@ from arena.runner import write_json_atomic
 
 def batch(out):
     plan=json.loads((out/'plan.json').read_text());done=json.loads((out/'completed.json').read_text())
+    if plan.get('pass_gpu'):raise ValueError('instrumented diagnostic batch cannot certify capacity')
     if done['plan_sha256']!=sha(out/'plan.json'):raise ValueError('capacity plan changed')
     trials=[];resources=[]
     for n in range(plan['repeats']):

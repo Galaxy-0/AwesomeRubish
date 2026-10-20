@@ -198,6 +198,13 @@ A7 原生开局为已签收的显式选项，默认入口仍使用已接受的�
 
 ## A8：保留涂墨路径的主镜头减绘（实验构建）
 
+**当前未签收，T1保持暂停。** v4三房自身波动对照通过，但present/s仅提高19.18%，未达预声明20%。
+恢复后的三房GPU诊断与两轮HDR单房失败见`arena/results/a8-gpu-profile-20261020.json`及
+`arena/results/a8-blocker-20261020.json`。两轮均触发保留消费者/地址别名保护，按停止规则不再开房；
+本轮没有安全候选进入三房对照，4房资源探测和最终A1–A6回归未跑。
+`--a8-hdr`是默认关闭的unsupported诊断开关，只可与`--a8-render camera`一起构建；不能用于擂台或A8签收。
+普通camera不启用HDR或已撤回的阴影原型。
+
 A8使用单独构建，默认`upstream/dm/host/dmhost`保持原件。camera构建只在
 headless、RL受控InGame、1280×720/Depth32F主镜头且无模板/storage写入时跳过镜头draw，
 包括该镜头的深度预通道。1600×1600涂墨及其独立深度目标、原生样本计数、计算/拷贝和结算保留。
@@ -243,6 +250,24 @@ camera构建的擂台/熟练度默认显式`pixels=False`，仅使用已有几�
 GPU占用为全机数值，GPU时间戳跨度不是独占执行耗时；吞吐使用整个批次有效局数/批次墙钟，
 不把单房速度简单乘房数。更高并发可用同一batch入口的`--parallel/--repeats 4..6`测量；
 M5新增swapout>2GiB或critical压力保护不放宽，触发时保留原件、降低房数。
+
+GPU归因必须使用完整渲染构建和独立输出目录；Metal4稀疏编码器边界时间戳同时记录
+pass、目标实际mip尺寸/格式、render/compute/blit类别和GPU计数频率。
+默认取受控相对帧600–611、3000–3011、8000–8011，三房完成后严格要求六宿主全部采样窗口及Winners。
+例如（以下是手工复测用法，本次停止后未自动执行）：
+
+```sh
+caffeinate -i .venv/bin/python tests/probe_a8_batch.py --host work/a8/dmhost-full-v10 \
+  --patched work/a7/patched-seeds-v16 --policies work/a7/replay-policies \
+  --out work/a8/profile-three-fresh --repeats 3 --parallel 3 --pass-gpu
+.venv/bin/python tests/analyze_a8_gpu.py --batch work/a8/profile-three-fresh \
+  --out work/a8/profile-three-fresh-summary.json
+```
+
+分析器给出跨度总和占比、重叠区间均分占比、分目标统计与最长pass；这些含调度/争用和计时扰动，
+不是独占GPU执行比例，旧队列CPU读回/上传不在这些区间内。`--pass-gpu`及passdump诊断不能签性能，
+容量审计也拒绝`--pass-gpu`。显著收益仍须另跑无插桩对照，不能从draw数量或诊断FPS推算。
+本轮首次每编码器一个counter heap触发设备对象上限，已改为每逻辑提交共享4096槽；失败原件保留。
 
 签收入口不会构建默认宿主，须先准备实际组件日志及最终原生证据：
 
