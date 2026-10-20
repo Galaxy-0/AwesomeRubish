@@ -1967,7 +1967,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..0145620 100644
+index fda33ac..fc4fc8d 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1975,7 +1975,7 @@ index fda33ac..0145620 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_MAX = 33 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_SPL3_BOOT_SCENE = 33, OBS_SPL3_SCENE_REQUEST = 34, OBS_MAX = 35 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -3872,6 +3872,70 @@ index 0000000..0877bf7
 +    }
 +    gate_obs_set(OBS_SPL3_GEAR,gear_constructed);
 +}
+diff --git a/dm/host/hle_spl3_scene.c b/dm/host/hle_spl3_scene.c
+new file mode 100644
+index 0000000..69b0360
+--- /dev/null
++++ b/dm/host/hle_spl3_scene.c
+@@ -0,0 +1,58 @@
++// A7 experimental scene-request adapter; no synthetic match phase or score.
++#include "dm.h"
++#include <mach/mach.h>
++#include <mach/mach_vm.h>
++
++static const char *scene_boot;
++static unsigned scene_requests, scene_boot_requests;
++static int scene_replaced;
++
++static int scene_read(uintptr_t address, void *out, size_t length) {
++    mach_vm_size_t copied=0;
++    return address && mach_vm_read_overwrite(mach_task_self(),address,length,
++        (mach_vm_address_t)out,&copied)==KERN_SUCCESS && copied==length;
++}
++static int scene_name(uintptr_t address,char out[128]) {
++    for(unsigned n=0;n<128;n++) {
++        if(!scene_read(address+n,out+n,1))return 0;
++        if(!out[n])return n>0;
++        if((unsigned char)out[n]<32 || (unsigned char)out[n]>126)return 0;
++    }
++    return 0;
++}
++static void scene_boot_request(const uint64_t *r) {
++    char name[128];
++    if(!scene_name(r[1],name))die("A7_SCENE invalid boot scene argument");
++    scene_boot_requests++;
++    LOG("A7_SCENE boot_request=%u destination=%s frame=%llu",scene_boot_requests,name,dm_guest_frame());
++}
++static void scene_request(const uint64_t *r) {
++    char name[128];uintptr_t address=0;
++    if(!scene_read(r[1],&address,sizeof address) || !scene_name(address,name))
++        die("A7_SCENE invalid native scene string");
++    scene_requests++;
++    const char *effective=name;
++    if(!scene_replaced && strcmp(scene_boot,"trace") && !strcmp(name,"Plaza")) {
++        // Native entry dereferences x1 and immediately copies this C string.
++        // Redirect to an owned pointer-sized SafeString view, without writing
++        // its original object, scene manager, save or match state.
++        ((uint64_t *)(void *)r)[1]=(uintptr_t)&scene_boot;
++        scene_replaced=1;
++        effective=scene_boot;
++        LOG("A7_SCENE boot_redirect from=%s to=%s frame=%llu",name,scene_boot,dm_guest_frame());
++    }
++    LOG("A7_SCENE request=%u destination=%s original=%s flags=%llu frame=%llu",scene_requests,effective,name,r[2],dm_guest_frame());
++}
++void spl3_scene_install(void) {
++    scene_boot=getenv("DM_SCENE_BOOT");
++    if(!scene_boot)return;
++    if(strcmp(scene_boot,"trace") && strcmp(scene_boot,"ShootingRange") && strcmp(scene_boot,"LobbyLocal"))
++        die("DM_SCENE_BOOT prototype requires trace, ShootingRange or LobbyLocal");
++    if(strcmp(dm_main_build(),"28c4287aee36f7499da60f3e68b54c70"))
++        die("DM_SCENE_BOOT requires verified Splatoon 3 11.3.0 main");
++    if(!gate_obs_present(OBS_SPL3_BOOT_SCENE) || !gate_obs_present(OBS_SPL3_SCENE_REQUEST))
++        die("DM_SCENE_BOOT requires A7 scene gates");
++    gate_obs_set(OBS_SPL3_BOOT_SCENE,scene_boot_request);
++    gate_obs_set(OBS_SPL3_SCENE_REQUEST,scene_request);
++    LOG("A7_SCENE enabled target=%s prototype=1",scene_boot);
++}
 diff --git a/dm/host/hle_spl3_unlock.c b/dm/host/hle_spl3_unlock.c
 new file mode 100644
 index 0000000..78dc541
@@ -4154,16 +4218,17 @@ index e237a24..b54baa3 100644
  #endif
  
 diff --git a/dm/host/main.c b/dm/host/main.c
-index 6ff3a44..02a7167 100644
+index 6ff3a44..9818c16 100644
 --- a/dm/host/main.c
 +++ b/dm/host/main.c
-@@ -86,7 +86,9 @@ static void host_preload(int argc, char **argv) {
+@@ -86,7 +86,10 @@ static void host_preload(int argc, char **argv) {
      if (!n) { static const char *def[] = DM_GAME_MODULES; for (int k = 0; k < DM_GAME_NMOD && n < MAX_MOD; k++) names[n++] = def[k]; }   // default module list from the game profile's modules (Mario: main sdk)
      load_modules(argv[1], names, n);
      uint64_t ta = now_ns();
 +    { void spl3_unlock_install(void); void spl3_weapon_install(void); void spl3_gear_install(void); spl3_unlock_install(); spl3_weapon_install(); spl3_gear_install(); }
      probe_install();   // DM_PROBE probes (for diagnostics)
 +    { void dm_rl_init(void); dm_rl_init(); }
++    { void spl3_scene_install(void); spl3_scene_install(); }
      ticks_install();   // DM_TICKS per-tick state hash (tick-entry observation gate)
      { void target_rank_install(void); target_rank_install(); }   // Touch version auto-targeting Boss > elite > normal (hle_target.c)
      hid_keys_init();   // DM_KEYS scripted input (steps driven by UI messages must subscribe before the message appears)
@@ -4992,6 +5057,43 @@ index 0000000..bf88ab5
 +    }
 +    printf("spl3-gear: owned read, identity and adjacent-field contracts %s\n",failed ? "FAILED" : "passed");return failed!=0;
 +}
+diff --git a/dm/host/tests/t_spl3_scene.c b/dm/host/tests/t_spl3_scene.c
+new file mode 100644
+index 0000000..d4025ea
+--- /dev/null
++++ b/dm/host/tests/t_spl3_scene.c
+@@ -0,0 +1,31 @@
++// A7 argument adapter contracts only; native scene loading is a separate gate.
++#include "../hle_spl3_scene.c"
++module_t g_mod[MAX_MOD];int g_nmod=1;
++static void (*callbacks[OBS_MAX])(const uint64_t *);
++static int missing;
++int gate_obs_present(int id) {return !missing && (id==OBS_SPL3_BOOT_SCENE || id==OBS_SPL3_SCENE_REQUEST);}
++void gate_obs_set(int id,void (*fn)(const uint64_t *)) {if(id<=0 || id>=OBS_MAX)abort();callbacks[id]=fn;}
++uint64_t dm_guest_frame(void) {return 1234;}
++int main(int argc,char **argv) {
++    strcpy(g_mod[0].name,"main");strcpy(g_mod[0].build_id,"28c4287aee36f7499da60f3e68b54c70");
++    const char *mode=argc>1 ? argv[1] : "";
++    if(!strcmp(mode,"unknown"))strcpy(g_mod[0].build_id,"unknown");
++    missing=!strcmp(mode,"missing");spl3_scene_install();
++    if(!getenv("DM_SCENE_BOOT")) {if(callbacks[33] || callbacks[34])return 1;return 0;}
++    uint64_t r[31];for(int n=0;n<31;n++)r[n]=0x1000+n;
++    const char *name="Plaza";r[1]=(uintptr_t)name;
++    if(!strcmp(mode,"bad-string"))r[1]=1;
++    callbacks[33](r);
++    if(r[1]!=(uintptr_t)name)return 1;
++    for(int n=0;n<31;n++)if(n!=1 && r[n]!=(uint64_t)(0x1000+n))return 2;
++    if(strcmp(name,"Plaza"))return 3;
++    const char *destination="Plaza";r[1]=(uintptr_t)&destination;r[2]=17;
++    if(!strcmp(mode,"bad-object"))r[1]=1;
++    callbacks[34](r);
++    const char *actual=*(const char **)(uintptr_t)r[1];
++    if(strcmp(actual,!strcmp(scene_boot,"trace") ? "Plaza" : scene_boot))return 4;
++    if(strcmp(destination,"Plaza") || r[2]!=17)return 5;
++    for(int n=0;n<31;n++)if(n!=1 && n!=2 && r[n]!=(uint64_t)(0x1000+n))return 6;
++    r[1]=(uintptr_t)&destination;callbacks[34](r);if(r[1]!=(uintptr_t)&destination)return 7;
++    puts("spl3-scene: one-shot redirect, immutable request and register isolation passed");return 0;
++}
 diff --git a/dm/host/tests/t_spl3_unlock.c b/dm/host/tests/t_spl3_unlock.c
 new file mode 100644
 index 0000000..8f41733
@@ -5161,10 +5263,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..122454b 100644
+index 837700c..57ffa52 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,22 @@ CUTS = {
+@@ -162,6 +162,24 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -5183,11 +5285,13 @@ index 837700c..122454b 100644
 +    (0x4011e28, 30, 'fd4013e8', 'Splatoon 3 TGPlayerIcon update epilogue; read-only displayed HUD state'),
 +    (0x3572094, 31, '52800068', 'Splatoon 3 local kit gear copy return; equipped readback'),
 +    (0x3572074, 32, 'b9404c1f', 'Splatoon 3 successful owned gear lookup; local constructor read adapter'),
++    (0x3b071d0, 33, 'd105c3ff', 'Splatoon 3 boot scene request entry; A7 experimental destination adapter'),
++    (0x3d2fd80, 34, 'a9ba7bfd', 'Splatoon 3 native scene request entry; A7 read-only request trace'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +648,7 @@ for fa, fb in funcs:
+@@ -632,7 +650,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -5196,7 +5300,7 @@ index 837700c..122454b 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +742,14 @@ for off, oid, ow, why in obs:
+@@ -726,7 +744,14 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25

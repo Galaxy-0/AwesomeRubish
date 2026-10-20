@@ -2131,3 +2131,25 @@ A6交付范围：最短满蓄观测21present；真实潜游后出墨输入到满
 - rush熟练度 `--repeats 1` 共5项、全部measured，合表7.0分：静止靶156present击倒/35分，横移6/12/18各0分，接近0分（未击倒的用时保留null及右截尾，不编造击倒时间）。接近项通过既有原生滑行校准与本轮动作见证。JSON与Markdown均在原件根目录`rush-proficiency.json/.md`；三张分场景卡及输入/状态索引在`work/arena/proficiency-20261020-005624-272653/`（以合表policy_version.run_artifacts为准）。源码SHA256为`83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd`，与BO3捕获的rush版本相同；完整库/评测及逐项原件哈希复核通过。5项只验证入口，不与正式13项/既有39样本直接作强弱比较。
 - 3房BO3与1房熟练度的实际原生控制窗口重叠239.548秒，8个不同自有dmhost PID；本轮没有触发资源保护，无需降级。所有自有宿主已退出，默认宿主仍为`628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d`。推荐独占机器3＋1，共享两把加载锁；资源保护触发时先BO3后熟练度，原阈值不变，不叠加作者自测。
 - 组件日志：`work/tests/t1-components.log` 10项、`t1-a5-components.log` 21项（含4项结算回归）、`t1-a6-process.log` 6项，合计37项不同测试通过。未新跑A1–A5全套/70局统计验收。`bash tools/update-patch.sh`完成且源补丁无新差异。数值归档及证据SHA索引：`arena/results/t1-entry-smoke-20261020.json`；用法：`arena/TOURNAMENT.md`。交付仅本项目代码、文档和数值索引，alpha/bravo和游戏数据未纳入本次改动。
+
+### A7 修订：直接开局只读调研（2026-10-20）
+
+指挥方暂停上一段后修订A7，以宿主参数化直接开局、连续局和统一阶段接口优先；菜单宏复用、降渲染和扩并行不再先做。本段调研期间没有启动游戏、修改运行代码或恢复T1。机器清点无dmhost；其它会话的临时caffeinate未触碰。
+
+公开资料：[FlexLion文档](https://flexlion.github.io/docs.html)的Scene Jumper支持离线Versus、Shooting Range、Local-LAN大厅及修改启动场景；Force Bots为离线场景的额外玩家配置。它证明场景请求与玩家/对战配置是可分开的操作，不能从“能跳场景”推断双端PIA已正常建局。当前[Flexlion公开仓库](https://github.com/Flexlion)只有网站、FlexClient和着色器客户端；本次未找到游戏内Scene Jumper的公开C++实现。已读[网站控制代码](https://github.com/Flexlion/flexlion.github.io/blob/main/assets/js/fxnetctrl.js)及[FlexClient](https://github.com/Flexlion/FlexClient)：前者发送模块名/开关状态，后者只做传输，不含内部场景函数/结构偏移。参考快照仅在ignored `work/a7/references/`，不把控制客户端冒称mod本体源码。
+
+本地重新定位（仅静态候选，尚无实机签收）：main构建前16字节`28c4287aee36f7499da60f3e68b54c70`，完整NSO build字段亦与公开11.3.0补丁头相符。解压本机NSO后扫描ADRP+ADD交叉引用，在`main+0x3b071d0`找到启动场景切换包装函数（x1为目的C字符串），其`+0x3b07564`调用汇入`main+0x3d2fd80`（x1为字符串对象指针、x2为标志）。多个试射场/本地大厅的原生调用点也汇入后者：例如`0x386dafc`试射场、`0x39a5aec`多场景分支。`0x3d2fd80`入口会复制字符串再走原生流程；不是直接改phase为InGame。
+
+本机构建SceneInfo表确认`ShootingRange`、`LobbyLocal`、`LobbyVersus`各有独立SequenceName；对战地图行如`Vss_Yunohana`/`Vss_District00`/`Vss_Yagara`的SequenceName为Versus，所以场景名/地图/对战设置不能混为一个字符串。已找`SplSeqChangeScene`、`GameSeqChangeScene`、`spl::VersusPrivateSettingNetState`候选交叉引用；尚未证实对战设置对象的布局和种子写入点，不向外提供猜测偏移。[Coxxs的11.3.0公开补丁](https://github.com/Coxxs/public-pchtxt/blob/main/SPL3_PUBLIC_11.3.0.pchtxt)另有本地私房单人门槛、空队防断线等，署名Coxxs/Shadow/Takaharu；仅作调用前置条件参考，没有直接套用。
+
+现有实现约束：`NativeParallelEnv.reset`每局都close后新建Session；`Session.start`依赖DM_KEYS和FIFO宏，当前没有OCR依赖。RL的RELEASE已释放控制，下一次InGame观察门会清除位置/时间/比分/HUD状态，但新局重新接管、LDN复用、配装/队伍/种子切换仍须实测。最小原型先在独立构建输出里观察原生场景请求，并仅替换一次启动目的为试射场；默认dmhost与已有patched目录不替换。证据门槛是原生进入/存活/控制反馈，不能用发出请求或一张非黑截图代替开局成功。
+
+### A7 阶段成果：无菜单单进程直接进入试射场
+
+`tools/build_a7_host.py`从make -n提取clang命令，只构建ignored work下另一路径；`tools/prepare_a7.py`只在独立目录重写11.3.0的两个按原指令核验的场景门，原默认dmhost/既有模块保持不变。`hle_spl3_scene.c`的`DM_SCENE_BOOT`目前仅允许trace/ShootingRange/LobbyLocal，严格构建号和门存在检查；首次Plaza请求改用宿主自有字符串视图，原生`0x3d2fd80`立即复制该字符串，原字符串对象/场景管理器/存档/阶段/比分均未写入。实验开关未接入正式裁判。
+
+保留的先行反例：`work/a7/scene-20261020-104027-232925/`是另路径宿主未显式指定shader_map路径造成的启动配置失败，已补`DM_NVN_SHMAP`，不算场景路径失败。`scene-20261020-104059-684881/`证明本存档在present 77直接经通用请求进入Plaza、未经过`0x3b071d0`包装候选；原先仅在包装处替换没有命中，已改为通用请求入口的一次性参数适配。前两份均未作正向签收。
+
+原生通过：`work/a7/scene-20261020-104248-645542/result.json` passed=true/errors=[]，`DM_KEYS=""`、无HID FIFO、无OCR。present 77首次请求Plaza被替换成ShootingRange，4.4514秒实际调用试射场Progress进入函数`0x3cf5004`，随后持续命中其更新函数`0x3cf53d0`至present 3000；两函数由本构建名称getter及同一虚表的生命周期槽重新定位。已目视核对frame-600.png，角色、武器、靶场均实际加载；所有截图只留work。该单进程已正常退出，默认宿主SHA仍628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d。
+
+`tests/test_a7_scene.py` 4项组件通过：禁用零回调、一次性参数替换/其它寄存器及原字符串隔离、未知构建/缺门拒绝、非法目的或不可读指针拒绝。数值/源码/原件哈希检查点为`arena/results/a7-scene-prototype-20261020.json`。复现：先运行两个构建准备脚本，再`tests/probe_a7_scene.py --host work/a7/dmhost-scene-v2`。这里测的是RL接管前的场景引导，不声称fixed60/PIA私房/连续局、参数化双方配装与种子、比分一致性或A1–A6回归已完成；带逐帧原生探针的80.7秒观察窗口也不作为优化后的对战墙钟。

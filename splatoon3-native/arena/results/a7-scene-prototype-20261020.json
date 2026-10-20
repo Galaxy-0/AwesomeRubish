@@ -1,0 +1,42 @@
+{
+  "schema": "arena.a7.scene-prototype-checkpoint.v1",
+  "passed": true,
+  "full_a7_passed": false,
+  "stage": "single-process ShootingRange entry",
+  "build_id": "28c4287aee36f7499da60f3e68b54c70",
+  "menu_inputs": [],
+  "ocr_used": false,
+  "owned_pid": 52573,
+  "owned_host_closed": true,
+  "host_sha256": "7be06a3ad6decf85130ca901e8974dfb3ebca9a6b2bbcfc447ace4f8897cd3ab",
+  "default_host_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+  "default_host_unchanged": true,
+  "source_sha256": {
+    "upstream/dm/host/hle_spl3_scene.c": "862f900b1a3eab8f05a5825b5f3c40f20eb47c55590df216740ead2d99d132cf",
+    "upstream/dm/host/main.c": "d6d18c46b0a37d5f5a801941f3710779abf2e086672bdfdc3e57390e844d45fd",
+    "upstream/dm/host/dm.h": "b4492236c356144a5aad6f0cf7b5a16d29432b6a5cb74307b4d58fae45f1eb6e",
+    "upstream/dm/tools/patch_nso.py": "e26ee7a5f0c3a11158d42e7afe74665cba1ee48ebf890af5e8d9103bed11a34d"
+  },
+  "gate_offsets": {
+    "scene_flow": "0x3b071d0",
+    "scene_request": "0x3d2fd80"
+  },
+  "first_redirect_present": 77,
+  "training_enter_seconds": 4.4514,
+  "training_enter_hits": 1,
+  "training_update_hits": 2958,
+  "last_present": 3000,
+  "component_tests": 4,
+  "evidence": {
+    "work/a7/scene-20261020-104248-645542/result.json": "6755f15eb822f80105b796cb816df25963f7b5d931a61857f4b3b3f04f92e55f",
+    "work/a7/scene-20261020-104248-645542/input.json": "7cbc08f0298f360e16f9b1c25c7245ab7a1c92196c06db92c941c415b84d2c79",
+    "work/a7/scene-20261020-104248-645542/host.log": "5449e9880f97c6be6576a7d4172abfd12a28e6c363c435df519ca7d488d03701",
+    "work/a7/dmhost-scene-v2.build.json": "65c6f8f83e9f843fcf2f4f65c04d822384cb1580568da2f035623734c1593830",
+    "work/a7/scene-20261020-104248-645542/frame-1200.png": "5d6b859303ae84fc9ab5c6e413b1e72f6a2bcb6b44a5d9faf93bf70140b7a493",
+    "work/a7/scene-20261020-104248-645542/frame-1800.png": "933b27c6d98550a98ce9aa9fb5f7278480f13b80c461cbcbfee2457ddcbfa372",
+    "work/a7/scene-20261020-104248-645542/frame-2400.png": "d2d565f9e34c5ccea10fe5c4a2e38c6e454714e6a7296476192efd8209ef3e3c",
+    "work/a7/scene-20261020-104248-645542/frame-3000.png": "1ed0615cf6978c2334a1c91455f4cd9f00972d1adfc9ad65dc48d77605ea2c35",
+    "work/a7/scene-20261020-104248-645542/frame-600.png": "b61b1dc592c78244df70b210625abe3484865e90326b743810eab7825bf7505e"
+  },
+  "scope": "Native scene entry/update and inspected training-range image. Startup runs before RL attachment; no fixed60/Turf/PIA/continuous-match acceptance or throughput comparison yet."
+}
