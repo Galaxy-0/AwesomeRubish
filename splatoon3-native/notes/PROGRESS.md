@@ -2308,3 +2308,9 @@ caffeinate -i .venv/bin/python tests/probe_a7_baseline.py \
 - **28项离线测试全部通过，5.89秒**：既有机制/边界/回放，加因果初始化、未知码、标量/NumPy方程、坡面/墙、预扣退款、延迟队列、原生地图批量地面查询、逐帧完整批量伤害/HP/墨量/形态差分，以及评估管线同值与序列化。没有运行任何会启动dmhost/test_a5/t1_round/proficiency的入口。
 - sim/fidelity_report.py检查模型/语料/评估/性能哈希一致后生成报告与evidence索引；最终文档已更新sim/COMPARISON.md。所有原始输入、轨迹、参数、地图、拟合JSON及分布只在ignored work/sim/fidelity，提交只含sim源码与文档。第一阶段整局开环表保留为历史次指标，不拿短时域改善推断整局胜率或占地可信。
 - 剩余义务：人形脚下墨色、精确武器/投射物/恢复态、动态碰撞、完整AP曲线、接触关节真实变换及A1剩余1点敌墨损血。现有记录不足以可靠分离，继续保留上面的统一实机清单，等A7/A8空档后调度。本轮没有扩展Roll/Surge/dash/bomb/Zipcaster，没有新增实机通过结论。
+
+### S1 第三阶段检查点 1：历史策略与原生对阵冻结（2026-10-20）
+
+- 新增 sim/ranking_sources.py，只通过git show提取历史策略到ignored work/sim/ranking/policies。五个指定标签、A5 rush/high-ground及R0精确v0均已提取；没有写arena/policies。
+- A5使用已接受70局检查点并核对验收文件SHA；R0排除void后50局；R1–R4各3有效局，共132局参考。R0/A5完整目录hash与原生source_hashes一致，R1–R4逐个顶层Python及config文件与原生冻结副本完全一致，冻结副本的原生目录hash也核验通过。没有把v1代替R0，也没有把版本目录/笔记造成的hash变化误当运行文件变化。
+- 对局按role_to_policy统一到策略顺序，保留逐地图、出生侧、原生HUD倒下与环境死亡；HUD计数不等于真实最后一击归属。接下来冻结高级机制后进行排名检验。所有操作为离线读记录/Python，无游戏进程。
