@@ -1967,7 +1967,7 @@ index f513ee3..5508a0b 100644
      crash_gate(sig);
      // The stderr lock may be held by another thread (stuck or suspended): the fprintf below would hang with it, the time limit's SIGALRM could not end the run, and the log would get nothing.
 diff --git a/dm/host/dm.h b/dm/host/dm.h
-index fda33ac..c745f22 100644
+index fda33ac..184869a 100644
 --- a/dm/host/dm.h
 +++ b/dm/host/dm.h
 @@ -59,7 +59,7 @@ module_t *module_of(const void *p);
@@ -1975,7 +1975,7 @@ index fda33ac..c745f22 100644
  uint64_t gate_dispatch(uint64_t ret_addr, uint64_t *regs);
  // Observation gates (rewriter OBS table; numbering matches patch_nso.py): read-only callbacks, called on a gate hit once attached
 -enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_MAX = 21 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
-+enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_SPL3_BOOT_SCENE = 33, OBS_SPL3_SCENE_REQUEST = 34, OBS_SPL3_LOCAL_CREATE = 35, OBS_SPL3_LOCAL_JOIN = 36, OBS_MAX = 37 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
++enum { OBS_UIMSG = 1, OBS_TICK = 2, OBS_C2S = 3, OBS_C2S_SYS = 4, OBS_SETLANG = 5, OBS_TARGET_RANK = 7, OBS_UI_PROJECT = 8, OBS_FREEZE_WORLD = 10, OBS_FREEZE_CLIENT = 11, OBS_FREEZE_ANIM = 12, OBS_FREEZE_RENDER = 13, OBS_TEXTBOX = 14, OBS_EVENT_MSG = 15, OBS_LEVEL_WARP = 16, OBS_QUEST_KILL = 17, OBS_NOTICE_INPUT = 18, OBS_MOVIE_RING_LINK = 19, OBS_MOVIE_RING_UNLINK = 20, OBS_SPL3_INGAME = 21, OBS_SPL3_JUDGE = 22, OBS_SPL3_WINNERS = 23, OBS_SPL3_LOCAL_STATE = 24, OBS_SPL3_TIMER = 25, OBS_SPL3_TURF_SCORE = 26, OBS_SPL3_RULE_SCORE = 27, OBS_SPL3_OWN_PLAYER = 28, OBS_SPL3_HUD_BIND = 29, OBS_SPL3_HUD_STATE = 30, OBS_SPL3_GEAR = 31, OBS_SPL3_GEAR_READ = 32, OBS_SPL3_BOOT_SCENE = 33, OBS_SPL3_SCENE_REQUEST = 34, OBS_SPL3_LOCAL_CREATE = 35, OBS_SPL3_LOCAL_JOIN = 36, OBS_SPL3_LOCAL_PROGRESS = 37, OBS_SPL3_MATCH_MENU = 38, OBS_SPL3_MATCH_FIX = 39, OBS_SPL3_PRIVATE_UI = 40, OBS_SPL3_NET_ROOT = 41, OBS_SPL3_NET_EVENT = 42, OBS_MAX = 43 };   // 6 = iOS binding read (dm_touch_game_bridge.c)
  void gate_obs_set(int id, void (*fn)(const uint64_t *regs));
  int gate_obs_present(int id);
  void dm_quiet_difficulty_msg(int on);   // In a rift run, block the original game's 「游戏难度设为 N」(Game difficulty set to N) message (observation gate 15, diag.c)
@@ -3874,20 +3874,24 @@ index 0000000..0877bf7
 +}
 diff --git a/dm/host/hle_spl3_scene.c b/dm/host/hle_spl3_scene.c
 new file mode 100644
-index 0000000..5f2640d
+index 0000000..61928c5
 --- /dev/null
 +++ b/dm/host/hle_spl3_scene.c
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,233 @@
 +// A7 experimental scene-request adapter; no synthetic match phase or score.
 +#include "dm.h"
 +#include <mach/mach.h>
 +#include <mach/mach_vm.h>
 +#include <stdatomic.h>
++extern uint32_t thr_cur_handle(void);
 +
 +static const char *scene_boot;
 +static unsigned scene_requests, scene_boot_requests;
 +static int scene_replaced;
 +static _Atomic unsigned scene_net_requests;
++static _Atomic int scene_progress_seen;
++static int scene_direct_enabled,scene_direct_stage;
++static uintptr_t scene_main_base;
 +
 +static int scene_read(uintptr_t address, void *out, size_t length) {
 +    mach_vm_size_t copied=0;
@@ -3928,6 +3932,31 @@ index 0000000..5f2640d
 +static void scene_network_trace(const uint64_t *r,const char *kind) {
 +    unsigned request=atomic_fetch_add(&scene_net_requests,1);
 +    if(request>=16)return;
++    if(getenv("DM_SCENE_TRACE_STACK")) {
++        module_t *main=NULL;
++        for(int k=0;k<g_nmod;k++)if(!strcmp(g_mod[k].name,"main"))main=&g_mod[k];
++        uintptr_t base=main ? (uintptr_t)main->base : 0,fp=r[29];
++        LOG("A7_LOCAL_STACK kind=%s fp=%lx",kind,(unsigned long)fp);
++        for(unsigned n=0;n<24 && fp && !(fp&7);n++) {
++            uintptr_t pair[2];if(!scene_read(fp,pair,sizeof pair))break;
++            if(main && pair[1]>=base && pair[1]<base+main->size)
++                LOG("A7_LOCAL_STACK kind=%s depth=%u main_offset=%lx",kind,n,(unsigned long)(pair[1]-base));
++            if(pair[0]<=fp || pair[0]-fp>0x100000)break;
++            fp=pair[0];
++        }
++        // entry.S reserves 800 bytes for dm_gate and site_obs saves 16 more.
++        // The original LR is at +808; scan the original guest stack as a
++        // fallback because optimized PIA functions omit frame pointers.
++        uintptr_t stack[128];
++        if(main && scene_read((uintptr_t)r+808,stack,sizeof stack)) {
++            for(unsigned n=0;n<128;n++) {
++                uintptr_t ra=stack[n];uint32_t call=0;
++                if(ra<base+4 || ra>=base+main->size || (ra&3) || !scene_read(ra-4,&call,4))continue;
++                if((call&0xfc000000)!=0x94000000 && (call&0xfffffc1f)!=0xd63f0000)continue;
++                LOG("A7_LOCAL_SCAN kind=%s slot=%u main_offset=%lx",kind,n,(unsigned long)(ra-base));
++            }
++        }
++    }
 +    // Bounded, best-effort diagnostic: never retain the native pointer or
 +    // change its bytes. Raw bytes stay in ignored logs, never the policy wire.
 +    unsigned char data[0x200];char hex[sizeof data*2+1];
@@ -3941,9 +3970,105 @@ index 0000000..5f2640d
 +}
 +static void scene_network_create(const uint64_t *r) {scene_network_trace(r,"create");}
 +static void scene_network_join(const uint64_t *r) {scene_network_trace(r,"join");}
++
++static void scene_flow(const uint64_t *r,unsigned index,const char *kind) {
++    static struct { uintptr_t self; uint32_t key[4]; } last[4];
++    unsigned char data[0x100]={0},view[0x90]={0};
++    if(!scene_read(r[0],data,sizeof data))return;
++    uintptr_t pointer=0;memcpy(&pointer,data+0x58,8);
++    if(index==1 && pointer)scene_read(pointer,view,sizeof view);
++    uint32_t key[4]={0};
++    memcpy(key,data+0x18,4);key[0]>>=30;
++    if(index==1){memcpy(key+1,view+0x30,4);memcpy(key+2,view+0x78,8);}
++    if(index==3){memcpy(key,data+0x10,4);memcpy(key+1,data+0x14,4);memcpy(key+2,data+0x1c,8);key[2]=key[2]==0 ? 0 : key[2]==1 ? 1 : 2;}
++    if(last[index].self==r[0] && !memcmp(last[index].key,key,sizeof key))return;
++    last[index].self=r[0];memcpy(last[index].key,key,sizeof key);
++    char hex[sizeof data*2+1];static const char digits[]="0123456789abcdef";
++    for(unsigned n=0;n<sizeof data;n++){hex[2*n]=digits[data[n]>>4];hex[2*n+1]=digits[data[n]&15];}hex[sizeof hex-1]=0;
++    LOG("A7_FLOW kind=%s frame=%llu self=%llx key=%u,%u,%u,%u data=%s",kind,dm_guest_frame(),r[0],key[0],key[1],key[2],key[3],hex);
++}
++static uintptr_t scene_net_root;
++typedef struct { uint64_t words[10]; } scene_params;
++static int scene_direct_work_seen;
++static scene_params scene_default_params(void) {
++    scene_params params={0};int minus_one=-1;uintptr_t empty=scene_main_base+0x4f2d421;
++    memcpy((char *)&params+4,&minus_one,4);memcpy((char *)&params+8,&minus_one,4);
++    memcpy((char *)&params+0x18,&minus_one,4);memcpy((char *)&params+0x10,&empty,8);
++    uint16_t flags=0x100;memcpy((char *)&params+0x2c,&flags,2);
++    ((void (*)(void *))(scene_main_base+0xa1910))((char *)&params+0x38);
++    return params;
++}
++static void scene_direct_tick(const uint64_t *r,const uint32_t key[6]) {
++    if(scene_direct_enabled>=2 && scene_direct_stage==2 && key[0]==13)scene_direct_work_seen=1;
++    if(scene_direct_enabled>=2 && scene_direct_stage==2 && scene_direct_work_seen && key[0]==34 && !key[4]) {
++        uintptr_t list=((uintptr_t (*)(int))(scene_main_base+0x15278e0))(1),array=0;
++        unsigned index=0,count=0;
++        if(list && scene_read(list+0x18,&index,4) && scene_read(list+8+8*(index<2 ? index : 0),&array,8) && array)
++            scene_read(array+0x18,&count,4);
++        LOG("A7_DIRECT search_complete count=%u list=%lx",count,(unsigned long)list);
++        scene_direct_stage=3;
++        if(scene_direct_enabled==3 && count>0) {
++            int input[8]={6,0};
++            scene_params params=((scene_params (*)(const int *,int))(scene_main_base+0x32c1d20))(input,1);
++            char empty[1]={0};struct {uintptr_t vtable;char *buffer;int capacity,pad;} string={0,empty,1,0};
++            int id=((int (*)(uintptr_t,const scene_params *,int,const void *,const void *,int,const void *,int))(scene_main_base+0x1507d54))
++                (r[0],&params,1,&string,&string,0,&string,0);
++            LOG("A7_DIRECT join_request=%d room_index=0 frame=%llu thread=%x",id,dm_guest_frame(),thr_cur_handle());
++            ((void (*)(void *))(scene_main_base+0xa1c04))((char *)&params+0x38);
++            if(id<0)die("A7_DIRECT native join request rejected");
++        }
++    }
++    if(!scene_direct_enabled || !atomic_load(&scene_progress_seen) || key[0]!=34 || key[4])return;
++    scene_params params={0};int operation=0;
++    if(scene_direct_stage==0 && key[1]==1) {
++        // Same game-level Init request emitted by the normal match controller.
++        params=scene_default_params();
++        operation=14;scene_direct_stage=1;
++    } else if(scene_direct_stage==1 && key[1]==1) {
++        // Native serializer: Private enum index 6, submode 0, context 1.
++        // All strings/documents and transport parameters are built by game code.
++        if(scene_direct_enabled>=2) {
++            params=scene_default_params();unsigned search=2;memcpy((char *)&params+0x30,&search,4);operation=3;
++        } else {
++            int input[8]={6,0};
++            params=((scene_params (*)(const int *,int))(scene_main_base+0x32c1d20))(input,1);
++            operation=4;
++        }
++        scene_direct_stage=2;
++    } else return;
++    uintptr_t request=((uintptr_t (*)(uintptr_t,int,const scene_params *))(scene_main_base+0x1507bf4))(r[0],operation,&params);
++    int id=-1;if(request)scene_read(request,&id,4);
++    LOG("A7_DIRECT operation=%d request_id=%d frame=%llu thread=%x",operation,id,dm_guest_frame(),thr_cur_handle());
++    ((void (*)(void *))(scene_main_base+0xa1c04))((char *)&params+0x38);
++    if(!request || id<0)die("A7_DIRECT game request rejected");
++}
++static void scene_net_tick(const uint64_t *r) {
++    static uint32_t previous[6];
++    uint32_t key[6]={0};
++    if(!scene_read(r[0]+0x28,key,4) || !scene_read(r[0]+0x130,key+1,20))return;
++    scene_direct_tick(r,key);
++    if(scene_net_root==r[0] && !memcmp(previous,key,sizeof key))return;
++    scene_net_root=r[0];memcpy(previous,key,sizeof key);
++    LOG("A7_NET_ROOT self=%llx frame=%llu state=%u mode=%u request=%u context=%u pending=%u aux=%u",r[0],dm_guest_frame(),key[0],key[1],key[2],key[3],key[4],key[5]);
++}
++static void scene_net_event(const uint64_t *r) {
++    if(!scene_net_root || r[0]!=scene_net_root+0x20)return;
++    uintptr_t caller=0;scene_read((uintptr_t)r+808,&caller,8);
++    for(int k=0;k<g_nmod;k++)if(!strcmp(g_mod[k].name,"main"))caller-=(uintptr_t)g_mod[k].base;
++    LOG("A7_NET_EVENT self=%llx frame=%llu target=%llu caller=%lx",r[0],dm_guest_frame(),r[1],(unsigned long)caller);
++}
++
++static void scene_progress(const uint64_t *r){atomic_store(&scene_progress_seen,1);scene_flow(r,0,"progress");}
++static void scene_menu(const uint64_t *r){scene_flow(r,1,"menu");}
++static void scene_fix(const uint64_t *r){scene_flow(r,2,"fix");}
++static void scene_private(const uint64_t *r){scene_flow(r,3,"private");}
++
 +void spl3_scene_install(void) {
 +    scene_boot=getenv("DM_SCENE_BOOT");
-+    if(!scene_boot)return;
++    if(!scene_boot) {
++        if(getenv("DM_SCENE_DIRECT"))die("DM_SCENE_DIRECT requires DM_SCENE_BOOT");
++        return;
++    }
 +    if(strcmp(scene_boot,"trace") && strcmp(scene_boot,"ShootingRange") && strcmp(scene_boot,"LobbyLocal"))
 +        die("DM_SCENE_BOOT prototype requires trace, ShootingRange or LobbyLocal");
 +    if(strcmp(dm_main_build(),"28c4287aee36f7499da60f3e68b54c70"))
@@ -3959,6 +4084,30 @@ index 0000000..5f2640d
 +            die("DM_SCENE_TRACE_NETWORK requires A7 local request gates");
 +        gate_obs_set(OBS_SPL3_LOCAL_CREATE,scene_network_create);
 +        gate_obs_set(OBS_SPL3_LOCAL_JOIN,scene_network_join);
++    }
++    const char *flow=getenv("DM_SCENE_TRACE_FLOW");
++    if(flow && strcmp(flow,"0") && strcmp(flow,"1"))die("DM_SCENE_TRACE_FLOW must be 0 or 1");
++    if(flow && !strcmp(flow,"1")) {
++        for(int id=OBS_SPL3_LOCAL_PROGRESS;id<=OBS_SPL3_NET_EVENT;id++)
++            if(!gate_obs_present(id))die("DM_SCENE_TRACE_FLOW requires A7 flow gates");
++        gate_obs_set(OBS_SPL3_LOCAL_PROGRESS,scene_progress);
++        gate_obs_set(OBS_SPL3_MATCH_MENU,scene_menu);
++        gate_obs_set(OBS_SPL3_MATCH_FIX,scene_fix);
++        gate_obs_set(OBS_SPL3_PRIVATE_UI,scene_private);
++        gate_obs_set(OBS_SPL3_NET_ROOT,scene_net_tick);
++        gate_obs_set(OBS_SPL3_NET_EVENT,scene_net_event);
++    }
++    const char *direct=getenv("DM_SCENE_DIRECT");
++    if(direct) {
++        if((strcmp(direct,"create") && strcmp(direct,"scan") && strcmp(direct,"join")) || strcmp(scene_boot,"LobbyLocal") || !flow || strcmp(flow,"1"))
++            die("DM_SCENE_DIRECT prototype requires create/scan/join, LobbyLocal and flow gates");
++        for(int k=0;k<g_nmod;k++)if(!strcmp(g_mod[k].name,"main"))scene_main_base=(uintptr_t)g_mod[k].base;
++        const struct {unsigned offset,word;} helpers[]={{0x1507bf4,0xa9bb7bfd},{0x32c1d20,0xd10403ff},{0xa1910,0xf900001f},{0xa1c04,0xa9bf4ffe},{0x15278e0,0xa9bd7bfd},{0x1507d54,0xa9bb7bfd}};
++        for(unsigned k=0;k<sizeof helpers/sizeof helpers[0];k++) {
++            uint32_t word=0;if(!scene_read(scene_main_base+helpers[k].offset,&word,4) || word!=helpers[k].word)
++                die("DM_SCENE_DIRECT native helper mismatch at %x",helpers[k].offset);
++        }
++        scene_direct_enabled=!strcmp(direct,"create") ? 1 : !strcmp(direct,"scan") ? 2 : 3;
 +    }
 +    LOG("A7_SCENE enabled target=%s prototype=1",scene_boot);
 +}
@@ -5085,24 +5234,32 @@ index 0000000..bf88ab5
 +}
 diff --git a/dm/host/tests/t_spl3_scene.c b/dm/host/tests/t_spl3_scene.c
 new file mode 100644
-index 0000000..f662ae2
+index 0000000..c82c24e
 --- /dev/null
 +++ b/dm/host/tests/t_spl3_scene.c
-@@ -0,0 +1,44 @@
+@@ -0,0 +1,61 @@
 +// A7 argument adapter contracts only; native scene loading is a separate gate.
 +#include "../hle_spl3_scene.c"
 +module_t g_mod[MAX_MOD];int g_nmod=1;
++uint32_t thr_cur_handle(void) { return 0x1001; }
 +static void (*callbacks[OBS_MAX])(const uint64_t *);
-+static int missing,missing_network;
++static int missing,missing_network,missing_flow;
 +int gate_obs_present(int id) {
 +    return !missing && (id==OBS_SPL3_BOOT_SCENE || id==OBS_SPL3_SCENE_REQUEST ||
-+        (!missing_network && (id==OBS_SPL3_LOCAL_CREATE || id==OBS_SPL3_LOCAL_JOIN)));
++        (!missing_network && (id==OBS_SPL3_LOCAL_CREATE || id==OBS_SPL3_LOCAL_JOIN)) ||
++        (!missing_flow && id>=OBS_SPL3_LOCAL_PROGRESS && id<=OBS_SPL3_NET_EVENT));
 +}
 +void gate_obs_set(int id,void (*fn)(const uint64_t *)) {if(id<=0 || id>=OBS_MAX)abort();callbacks[id]=fn;}
 +uint64_t dm_guest_frame(void) {return 1234;}
 +int main(int argc,char **argv) {
 +    strcpy(g_mod[0].name,"main");strcpy(g_mod[0].build_id,"28c4287aee36f7499da60f3e68b54c70");
 +    const char *mode=argc>1 ? argv[1] : "";
++    if(!strncmp(mode,"direct",6))setenv("DM_SCENE_DIRECT","create",1);
++    if(!strcmp(mode,"direct-invalid"))setenv("DM_SCENE_DIRECT","pia",1);
++    if(!strcmp(mode,"direct-helper"))setenv("DM_SCENE_TRACE_FLOW","1",1);
++    if(!strncmp(mode,"flow",4))setenv("DM_SCENE_TRACE_FLOW","1",1);
++    if(!strcmp(mode,"flow-missing"))missing_flow=1;
++    if(!strcmp(mode,"flow-invalid"))setenv("DM_SCENE_TRACE_FLOW","yes",1);
 +    if(!strncmp(mode,"network",7))setenv("DM_SCENE_TRACE_NETWORK","1",1);
 +    if(!strcmp(mode,"network-missing"))missing_network=1;
 +    if(!strcmp(mode,"network-invalid"))setenv("DM_SCENE_TRACE_NETWORK","yes",1);
@@ -5130,6 +5287,15 @@ index 0000000..f662ae2
 +        uint64_t before[31];memcpy(before,r,sizeof r);
 +        callbacks[OBS_SPL3_LOCAL_CREATE](r);callbacks[OBS_SPL3_LOCAL_JOIN](r);
 +        if(memcmp(before,r,sizeof r) || memcmp(copy,data,sizeof data))return 8;
++    }
++    if(!strcmp(mode,"flow")) {
++        unsigned char data[0x100]={0};r[0]=(uintptr_t)data;
++        uint64_t before[31];memcpy(before,r,sizeof r);
++        for(int id=OBS_SPL3_LOCAL_PROGRESS;id<=OBS_SPL3_PRIVATE_UI;id++) {
++            callbacks[id](r);callbacks[id](r);
++        }
++        if(memcmp(before,r,sizeof r))return 9;
++        for(unsigned n=0;n<sizeof data;n++)if(data[n])return 10;
 +    }
 +    puts("spl3-scene: one-shot redirect, immutable request and register isolation passed");return 0;
 +}
@@ -5302,10 +5468,10 @@ index 3459d94..ca3854f 100644
      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
    </PropertyGroup>
 diff --git a/dm/tools/patch_nso.py b/dm/tools/patch_nso.py
-index 837700c..00ff5f4 100644
+index 837700c..c464d69 100644
 --- a/dm/tools/patch_nso.py
 +++ b/dm/tools/patch_nso.py
-@@ -162,6 +162,26 @@ CUTS = {
+@@ -162,6 +162,32 @@ CUTS = {
  # ---- Registered observation gates: {NSO build ID: [(offset, number, original instruction word, reason)]}. Numbers match OBS_* in the host's hle.h;
  # the original instruction must be position independent (no PC-relative / branch / anything involving x18 or tpidr), asserted offline; when the host has no callback attached the gate block goes in and out once and returns ----
  OBS = {
@@ -5328,11 +5494,17 @@ index 837700c..00ff5f4 100644
 +    (0x3d2fd80, 34, 'a9ba7bfd', 'Splatoon 3 native scene request entry; A7 read-only request trace'),
 +    (0x9546f0, 35, 'f81a0ffd', 'Splatoon 3 local PIA create entry; A7 read-only native configuration trace'),
 +    (0x954de4, 36, 'f81a0ffd', 'Splatoon 3 local PIA join entry; A7 read-only native configuration trace'),
++    (0x3955ca0, 37, 'd10143ff', 'Splatoon 3 local lobby progress update; A7 read-only flow trace'),
++    (0x391e480, 38, 'd101c3ff', 'Splatoon 3 match menu update; A7 read-only flow trace'),
++    (0x3916f90, 39, 'd10283ff', 'Splatoon 3 match fix update; A7 read-only flow trace'),
++    (0x38f8930, 40, 'a9ba7bfd', 'Splatoon 3 private UI update; A7 read-only flow trace'),
++    (0x1506cd4, 41, 'd10383ff', 'Splatoon 3 game network root update; A7 producer trace'),
++    (0x14d184c, 42, 'd10103ff', 'Splatoon 3 game FSM request; A7 producer trace'),
 +  ],
    # Metroid Dread 2.1.0 main: the movie player posts "link / unlink holders" requests into the dispatcher thread's request ring (main+0x222cc8) and goes on without waiting for them (after an unlink it frees the wrapper object and builds a new one in place).
    # On hardware the dispatcher thread (priority 30, core 0 only) preempts the main thread (priority 44, core 0) at once and finishes first; the host waits for the ring to empty after each post (hle_movie.c movie_ring_wait). The gates sit on the add x22, x22, #8 after the bl
    '646761f643afebb379edd5e6a5151af2': [
-@@ -632,7 +652,7 @@ for fa, fb in funcs:
+@@ -632,7 +658,7 @@ for fa, fb in funcs:
      for j, ins in enumerate(insl):
          if ins.mnemonic == 'br' and ins.op_str == 'x18':
              base = width = None
@@ -5341,7 +5513,7 @@ index 837700c..00ff5f4 100644
              for p in reversed(ctx):
                  if p.mnemonic == 'adr' and p.op_str.startswith('x18,'): base = p.operands[1].imm; break
              for p in reversed(ctx):
-@@ -726,7 +746,14 @@ for off, oid, ow, why in obs:
+@@ -726,7 +752,14 @@ for off, oid, ow, why in obs:
      # Function entries, or the instruction right after a bl, only: dm_gate writes back only x0–x8 / x30, and host C code may modify x9–x17; at entry these carry no values under AAPCS64 (arguments are only in x0–x7 / x8),
      # and right after a call returns the callee was free to clobber them anyway (x16 / x17 are the veneer registers)
      after_bl = off >= 4 and struct.unpack_from('<I', IMG, off - 4)[0] >> 26 == 0x25

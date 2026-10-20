@@ -1,0 +1,91 @@
+{
+  "schema": "arena.a7.direct-room-checkpoint.v1",
+  "passed": true,
+  "full_a7_passed": false,
+  "scope": "Two native processes: no-HID create/search/join, same LDN session and bidirectional PIA packets. No match start/Winners/score or continuous-game acceptance.",
+  "build_id": "28c4287aee36f7499da60f3e68b54c70",
+  "parameters": {
+    "players": 2,
+    "weapons": [
+      8000,
+      8000
+    ],
+    "private_mode_enum_index": 6,
+    "submode": 0,
+    "context": 1,
+    "join_type": 1,
+    "room_index": 0
+  },
+  "boot_to_create_seconds": 6.711393117904663,
+  "boot_to_join_seconds": 17.81806206703186,
+  "wall_with_cleanup_seconds": 17.879926204681396,
+  "same_native_session": true,
+  "native_membership_by_role": {
+    "0": [
+      "3",
+      "0",
+      "2"
+    ],
+    "1": [
+      "5",
+      "1",
+      "2"
+    ]
+  },
+  "native_search_count": 1,
+  "pia_received_packets_lower_bound": {
+    "0": 16,
+    "1": 32
+  },
+  "game_request_thread_handles": [
+    [
+      "1001"
+    ],
+    [
+      "1001"
+    ]
+  ],
+  "menu_inputs": [],
+  "ocr_used": false,
+  "component_tests": 10,
+  "owned_hosts_closed": true,
+  "host_sha256": "5b5913bbd052ddbba407353375cb0bfc121cd4fd86318fd81ca99697b992bf7b",
+  "default_host_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+  "default_host_unchanged": true,
+  "source_sha256": {
+    "upstream/dm/host/hle_spl3_scene.c": "ae8219a313df6a75b47e36ff0eedaadf667a1d619e837d2031d23312c60622fb",
+    "upstream/dm/host/main.c": "d6d18c46b0a37d5f5a801941f3710779abf2e086672bdfdc3e57390e844d45fd",
+    "upstream/dm/host/dm.h": "ec6be4e338837d14f98719469b6464a546cab6eb3a7d8114c5e93af86e76d32a",
+    "upstream/dm/tools/patch_nso.py": "db6f84c09b555568f52b64b0d30f43d5e4f726106b2234157552311247bac1df"
+  },
+  "new_swapout_mib_max": 0.0,
+  "evidence": {
+    "work/a7/direct-room-20261020-115328-487623/result.json": "d5ef69b50089d4a897e8aeb65b8564254c15dc1e7d5d51098b475b7bde7d1a24",
+    "work/a7/dmhost-direct-v11.build.json": "6f4f8c7be88cb005de4e195834e7937bebee1dcf4dfa03933ef6e8e9a7449649",
+    "work/a7/direct-components-v11.log": "1f08ef26e59ba6e9c81001d57e4c5dfa0a2fbfbc4c9d6abccc27c227dcd8e47a",
+    "work/tests/m6-2p-20261020-115328-508785/air.log": "4379e84d59dd6d7b0c225b1f40df306ac7dbe07dea99f905ed89be7740252e0e",
+    "work/tests/m6-2p-20261020-115328-508785/resources.jsonl": "c69d67a3de1d1882e5f78d8161c703ca150704a14fc939de3adcee65083be481",
+    "work/tests/m6-2p-20261020-115328-508785/resources-summary.json": "74f4226096bcc33070b72945cd7a4802d43d62764c85db5dd2f32e5dc0e3f670",
+    "work/tests/m6-2p-20261020-115328-508785/player-0/host.log": "b527cf66a7dd31830b7fda62f92139a485df557a0ceec69ff54640d8dd2e9c43",
+    "work/tests/m6-2p-20261020-115328-508785/player-0/input.json": "8aec06b74ca90779d1e668a79f9483cfaad18584698469048a4b706d955359c4",
+    "work/tests/m6-2p-20261020-115328-508785/player-1/host.log": "37b5fb155e6ab7fa6f717706ef0e5512198fb9110bc15657490abc92fd1b786c",
+    "work/tests/m6-2p-20261020-115328-508785/player-1/input.json": "d2e2a8d379bd36a34ee6db735929cc735ae01075a53c30234ee694827cb88ed0",
+    "work/a7/normal-stack-20261020-111820-536634/result.json": "9ebaefccf60bcf848ecf9a78fa9c36213e160ca7247752392235af12bbe9d35a",
+    "work/tests/m6-2p-20261020-111820-481934/player-0/host.log": "602726703849cb542483499c4192dc36ad009769368457b248751eec34d8d140",
+    "work/tests/m6-2p-20261020-111820-481934/player-1/host.log": "a1632b670e6318d0330ab08cee81cd24de6870368d3149b310f9c251c939ef4f",
+    "work/a7/normal-stack-v5-20261020-112222-940458/result.json": "cf1b6f272ee3981cb41d257414a8d3e9a842b54136a6939898c685cc9ec3e638",
+    "work/tests/m6-2p-20261020-112222-890944/player-0/host.log": "f2bd3d3157264d95f16fac442f70fc68699f4802657272aa3c54efb3da6caa90",
+    "work/tests/m6-2p-20261020-112222-890944/player-1/host.log": "e4a70eba302d3b2dcebaeb0d5e8465d6e51b860a46d36667cce7cf159ac9037c",
+    "work/a7/enqueue-20261020-112648-024527/result.json": "63f31663331dda4c6070b0c5c1e5ac36b224293fe3a1ff3f65cf1c7e4e9d7211",
+    "work/tests/m6-2p-20261020-112647-967493/player-0/host.log": "01e87e4dee398d6b1038e559db89e90232e3107ba9eb44ed1163c3f9f1b535a1",
+    "work/a7/queue-20261020-113156-167270/result.json": "263dbf713d83d625ba5a5c904960a1b301d07c70c72a1ea91c9dd3e59343d43c",
+    "work/tests/m6-2p-20261020-113156-117245/player-0/host.log": "36fc1bd2e40fbaac3613186cb31e54ff356ebb999444fe74ebaf18962be93a52",
+    "work/a7/create-event-20261020-113537-222892/result.json": "190a647c61cc7610db88245a6850db0e94a8ee3e763215c36a59e9403248c923",
+    "work/tests/m6-2p-20261020-113537-137521/player-0/host.log": "27789117affcf073962afa179f85a02841a0471b2a338022bc93bfdae7fc0e1d",
+    "work/a7/game-request-20261020-113746-443874/result.json": "7e7689500cb3d2bbc81b31d81f1cb7b0237bc6b75149666c2c06b3eeb06cffd9",
+    "work/tests/m6-2p-20261020-113746-400783/player-0/host.log": "001414d6f3ad56ac0452e5ba807c4ab64751c3cd22cebf486c1a8438c9fd1d94",
+    "work/a7/join-request-20261020-114604-690420/result.json": "689b74c09d23029fad71e72ca5785ee54eac3ce2ae534c225a467b587307bf31",
+    "work/tests/m6-2p-20261020-114604-632061/player-0/host.log": "93e3cde97fc81ee0409beab2b2210f279fa4edefc19a9e2d7d3a81a71076d4e2",
+    "work/tests/m6-2p-20261020-114604-632061/player-1/host.log": "a6120c894b140199df29ae4758a9c80046f227e0ad04a393bfd6d0107d0da5e0"
+  }
+}

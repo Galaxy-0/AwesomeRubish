@@ -2212,3 +2212,34 @@ caffeinate -i .venv/bin/python tests/probe_a7_baseline.py \
 - `.venv/bin/python -m unittest sim.test_core -v` 12项通过（4.23秒）：参数单位、20/21与25/26边界、接触+墨刃55、取消蓄力、薄墙/阻墨、分层墨图、回墨/敌墨上限、互杀/重生保护、隐藏/最后目击/副本隔离、确定性/预算/批量、A2完整19/31挥刀、有限线段距离。测试发现多射线接触墙后可能侵入，已补端点球-三角形距离；不把通过组件当原生一致。
 - 三图各120帧只读资产冒烟正常。rush/high-ground 与 alpha/bravo 各60模拟帧，使用真实隔离worker黑盒调用，均正常返回；未展开/修改双方实现。吞吐分别约232/102帧每秒（包含沙箱启动/策略调用，短样本，不作为正式性能结论）。当前alpha/bravo有回墨/抗墨/跑速未实现配装，结果中保留 unsupported。
 - 产物只在 work/sim/compat-public、compat-t1。所有游戏/对战进程未启动，A7改动未触碰。下一步只做已有原生记录同输入对照与报告，完成后停下。
+
+### A7 B：游戏层直接建房 / 搜索 / 加入已通过（2026-10-20，阶段检查点）
+
+最新指挥改为只推B；A的状态驱动菜单没有接入或交付。新增流程观察仅用于定位B的上层入口；生产菜单、RL、裁判、alpha/bravo未改。调研从PIA实际调用栈向上追到了游戏请求队列，随后无按键实机通过双端同房。
+
+调用链证据与本构建重新定位：
+
+- PIA Create/Join运行于后台任务线程，Create的直接调用点main+0x9581b8，其上为0x92e17c/0x925060/0x928b68/0x96ebc0/0x96e464；不能在这里假设拿到了UI主线程。原始栈探针放在9546f4/954de8（原OBS入口之后、原指令可搬移）核对真正LR；新增有界Mach栈扫描补充省略帧指针的代码。初次栈诊断误用g_mod[0]映射，后改按模块名找main；v4不作完整调用栈证据。
+- 在main+0x94c354的请求提交点追到游戏网络任务层：Create经过0x44ebe74、0x44eb97c、0x44eb10c、0x44ffbe0；Search经过0x44ebd08。继续追0x44ff6bc异步任务队列的生产者，确认游戏主线程调用0x15041d4（CreateMatch状态执行）、0x1503fa8（Find）、对应代理封装再提交后台任务。
+- 游戏层公共请求入口为0x1507bf4(this, operation, native_params)，正常菜单创建使用operation=4，搜索为3，本地初始化为14。原生Private参数序列化器0x32c1d20(input,context)的正常输入为MatchMode枚举索引6、子模式0、context=1；参数对象中的节点由原生0xa1910/0xa1c04初始化/销毁，请求入口用游戏自己的复制函数取得所有权。没有复制捕获的堆指针或PIA配置快照。
+- 加入使用游戏层0x1507d54，正常菜单实测join_type=1、room_idx=0；该函数自行写入原生请求文档的join_type/user_id/session_id/password/voice_chat并提交operation=5。本地路径的空字符串参数与搜索列表索引可实际加入，不依赖硬编码会话ID或原生堆地址。
+- 定位0x1506cd4游戏网络管理器更新入口，在其主线程回调中等待LobbyLocal Progress已实际更新且管理器空闲，才提交上述请求；实测两端所有A7_DIRECT请求均来自原生线程T=1001。新增0x14d184c观察门只读该管理器的原生状态切换。没有在PIA工作线程调用底层Create/Join，也没有改写InGame/比分/计时器。
+
+保留的试验边界：v5正常路径诊断因覆盖了原有phase探针而仍等待旧探针条件，在已捕获Create/Join后以SIGINT自有driver结束、finally回收两个宿主；仅作调用栈证据，不作完整对战通过。v7无输入原型已发初始化请求，但把后续等待值误设为3，100秒未发Create；静态请求分派和实测均确认本地路径应等待1，v8修正后实际建房。v9双端create+scan返回1个房间，33.79秒包含首次新宿主缓存准备；v10双端create+join已通过，17.80秒。以上原件均保留work且不替换最终样本。
+
+最终阶段复测 `work/a7/direct-room-20261020-115328-487623/`，v11宿主与本阶段提交源一致：
+
+| 指标 | 结果 |
+| --- | ---: |
+| 启动→air记录原生建房 | 6.711秒 |
+| 启动→双端同会话且游戏层加入完成 | 17.818秒 |
+| 含清理总墙钟 | 17.880秒 |
+| 宿主 / 客端状态 | 3,0,2 / 5,1,2（state,node,nodes） |
+| air原生PIA接收包下界 | 宿主16、客端32 |
+| 新增swapout | 0 MiB |
+
+`tests/probe_a7_direct_room.py` passed=true/errors=[]，DM_KEYS空，未写HID FIFO，无OCR；自动检查双端同会话、完整成员数与客端原生请求完成。两端均干净退出，默认dmhost仍628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d。数值、源码、原件哈希归档 `arena/results/a7-direct-room-20261020.json`。10项组件通过，覆盖原状态/寄存器隔离、缺门/非法目的/错误构建拒绝、新流程诊断去重，以及直接原型缺场景/缺flow/原生函数原指令不符时拒绝。旧菜单同房诊断约217秒仅作流程参考，不把该差异称为整局或同输入比分回归收益。
+
+复现：`tools/build_a7_host.py --out work/a7/dmhost-direct-new`、`tools/prepare_a7.py --out work/a7/patched-direct-new`，随后 `tests/probe_a7_direct_room.py --host work/a7/dmhost-direct-new --patched work/a7/patched-direct-new`。仅实验宿主提供DM_SCENE_DIRECT=create|scan|join；要求LobbyLocal引导、全部flow门、精确构建号和六个游戏层函数原指令匹配。所有构建及模块改写仍在独立work路径。
+
+当前只签收第一个子里程碑“两个进程无按键建房+加入”。尚未完成地图/规则/队伍设置同步、无按键开局至Winners、连续局、t1_round接入、同参数比分对照或A1–A6回归，full_a7_passed仍false。继续B的下一步，不因本阶段同房通过而宣布A7完成。

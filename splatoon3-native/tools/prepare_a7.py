@@ -29,7 +29,7 @@ def main():
         env={k:v for k,v in os.environ.items() if not k.startswith('DM_')};env['DM_RULESET']='native'
         subprocess.run([sys.executable,str(ROOT/'upstream/dm/tools/patch_nso.py'),str(source),str(stage),'main'],env=env,check=True)
         text=(stage/'main.obs.tsv').read_text()
-        for address,number in ((0x3b071d0,33),(0x3d2fd80,34),(0x9546f0,35),(0x954de4,36)):
+        for address,number in ((0x3b071d0,33),(0x3d2fd80,34),(0x9546f0,35),(0x954de4,36),(0x3955ca0,37),(0x391e480,38),(0x3916f90,39),(0x38f8930,40),(0x1506cd4,41),(0x14d184c,42)):
             if not any(int(r[0],0)==address and int(r[1])==number for line in text.splitlines() if line and not line.startswith('#') for r in [line.split('\t')]):
                 raise AssertionError('missing A7 gate')
         shutil.copytree(stage,out)

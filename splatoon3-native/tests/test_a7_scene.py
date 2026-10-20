@@ -37,6 +37,19 @@ class SceneAdapterTests(unittest.TestCase):
         for mode in ('bad-string','bad-object'):
             with self.subTest(mode=mode):self.assertNotEqual(self.call('ShootingRange',mode).returncode,0)
 
+    def test_direct_prototype_requires_scene_flow_and_verified_native_helpers(self):
+        for target,mode in [(None,'direct-no-flow'),('LobbyLocal','direct-invalid'),('LobbyLocal','direct-no-flow'),
+                            ('ShootingRange','direct-helper'),('LobbyLocal','direct-helper')]:
+            with self.subTest(target=target,mode=mode):self.assertNotEqual(self.call(target,mode).returncode,0)
+
+    def test_flow_trace_preserves_memory_registers_and_deduplicates(self):
+        result=self.call('trace','flow');self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+        self.assertEqual(result.stderr.count('A7_FLOW kind='),4)
+
+    def test_flow_trace_requires_valid_flag_and_gates(self):
+        for mode in ('flow-missing','flow-invalid'):
+            with self.subTest(mode=mode):self.assertNotEqual(self.call('trace',mode).returncode,0)
+
     def test_network_tracing_preserves_native_arguments_and_registers(self):
         result=self.call('trace','network');self.assertEqual(result.returncode,0,result.stdout+result.stderr)
         self.assertIn('kind=create',result.stderr);self.assertIn('kind=join',result.stderr)
