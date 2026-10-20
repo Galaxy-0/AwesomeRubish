@@ -9,7 +9,7 @@ subs = ["ink_saver_main", "ink_saver_main", "ink_saver_main"]
 
 [loadout.clothes]
 main = "run_speed_up"
-subs = ["swim_speed_up", "swim_speed_up", "swim_speed_up"]
+subs = ["ink_saver_main", "ink_saver_main", "ink_saver_main"]
 
 [loadout.shoes]
 main = "ink_recovery_up"
