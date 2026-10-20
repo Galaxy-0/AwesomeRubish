@@ -81,5 +81,16 @@ class RankingTests(unittest.TestCase):
                 self.assertCountEqual(selected,scenarios())
         with self.assertRaisesRegex(ValueError,'one or two'):main(workers=3)
 
+    def test_native_input_attempts_are_edges_and_full_hold_candidates(self):
+        import numpy as np
+        from .ranking_input_audit import attempts
+        actions=np.zeros((50,2,13))
+        actions[:21,0,7]=1;actions[21,0,1]=1
+        actions[:20,1,7]=1;actions[20,1,1]=1  # adjacent non-full counterexample
+        actions[2:4,0,9]=1;actions[25,0,10]=1
+        actions[30:34,0,8]=1;actions[31:33,0,11]=1
+        self.assertEqual(attempts(actions),dict(R_press=1,R_release=1,RS_press=1,ZL_B_edge=1,
+                                               full_forward_release_candidate=1))
+
 
 if __name__=='__main__':unittest.main()

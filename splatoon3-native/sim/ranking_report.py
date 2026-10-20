@@ -136,6 +136,26 @@ def collect(out):
     return plan,source,by_pair,evidence,seconds,group_count
 
 
+def immutable_inputs(plan):
+    """Check assets against manifests created BEFORE this experiment."""
+    original=ROOT/'work/sim/comparison/summary.json'
+    prior=json.loads(original.read_text())
+    assets={p:h for p,h in prior['code_and_map_sources'].items() if p.startswith('work/arena/maps/')}
+    if len(assets)!=9:raise ValueError('historical three-map asset manifest incomplete')
+    parameters=ROOT/'work/sim/parameters.json'
+    for row in json.loads(parameters.read_text())['sources']:
+        assets[str(Path(row['path']).relative_to(ROOT))]=row['sha256']
+    for path,digest in assets.items():
+        if sha256(ROOT/path)!=digest:raise ValueError('static game asset changed: '+path)
+    from .ranking import core_hashes
+    if core_hashes()!=plan['sim_source_sha256']:raise ValueError('current core differs from executed experiment')
+    paths=dict(motion=ROOT/'work/sim/fidelity/motion.json',weapon=ROOT/'work/sim/fidelity/weapon.json',
+               advanced=ROOT/'work/sim/advanced/model.json')
+    if {k:sha256(p) for k,p in paths.items()}!=plan['model_sha256']:raise ValueError('current model drift')
+    return dict(historical_map_manifest_sha256=sha256(original),parameter_manifest_sha256=sha256(parameters),
+                verified_assets=assets,live_core_and_models_match=True)
+
+
 def render(report):
     lines=['\n## 第三阶段最终有效性检验：策略排名\n',
         '所有对阵使用同一冻结模型，三图、两出生侧、六组起点，每对阵36局，共216局；每局10800帧。'
@@ -151,8 +171,8 @@ def render(report):
     rank=report['ranking'];lines.extend(['',
         '¹强度=胜率+半数平局率；Δ及主方向指标使用原生地图/出生侧频数重加权。胜负计数列为均衡三图双侧原始计数，均衡方向另列。R1–R4原生每图仅一个出生侧，不能把原生版本变化和轮间换侧完全分离。',
         f"匹配原生地图/侧后，六条实测对阵边方向一致 **{rank['agree_edges']}/6**；逐地图 **{rank['agree_map_edges']}/18**。均衡全部侧的对阵方向一致{rank['agree_edges_balanced']}/6。",
-        f"同一bravo-v1对手下，alpha v1/v2/v3的原生强度为{rank['common_opponent']['native']}，模拟为{rank['common_opponent']['simulated']}；Kendall tau-b = **{rank['common_opponent']['kendall']['tau_b']}**。",
-        f"共同对手tau采用原生地图/侧频数匹配；均衡全部侧的模拟强度另为{rank['common_opponent']['simulated_balanced']}，对应tau-b={rank['common_opponent']['kendall_balanced']['tau_b']}。",
+        f"同一bravo-v1对手下，alpha v1/v2/v3的原生强度为{[round(v,4) for v in rank['common_opponent']['native']]}，模拟为{[round(v,4) for v in rank['common_opponent']['simulated']]}；Kendall tau-b = **{round(rank['common_opponent']['kendall']['tau_b'],4) if rank['common_opponent']['kendall']['tau_b'] is not None else '未定义'}**。",
+        f"共同对手tau采用原生地图/侧频数匹配；均衡全部侧的模拟强度另为{[round(v,4) for v in rank['common_opponent']['simulated_balanced']]}，对应tau-b={round(rank['common_opponent']['kendall_balanced']['tau_b'],4) if rank['common_opponent']['kendall_balanced']['tau_b'] is not None else '未定义'}。",
         'A5、R0和后续T1属于三个断开的对阵图；不为它们编造统一全局排名。tau只比较有共同对手的三版alpha；原生v1/v2同为1/3，保留并列。'
         'R1–R4各仅BO3，原生胜率本身不确定，不能把点估计方向或tau当严格强弱证明。',
         '', '| 对阵 | 原生平均占地% A/B | 模拟平均网格% A/B¹ | Δ占地pp A/B | 原生HUD敌倒/局 A/B | 模拟敌倒/局 A/B¹ |',
@@ -164,12 +184,13 @@ def render(report):
     lines.extend(['',
         '¹模拟均值按原生地图/侧频数加权。网格分母是A3导航可潜节点，原生结算分母/涂墨传播仍不同，因此Δ是诊断差，不是占地等价误差验收。'
         '模拟“敌倒”统计对手全部死亡，与原生观察者HUD口径靠近；原生没有最后一击归属，模拟归属击倒另外保存在JSON，不能混作同一实测指标。',
-        '', '| 对阵/图 | 原生A胜:B胜 | 模拟均衡A胜:B胜（平） | 匹配侧后的占地差值(A-B)误差pp |',
-        '| --- | ---: | ---: | ---: |'])
+        '', '图1=Yunohana（温泉峡谷），图2=District00，图3=Yagara。',
+        '', '| 对阵/图 | 原生A胜:B胜 | 模拟均衡A胜:B胜（平） | 匹配侧A强度% | 匹配侧占地差值(A-B)误差pp |',
+        '| --- | ---: | ---: | ---: | ---: |'])
     for label,row in report['pairs'].items():
         for m in row['by_map']:
             n,s=m['native'],m['simulated']
-            lines.append(f"| {label} / {m['stage']} | {n['wins'][0]}:{n['wins'][1]} | {wl(s)} | {m['margin_error_pp']:+.3f} |")
+            lines.append(f"| {label} / {m['stage']} | {n['wins'][0]}:{n['wins'][1]} | {wl(s)} | {100*m['simulated_native_strata_weighted']['strength'][0]:.2f} | {m['margin_error_pp']:+.3f} |")
     lines.extend(['',
         report['conclusion'],
         '', '| 对阵 | roll / surge / dash / bomb / zip事件（216局中的该对阵） | 未支持配装（每局初始化计数合计） |',
@@ -179,6 +200,14 @@ def render(report):
         used=' / '.join(str(counts.get(k,0)) for k in ('squid_roll','squid_surge','dash','burst_bomb_throw','zip_activate_simplified'))
         gear=', '.join(f"{k.removeprefix('gear:')}:{v}" for k,v in sorted(row['unsupported'].items()) if k.startswith('gear:')) or '无'
         lines.append(f'| {label} | {used} | {gear} |')
+    audit=report['native_input_audit']['pairs']
+    attempted={key:sum(row['attempts'].get(key,0) for row in audit.values())
+               for key in ('R_press','R_release','RS_press','ZL_B_edge','full_forward_release_candidate')}
+    lines.extend(['',f"另审计全部{sum(row['games'] for row in audit.values())}局原生输入：R按下/松开"
+                  f"{attempted['R_press']}/{attempted['R_release']}，RS按下{attempted['RS_press']}，"
+                  f"ZL+B边沿{attempted['ZL_B_edge']}，≥21帧ZR后前推松刀候选{attempted['full_forward_release_candidate']}。"
+                  '这些是输入尝试计数，不能把ZL+B直接当roll/surge启动。R1/R2各一次ZL+B，其余为零。',
+                  '本矩阵对高级动作的覆盖很低；高级实现依靠A6夹具校准重算，策略排名结果不能作为它们的独立验收。'])
     lines.extend(['',
         '该实验检验当前简化模型的策略外部有效性，没有按胜者反向校准。出生发射/重生过程、原生墨图与可涂分母、配装曲线和攀爬仍存在缺口；'
         '高级机制的A6同房重算不能替代策略胜负验证。详细逐图/实测出生侧/固定起点对照、机制使用与unsupported计数见JSON。',
@@ -190,7 +219,13 @@ def render(report):
 
 
 def main(out=WORK):
+    out=Path(out).resolve()
+    if ROOT/'work' not in out.parents:raise ValueError('raw ranking reports must stay under work/')
     plan,source,games,evidence,seconds,groups=collect(out)
+    from .ranking_input_audit import main as input_audit
+    audit=input_audit(out,emit=False)
+    if any(v['missing'] or v['games']!=len(source['references'][k]['matches']) for k,v in audit['pairs'].items()):
+        raise ValueError('native input coverage audit is incomplete')
     pairs={key:dict(policies=PAIRS[key],**compare_pair(source['references'][key]['matches'],games[key])) for key in PAIRS}
     common_keys=('R1','R2','R3')
     x=[pairs[k]['native']['strength'][0] for k in common_keys]
@@ -206,9 +241,12 @@ def main(out=WORK):
                 if ranking['agree_edges']<6 else
                 '六个观察到的对阵方向一致；BO3样本量、未验证初值分布及占地/机制残差仍不足以签收原生等价。')
     report=dict(schema='sim.ranking.comparison.v1',pairs=pairs,ranking=ranking,
+                report_source_sha256=sha256(__file__),
                 sources_sha256=sha256(out/'sources.json'),plan_sha256=sha256(out/'plan.json'),
                 group_results_sha256=evidence,groups=groups,group_wall_seconds=seconds,
                 aggregate_environment_fps=sum(len(g)*plan['frames'] for g in games.values())/seconds,
+                native_input_audit=audit,native_input_audit_sha256=sha256(out/'native-input-audit.json'),
+                immutable_inputs=immutable_inputs(plan),
                 conclusion=conclusion)
     (out/'comparison.json').write_text(json.dumps(report,indent=2)+'\n')
     section=render(report)

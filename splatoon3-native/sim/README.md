@@ -81,8 +81,9 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 输入缺口报错，不偷偷填中立。A1/A2较早的原件没有完整动作，报告明确单列为
 按已签收夹具脚本重建；A2调参锚点不作为独立验证。
 
-当前结果见 [COMPARISON.md](COMPARISON.md)。短时域是主指标，长轨迹与最终占地
-为次要诊断，**未通过原生一致性验收**。实机校准及后续操作清单在 `notes/PROGRESS.md`。
+当前结果见 [COMPARISON.md](COMPARISON.md)。第三阶段以闭环策略排名为关键有效性检验，
+短时域用于定位机制误差，整局开环为次要诊断；**未通过原生一致性验收**。
+实机校准及后续操作清单在 `notes/PROGRESS.md`。
 
 ## 第二阶段保真度
 
@@ -119,6 +120,7 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 .venv/bin/python -m sim.advanced
 .venv/bin/python -m sim.advanced_report
 .venv/bin/python -m sim.ranking
+.venv/bin/python -m sim.ranking_input_audit
 .venv/bin/python -m sim.ranking_report
 .venv/bin/python -m unittest sim.test_advanced sim.test_ranking sim.test_calibration -v
 ```
@@ -135,6 +137,8 @@ A5/R0历史实现无修改，后来新增stamper文件不被它们导入。
 每组绑定核心、模型、策略SHA；恢复时校验原计划，最终报告拒绝缺局/重复局/混模型。
 原生不是完整全互打，故报告六条实测边方向、逐图差异及固定bravo-v1对手下alpha三版的tau-b，
 不编造跨A5/R0/T1的统一全局排名。敏感性场次不当原生独立随机样本。
+原生输入审计按真实逐present输入计R/RS、ZL+B边沿及前推满蓄松刀候选，
+不能把按键计数当高级动作的原生启动证明。最终报告同时列模拟高级触发频数。
 
 单局可用`sim.run ... --advanced-model work/sim/advanced/model.json --swap`启用高级模型与换侧。
 详见[COMPARISON.md](COMPARISON.md)。待实机项目已编入[校准清单与脚本](calibration/README.md)，
