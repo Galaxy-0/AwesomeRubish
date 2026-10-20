@@ -59,6 +59,12 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 .venv/bin/python -m sim.run arena/policies/alpha arena/policies/bravo --frames 60 --out work/sim/compat-t1
 ```
 
+本轮模型仍显式加载，不自动覆盖旧基线。可用 `sim.run` 的
+`--motion-model`、`--weapon-model`、`--advanced-model`、`--opening-model`、
+`--paint-model` 加载 `work/sim/window-20261021/models-v2/` 及既有武器/高级模型。
+单局兼容入口默认使用每帧新鲜模拟观测；带通用采样时钟的固定排名计划见
+`python -m sim.calibration.ranks --help`，不可混同两个入口的排名结果。
+
 `sim.interfaces.ParallelEnv` 提供字典式 reset/step 与双端 reward/termination；
 `BatchSimulator` 提供批量输入形状，复用只读地图/参数，每个环境有独立墨图。
 `BatchSimulator` 保留串行兼容接口；`sim.batch.VectorBatchSimulator` 向量化同图多局

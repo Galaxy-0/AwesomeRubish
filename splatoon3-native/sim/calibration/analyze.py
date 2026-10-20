@@ -71,6 +71,23 @@ def opening_comparison(base):
     return reports
 
 
+def steered_opening_comparison(base):
+    # Forward .85 on map3 role1 was excluded from steering coefficient fit.
+    trace=load(base/'opening/p0-opening-map3');reports=[]
+    for name in ('before','after'):
+        env=Simulator(3,terrain=Terrain.load(3),motion_model=MotionModel.load(model_path(base,'motion') if name=='after' else ROOT/'work/sim/fidelity/motion.json'),
+            opening_model=OpeningModel.load(model_path(base,'opening')) if name=='after' else None)
+        errors=[];early=[]
+        for f in range(1,241):
+            env.step(action_dict(trace.actions[f-1]),observe=False);row=trace.states[f,1]
+            if not np.isfinite(row[0]):continue
+            error=float(np.linalg.norm(env.players[1].position-row[:3]));errors.append(error)
+            if f<=88:early.append(error)
+        reports.append(dict(model=name,position=stats(errors),precontact=stats(early),
+            scope='Map3 role1 forward.85 first180frames then neutral60; steering fit used only maps1/2. Postcontact steering/terrain interaction unvalidated by neutral opening repeats.'))
+    return reports
+
+
 def texture_summary(directory):
     from PIL import Image
     directory=Path(directory).resolve()
@@ -243,7 +260,7 @@ def main(base,models='models'):
     MODEL_SUBDIR=models
     base=base.resolve();report=dict(schema='sim.native.p0.analysis.v1',models=models,
         analysis_code_sha256=sha256(Path(__file__)),model_sha256={p.name:sha256(p) for p in (base/models).glob('*.json')},
-        opening=opening_comparison(base),paint=[],motion=[],combat=[],scans=[],respawn=[])
+        opening=opening_comparison(base),steered_opening=steered_opening_comparison(base),paint=[],motion=[],combat=[],scans=[],respawn=[])
     for directory in sorted(base.glob('paint*/*')):
         if not (directory/'result.json').exists():continue
         result=json.loads((directory/'result.json').read_text())
