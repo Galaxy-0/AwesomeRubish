@@ -27,6 +27,7 @@ from arena.statistics import tournament_statistics,meets_a5_threshold
 from arena.schedule import schedule,overlap_windows
 from arena.scoring import compare_scores,SCORING_RULE
 from arena.checkpoint import load_resume,relative,sha256
+from arena.native_runtime import env_options,runtime_files
 
 _STOP=None
 SETTLEMENT_MAX_FRAMES=30*60
@@ -96,7 +97,12 @@ def abort_on_cancel(env,stop,finished,shared_slots=None,slot_errors=None,slots_r
         if shared_slots is not None and configured is not session:
             configured=session
             try:
-                link_load_slots(session,shared_slots)
+                local=session.out/'load-slots'
+                reused=getattr(session,'pending_repeat',False) or getattr(session,'generation',0)>0
+                if reused:
+                    if any(not (local/f'slot-{n}').is_symlink() or (local/f'slot-{n}').resolve()!=(Path(shared_slots)/f'slot-{n}').resolve() for n in range(2)):
+                        raise RuntimeError('reused room has wrong shared loader slots')
+                else:link_load_slots(session,shared_slots)
                 if slots_ready:slots_ready.set()
             except BaseException as error:
                 if slot_errors is not None:slot_errors.append(repr(error))
@@ -127,7 +133,9 @@ def run_match(task):
     try:
         if _STOP is not None and _STOP.is_set():raise InterruptedError('tournament cancelled before startup')
         env=NativeParallelEnv(players=2,mode=0,stage_id=task['stage'],weapons=[8000,8000],loadouts=[s.loadout for s in roles],
-                              frame_skip=math.gcd(*(s.step_frames for s in roles)),reward_fn=None,timeout=task['timeout'],step_timeout=150)
+                              frame_skip=math.gcd(*(s.step_frames for s in roles)),reward_fn=None,timeout=task['timeout'],step_timeout=150,
+                              **env_options(task.get('native_runtime')))
+        result['native_runtime']=task.get('native_runtime')
         cancel_thread=threading.Thread(target=abort_on_cancel,args=(env,worker_stop,finished,task.get('shared_load_slots'),slot_errors,slots_ready),daemon=True);cancel_thread.start()
         _,initial=env.reset(seed=137+task['round']);result['session']=str(env.session.out)
         if slot_errors or not slots_ready.is_set():raise RuntimeError('shared loader slots were not ready: '+repr(slot_errors))
@@ -225,7 +233,7 @@ def concurrency_window(matches):
                 host_pids=pids,start_wall=start,end_wall=end,overlap_seconds=end-start)
 
 
-def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early_rate_check=False,resume=None):
+def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early_rate_check=False,resume=None,native_runtime=None):
     if type(games) is not int or games<2 or games%2:raise ValueError('an even number of games is required for swapped pairs')
     if os.environ.get('DM_TEST_SPECIAL'):
         raise ValueError('DM_TEST_SPECIAL is forbidden in arena/T1 matches')
@@ -252,13 +260,14 @@ def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early
         result['resumed_from']=dict(checkpoint=relative(resume),sha256=sha256(resume),valid_rounds=sorted(valid_rounds),
                                     prior_elapsed_wall_seconds=prior.get('elapsed_wall_seconds',0))
     runtime=[ROOT/'upstream/dm/host/dmhost']+list((ROOT/'arena').rglob('*.py'))+list((ROOT/'rl').glob('*.py'))
+    runtime+=runtime_files(native_runtime)
     runtime += [ROOT/f'work/arena/maps/{name}/{filename}' for name in ('Yunohana','District00','Yagara') for filename in ('navigation.json','sight.npz')]
     frozen={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in runtime}
     (out/'runtime-sha256.json').write_text(json.dumps(frozen,indent=2)+'\n')
     context=multiprocessing.get_context('spawn');stop=context.Event()
     tasks=[dict(round=n,stage=(n//2)%3+1,roles=[0,1] if n%2==0 else [1,0],policy_paths=[str(s.root) for s in specs],
                 attempt=prior.get('next_attempt_by_round',{}).get(str(n),0),
-                timeout=timeout,shared_load_slots=str(shared_slots),proficiency_by_policy=profiles) for n in range(games) if n not in valid_rounds]
+                timeout=timeout,shared_load_slots=str(shared_slots),proficiency_by_policy=profiles,native_runtime=native_runtime) for n in range(games) if n not in valid_rounds]
     def save(matches,reason):
         result['matches']=list(matches);result['stop_reason']=reason
         result['statistics']=tournament_statistics(matches)

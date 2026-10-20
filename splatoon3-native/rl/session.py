@@ -110,6 +110,9 @@ class Session:
         if self.loadouts is None or self.loadouts[player] is None:return {}
         return {'DM_GEAR':self.loadouts[player]}
 
+    def host_command(self):
+        return [str(ROOT/'upstream/dm/host/dmhost'),str(self.patched)]
+
     def spawn(self, player):
         directory=self.out/f'player-{player}';directory.mkdir()
         for name in ('save','temp'):(directory/name).mkdir()
@@ -125,7 +128,7 @@ class Session:
             env['DM_PROBE']+=',main:3f71a6c@x19+c10,main:3f6c6bc,main:3f6cdd8'
         (directory/'input.json').write_text(json.dumps({k:v for k,v in env.items() if k.startswith('DM_')},indent=2)+'\n')
         log=(directory/'host.log').open('wb');self.streams.append(log)
-        process=subprocess.Popen([str(ROOT/'upstream/dm/host/dmhost'),str(self.patched)],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
+        process=subprocess.Popen(self.host_command(),cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
         self.hosts.append((player,process,directory))
         self.fifos[player]=os.fdopen(os.open(directory/'controller.fifo',os.O_RDWR|os.O_NONBLOCK),'w',buffering=1)
 

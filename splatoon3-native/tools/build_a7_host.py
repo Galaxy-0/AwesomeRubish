@@ -33,7 +33,7 @@ def main():
             subprocess.run(command,cwd=HOST,stdout=log,stderr=subprocess.STDOUT,check=True)
     finally:
         if sha(DEFAULT)!=before:raise AssertionError('default dmhost changed')
-    sources=[HOST/'hle_spl3_scene.c',HOST/'main.c',HOST/'dm.h',ROOT/'upstream/dm/tools/patch_nso.py']
+    sources=[HOST/'hle_spl3_scene.c',HOST/'hle_rl.c',HOST/'hle_os.c',HOST/'hle.h',HOST/'main.c',HOST/'dm.h',ROOT/'upstream/dm/tools/patch_nso.py']
     record=dict(schema='arena.a7.host-build.v1',output=str(out.relative_to(ROOT)),output_sha256=sha(out),
                 default_sha256=before,default_unchanged=True,command=command,
                 source_sha256={str(path.relative_to(ROOT)):sha(path) for path in sources})

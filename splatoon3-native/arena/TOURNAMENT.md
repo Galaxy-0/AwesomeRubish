@@ -148,3 +148,19 @@ high-ground以3–0获胜；三局均在额外480present结算后到达双方Win
 四房实际原生控制窗口重叠239.55秒、8个不同宿主PID；全部自有宿主已退出。
 数值与证据哈希索引见`arena/results/t1-entry-smoke-20261020.json`。
 这次证明入口和3＋1并发可用；五项冒烟不替代默认13项正式熟练度表，BO3不替代A5统计签收。
+
+A7 原生开局为显式实验选项，默认入口仍使用已接受的菜单流程。先构建独立宿主和模块；不要覆盖默认dmhost或work/build/patched_v720896：
+
+```sh
+.venv/bin/python tools/build_a7_host.py --out work/a7/dmhost-native
+.venv/bin/python tools/prepare_a7.py --out work/a7/patched-native
+.venv/bin/python tests/t1_round.py --policy-a arena/policies/rush --policy-b arena/policies/high-ground --round 0 --out work/arena/t1-native-smoke --native-host work/a7/dmhost-native --native-patched work/a7/patched-native
+.venv/bin/python tests/test_a5.py --games 4 --parallel 1 --native-host work/a7/dmhost-native --native-patched work/a7/patched-native
+.venv/bin/python tests/proficiency.py --policy arena/policies/rush --out work/arena/rush-native-card --repeats 1 --native-host work/a7/dmhost-native --native-patched work/a7/patched-native
+```
+
+两个native参数必须一起提供；宿主可执行文件、构建源哈希、原生观察门均校验后才开局。当前适配层只开放两人占地与三张擂台地图。阵营固定player_0/1为0/1，轮次换侧继续由原有roles映射策略，outcome a/b口径不变。没有游戏原生RNG种子控制；Gym seed仅动作空间种子。
+
+复用池由协调进程持有，完整双方Winners且有效比分后才可保留。下一局换图仍经游戏场景、Create/Find/Join、私房设置发布和MatchFix流程。装备/配装变化、未到Winners的训练夹具或取消会关闭原进程再建房；不在旧进程里冒充热更新装备。A5同一worker的连续任务可复用；当前t1_round CLI一轮退出会回收三个worker及其宿主，不声称跨CLI命令保存房间。熟练度夹具通常提前结束，因此使用统一原生开局但关闭未结算房间。
+
+以上入口仍在A7原生实机回归中。已完成首局Winners与单房旧流程耗时对照，但同策略对照胜者不同，不作为同输入比分回归通过；后续接受状态以PROGRESS及arena/results中的证据为准。离线入口：tests/test_a7_scene.py、tests/test_a7_start.py。

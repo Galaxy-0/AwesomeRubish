@@ -1,0 +1,245 @@
+{
+  "schema": "arena.a7.route-comparison.v1",
+  "full_a7_passed": false,
+  "score_regression_passed": false,
+  "parameters": {
+    "stage_id": 2,
+    "mode": 0,
+    "weapons": [
+      8000,
+      8000
+    ],
+    "teams": [
+      0,
+      1
+    ],
+    "policies": [
+      "rush",
+      "high-ground"
+    ],
+    "source_hashes": [
+      "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+      "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+    ],
+    "clock": "fixed60",
+    "step_frames": [
+      12,
+      12
+    ]
+  },
+  "routes": {
+    "menu": {
+      "passed": true,
+      "phase_wall_seconds": {
+        "boot": 88.12084984779358,
+        "room": 206.09933304786682,
+        "loading": 40.33810806274414,
+        "controlled": 351.91734790802,
+        "settlement": 9.237722158432007,
+        "cleanup": 0.07517814636230469
+      },
+      "wall_seconds": 695.7885391712189,
+      "controlled_fps": 31.37100249711334,
+      "games_per_hour_single_room": 5.173985769136269,
+      "host_sha256": "aefa76e19ca96c412fb1f30d28af1434907945af46003bc5eaa50a0bff8ca7c0",
+      "gpu_utilization_percent_by_phase": {
+        "boot": {
+          "samples": 44,
+          "mean": 50.15909090909091,
+          "median": 53.0,
+          "maximum": 91
+        },
+        "room": {
+          "samples": 101,
+          "mean": 77.31683168316832,
+          "median": 78,
+          "maximum": 86
+        },
+        "loading": {
+          "samples": 19,
+          "mean": 78.52631578947368,
+          "median": 78,
+          "maximum": 89
+        },
+        "controlled": {
+          "samples": 158,
+          "mean": 81.62658227848101,
+          "median": 81.0,
+          "maximum": 85
+        },
+        "settlement": {
+          "samples": 4,
+          "mean": 80.75,
+          "median": 81.0,
+          "maximum": 81
+        },
+        "cleanup": {
+          "samples": 0,
+          "mean": null,
+          "median": null,
+          "maximum": null
+        }
+      },
+      "sessions": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261020-125532-937664"
+      ],
+      "score_by_role": [
+        0.400000006,
+        2.0
+      ],
+      "outcome": "b",
+      "native_winners": true,
+      "frames": 11520,
+      "settlement_frames": 480,
+      "score_max_difference_pp": 0.0,
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "evidence": [
+        {
+          "path": "work/a7/baseline-20261020-125532-900216/result.json",
+          "sha256": "0dcab1da856ab042d6ca52d3c472a176386341bcf69ca9f4f9007d66b9558d87"
+        },
+        {
+          "path": "work/a7/baseline-20261020-125532-900216/match/result.json",
+          "sha256": "e1debffa6f670d5060124bf7e47104c661b5c436374456320b3304ca6d2538aa"
+        },
+        {
+          "path": "work/a7/baseline-20261020-125532-900216/match/inputs-per-present.jsonl",
+          "sha256": "3ea116d163acf366f655561224e6ff9dab10807a967b2c4207e51ddd1ebb6677"
+        },
+        {
+          "path": "work/a7/baseline-20261020-125532-900216/match/native-barriers.jsonl",
+          "sha256": "9638c834ffc4081091442bcc1147e90426e2f871d7ef38cf304825187cd087f8"
+        }
+      ]
+    },
+    "native": {
+      "passed": true,
+      "phase_wall_seconds": {
+        "boot": 6.9427478313446045,
+        "room": 12.869801998138428,
+        "loading": 16.813971996307373,
+        "controlled": 329.12711119651794,
+        "settlement": 9.476420879364014,
+        "cleanup": 0.048774003982543945
+      },
+      "wall_seconds": 375.2788279056549,
+      "controlled_fps": 33.54327135149965,
+      "games_per_hour_single_room": 9.59286730906397,
+      "host_sha256": "aefa76e19ca96c412fb1f30d28af1434907945af46003bc5eaa50a0bff8ca7c0",
+      "gpu_utilization_percent_by_phase": {
+        "boot": {
+          "samples": 4,
+          "mean": 45.75,
+          "median": 45.5,
+          "maximum": 92
+        },
+        "room": {
+          "samples": 6,
+          "mean": 76,
+          "median": 79.0,
+          "maximum": 86
+        },
+        "loading": {
+          "samples": 8,
+          "mean": 82.25,
+          "median": 83.5,
+          "maximum": 89
+        },
+        "controlled": {
+          "samples": 157,
+          "mean": 83.4140127388535,
+          "median": 84,
+          "maximum": 85
+        },
+        "settlement": {
+          "samples": 4,
+          "mean": 82.25,
+          "median": 83.0,
+          "maximum": 83
+        },
+        "cleanup": {
+          "samples": 0,
+          "mean": null,
+          "median": null,
+          "maximum": null
+        }
+      },
+      "sessions": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261020-124817-947148"
+      ],
+      "score_by_role": [
+        1.60000002,
+        1.20000005
+      ],
+      "outcome": "a",
+      "native_winners": true,
+      "frames": 11520,
+      "settlement_frames": 480,
+      "score_max_difference_pp": 0.0,
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "evidence": [
+        {
+          "path": "work/a7/baseline-20261020-124817-908215/result.json",
+          "sha256": "616107abc83d99da12ff0582e630d2e480f7bc7c9c9b1978df959f135cba32ca"
+        },
+        {
+          "path": "work/a7/baseline-20261020-124817-908215/match/result.json",
+          "sha256": "ad1aa86b495339ebae0dfbcfb58d5378da3fe417ebafa38d101603b9b9bec3de"
+        },
+        {
+          "path": "work/a7/baseline-20261020-124817-908215/match/inputs-per-present.jsonl",
+          "sha256": "f868e471a328a068e6fb9f1ef96e61f8eecb24900f1fc521172ad49bd1ec523b"
+        },
+        {
+          "path": "work/a7/baseline-20261020-124817-908215/match/native-barriers.jsonl",
+          "sha256": "b4eaa28a1351fda0b5507b6f93fac34da28eccebf621ba55eea484193c2d1b6d"
+        }
+      ]
+    }
+  },
+  "analysis": {
+    "native_rules_and_referee_unchanged": true,
+    "initial_spawn_positions_match": true,
+    "first_feedback_action_difference_frame": 24,
+    "first_position_difference_frame": 24,
+    "note": "Same policy/configuration is not identical input: native position sampling differs at frame 24 and feedback trajectories diverge. Native RNG seed control not located. Neither score equivalence nor deterministic replay is accepted."
+  },
+  "render_optimization": false,
+  "parallel_benchmark": false,
+  "startup_wall_seconds": {
+    "menu": 334.55829095840454,
+    "native": 36.626521825790405
+  },
+  "total_wall_reduction_percent": 46.064241248833405,
+  "startup_wall_reduction_percent": 89.05227495009407
+}

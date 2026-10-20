@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -22,6 +23,26 @@ class SceneAdapterTests(unittest.TestCase):
         return subprocess.run([str(self.binary),*([mode] if mode else [])],env=env,capture_output=True,text=True)
 
     def test_disabled_has_no_callbacks(self):self.assertEqual(self.call().returncode,0)
+
+    def test_native_match_configuration_validates_maps_rules_teams_and_payload(self):
+        cases=[(b'', 'Vss_District00 0 0 1'),
+               (b'A7v1 Vss_Yagara 0 1 0\n','Vss_Yagara 0 1 0'),
+               (b'A7v1 Vss_Yunohana 4 0 1\n','Vss_Yunohana 4 0 1'),
+               *[(payload,None) for payload in (
+                   b'A7v1 Plaza 0 0 1',b'A7v1 Vss_Yagara 5 0 1',
+                   b'A7v1 Vss_Yagara 0 1 1',b'A7v1 Vss_Yagara 0 -1 1',
+                   b'A7v1 Vss_Yagara 0 0 1 extra',b'A7v1 Vss_Yagara 0 0',
+                   b'A7v1 Vss_Yagara 0 0 1\0junk',b'x'*256)]]
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'control'
+            for payload,expected in cases:
+                with self.subTest(payload=payload):
+                    path.write_bytes(payload)
+                    result=subprocess.run([str(self.binary),'parse',str(path)],capture_output=True,text=True)
+                    if expected is None:self.assertNotEqual(result.returncode,0)
+                    else:
+                        self.assertEqual(result.returncode,0,result.stderr)
+                        self.assertEqual(result.stdout.strip(),expected)
 
     def test_trace_and_one_shot_targets_preserve_native_strings_and_other_registers(self):
         for target in ('trace','ShootingRange','LobbyLocal'):

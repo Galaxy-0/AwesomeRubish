@@ -33,7 +33,7 @@ class NativeParallelEnv(ParallelEnv):
     metadata={'name':'splatoon3_native_v1','render_modes':['rgb_array'],'is_parallelizable':True}
 
     def __init__(self, players=8, frame_skip=15, mode=0, stage_id=1, weapons=None,
-                 timeout=2400, step_timeout=None, patched=None, render_mode=None, state_dump=False, reward_fn=turf_kill_reward, clock_mode='fixed60', loadouts=None, stall_timeout=120):
+                 timeout=2400, step_timeout=None, patched=None, render_mode=None, state_dump=False, reward_fn=turf_kill_reward, clock_mode='fixed60', loadouts=None, stall_timeout=120, session_factory=None, session_releaser=None):
         if players not in (2,8):raise ValueError('players must be 2 or 8')
         if clock_mode not in ('realtime','fixed60'):raise ValueError('clock_mode must be realtime or fixed60')
         if not isinstance(frame_skip,int) or not 1<=frame_skip<=3600:raise ValueError('frame_skip must be 1..3600')
@@ -47,6 +47,7 @@ class NativeParallelEnv(ParallelEnv):
         self.frame_skip=frame_skip;self.step_timeout=step_timeout;self.render_mode=render_mode
         self.session=None;self.clients={};self.observations={};self.episode=0;self.artifacts=[]
         self.process_infos={};self.timed_out=False
+        self.session_factory=session_factory;self.session_releaser=session_releaser
 
     @lru_cache(None)
     def observation_space(self, agent):
@@ -73,12 +74,12 @@ class NativeParallelEnv(ParallelEnv):
     def reset(self, seed=None, options=None):
         if self.session and self.agents and not self.timed_out:
             raise RuntimeError('all agents must settle or time out before reset; close cancels a match')
-        self.close();self.timed_out=False
+        self.close();self.timed_out=False;self.process_infos={}
         options=options or {}
         if set(options)-{'mode','stage_id','weapons','loadouts'}:raise ValueError('reset options: mode, stage_id, weapons, loadouts only')
         config=self.config|options
         self.episode+=1
-        self.session=Session(**config);self.artifacts.append(self.session.out)
+        self.session=(self.session_factory or Session)(**config);self.artifacts.append(self.session.out)
         try:
             self.session.start()
             for n,agent in enumerate(self.possible_agents):
@@ -161,7 +162,12 @@ class NativeParallelEnv(ParallelEnv):
         for client in self.clients.values():client.close()
         self.clients={};self.agents=[]
         if self.session:
-            session=self.session;self.session=None;session.close()
+            session=self.session;self.session=None
+            if self.session_releaser:
+                try:self.session_releaser(session,self.process_infos)
+                except BaseException:
+                    session.close();raise
+            else:session.close()
 
 
 def parallel_env(**kwargs):return NativeParallelEnv(**kwargs)

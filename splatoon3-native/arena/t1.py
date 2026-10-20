@@ -14,6 +14,7 @@ from .schedule import schedule,overlap_windows
 from .scoring import SCORING_RULE
 from .statistics import tournament_statistics
 from .versions import snapshot_policy,loader_slots
+from .native_runtime import runtime_files
 
 STAGES={1:'Yunohana',2:'District00',3:'Yagara'}
 DEFAULT_SLOTS=ROOT/'work/arena/t1-load-slots'
@@ -48,17 +49,18 @@ def summarize(report):
                 void_attempts=sum(bool(m.get('void')) for m in report['matches']),errors=report['errors'])
 
 
-def runtime_hashes():
+def runtime_hashes(native_runtime=None):
     # Author policy trees intentionally excluded; only the captured revision is
     # used. Adding new policy versions must not invalidate a running round.
     paths=[ROOT/'upstream/dm/host/dmhost']
+    paths+=runtime_files(native_runtime)
     paths+=list((ROOT/'arena').glob('*.py'))+list((ROOT/'arena/lib').glob('*.py'))+list((ROOT/'rl').glob('*.py'))
     paths+=[ROOT/'tests/t1_round.py']
     paths+=[ROOT/f'work/arena/maps/{name}/{filename}' for name in STAGES.values() for filename in ('navigation.json','sight.npz')]
     return {str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 
 
-def run_round(policy_a,policy_b,number,out,timeout=7200,shared_slots=DEFAULT_SLOTS):
+def run_round(policy_a,policy_b,number,out,timeout=7200,shared_slots=DEFAULT_SLOTS,native_runtime=None):
     tasks=fixtures(number)
     if os.environ.get('DM_TEST_SPECIAL'):raise ValueError('DM_TEST_SPECIAL is forbidden in arena/T1 matches')
     if not math.isfinite(timeout) or timeout<=0:raise ValueError('timeout must be positive and finite')
@@ -67,14 +69,14 @@ def run_round(policy_a,policy_b,number,out,timeout=7200,shared_slots=DEFAULT_SLO
     out.mkdir(parents=True,exist_ok=False)
     specs=[snapshot_policy(path,out/'policies'/label) for path,label in ((policy_a,'a'),(policy_b,'b'))]
     if specs[0].name==specs[1].name:raise ValueError('policy names must differ')
-    shared=loader_slots(shared_slots);profiles=report_cards(specs);frozen=runtime_hashes()
+    shared=loader_slots(shared_slots);profiles=report_cards(specs);frozen=runtime_hashes(native_runtime)
     write_json_atomic(out/'runtime-sha256.json',frozen)
     report=dict(schema='arena.t1.round.v1',round=number,passed=False,full_a5_passed=False,
         scoring_rule=SCORING_RULE,games_requested=3,parallel_games=3,global_loader_slots=2,
         policies=[s.name for s in specs],source_hashes=[s.source_sha256 for s in specs],
         policy_snapshots=[str(s.root) for s in specs],policy_sources=[str(Path(p).resolve()) for p in (policy_a,policy_b)],
         shared_load_slots=str(shared),matches=[],errors=[],started_wall=time.time(),artifacts=str(out),
-        proficiency_by_policy=profiles)
+        proficiency_by_policy=profiles,native_runtime=native_runtime)
     context=multiprocessing.get_context('spawn');stop=context.Event()
 
     def save(matches,reason):
@@ -88,7 +90,7 @@ def run_round(policy_a,policy_b,number,out,timeout=7200,shared_slots=DEFAULT_SLO
     try:
         for task in tasks:
             task.update(policy_paths=[str(s.root) for s in specs],timeout=timeout,
-                        shared_load_slots=str(shared),proficiency_by_policy=profiles)
+                        shared_load_slots=str(shared),proficiency_by_policy=profiles,native_runtime=native_runtime)
         with ProcessPoolExecutor(max_workers=3,mp_context=context,initializer=initialize_worker,initargs=(stop,)) as pool:
             def submit(task):
                 return pool.submit(run_match,dict(task,out=str(out/f"game-{task['round']}-attempt-{task['attempt']:03d}")))

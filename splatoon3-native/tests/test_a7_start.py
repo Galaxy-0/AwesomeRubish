@@ -1,0 +1,99 @@
+"""Offline contracts for the coordinator-only native startup adapter."""
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+from unittest.mock import Mock,patch
+from types import SimpleNamespace
+
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
+from rl import NativeParallelEnv
+from rl.native_start import room_ready,write_control,NativeSessionPool,NativeSession
+from arena import native_runtime
+
+
+class NativeStartTests(unittest.TestCase):
+    def test_pair_requires_membership_session_and_native_idle(self):
+        pair=['LDN state=3 node=0 nodes=2 session=abcdef\nA7_NET_ROOT state=34',
+              'LDN state=5 node=1 nodes=2 session=abcdef\nA7_NET_ROOT state=34']
+        self.assertTrue(room_ready(pair))
+        for bad in [pair[:1],[pair[0],pair[1].replace('abcdef','123456')],
+                    [pair[0],pair[1].replace('state=34','state=15')],
+                    [pair[0],pair[1]+'\nLDN state=1 node=-1 nodes=0 session=000000']]:
+            with self.subTest(bad=bad):self.assertFalse(room_ready(bad))
+
+    def test_parameter_writer_replaces_complete_payload_and_rejects_unproven_modes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'go'
+            write_control(path,3);self.assertEqual(path.read_text(),'A7v1 Vss_Yagara 0 0 1\n')
+            write_control(path,1);self.assertEqual(path.read_text(),'A7v1 Vss_Yunohana 0 0 1\n')
+            self.assertEqual(list(Path(directory).iterdir()),[path])
+            for stage,mode in [(0,0),(2,1)]:
+                with self.assertRaises(ValueError):write_control(path,stage,mode)
+
+    def test_environment_releases_after_clients_and_closes_on_releaser_error(self):
+        order=[];session=Mock();session.clock.resume.side_effect=lambda:order.append('resume')
+        client=Mock();client.close.side_effect=lambda:order.append('release-client')
+        infos={'player_0':{'phase':3},'player_1':{'phase':3}}
+        def release(s,i):
+            self.assertIs(s,session);self.assertIs(i,infos);order.append('return-session')
+        env=NativeParallelEnv(players=2,session_releaser=release)
+        env.session=session;env.clients={'player_0':client};env.process_infos=infos
+        env.close();self.assertEqual(order,['resume','release-client','return-session'])
+        session.close.assert_not_called();self.assertIsNone(env.session)
+        env.session=session;env.session_releaser=Mock(side_effect=RuntimeError('failed release'))
+        with self.assertRaisesRegex(RuntimeError,'failed release'):env.close()
+        session.close.assert_called_once()
+
+    def test_pool_only_retains_complete_native_winners(self):
+        with patch('rl.native_start.validate_runtime',return_value=(Path('/host'),Path('/modules'))):
+            pool=NativeSessionPool('/host','/modules')
+        session=Mock();process=Mock();process.poll.return_value=None;session.hosts=[(0,process,None),(1,process,None)]
+        for infos in ({},{'p0':{'phase':3,'score_valid':1}},
+                      {'p0':{'phase':2,'score_valid':1},'p1':{'phase':3,'score_valid':1}},
+                      {'p0':{'phase':3,'score_valid':0},'p1':{'phase':3,'score_valid':1}}):
+            pool.release(session,infos);self.assertIsNone(pool.held)
+        infos={p:{'phase':3,'score_valid':1} for p in ('p0','p1')}
+        pool.release(session,infos);self.assertIs(pool.held,session)
+        pool.close();self.assertIsNone(pool.held)
+
+    def test_pool_reuses_only_compatible_equipment(self):
+        with patch('rl.native_start.validate_runtime',return_value=(Path('/host'),Path('/modules'))):
+            pool=NativeSessionPool('/host','/modules')
+        config=dict(players=2,mode=0,stage_id=2,weapons=[8000,8000],timeout=900)
+        session=Mock();pool.held=session;pool.identity=pool.equipment(config)
+        self.assertIs(pool.acquire(**(config|dict(stage_id=3))),session)
+        self.assertEqual(session.native_stage,3);self.assertTrue(session.pending_repeat)
+        pool.held=session
+        with patch('rl.native_start.NativeSession') as constructor:
+            pool.acquire(**(config|dict(loadouts=[None,None])))
+            constructor.assert_called_once();session.close.assert_called_once()
+
+    def test_status_keeps_native_scene_and_last_match_phase_distinct(self):
+        session=NativeSession.__new__(NativeSession);session.generation=1
+        session.hosts=[(0,Mock(pid=17),None)]
+        session.text=lambda n:'PROBE main+0x3dd9370 #1\nA7_SCENE request=4 destination=LobbyLocal'
+        status=session.status()['players'][0]
+        self.assertEqual(status['scene'],'LobbyLocal');self.assertEqual(status['last_match_phase'],'winners')
+
+    def test_native_opt_in_requires_a_pair_and_never_changes_default_environment(self):
+        self.assertIsNone(native_runtime.from_args(SimpleNamespace(native_host=None,native_patched=None)))
+        self.assertEqual(native_runtime.env_options(None),{})
+        for host,patched in [('/host',None),(None,'/modules')]:
+            with self.assertRaises(ValueError):native_runtime.from_args(SimpleNamespace(native_host=host,native_patched=patched))
+        with patch.object(native_runtime,'validate_runtime',return_value=(Path('/host'),Path('/modules'))):
+            self.assertEqual(native_runtime.from_args(SimpleNamespace(native_host='/host',native_patched='/modules')),
+                             dict(host='/host',patched='/modules'))
+
+    def test_coordinator_pool_is_process_local_and_explicitly_owned(self):
+        native_runtime.close_pools()
+        with patch.object(native_runtime,'NativeSessionPool') as constructor,patch.object(native_runtime,'Finalize'):
+            pool=constructor.return_value;pool.patched=Path('/modules')
+            runtime=dict(host='/host',patched='/modules')
+            first=native_runtime.env_options(runtime);second=native_runtime.env_options(runtime)
+            constructor.assert_called_once();self.assertEqual(first,second)
+            self.assertEqual(first['session_factory'],pool.acquire)
+            native_runtime.close_pools();pool.close.assert_called_once()
+
+
+if __name__=='__main__':unittest.main()

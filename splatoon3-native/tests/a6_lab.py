@@ -16,6 +16,7 @@ from rl.loadout import uniform_loadout,encode_loadout
 from arena.referee_api import RefereeAPI
 from arena.policy import encode_policy
 from atlas import MapAtlas
+from arena.native_runtime import env_options
 from skills import Skills,aim_at,neutral
 
 MANIFEST=ROOT/'work/arena/tournament-20261019-113138-347725/runtime-sha256.json'
@@ -37,7 +38,7 @@ def frozen_check():
     return dict(files=len(frozen),mismatches=bad,active=active)
 
 class Lab:
-    def __init__(self,name,timeout=3600,stage=1,loadouts=None):
+    def __init__(self,name,timeout=3600,stage=1,loadouts=None,native_runtime=None):
         self.out=ROOT/'work/a6'/datetime.datetime.now().strftime(name+'-%Y%m%d-%H%M%S-%f')
         self.out.mkdir(parents=True);self.stream=(self.out/'steps.jsonl').open('w')
         self.result=dict(passed=False,full_a6_passed=False,errors=[],artifacts=str(self.out),cases=[],freeze_before=frozen_check())
@@ -47,7 +48,7 @@ class Lab:
             (self.out/('tested-'+p.name)).write_bytes(p.read_bytes())
         self.loadouts=loadouts or [uniform_loadout() for _ in range(2)]
         self.result['loadouts']=self.loadouts
-        self.env=NativeParallelEnv(players=2,stage_id=stage,weapons=[8000]*2,loadouts=self.loadouts,frame_skip=6,reward_fn=None,timeout=timeout,step_timeout=150,state_dump=True)
+        self.env=NativeParallelEnv(players=2,stage_id=stage,weapons=[8000]*2,loadouts=self.loadouts,frame_skip=6,reward_fn=None,timeout=timeout,step_timeout=150,state_dump=True,**env_options(native_runtime))
         self.stage=stage;self.atlas=MapAtlas.load(stage);self.count=0;self.api=None;self.origins={}
     def start(self):
         _,self.origins=self.env.reset();self.result['session']=str(self.env.session.out)

@@ -6,13 +6,15 @@ from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from arena.runner import tournament
+from arena.native_runtime import add_arguments,from_args
 
 
 def main(args):
-    report=tournament(args.policy_a,args.policy_b,args.games,args.parallel,args.timeout,early_rate_check=args.fallback_three and args.parallel==4,resume=args.resume)
+    native=from_args(args)
+    report=tournament(args.policy_a,args.policy_b,args.games,args.parallel,args.timeout,early_rate_check=args.fallback_three and args.parallel==4,resume=args.resume,native_runtime=native)
     if args.fallback_three and args.parallel==4 and report.get('stop_reason') in ('void_budget_exceeded','four_room_void_rate_above_10_percent'):
         comparison=dict(artifacts=report['artifacts'],statistics=report['statistics'],stop_reason=report['stop_reason'])
-        report=tournament(args.policy_a,args.policy_b,args.games,3,args.timeout,resume=Path(report['artifacts'])/'result.json')
+        report=tournament(args.policy_a,args.policy_b,args.games,3,args.timeout,resume=Path(report['artifacts'])/'result.json',native_runtime=native)
         report['four_room_comparison']=comparison
     report['diagnostic_only']=args.games<70 or args.parallel not in (3,4)
     # A smoke phase may finish normally without signing A5.
@@ -29,4 +31,5 @@ if __name__=='__main__':
     p.add_argument('--parallel',type=int,choices=(1,2,3,4),default=4);p.add_argument('--timeout',type=float,default=7200)
     p.add_argument('--fallback-three',action='store_true',help='Drain excessive four-room voids and resume remaining fixtures in three rooms')
     p.add_argument('--resume',type=Path,help='Preserve completed fixtures from an audited checkpoint')
+    add_arguments(p)
     raise SystemExit(main(p.parse_args()))

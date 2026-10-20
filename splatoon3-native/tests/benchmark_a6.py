@@ -49,7 +49,7 @@ def reset_target(lab,position,distance):
 def main(args):
     spec=PolicySpec.load(args.policy)
     libraries=library_hashes();evaluation=evaluation_hashes()
-    lab=Lab('benchmark-'+args.scenario,args.timeout,loadouts=[spec.loadout,uniform_loadout()])
+    lab=Lab('benchmark-'+args.scenario,args.timeout,loadouts=[spec.loadout,uniform_loadout()],native_runtime=getattr(args,'native_runtime',None))
     lab.result.update(policy=spec.name,policy_root=str(spec.root),policy_source_sha256=spec.source_sha256,
                       policy_step_frames=spec.step_frames,library_sha256=libraries,evaluation_sha256=evaluation)
     try:
