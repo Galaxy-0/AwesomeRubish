@@ -66,7 +66,13 @@ def collect(corpus):
     return {k: np.concatenate(v) if v else np.empty((0, 26)) for k, v in groups.items()}
 
 
-def response(sticks, deadzone, exponent):
+def response(sticks, deadzone, exponent, space='axis'):
+    if space=='radial':
+        sticks=np.asarray(sticks,float)
+        length=np.linalg.norm(sticks,axis=-1,keepdims=True)
+        magnitude=(np.maximum(0.,np.minimum(1.,length)-deadzone)/(1-deadzone))**exponent
+        return sticks/np.maximum(length,1e-12)*magnitude
+    if space!='axis':raise ValueError('unknown response space')
     # Per-axis deadzone, then unit circle. This matches the native diagonal
     # axis behavior observed during A4, without importing native controller code.
     x = np.sign(sticks) * (np.maximum(0., np.abs(sticks)-deadzone)/(1-deadzone))**exponent

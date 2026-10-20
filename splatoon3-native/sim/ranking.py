@@ -55,11 +55,11 @@ def perturb(env, seed):
     return delta
 
 
-def group(pair, specs, plans, paths, out, parameters, terrain, models, frames):
+def group(pair, specs, plans, paths, out, parameters, terrain, models, frames, *, extras=None, clock_period=None):
     started = time.perf_counter()
     batch = VectorBatchSimulator(len(plans), plans[0]['stage'], parameters=parameters, terrain=terrain,
              loadouts=[s.loadout for s in specs], duration_frames=frames,
-             motion_model=models[0], weapon_model=models[1], advanced_model=models[2])
+             motion_model=models[0], weapon_model=models[1], advanced_model=models[2], **(extras or {}))
     actions = [{f'player_{i}':neutral() for i in range(2)} for _ in plans]
     starts = []
     trajectories = [hashlib.sha256() for _ in plans]
@@ -73,6 +73,20 @@ def group(pair, specs, plans, paths, out, parameters, terrain, models, frames):
         from arena.visibility import PolicyProjector
         env.projector = PolicyProjector(env.match_id, stage_id=env.stage_id)
         env._observations = None
+    clocks=[]
+    if clock_period:
+        from .observation_clock import RecordedClock
+        for env in batch.envs:
+            stamps=np.full((frames+1,2),-1,int)
+            for role in (0,1):
+                for f in range(clock_period+1,frames+1):
+                    stamps[f,role]=((f-1)//clock_period)*clock_period
+            clock=RecordedClock(env,stamps);clocks.append(clock)
+            env.truth=clock.truth
+            original=env._weapons
+            def capture(original=original,clock=clock):
+                original();clock.capture()
+            env._weapons=capture;env._observations=None
     cadence = math.gcd(*(s.step_frames for s in specs))
     calls = Counter()
     with ExitStack() as stack:
@@ -83,7 +97,8 @@ def group(pair, specs, plans, paths, out, parameters, terrain, models, frames):
                 for i, (worker, spec) in enumerate(zip(duo, specs)):
                     if env.frame % spec.step_frames == 0:
                         obs = env.typed_observation(i)
-                        actions[j][f'player_{i}'] = worker.act(obs, OwnSpecial(f'player_{i}',env.frame,env.players[i].special))
+                        special=clocks[j].special(i) if clocks else OwnSpecial(f'player_{i}',env.frame,env.players[i].special)
+                        actions[j][f'player_{i}'] = worker.act(obs, special)
                         calls[str(i)] += 1
             count = min(cadence,frames-batch.envs[0].frame)
             batch.step(actions, count, observe=False)
@@ -103,7 +118,7 @@ def group(pair, specs, plans, paths, out, parameters, terrain, models, frames):
                 wall_seconds=elapsed, environment_frames_per_second=frames*len(plans)/elapsed,
                 policy_calls=dict(calls), policy_sha256=[s.source_sha256 for s in specs],
                 model_sha256={k:sha256(p) for k,p in models.paths.items()},
-                sim_source_sha256=core_hashes())
+                sim_source_sha256=core_hashes(),clock_period=clock_period)
 
 
 class Models(list):

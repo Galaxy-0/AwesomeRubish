@@ -109,6 +109,7 @@ class Player:
     special_active: bool = False
     special_age: int = 0
     special_anchor: np.ndarray = field(default_factory=lambda: np.zeros(3))
+    opening_delta: np.ndarray = field(default_factory=lambda: np.zeros(2))
 
 
 @dataclass
@@ -160,7 +161,7 @@ class Simulator:
 
     def __init__(self, stage_id=1, *, parameters=None, terrain=None, assumptions=None,
                  loadouts=None, duration_frames=10800, swap=False, motion_model=None, weapon_model=None,
-                 advanced_model=None):
+                 advanced_model=None,opening_model=None,paint_model=None):
         if stage_id not in (1, 2, 3) or type(duration_frames) is not int or duration_frames < 1:
             raise ValueError('stage/duration')
         self.stage_id = stage_id
@@ -170,6 +171,8 @@ class Simulator:
         self.motion_model = motion_model
         self.weapon_model = weapon_model
         self.advanced_model = advanced_model
+        self.opening_model = opening_model
+        self.paint_model = paint_model
         self.loadouts = loadouts or [None, None]
         if len(self.loadouts) != 2:
             raise ValueError('two loadouts required')
@@ -192,12 +195,18 @@ class Simulator:
             yaw = math.pi if side == 0 else 0.
             self.players.append(Player(self.terrain.spawn[side].copy(), yaw, yaw,
                                        ap=gear_ap(self.loadouts[team])))
+        if self.opening_model is not None:self.opening_model.initialize(self)
         self.projectiles, self.slashes, self.scheduled = [], [], []
+        self.paint_scheduled=[]
         self.bombs, self.wall_ink = [], {}
         self.damage_queue = []
         self.events = []
         self.unsupported = Counter()
         supported_gear = {'swim_speed_up', 'ink_saver_main', 'quick_super_jump', 'ninja_squid'}
+        if self.motion_model is not None and self.motion_model.data.get('run_speed_up_curve'):
+            supported_gear.add('run_speed_up')
+            if any(p.ap.get('run_speed_up') for p in self.players):
+                self.unsupported['gear:run_speed_up_nonhuman_curve']+=1
         for p in self.players:
             for skill in p.ap:
                 if skill not in supported_gear:
@@ -353,6 +362,7 @@ class Simulator:
         return True
 
     def _finish_player(self, i, action, horizontal=None, position=None, floor_hint=None):
+        if self.opening_model is not None and self.opening_model.advance(self,i,action):return
         p, r = self.players[i], self.rules
         b, sticks = action['buttons'], action['sticks']
         color = self.paint.at(p.position)
@@ -380,6 +390,7 @@ class Simulator:
         else:
             mode = self.motion_model.mode(p.squid, p.submerged, p.grounded, p.charge, p.cooldown)
             multiplier = gear_factor('swim_speed_up', p.ap.get('swim_speed_up', 0)) if mode == 'squid_own' else 1.
+            multiplier *= self.motion_model.gear_multiplier(mode,p.ap)
             p.velocity[[0, 2]], fitted_target = (self.motion_model.advance(p.velocity, sticks, p.yaw, mode, multiplier)
                                                 if horizontal is None else horizontal)
             if color not in (-1, i) and p.grounded:
@@ -457,6 +468,7 @@ class Simulator:
         p.recover_stop = self.params.swing['InkRecoverStop']
         p.cooldown = (self.params.swing['ChargeSwingFrame'] + self.params.swing['ChargeSwingPostDelayFrame']
                       if full else self.rules.light_input_period - 1)
+        if self.paint_model is not None:self.paint_model.release(self,owner,full)
         if full and dash and self.advanced_model is not None:
             self.advanced_model.dash(self, owner)
         prefix = 'Charge' if full else 'Weak'
@@ -537,6 +549,7 @@ class Simulator:
                 p.special = min(1., p.special + area * self.rules.points_per_world_area / self.params.data['weapon_info']['SpecialPoint'])
 
     def _weapons(self):
+        if self.paint_model is not None:self.paint_model.advance(self)
         if self.advanced_model is not None:
             self.advanced_model.weapons(self)
         outstanding = []

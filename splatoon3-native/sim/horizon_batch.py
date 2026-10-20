@@ -15,7 +15,7 @@ from .replay import stats
 from .terrain import Terrain
 
 
-def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out):
+def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out,paint_model=None):
     out = Path(out).resolve()
     if ROOT/'work' not in out.parents:
         raise ValueError('raw horizon output must stay under work/')
@@ -32,7 +32,7 @@ def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out):
             for start in range(0, len(anchors), batch_size):
                 group = anchors[start:start+batch_size]
                 batch = VectorBatchSimulator(len(group), entry['stage'], parameters=parameters, terrain=terrain,
-                    motion_model=model, weapon_model=weapon_model, loadouts=entry.get('loadouts'), duration_frames=trace.frames)
+                    motion_model=model, weapon_model=weapon_model,paint_model=paint_model, loadouts=entry.get('loadouts'), duration_frames=trace.frames)
                 accepted = []
                 for anchor, env in zip(group, batch.envs):
                     try:
@@ -86,6 +86,7 @@ def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out):
             out.with_suffix('.partial.json').write_text(json.dumps(dict(results=results),allow_nan=False)+'\n')
     report=dict(schema='sim.horizon.v2',results=results,model=model.to_dict(),
                 weapon_model=None if weapon_model is None else weapon_model.data,
+                paint_model=None if paint_model is None else paint_model.data,
                 code_sha256_at_start=sources,batch_size=batch_size,
                 protocol='Same causal resets/metrics as scalar horizon; complete combat, not motion-only surrogate.')
     out.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')

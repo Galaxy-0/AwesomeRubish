@@ -1,7 +1,31 @@
-# 待统一执行的原生校准
+# 原生校准清单与 P0 窗口
 
-当前只交付脚本和清单。**原生分支未运行**，没有新增实机通过结论。
-默认入口只读本地声明并显示概要；`--write-plan`只把完整清单写到ignored work/。
+2026-10-21 S1 已进入用户批准的原生窗口。P0 专用入口是 `python -m sim.calibration.p0`，使用 A8 已签收的默认 v4 相机宿主、geometry 模式、每案例新进程，最多三房。默认 `python -m sim.calibration` 仍只读显示146项通用清单；通用全扫描没有运行，不把 P0 收集状态冒充全套通过。
+
+本轮原件、纹理、失败/取消记录、冻结采集源码及派生模型只在 `work/sim/window-20261021/`。`opening` 跳过450帧 warmup，采三图双侧中立/前推；`paint-retry` 采 Yagara 单轻挥、单蓄力与八轻挥到双方 Winners；`probes*` 采 AP0/19/57、局部脚下接触涂地扫描、伤害/重生。完整结果和剩余义务见 [COMPARISON](../COMPARISON.md)。
+
+```sh
+# 必须在用户另行批准的空档内给出绝对截止时间；不要照抄旧时间开启新窗口。
+.venv/bin/python -m sim.calibration.p0 --execute-native --window A7_A8_IDLE --phase opening --parallel 3 --deadline <epoch-seconds> --out work/sim/<new-window>/opening
+# 只取消本批：在该 --out 下创建 STOP，或对本批 Python 驱动发送 SIGINT。
+# 当前案例在有界 STEP 边界关闭自己的房间，排队案例不再入场。
+```
+
+`p0 --phase generic --plan <json>` 接受专用 `p0_paint/p0_motion/p0_scan/p0_combat/p0_bends` 案例。每份 case 显式包含地图、loadout、frame_budget、settings；loadout 原生逐槽读回。settings 可指定 warmup_frames、shared_load_slots、既有单帧 texture_frame 诊断；不改宿主和公共测试文件。resource Monitor 的压力、增量swapout、停帧与 Session 超时保护均保留。纹理是 UV 空间证据，尚未映射世界/计分面积；geometry 的无像素截图记 unavailable，不写黑图假冒画面。
+
+拟合与离线复验：
+
+```sh
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --transitions
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --gear
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --paint
+.venv/bin/python -m sim.calibration.analyze --directory work/sim/window-20261021
+```
+
+这些命令只读已有记录并写 ignored work/，不启动游戏。模型需显式传给模拟器，旧模型/历史结果不会被覆盖。原生 collected 仅表示收集结束；拟合、独立验证与验收分开报告。
+
+下文保留窗口前的通用清单与证据要求；其中 pending 描述以本轮对照报告的逐项状态为准。
 
 ## 反例诊断后的最高优先级（先于下面146项通用扫描）
 

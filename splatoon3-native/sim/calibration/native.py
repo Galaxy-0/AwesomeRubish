@@ -1,11 +1,13 @@
-"""Future-only native collector; imported solely by --execute-native.
+"""Approved-window native collector; imported solely by --execute-native.
 
-No native code is imported at module scope. This file has NOT been run against
-the game. The default command only emits the plan. Failures remain evidence.
+No native code is imported at module scope. P0 uses the accepted default
+fresh-process runtime. The default command only emits the plan. Generic
+146-case sweeps remain unvalidated; failures remain evidence.
 """
 import datetime
 import json
 import math
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -30,6 +32,7 @@ def make_lab(case, directory, timeout):
     from rl import NativeParallelEnv
     from rl.loadout import uniform_loadout
     from atlas import MapAtlas
+    from arena.native_runtime import default_runtime,env_options
 
     class CalibrationLab(Lab):
         def __init__(self):
@@ -38,11 +41,62 @@ def make_lab(case, directory, timeout):
             self.result=dict(passed=False,errors=[],artifacts=str(directory),cases=[],
                              collection_only=True,case=case,surface_confirmation='unknown')
             self.loadouts=[case['loadout'],uniform_loadout()]
+            self.runtime=default_runtime()
+            options=env_options(self.runtime)
+            if options.get('session_releaser') is not None:
+                raise RuntimeError('S1 calibration requires fresh_per_match default runtime')
+            self.result['native_runtime']=self.runtime
+            factory=options['session_factory']
+            def owned_session(**config):
+                session=factory(**config)
+                shared=case.get('settings',{}).get('shared_load_slots')
+                if shared:
+                    from arena.runner import link_load_slots
+                    link_load_slots(session,shared)
+                dump=case.get('settings',{}).get('texture_frame')
+                if dump is not None:
+                    original=session.host_options
+                    def host_options(player):
+                        opts=original(player)
+                        if player==0:
+                            target=directory/'textures';target.mkdir(exist_ok=True)
+                            opts.update(DM_NVN_TEXDUMP=str(dump)+':'+str(target/'target-%d.png'),DM_NVN_SNAPRAW='1')
+                        return opts
+                    session.host_options=host_options
+                return session
+            options['session_factory']=owned_session
             self.result['loadouts']=self.loadouts
             self.env=NativeParallelEnv(players=2,stage_id=case['stage'],weapons=[8000]*2,
-                loadouts=self.loadouts,frame_skip=1,reward_fn=None,timeout=timeout,step_timeout=150,state_dump=True)
+                loadouts=self.loadouts,frame_skip=1,reward_fn=None,timeout=timeout,step_timeout=150,state_dump=True,**options)
             self.stage=case['stage'];self.atlas=MapAtlas.load(case['stage']);self.count=0
             self.api=None;self.origins={};self.budget=0
+
+        def start(self):
+            from rl.loadout import encode_loadout
+            from arena.referee_api import RefereeAPI
+            _,self.origins=self.env.reset()
+            self.result.update(session=str(self.env.session.out),owned_pids=[p.pid for _,p,_ in self.env.session.hosts],origins=self.origins)
+            readbacks=[]
+            for n in (0,1):
+                rows=re.findall(r'SPL3_GEAR piece=(\d+) id=(-?\d+) main=(\d+) subs=(-?\d+),(-?\d+),(-?\d+) count=(\d+) override=(\d+)',self.env.session.text(n))
+                actual={int(row[0]):list(map(int,row[2:6])) for row in rows if row[6:]==('3','1')}
+                expected=list(map(int,encode_loadout(self.loadouts[n]).split(',')))
+                if actual!={p:expected[4*p:4*p+4] for p in range(3)}:raise AssertionError('calibration native gear mismatch')
+                readbacks.append(actual)
+            self.result['loadout_readbacks']=readbacks
+            self.api=RefereeAPI(self.out.name,self.origins,dict.fromkeys(self.env.possible_agents,8000),
+                dict(zip(self.env.possible_agents,(0,1))),ROOT/f"work/arena/maps/{self.atlas.data['name']}/sight.npz",stage_id=self.stage)
+            self.api.update(self.origins)
+            self.stream.write(json.dumps(dict(step=0,label='initial',frames=0,actions=self.actions(),infos=self.origins))+'\n');self.stream.flush()
+            for _ in range(case.get('settings',{}).get('warmup_frames',450)):
+                self.step(self.actions(),'warmup',1)
+            self.save();return self
+
+        def capture(self,label):
+            if not all(o.get('pixels_valid',1) for o in self.env.observations.values()):
+                self.result.setdefault('captures_unavailable',[]).append(dict(label=label,reason='default geometry pixels_valid=0'))
+                return
+            super().capture(label)
 
         def step(self,actions,label,frames=1):
             if self.budget+frames>case['frame_budget']:
@@ -209,11 +263,13 @@ def _execute(plan,out,only,timeout):
         raise RuntimeError('natural special calibration cannot use test-special switches')
     from sim.parameters import sha256
     out.mkdir(parents=True,exist_ok=True)
-    sources=[ROOT/'upstream/dm/host/dmhost',*(ROOT/'sim/calibration').glob('*.py'),
+    from arena.native_runtime import default_runtime,runtime_files
+    runtime=default_runtime()
+    sources=[*runtime_files(runtime),*(ROOT/'sim/calibration').glob('*.py'),
              *(ROOT/'tests').glob('*a6*.py'),*(ROOT/'arena/lib').glob('*.py')]
     sources.extend(p for stage in ('Yunohana','District00','Yagara') for p in
                    (ROOT/f'work/arena/maps/{stage}').iterdir() if p.name in ('human.npz','sight.npz','navigation.json'))
-    binding=dict(plan=plan,expected_game_build_id='28c4287aee36f7499da60f3e68b54c70',
+    binding=dict(plan=plan,native_runtime=runtime,expected_game_build_id='28c4287aee36f7499da60f3e68b54c70',
                  build_id_status='Expected from accepted 11.3.0 A6; audit future native session logs before fitting.',
                  source_sha256={str(p.relative_to(ROOT)):sha256(p) for p in sources})
     manifest=out/'manifest.json';encoded=json.dumps(binding,indent=2)+'\n'

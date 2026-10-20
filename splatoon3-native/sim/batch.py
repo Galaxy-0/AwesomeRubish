@@ -42,6 +42,7 @@ class VectorBatchSimulator(BatchSimulator):
                                   for _, _, _, p in active])
                 multipliers = np.array([gear_factor('swim_speed_up', p.ap.get('swim_speed_up', 0)) if MODES[m] == 'squid_own' else 1.
                                         for m, (_, _, _, p) in zip(modes, active)])
+                multipliers *= np.array([self.model.gear_multiplier(MODES[m],p.ap) for m,(_,_,_,p) in zip(modes,active)])
                 horizontal, targets = self.model.batch_advance(velocity, sticks, yaws, modes, multipliers)
                 positions = np.array([p.position for _, _, _, p in active])
                 deltas = np.array([p.velocity for _, _, _, p in active])

@@ -17,6 +17,13 @@ class MotionModel:
             if not (0 < params['speed'] <= .5 and 0 <= params['deadzone'] < 1 and
                     params['exponent'] > 0 and params['acceleration'] > 0 and params['braking'] > 0):
                 raise ValueError('invalid motion coefficients')
+            if params.get('response_space','axis') not in ('axis','radial'):raise ValueError('invalid response space')
+        curve=data.get('run_speed_up_curve')
+        if curve is not None:
+            points=np.asarray(curve,float)
+            if (points.ndim!=2 or points.shape[1]!=2 or len(points)<2 or not np.isfinite(points).all()
+                or points[0,0]!=0 or np.any(np.diff(points[:,0])<=0) or np.any(points[:,1]<=0)):
+                raise ValueError('invalid gear curve')
 
     @classmethod
     def load(cls, path):
@@ -24,6 +31,12 @@ class MotionModel:
 
     def to_dict(self):
         return self.data
+
+    def gear_multiplier(self, mode, ap):
+        curve=self.data.get('run_speed_up_curve') if mode=='human' else None
+        if curve is None:return 1.
+        points=np.asarray(curve,float)
+        return float(np.interp(ap.get('run_speed_up',0),points[:,0],points[:,1]))
 
     @staticmethod
     def mode(squid, submerged, grounded, charge, cooldown):
@@ -39,8 +52,7 @@ class MotionModel:
 
     def advance(self, velocity, sticks, yaw, mode, multiplier=1.):
         params = self.data['modes'][mode]
-        x = [math.copysign((max(0., abs(v)-params['deadzone'])/(1-params['deadzone']))**params['exponent'], v)
-             for v in sticks[:2]]
+        x = response(np.asarray(sticks[:2]),params['deadzone'],params['exponent'],params.get('response_space','axis'))
         norm = max(1., math.hypot(*x))
         speed = params['speed']*multiplier/norm
         target = np.array([-x[0]*math.cos(yaw)+x[1]*math.sin(yaw),
@@ -58,7 +70,7 @@ class MotionModel:
             if not mask.any():
                 continue
             p = self.data['modes'][name]
-            local = response(sticks[mask], p['deadzone'], p['exponent'])
+            local = response(sticks[mask], p['deadzone'], p['exponent'],p.get('response_space','axis'))
             angle = yaw[mask]
             target = np.stack([-local[:, 0]*np.cos(angle)+local[:, 1]*np.sin(angle),
                                local[:, 0]*np.sin(angle)+local[:, 1]*np.cos(angle)], axis=-1)*p['speed']

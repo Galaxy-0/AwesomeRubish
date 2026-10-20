@@ -3,7 +3,7 @@
 Python + NumPy，只做工作刮水刀、占地、Yunohana / District00 / Yagara。
 已加入历史辨识、短时域评估、预扣/退款、批量运动、A6高级机制与历史策略排名检验；原生一致性仍未签收。
 默认入口完全离线，不构建宿主、不启动游戏、不修改原生擂台或策略。
-`sim/calibration`另含显式开关门控的未来原生收集分支，本阶段没有执行。
+`sim/calibration`另含显式开关门控的原生收集分支；2026-10-21 P0 已在用户批准窗口使用 A8 默认新进程宿主采集，见 [校准说明](calibration/README.md)。普通模拟入口仍完全离线。
 从项目目录用 `.venv/bin/python -m sim.parameters` 开始。
 
 参数从本机 `work/data/v720896/RomFS` 只读提取；碰撞/导航复用
@@ -45,7 +45,7 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 近似碰撞。涂地以导航节点为带高度层的粗格，墙阻断传播、同队重复涂色不再次
 充能；计分分母含未涂格。节点可潜游性不等于原生可计分地面，原生纹理/涂点
 映射仍未知。特殊量有近似面积充能，触手喷射钩索位移仍unsupported。出生从导航落地点开始，
-重生直接回落地点，不模拟发射台飞行。移动/跳跃已有离线辨识，回血回墨和重生等仍待实机校准。
+默认仍从地面起跑并直接重生。显式传入 `OpeningModel` 可使用 P0 实测的有限首次发射驱动（含首次接地后的残余推力），`PaintModel` 增加延迟脚下墨；均由本地记录拟合，不分发原生轨迹。径向四次方人形响应与 run AP 锚点由新版 `MotionModel` 描述。非中立飞行、真实重生、完整涂地/计分域及墨色速度差仍须看逐项校准结论。
 
 观测复用 `PolicyProjector`、`GeometricVision` 和 typed own-special encoder，
 保持 FOV/墙遮挡/静止潜墨隐藏/溅墨例外及最后目击记忆；敌方 HP/墨量与裁判
