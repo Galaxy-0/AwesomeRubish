@@ -37,5 +37,17 @@ class SceneAdapterTests(unittest.TestCase):
         for mode in ('bad-string','bad-object'):
             with self.subTest(mode=mode):self.assertNotEqual(self.call('ShootingRange',mode).returncode,0)
 
+    def test_network_tracing_preserves_native_arguments_and_registers(self):
+        result=self.call('trace','network');self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+        self.assertIn('kind=create',result.stderr);self.assertIn('kind=join',result.stderr)
+
+    def test_unavailable_network_diagnostic_does_not_interrupt_native_flow(self):
+        result=self.call('trace','network-unavailable');self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+        self.assertIn('argument_unavailable=1',result.stderr)
+
+    def test_network_tracing_requires_valid_flag_and_matching_gates(self):
+        for mode in ('network-missing','network-invalid'):
+            with self.subTest(mode=mode):self.assertNotEqual(self.call('trace',mode).returncode,0)
+
 
 if __name__=='__main__':unittest.main()

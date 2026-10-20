@@ -2153,3 +2153,47 @@ A6交付范围：最短满蓄观测21present；真实潜游后出墨输入到满
 原生通过：`work/a7/scene-20261020-104248-645542/result.json` passed=true/errors=[]，`DM_KEYS=""`、无HID FIFO、无OCR。present 77首次请求Plaza被替换成ShootingRange，4.4514秒实际调用试射场Progress进入函数`0x3cf5004`，随后持续命中其更新函数`0x3cf53d0`至present 3000；两函数由本构建名称getter及同一虚表的生命周期槽重新定位。已目视核对frame-600.png，角色、武器、靶场均实际加载；所有截图只留work。该单进程已正常退出，默认宿主SHA仍628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d。
 
 `tests/test_a7_scene.py` 4项组件通过：禁用零回调、一次性参数替换/其它寄存器及原字符串隔离、未知构建/缺门拒绝、非法目的或不可读指针拒绝。数值/源码/原件哈希检查点为`arena/results/a7-scene-prototype-20261020.json`。复现：先运行两个构建准备脚本，再`tests/probe_a7_scene.py --host work/a7/dmhost-scene-v2`。这里测的是RL接管前的场景引导，不声称fixed60/PIA私房/连续局、参数化双方配装与种子、比分一致性或A1–A6回归已完成；带逐帧原生探针的80.7秒观察窗口也不作为优化后的对战墙钟。
+
+### A7 阶段检查点：旧流程基线与原生 PIA 请求追踪（2026-10-20）
+
+单房温泉峡谷，rush vs high-ground（双方step_frames=12，roles=[0,1]、工作刮水刀、原配装），沿用未修改的Session.start菜单宏、RL、策略沙箱、可见性和A5结算逻辑。实验宿主仅启用场景/PIA只读追踪，未替换场景目的；没有OCR。原件 `work/a7/baseline-20261020-105620-072789/result.json` passed=true，默认宿主未变。两端Winners/phase=3，胜者均b，按角色比分1.10000002/1.89999998，两端差0；结算480present，未超1800预算。该样本验证追踪没有阻断正常开局/判定，不是与无追踪旧宿主同输入的确定性比分对照。
+
+| 非重叠阶段 | 墙钟秒 | GPU平均利用率 | 边界定义 |
+| --- | ---: | ---: | --- |
+| 起机 | 102.93 | 69.82% | 首个宿主启动→air首次记录原生Create |
+| 建房/配置/就绪 | 236.56 | 82.78% | Create→prepare_match；包含客端起机/加入及菜单配置 |
+| 加载/开局准备 | 44.86 | 83.74% | prepare_match→双端首次InGame ACK，含原有就绪等待 |
+| 受控对战 | 338.89 | 82.42% | 首次ACK→双方agent终止 |
+| 结算 | 18.03 | 77.83% | 中立推进→双端Winners |
+| 自有进程清理 | 0.06 | 无样本 | 关闭→run_match返回 |
+| 合计 | **741.33（12.36分钟）** | 分阶段采样 | 起机至清理，单个有效局 |
+
+受控实际ACK推进11052present，32.612present/s（包含受控阶段边界，不用名义10800帧替代实际推进数）；单房端到端4.856局/小时，新增swapout为0。起机至首次受控ACK为384.34秒。GPU由现有Monitor每约2秒采样；各阶段51/117/23/156/6个样本，监控不覆盖策略纯等待的每个瞬间。本次机器独占、仅一个房间、步长12，不能与此前多房/步长1的约20分钟估计直接当作提速比例。尚无参数化私房路径的“优化后”样本，所以不填造前后收益表。
+
+复现新旧数据均使用独立宿主和模块目录，不能重编默认dmhost或覆盖旧目录：
+
+```sh
+.venv/bin/python tools/build_a7_host.py --out work/a7/dmhost-trace-new
+.venv/bin/python tools/prepare_a7.py --out work/a7/patched-trace-new
+caffeinate -i .venv/bin/python tests/probe_a7_baseline.py \
+  --host work/a7/dmhost-trace-new --patched work/a7/patched-trace-new --stage 1
+```
+
+新增的 `DM_SCENE_TRACE_NETWORK=1` 需同时启用 `DM_SCENE_BOOT=trace`（或实验场景目的），仅在匹配构建及两个门均存在时安装。门为main+0x9546f0/Create、0x954de4/Join，均核验原指令f81a0ffd；正常流程确实在host present3942/guest4531命中。每次只读512字节参数，最多16次，Mach不可读时只记诊断而不阻断原生；不保留对象指针、不改寄存器/参数/网络包。原始参数含内部指针和会话数据，仅留ignored work日志，不进入策略观测或入库数值归档。
+
+新增组件覆盖追踪保留全部寄存器与原始参数、不可读诊断不中断、非法开关/缺门拒绝；`tests/test_a7_scene.py`现7项通过，日志 `work/a7/scene-components-final.log`。准备工具验证全部四个A7门。基线脚本拒绝DM_TEST_SPECIAL，绑定构建元数据、策略快照和阶段定义。数值/源码/原件SHA检查点 `arena/results/a7-baseline-20261020.json`；脚本后续补充显式cadence/单房元数据及特殊量预检，原始result未回填修改。
+
+### A7 卡点：直接 LobbyLocal 不会自动创建原生私房（按指示停下）
+
+反例原件 `work/a7/local-20261020-104752-654052/result.json`：两个独立进程、DM_KEYS空、无FIFO输入/无OCR，均在present78将Plaza请求替换为LobbyLocal。Selector/Login原生进入约4.3秒，Progress约7.33秒；随后观察120秒仅LDN state=1、nodes=0，两端没有Create/Join、air收发0包，没有MatchMenu/MatchFix进入，也没有InGame。这不是网络收发失败：尚未到调用原生建房/加入的步骤。该诊断的passed=false保留，不算双端直接开局通过；探索脚本及日志均有证据哈希。
+
+继续静态分析与正常菜单原生追踪，已经重新定位到本构建：
+
+- AINB的LobbyLocal流程为初始化→Selector→Login/Progress，另有MatchMenu、MatchFix；场景请求只启动此流程，不构造匹配会话。MatchFix是流程命令，不能把其名称当作可直接写入的游戏阶段。
+- PIA原生Create/Join入口为上述两门，Create调用的对象虚表属于`nn::pia::local::LdnProtocol`；入参RTTI为`nn::pia::local::LocalCreateNetworkSetting`，构造器main+0x950938（调用基类0x935388）。原生对象有内部指针，例如+0x18指向本对象+0x76的用户数据；不能复制一次堆快照当作可重用配置。
+- 配置由`nn::pia::local::LdnBackgroundProcessJob`持有（构造器0x957fbc，将Create配置构造于自身+0xf0）；这是原生异步PIA任务，调用入口不是一个纯粹的“地图名→开局”函数。正常菜单追踪能给出有效实例，但未定位到脱离菜单后可安全创建、提交、等待此任务的游戏层接口及生命周期。
+- 游戏层还需建立Private设置/玩家/队伍状态并同步后才可加载Versus地图。已找到`VersusPrivateSettingNetState`构造候选0x3d7cbfc、Private模式初始化0x38f8390及UI私房流程0x38f87ac；后者有菜单状态和玩家配装构造依赖，未验证为可由宿主独立调用的API。MatchMode存储还区分枚举值与枚举索引，不能把Private的值5直接写进索引字段。
+
+当前真正缺口是**游戏层房间/私房设置状态的创建、同步与游戏线程上的安全提交入口**，以及种子/出生侧等规范参数的位置；只有PIA底层Create地址不足以完成这一层。没有通过硬编码原生堆地址、跳过PIA或伪写phase来掩盖缺口。调查已覆盖公开FlexLion资料/客户端源码、当前构建场景表与AINB、函数/虚表/RTTI交叉引用、无输入双端反例和正常路径追踪；依照“卡点写PROGRESS后停下”在这里停止原生试验。
+
+阶段交付状态：公开资料与构建对应调研已记录；单进程无菜单试射场原型已通过并在b521de5推送；本次基线/只读诊断可提交。参数化两进程私房、连续局、统一阶段控制和三个生产入口接入尚未实现，比分同输入对照及A1–A6全回归尚未执行，A7没有整体签收。未推进降渲染或4/5/6房测试。所有本次自有宿主均已退出，默认dmhost未改，alpha/bravo未修改；只提交本项目源码、源补丁、文档和数值索引，不提交游戏数据。

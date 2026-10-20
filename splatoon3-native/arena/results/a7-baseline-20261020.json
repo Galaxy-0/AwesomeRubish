@@ -1,0 +1,294 @@
+{
+  "schema": "arena.a7.baseline-checkpoint.v1",
+  "passed": true,
+  "full_a7_passed": false,
+  "status": "blocked on native private-match initialization",
+  "baseline": {
+    "schema": "arena.a7.baseline.v1",
+    "passed": true,
+    "full_a7_passed": false,
+    "errors": [],
+    "artifacts": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/baseline-20261020-105620-072789",
+    "stage": 1,
+    "events": [
+      {
+        "phase": "boot",
+        "wall": 1792464980.086609
+      },
+      {
+        "phase": "room",
+        "wall": 1792465083.013758
+      },
+      {
+        "phase": "loading",
+        "wall": 1792465319.571427
+      },
+      {
+        "phase": "controlled",
+        "wall": 1792465364.429779
+      },
+      {
+        "phase": "settlement",
+        "wall": 1792465703.322583
+      },
+      {
+        "phase": "cleanup",
+        "wall": 1792465721.357441
+      },
+      {
+        "phase": "finished",
+        "wall": 1792465721.4158049
+      }
+    ],
+    "host_sha256": "7beb2d9db1bdbaa5053339a1af176e1887f854dea43bf84d3585336d1e60cab3",
+    "source_hashes": [
+      "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+      "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+    ],
+    "route": "unchanged Session.start menu macros; read-only native tracing",
+    "phase_definitions": {
+      "boot": "launch until first native LDN create",
+      "room": "first create through peer boot/join, native room configuration and readiness",
+      "loading": "prepare_match begins through first paired InGame ACK",
+      "controlled": "paired InGame ACK through both agents terminate",
+      "settlement": "neutral progression after both terminate through Winners",
+      "cleanup": "owned shutdown"
+    },
+    "match": {
+      "round": 0,
+      "attempt": 0,
+      "stage": 1,
+      "passed": true,
+      "void": false,
+      "errors": [],
+      "artifacts": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/baseline-20261020-105620-072789/match",
+      "role_to_policy": [
+        0,
+        1
+      ],
+      "screenshot_resolution": [
+        128,
+        72
+      ],
+      "paint": null,
+      "knockdowns": null,
+      "proficiency_by_role": {
+        "player_0": {
+          "status": "unavailable",
+          "reason": "no matching scorecard"
+        },
+        "player_1": {
+          "status": "unavailable",
+          "reason": "no matching scorecard"
+        }
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261020-105620-131100",
+      "shared_load_slots": null,
+      "controlled_start_wall": 1792465364.430175,
+      "host_pids": [
+        30436,
+        42891
+      ],
+      "last_progress_wall": 1792465721.345485,
+      "settlement_budget_frames": 1800,
+      "settlement_frames": 480,
+      "scoring_rule": "peer-winner-average-v1",
+      "score_peers_native_order": [
+        [
+          1.10000002,
+          1.89999998
+        ],
+        [
+          1.89999998,
+          1.10000002
+        ]
+      ],
+      "score_peers_by_role": [
+        [
+          1.10000002,
+          1.89999998
+        ],
+        [
+          1.10000002,
+          1.89999998
+        ]
+      ],
+      "score_difference_by_role": [
+        0.0,
+        0.0
+      ],
+      "score_max_difference_pp": 0.0,
+      "score_by_role": [
+        1.10000002,
+        1.89999998
+      ],
+      "turf_ratio_by_role": [
+        0.0110000002,
+        0.0189999998
+      ],
+      "winner_by_observer": [
+        1,
+        1
+      ],
+      "suspect": false,
+      "void_reason": null,
+      "outcome": "b",
+      "hud_by_role": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "frames": 11532,
+      "native_winners": true,
+      "source_hashes": [
+        "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+        "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+      ],
+      "controlled_end_wall": 1792465721.3479328,
+      "sessions_created": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261020-105620-131100"
+      ],
+      "wall_seconds": 741.325611114502,
+      "controlled_seconds": 356.9177577495575
+    },
+    "phase_wall_seconds": {
+      "boot": 102.9271490573883,
+      "room": 236.55766916275024,
+      "loading": 44.858351945877075,
+      "controlled": 338.8928039073944,
+      "settlement": 18.034857988357544,
+      "cleanup": 0.058363914489746094
+    },
+    "wall_seconds": 741.3291959762573,
+    "controlled_frames": 11052,
+    "controlled_fps": 32.61208226486881,
+    "games_per_hour_single_room": 4.856142209884443,
+    "gpu_utilization_percent_by_phase": {
+      "boot": {
+        "samples": 51,
+        "mean": 69.82352941176471,
+        "median": 70,
+        "maximum": 77
+      },
+      "room": {
+        "samples": 117,
+        "mean": 82.77777777777777,
+        "median": 84,
+        "maximum": 87
+      },
+      "loading": {
+        "samples": 23,
+        "mean": 83.73913043478261,
+        "median": 83,
+        "maximum": 91
+      },
+      "controlled": {
+        "samples": 156,
+        "mean": 82.41666666666667,
+        "median": 83.0,
+        "maximum": 87
+      },
+      "settlement": {
+        "samples": 6,
+        "mean": 77.83333333333333,
+        "median": 80.5,
+        "maximum": 85
+      },
+      "cleanup": {
+        "samples": 0,
+        "mean": null,
+        "median": null,
+        "maximum": null
+      }
+    },
+    "sessions": [
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261020-105620-131100"
+    ]
+  },
+  "parameters": {
+    "rooms": 1,
+    "players": 2,
+    "map": "Vss_Yunohana",
+    "policies": [
+      "rush",
+      "high-ground"
+    ],
+    "policy_step_frames": [
+      12,
+      12
+    ],
+    "roles": [
+      0,
+      1
+    ],
+    "clock_mode": "fixed60"
+  },
+  "native_request_witnesses": {
+    "0": [
+      {
+        "kind": "create",
+        "present": 3942
+      }
+    ],
+    "1": [
+      {
+        "kind": "join",
+        "present": 4531
+      }
+    ]
+  },
+  "native_final_phases": [
+    3,
+    3
+  ],
+  "direct_local_survey": {
+    "observation_seconds": 120,
+    "menu_inputs": [],
+    "both_lobby_entered": true,
+    "both_ldn_state": 1,
+    "create_requests": 0,
+    "join_requests": 0,
+    "packets": 0,
+    "private_match_passed": false
+  },
+  "default_host_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+  "default_host_unchanged": true,
+  "source_sha256": {
+    "upstream/dm/host/hle_spl3_scene.c": "dc8ae43d2d643d74202ac3102dd69339f989a5dbd54c76f6a8ca7c9aa970bd13",
+    "upstream/dm/host/main.c": "d6d18c46b0a37d5f5a801941f3710779abf2e086672bdfdc3e57390e844d45fd",
+    "upstream/dm/host/dm.h": "ad041774cf5b3f7ed58240b9b0b1349da9d13ab831bf5e260f0606d1cd51e5eb",
+    "upstream/dm/tools/patch_nso.py": "4c62f2e97b27bbf1ddd0180c2d6fb840ba61eeb9d71977547e5e691201fa30b6"
+  },
+  "component_tests": 7,
+  "evidence": {
+    "work/a7/baseline-20261020-105620-072789/result.json": "1bb0b01e9d88a2eb18a4e61cd1b15ea1f96fdab80d6f01ff858777f1473bc07d",
+    "work/a7/baseline-20261020-105620-072789/match/result.json": "d47cfdf66aa008d23b08c6453d84df259dbe6a5e1a5762ba046127b2aacf61f0",
+    "work/a7/baseline-20261020-105620-072789/match/native-barriers.jsonl": "d2ad2cee8ce1e45526d68b18376fba27b9293bfbedb6dfbe4ceaaaae07b74239",
+    "work/a7/baseline-20261020-105620-072789/match/inputs-per-present.jsonl": "6b50c975dbd68e72869d6b73ee89f7db3e9a60d3b88aa99656a66f82f2b8b0d7",
+    "work/a7/baseline-20261020-105620-072789/match/hud-events.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "work/tests/m6-2p-20261020-105620-131100/resources.jsonl": "27a6e72964ae20575854b0aa48f27f9182716fbf349c62af12229fd33b3e3749",
+    "work/tests/m6-2p-20261020-105620-131100/resources-summary.json": "5a17343d6f4f4dcc36aeefd67909ac1dca491be6c60c64bf7ecc2d5dc5512efa",
+    "work/tests/m6-2p-20261020-105620-131100/system-baseline.json": "b9c99feec658c463a6137c9309704e41269dba03b7785a06d3acea989f896d7a",
+    "work/tests/m6-2p-20261020-105620-131100/air.log": "29c2cf15179e83f320d1e900fb3bd8c5485f70d8e58515a541d9a811a266252a",
+    "work/a7/local-20261020-104752-654052/result.json": "f83e45f1d3f435bcd2d8746e2d489c50edcfa8f7e26b500dc3982c36edfc4bb2",
+    "work/a7/probe_local.py": "236b8287a4d8e0fd263481cd12a928f0c8eb22a3285dc52f3fc622edd672c397",
+    "work/a7/dmhost-trace-v3.build.json": "136fcd3655cfceca1de881d2859b77b669dfd12ea14698c777553692ab2d0d25",
+    "work/a7/scene-components-final.log": "35813207ed0632d22e9a113c1e110a685a3c68a32324dabc60d0850e096c2748",
+    "work/tests/m6-2p-20261020-105620-131100/player-0/host.log": "05325a4c65575244bdca86adb7ec8691d9faccc11ff479fefc0bdc098ab4d914",
+    "work/tests/m6-2p-20261020-105620-131100/player-1/host.log": "78db20914d12ca520fd9b1c875021e4d9809a1ab630fa99e8923515318da7770"
+  },
+  "scope": "One menu-route baseline with read-only scene/PIA tracing, not a matched before/after speedup or A1-A6 regression. Direct training entry is archived separately; direct private start, continuous games and unified match control remain unimplemented.",
+  "new_swapout_mib_max": 0.0,
+  "owned_hosts_closed": true
+}
