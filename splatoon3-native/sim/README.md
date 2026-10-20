@@ -61,3 +61,23 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 `BatchSimulator` 提供批量输入形状，复用只读地图/参数，每个环境有独立墨图。
 当前 CPU 串行步进，不宣称已向量化或通过官方 Gym/PettingZoo API 验证；尚未
 提供 spaces/注册适配器。核心每帧不做渲染，无需游戏引擎。
+
+## 历史同输入对照
+
+```sh
+.venv/bin/python -m unittest sim.test_core sim.test_replay -v
+.venv/bin/python -m sim.replay work/a6/combat-20261019-131326-782403 --a6-prefix minimum-full-damage --out work/sim/a6-full.json
+.venv/bin/python -m sim.replay work/arena/t1/round-001/game-0-attempt-000 --frames 600
+# --frames 0：从双方首次共同落地到原生计时归零，不运行结算阶段。
+.venv/bin/python -m sim.report
+```
+
+报告与逐采样曲线默认在 `work/sim/comparison/`，来源/地图/源码均带 SHA256。
+回放从窗口首个原生样本一次初始化，逐帧送回记录输入；后续原生位置/HP/墨量
+只用于比较，不纠正模拟状态。按每个宿主的独立帧原点对齐样本，重复包去重。
+输入缺口报错，不偷偷填中立。A1/A2较早的原件没有完整动作，报告明确单列为
+按已签收夹具脚本重建；A2调参锚点不作为独立验证。
+
+本轮固定的对照结果见 [COMPARISON.md](COMPARISON.md)。当前 T1 长轨迹与
+最终占地差异明显，**未通过原生一致性验收**。本轮按要求在核心与报告完成后
+停止，实机校准及后续操作的清单在 `notes/PROGRESS.md`。
