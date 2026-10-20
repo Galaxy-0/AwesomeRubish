@@ -91,5 +91,27 @@ class NativeCalibrationTests(unittest.TestCase):
         self.assertAlmostEqual(motion.gear_multiplier('human',{'run_speed_up':19}),1.26)
         self.assertEqual(motion.gear_multiplier('charge',{'run_speed_up':57}),1.)
 
+    def test_noncore_field_sphere_cannot_reappear_behind_low_wall(self):
+        from .engine import Simulator
+        from .paint_model import PaintModel
+        from .terrain import Mesh,Terrain
+        from .test_core import fixture
+        base=fixture()
+        wall=[[[0,0,3],[0,1.2,3],[10,1.2,3]],[[0,0,3],[10,1.2,3],[10,0,3]]]
+        mesh=Mesh(np.concatenate((base.human.triangles,np.asarray(wall))))
+        terrain=Terrain(base.atlas,mesh,mesh)
+        model=PaintModel(dict(schema='sim.paint.v1',weak_radius=0.,full_radius=0.,weak_delay=14,full_delay=11,field_collision_core_only=True))
+        e=Simulator(1,terrain=terrain,paint_model=model)
+        e.players[0].yaw=0.;e.players[1].squid=True
+        e._spawn(0,True,'projectile')
+        blocked=False;passed=False
+        for _ in range(16):
+            e.frame+=1;e._weapons()
+            if e.projectiles:
+                blocked|=bool(e.projectiles[0].field_blocked)
+                passed|=e.projectiles[0].position[2]>4.
+        self.assertTrue(blocked);self.assertTrue(passed)
+        self.assertEqual(e.players[1].hp,1.)
+
 
 if __name__=='__main__':unittest.main()

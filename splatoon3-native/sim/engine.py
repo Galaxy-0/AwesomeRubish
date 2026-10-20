@@ -122,6 +122,7 @@ class Projectile:
     profile: dict
     age: int = 0
     velocity_y: float = 0.
+    field_blocked: set = field(default_factory=set)
 
 
 @dataclass
@@ -578,11 +579,14 @@ class Simulator:
             a, b, radius = self._capsule(target)
             hit = False
             field_hit = math.inf
-            for offset, shape in zip(profile['CollisionParam']['OffsetArray'], profile['CollisionParam']['ParamArray']):
+            core_only=self.paint_model is not None and self.paint_model.data.get('field_collision_core_only',False)
+            for index,(offset, shape) in enumerate(zip(profile['CollisionParam']['OffsetArray'], profile['CollisionParam']['ParamArray'])):
+                if core_only and index in shot.field_blocked:continue
                 shift = shot.right * offset['X'] + shot.up * offset['Y'] + shot.direction * offset['Z']
                 start_s, end_s = shot.position + shift, end + shift
                 obstacle = self.terrain.human.sweep(start_s, end_s, shape['InitRadiusForField'])
-                field_hit = min(field_hit, obstacle)
+                if not core_only or index==profile['CollisionParam']['CoreIndex']:
+                    field_hit = min(field_hit, obstacle)
                 # Test the part of the sphere path before field collision only.
                 length = np.linalg.norm(end_s - start_s)
                 fraction = min(1., obstacle / max(1e-9, length))
@@ -590,6 +594,7 @@ class Simulator:
                 if (self.players[target].alive and segment_distance(start_s, end_visible, a, b)
                         <= radius + shape['InitRadiusForPlayer']):
                     hit = True
+                if core_only and math.isfinite(obstacle):shot.field_blocked.add(index)
             if hit:
                 hits.append((target, profile['DamageParam']['HitDamage'] / 1000, shot.owner, 'ink_blade'))
             fraction = min(1., field_hit / max(1e-9, np.linalg.norm(end - shot.position)))

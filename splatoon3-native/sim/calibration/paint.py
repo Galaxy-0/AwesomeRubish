@@ -34,13 +34,24 @@ def collect(lab,case):
     hold=settings.get('hold',12)
     for repeat in range(settings.get('strokes',1)):
         a=controls()
-        for value in a.values():value['buttons'][0]=1
+        for role in settings.get('painting_roles',(0,1)):a[f'player_{role}']['buttons'][0]=1
         sequence(lab,a,f'measure-paint-{repeat}-hold',hold)
         sequence(lab,controls(),f'measure-paint-{repeat}-release',max(40,60-hold))
     sequence(lab,controls(),'measure-paint-tail',60)
     lab.result['paint_before']=before
     lab.result['paint_after']={str(i):lab.info(i) for i in (0,1)}
     lab.save()
+    if settings.get('finish_at_dump'):
+        target=settings['texture_frame']+120
+        if target<=lab.origins['player_0']['frame']:raise ValueError('texture frame preceded native attachment')
+        while lab.info(0)['frame']<target:
+            frames=min(120,target-lab.info(0)['frame'])
+            lab.step(controls(),'neutral-texture-checkpoint',frames)
+        files=list((lab.out/'textures').glob('*.png'))
+        if not files:raise AssertionError('native diagnostic produced no texture files')
+        lab.result['texture_checkpoint']=dict(frame=lab.info(0)['frame'],files=len(files),
+            scope='Fixed absolute-frame UV target readback only; not a complete match or terminal score.')
+        return
     # Finish without more shooting or motion; obtain real native denominator
     # and score. The configured one-shot dump occurs within this neutral tail.
     while lab.env.agents:

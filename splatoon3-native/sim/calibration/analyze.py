@@ -69,6 +69,7 @@ def opening_comparison(base):
 
 def texture_summary(directory):
     from PIL import Image
+    directory=Path(directory).resolve()
     values=[]
     for path in sorted((directory/'textures').glob('*.png')):
         with Image.open(path) as im:
@@ -102,8 +103,92 @@ def paint_comparison(base,trace):
     return values
 
 
+def motion_comparison(base,trace):
+    values=[]
+    for name in ('before','after'):
+        errors=[];pulses=[]
+        for index in range(7):
+            starts=np.flatnonzero(trace.labels==f'measure-vector-{index}-accelerate')
+            if not len(starts):continue
+            anchor=int(starts[0]);env=Simulator(1,terrain=Terrain.load(1),duration_frames=trace.frames,loadouts=trace.entry['loadouts'],
+                motion_model=MotionModel.load(base/'models/motion.json' if name=='after' else ROOT/'work/sim/fidelity/motion.json'))
+            reset_native(env,trace,anchor);pulse=[]
+            for f in range(anchor,min(anchor+75,trace.frames)):
+                env.step(action_dict(trace.actions[f]),observe=False);p=trace.states[f+1,0]
+                if not np.isfinite(p[0]):continue
+                error=float(np.linalg.norm(env.players[0].position-p[:3]));errors.append(error);pulse.append(error)
+            pulses.append(dict(vector=index,position=stats(pulse)))
+        values.append(dict(model=name,position=stats(errors),pulses=pulses,
+            scope='Seven75-frame accelerator/brake windows, initialized causally at input onset. AP0 independent trial; AP19 transition-fit and AP57 gear-fit trials are calibration rechecks.'))
+    return values
+
+
+def combat_comparison(base,trace):
+    results=[]
+    for prefix in ('measure-light-timing','measure-full-timing','measure-second-full'):
+        ids=np.flatnonzero(np.char.startswith(trace.labels,prefix))
+        if not len(ids):continue
+        anchor,end=int(ids[0]),int(ids[-1]+1)
+        past=trace.past(anchor,1);previous=int(past[-1]);hp=float(trace.states[previous,1,6]);native=[]
+        for f in trace.samples[1]:
+            if not anchor<f<=end:continue
+            value=float(trace.states[f,1,6])
+            if hp-value>.01:native.append(dict(interval=[previous+1,int(f)],drop=hp-value))
+            previous=int(f);hp=value
+        comparisons=[]
+        for name in ('legacy-no-delay','before','after'):
+            weapon=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json')
+            if name=='legacy-no-delay':weapon=WeaponModel({**weapon.data,'damage_delay':0})
+            env=Simulator(1,terrain=Terrain.load(1),duration_frames=trace.frames,loadouts=trace.entry['loadouts'],
+                motion_model=MotionModel.load(base/'models/motion.json' if name=='after' else ROOT/'work/sim/fidelity/motion.json'),
+                weapon_model=weapon,paint_model=PaintModel.load(base/'models/paint.json') if name=='after' else None)
+            reset_native(env,trace,anchor);ink=[];hp_error=[];position=[]
+            for f in range(anchor,end):
+                env.step(action_dict(trace.actions[f]),observe=False)
+                for role,p in enumerate(env.players):
+                    row=trace.states[f+1,role]
+                    if not np.isfinite(row[0]):continue
+                    position.append(float(np.linalg.norm(p.position-row[:3])))
+                    if role==0:ink.append(abs(p.ink-row[7]))
+                    else:hp_error.append(abs(p.hp-row[6]))
+            events=[e for e in env.events if e['kind']=='damage' and e['target']==1 and e['cause']in('ink_blade','contact')]
+            frame=events[0]['frame'] if events else None
+            interval=native[0]['interval'] if native else None
+            comparisons.append(dict(model=name,damage=events,position=stats(position),ink=stats(ink),hp=stats(hp_error),
+                first_interval_violation=max(interval[0]-frame,0,frame-interval[1]) if interval and frame is not None else None,
+                first_minus_native_latest=frame-interval[1] if interval and frame is not None else None))
+        results.append(dict(case=prefix,anchor=anchor,end=end,native_damage=native,comparisons=comparisons,
+            scope='New room, causal pre-trial reset, actual native input. Full trial starts after light damage; native loss is clipped at remaining HP, not nominal full damage.'))
+    return results
+
+
+def scan_comparison(base,trace):
+    anchor=int(np.flatnonzero(trace.labels=='measure-isolated-hold')[0]);values=[]
+    for name in ('before','after'):
+        env=Simulator(1,terrain=Terrain.load(1),duration_frames=trace.frames,loadouts=trace.entry['loadouts'],
+            motion_model=MotionModel.load(base/'models/motion.json'),weapon_model=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json'),
+            paint_model=PaintModel.load(base/'models/paint.json') if name=='after' else None)
+        reset_native(env,trace,anchor)
+        for f in range(anchor,anchor+120):env.step(action_dict(trace.actions[f]),observe=False)
+        samples={}
+        for f in trace.samples[0]:
+            if f>=trace.frames:continue
+            p=trace.states[f,0];label=str(trace.labels[f])
+            if not label.startswith('measure-scan-row-') or '-start' in label or p[9]not in(0,4) or abs(p[1]-3.)>.1:continue
+            cell=env.terrain.cell_at(p[:3])
+            if cell is not None:samples.setdefault(cell,(p[:3],int(p[9]==0),label))
+        groups=[]
+        for scope in ('all','train_rows','heldout_rows'):
+            rows=[(own,int(env.paint.at(p)==0)) for p,own,label in samples.values() if scope=='all' or
+                (('row-9.5' in label or 'row-11.0' in label)==(scope=='heldout_rows'))]
+            tp=sum(a and b for a,b in rows);fp=sum(not a and b for a,b in rows);fn=sum(a and not b for a,b in rows)
+            groups.append(dict(scope=scope,points=len(rows),positive_points=int(sum(a for a,b in rows)),tp=int(tp),fp=int(fp),fn=int(fn),f1=float(2*tp/max(1,2*tp+fp+fn))))
+        values.append(dict(model=name,groups=groups))
+    return values
+
+
 def main(base):
-    base=base.resolve();report=dict(schema='sim.native.p0.analysis.v1',opening=opening_comparison(base),paint=[],motion=[])
+    base=base.resolve();report=dict(schema='sim.native.p0.analysis.v1',opening=opening_comparison(base),paint=[],motion=[],combat=[],scans=[])
     for directory in sorted(base.glob('paint*/*')):
         if not (directory/'result.json').exists():continue
         result=json.loads((directory/'result.json').read_text())
@@ -118,7 +203,18 @@ def main(base):
         result=json.loads((directory/'result.json').read_text())
         if result['case']['kind']=='p0_motion':
             trace=load(directory)
-            report['motion'].append(dict(path=str(directory.relative_to(ROOT)),passed=result['passed'],case=result['case'],segments=motion_segments(trace)))
+            report['motion'].append(dict(path=str(directory.relative_to(ROOT)),passed=result['passed'],case=result['case'],segments=motion_segments(trace),comparison=motion_comparison(base,trace)))
+    for directory in sorted([*base.glob('bends-combat/*'),*base.glob('validation/*')]):
+        if not (directory/'result.json').exists():continue
+        result=json.loads((directory/'result.json').read_text())
+        if result['case']['kind']=='p0_combat' and result.get('passed'):
+            report['combat'].append(dict(path=str(directory.relative_to(ROOT)),cases=combat_comparison(base,load(directory)),respawn_status=result.get('respawn_status')))
+    for directory in sorted([*base.glob('probes*/*'),*base.glob('validation/*')]):
+        if not (directory/'result.json').exists():continue
+        result=json.loads((directory/'result.json').read_text())
+        if result['case']['kind']=='p0_scan' and result.get('passed'):
+            report['scans'].append(dict(path=str(directory.relative_to(ROOT)),hold=result['case']['settings']['hold'],
+                independent_repeat=directory.parent.name=='validation',comparison=scan_comparison(base,load(directory))))
     (base/'analysis.json').write_text(json.dumps(report,indent=2,allow_nan=False,default=lambda v:v.item() if isinstance(v,np.generic) else str(v))+'\n')
     print(json.dumps(dict(opening=report['opening'],paint_trials=len(report['paint']),motion_trials=len(report['motion'])),indent=2))
 

@@ -62,19 +62,59 @@ def fit_gear(directory):
     path.write_text(json.dumps(model,indent=2)+'\n');print(json.dumps(dict(curve=model['run_speed_up_curve'],anchors=rows),indent=2))
 
 
-def fit_paint(directory):
+def fit_air(directory):
+    """Map1/2 free airborne episodes fit; map3 and other roles held out."""
+    from sim.identify import response
+    directory=Path(directory).resolve();episodes=[]
+    for stage in (1,2):
+        trace=load(directory/f'bends-combat/p0-bends-map{stage}');ids=trace.samples[0]
+        ids=ids[(ids>240)&(trace.states[ids,0,9]==5)&(trace.states[ids,0,8]==0)]
+        for run in np.split(ids,np.flatnonzero(np.diff(ids)>8)+1):
+            if len(run)<5:continue
+            episodes.append((trace,run))
+    if not episodes:raise ValueError('no independent airborne excitation')
+    candidates=np.array([(s,a,b) for s in np.arange(.06,.1041,.002) for a in (.0005,.001,.002,.003,.005,.008) for b in (.0005,.001,.002,.003,.005,.008)])
+    loss=np.zeros(len(candidates));count=0
+    for trace,run in episodes:
+        a,anchor=run[:2];row=trace.states[anchor,0];initial=(row-trace.states[a,0])[[0,2]]/(anchor-a)
+        position=np.broadcast_to(row[[0,2]],(len(candidates),2)).copy();velocity=np.broadcast_to(initial,position.shape).copy()
+        samples=set(run[2:])
+        for f in range(anchor,int(run[-1])):
+            x,z=response(trace.actions[f,0,:2],0.,4.,'radial');yaw=row[4]
+            target=np.array([-x*np.cos(yaw)+z*np.sin(yaw),x*np.sin(yaw)+z*np.cos(yaw)])[None,:]*candidates[:,0,None]
+            rate=np.where(np.linalg.norm(target,axis=1)<np.linalg.norm(velocity,axis=1),candidates[:,2],candidates[:,1])
+            velocity+=np.clip(target-velocity,-rate[:,None],rate[:,None]);position+=velocity
+            if f+1 not in samples:continue
+            loss+=np.sum((position-trace.states[f+1,0,[0,2]])**2,axis=1);count+=1
+    best=int(np.argmin(loss));speed,acceleration,braking=candidates[best]
+    import shutil
+    out=directory/'models-v2';out.mkdir(exist_ok=True)
+    for path in (directory/'models').glob('*.json'):shutil.copy2(path,out/path.name)
+    model=json.loads((out/'motion.json').read_text());model['modes']['air'].update(speed=float(speed),exponent=4.,deadzone=0.,response_space='radial',acceleration=float(acceleration),braking=float(braking),
+        status='P0 free-air episodes map1/2 role0; radial quartic, no collision/support labels fitted')
+    model['native_calibration']['air_fit']=dict(training='P0 bends map1/2 role0 airborne episodes after frame240; first2 packets initialize velocity, predict rest',
+        validation='Map3 and all role1 episodes held out; complete collision/support assessed separately',episodes=len(episodes),samples=count,position_rmse=float(np.sqrt(loss[best]/count)),
+        coefficients=dict(speed=float(speed),acceleration=float(acceleration),braking=float(braking)))
+    (out/'motion.json').write_text(json.dumps(model,indent=2)+'\n');print(json.dumps(model['native_calibration']['air_fit'],indent=2))
+
+
+def fit_paint(directory,full=False,core_only=False):
     from sim.engine import Simulator
     from sim.parameters import Parameters
     from sim.terrain import Terrain
     from sim.motion import MotionModel
     from sim.weapon import WeaponModel
+    from sim.paint_model import PaintModel
     from sim.horizon import reset_native,action_dict
-    directory=Path(directory).resolve();source=directory/'probes/p0_scan-ap0'
+    directory=Path(directory).resolve();source=directory/('probes2/p0-scan-full-ap0' if full else 'probes/p0_scan-ap0')
     trace=load(source)
     if not trace.result.get('passed'):raise ValueError('incomplete scan cannot supply accepted fit')
+    if not trace.result.get('own_submergence_control',{}).get('submerged'):
+        raise ValueError('own-ink control not confirmed')
     starts=np.flatnonzero(trace.labels=='measure-isolated-hold');anchor=int(starts[0])
     env=Simulator(1,parameters=Parameters.local(),terrain=Terrain.load(1),duration_frames=trace.frames,
-        motion_model=MotionModel.load(directory/'models/motion.json'),weapon_model=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json'))
+        motion_model=MotionModel.load(directory/'models/motion.json'),weapon_model=WeaponModel.load(ROOT/'work/sim/fidelity/weapon.json'),
+        paint_model=PaintModel(dict(schema='sim.paint.v1',weak_radius=0.,full_radius=0.,weak_delay=14,full_delay=11,field_collision_core_only=core_only)))
     reset_native(env,trace,anchor);pose=env.players[0].position.copy()
     for f in range(anchor,anchor+102):env.step(action_dict(trace.actions[f]),observe=False)
     owners=env.paint.owners.copy();samples={}
@@ -102,10 +142,14 @@ def fit_paint(directory):
     eligible=[r for r in grid if r['train']['positive_cells']>=3 and r['train']['cells']>=20]
     if not eligible:raise ValueError('scan has insufficient independent world cells')
     best=max(eligible,key=lambda r:(r['train']['f1'],-r['radius']))
-    model=dict(schema='sim.paint.v1',weak_radius=best['radius'],full_radius=2.,weak_delay=14,full_delay=11,
-        interpretation='Weak foot radius fit to unique sampled cells on first3 requested rows; last2 rows held out. Full radius2 RomFS prior, not fitted. Effective contact onset delay includes sampling/material latency.',
+    model=dict(schema='sim.paint.v1',weak_radius=best['radius'],full_radius=0.,weak_delay=14,full_delay=11,
+        field_collision_core_only=core_only,
+        interpretation='Foot radius fit to unique sampled cells on first3 requested rows; last2 rows held out. Effective contact onset delay includes sampling/material latency.',
         source=trace.entry,grid_search=grid,selected=best,
-        limitations=['Not a full world paint mask/area IoU','unknown UV mapping/scoring denominator','moving foot-splash origin unvalidated','full footprint requires independent full scan'])
+        limitations=['Not a full world paint mask/area IoU','unknown UV mapping/scoring denominator','moving foot-splash origin unvalidated','spatial holdout within each shot, no independent repeated shot fit'])
+    if full:
+        model=json.loads((directory/'models/paint.json').read_text())
+        model.update(full_radius=best['radius'],full_source=trace.entry,full_grid_search=grid,full_selected=best,field_collision_core_only=core_only)
     (directory/'models/paint.json').write_text(json.dumps(model,indent=2)+'\n')
     print(json.dumps(dict(selected=best,baseline=grid[0]),indent=2))
 
@@ -180,5 +224,5 @@ def fit(directory):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,default=ROOT/'work/sim/window-20261021');p.add_argument('--paint',action='store_true');p.add_argument('--transitions',action='store_true');p.add_argument('--gear',action='store_true');a=p.parse_args()
-    fit_paint(a.directory) if a.paint else fit_transitions(a.directory) if a.transitions else fit_gear(a.directory) if a.gear else fit(a.directory)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--directory',type=Path,default=ROOT/'work/sim/window-20261021');p.add_argument('--paint',action='store_true');p.add_argument('--full-paint',action='store_true');p.add_argument('--core-field',action='store_true');p.add_argument('--transitions',action='store_true');p.add_argument('--gear',action='store_true');p.add_argument('--air',action='store_true');a=p.parse_args()
+    fit_paint(a.directory,a.full_paint,a.core_field) if a.paint or a.full_paint else fit_transitions(a.directory) if a.transitions else fit_gear(a.directory) if a.gear else fit_air(a.directory) if a.air else fit(a.directory)

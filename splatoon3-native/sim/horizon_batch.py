@@ -15,7 +15,7 @@ from .replay import stats
 from .terrain import Terrain
 
 
-def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out,paint_model=None):
+def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out,paint_model=None,anchor_start=None):
     out = Path(out).resolve()
     if ROOT/'work' not in out.parents:
         raise ValueError('raw horizon output must stay under work/')
@@ -28,7 +28,7 @@ def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out,p
             started = time.perf_counter()
             counts, ages = Counter(), []
             errors, endpoints, windows = defaultdict(list), defaultdict(list), []
-            anchors = list(range(horizon, trace.frames-horizon+1, horizon))
+            anchors = list(range(horizon if anchor_start is None else anchor_start, trace.frames-horizon+1, horizon))
             for start in range(0, len(anchors), batch_size):
                 group = anchors[start:start+batch_size]
                 batch = VectorBatchSimulator(len(group), entry['stage'], parameters=parameters, terrain=terrain,
@@ -87,7 +87,7 @@ def evaluate_vector(entries, horizons, *, model, weapon_model, batch_size, out,p
     report=dict(schema='sim.horizon.v2',results=results,model=model.to_dict(),
                 weapon_model=None if weapon_model is None else weapon_model.data,
                 paint_model=None if paint_model is None else paint_model.data,
-                code_sha256_at_start=sources,batch_size=batch_size,
+                code_sha256_at_start=sources,batch_size=batch_size,anchor_start=anchor_start,
                 protocol='Same causal resets/metrics as scalar horizon; complete combat, not motion-only surrogate.')
     out.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     return report

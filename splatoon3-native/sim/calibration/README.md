@@ -19,9 +19,13 @@
 .venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021
 .venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --transitions
 .venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --gear
-.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --paint
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --paint --core-field
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --full-paint --core-field
+.venv/bin/python -m sim.calibration.fit --directory work/sim/window-20261021 --air
 .venv/bin/python -m sim.calibration.analyze --directory work/sim/window-20261021
 ```
+
+`--air` 把空中候选连同其它模型复制到 `models-v2/`，不会覆盖首轮模型；地图1/2角色0自由空中段拟合，地图3/另一角色留出。脚下墨半径是当前粗网格的有效半径，不等于原生精确笔刷；`--core-field` 为经扫描对照的 CoreIndex 整条墨刃终止候选，非核心球的场景碰撞仍各自永久遮断，不能复活穿墙。
 
 这些命令只读已有记录并写 ignored work/，不启动游戏。模型需显式传给模拟器，旧模型/历史结果不会被覆盖。原生 collected 仅表示收集结束；拟合、独立验证与验收分开报告。
 
