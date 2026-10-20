@@ -334,3 +334,10 @@ bash tests/run_all.sh --milestone a8 \
 没有继续开房、没有测真实三图BO3墙钟，也未宣称camera-v3能解决这个共同路径问题。
 卡点汇总见`arena/results/a8-closeout-blocked-20261021.json`。修复共同返回流程后须跑最终版本完整回归，
 不能直接沿用修复前的14项成功记录。诊断补测草案保存在ignored work，未作为已验证的生产入口提交。
+
+2026-10-21 按两轮上限回溯：A7签收原二进制分别搭配当前驱动和eead162原驱动，均在第一局
+Winners后停于返回NetRoot state30；第二局未进入InGame，不能记为有效局、策略输赢或void。
+原二进制SHA及15个patched文件均匹配A7冻结证据，原驱动临时恢复的7个文件也逐项匹配该提交。
+这两次参考回退没有复现A7历史成功，尚不能建立源码二分的通过端或指定首个坏提交。
+按用户指示停止，未试改PIA/场景状态或放宽判定；当前驱动/宿主源码已恢复，默认激活条件保持不变。
+详见`arena/results/a8-continuous-bisect-20261021.json`及PROGRESS末节。未启动S1/T1。

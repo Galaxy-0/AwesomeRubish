@@ -2831,3 +2831,36 @@ FPS仅+0.684803%，整批吞吐+0.384612%，未达20%。此结果不能宣称找
 已实现统一候选选择：t1_round/test_a5/proficiency/arena模块CLI读取同一SHA绑定配置，只有完整A8签收文件生成后才自动激活，当前缺文件时明确拒绝默认开房；显式native参数仅作诊断，legacy-menu保留原入口。原upstream/dm/host/dmhost未覆盖。自动20%分析器保持原值，单独user-decision仅豁免性能目标，19项原生/像素/容量门不变。未完成的补测草案按实际使用SHA归档`work/a8/used-retry-a8-regression.py`，没有将未验证的A4/卡片恢复分支作为生产入口提交。共同流程修复后必须跑**最终版本完整回归**、新版三份卡片与真实基线BO3，不能直接把修复前14项改成签收。
 
 最终提交前检查：182项unittest+32个宿主选项进程用例通过；`bash tests/run_all.sh --milestone a8 ... --user-decision ...`仍以`complete final A1-A6 regressions required`退出1且不生成签收文件，证明性能用户决定未绕过功能门。默认CLI无签收文件时报not activated，未启动游戏。候选完整编译输入哈希、受保护原宿主SHA628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d、补丁重新导出/反向检查均通过；alpha/bravo无改动，所有本任务游戏与队列均已退出。只提交splatoon3-native源码/数值元数据/文档，全部游戏数据、截图、旧v5废弃批次及本次原始失败证据保留work。
+
+### A8 限定回溯：A7 原二进制及原驱动均在当前环境复现返回卡点（2026-10-21）
+
+按指挥方要求只做单房、同 PID 连续两局的最小复现，没有继续性能实验或启动 S1/T1。两轮回退均未重现 A7 历史通过，尚未定位根因，按两轮上限停止；没有修复、没有签收 A8、没有激活默认宿主。
+
+**参考身份及临时切换。** A7 签收 `eead162` 的 `work/a7/dmhost-team-v43` 原二进制仍在，SHA256 `533c6e1bcc634141d723773e162db6088ce98bcd329b36a87012ab489cb00063` 与签收记录、原 build.json 一致，直接复制为 `work/a8/a7-ref-host`，无需重建。保留原清单及来源，不把旧摘要改成当前摘要来绕过校验。清单7项源码只有 `hle_rl.c` 与当前不同，从该提交的补丁恢复并先校验旧SHA，当前字节备份在 `work/a8/bisect-a7-current-driver/hle_rl.current.c`。运行的确是原二进制，未包含 A8 的 GPU 计时、HDR、拷贝或相机减绘代码。
+
+`work/a7/patched-seeds-v16` 的全部15个模块/附属文件，逐项匹配 A7 已通过 A5 的 `work/arena/tournament-20261020-170616-172038/runtime-sha256.json`；不是只核对路径名称。第一轮使用当前驱动；第二轮把 A7 后变化的运行文件完整恢复到 eead162：`rl/{env,native_start,protocol,session}.py`、`arena/{runner,native_runtime}.py` 和 `tests/probe_a7_continuous.py`，7项均校验提交字节。当前及旧版本备份与哈希在 `work/a8/bisect-a7-accepted-driver/{current,accepted,source-variants.json}`。第二轮不经过新版默认选择器、geometry pixels=False 或熟练度分局。
+
+两轮均执行以下同一最小入口，分别切换上述驱动版本、使用不同 `--out`，没有开其它房间：
+
+```sh
+caffeinate -i .venv/bin/python tests/probe_a7_continuous.py \
+  --host work/a8/a7-ref-host --patched work/a7/patched-seeds-v16 \
+  --out work/a8/bisect-a7-current-driver/pair --timeout 1200
+# 第二轮 out 为 work/a8/bisect-a7-accepted-driver/pair。
+# 旧参考的校验要求先恢复其匹配源码；现已恢复当前源码，不能直接把参考当新默认运行。
+```
+
+| 对照 | 第一局 District00 | 第一局墙钟 / 受控秒 | 返回观察 | 第二局 Yagara |
+|---|---|---:|---:|---|
+| A7原宿主 + 当前驱动 | 双端原生 Winners、有效比分 | 363.756 / 328.679 | 206.014秒 | 未进入InGame，输入/策略/原生barrier文件均0字节 |
+| A7原宿主 + A7原驱动 | 双端原生 Winners、有效比分 | 363.618 / 327.406 | 194.358秒 | 未进入InGame，输入/策略/原生barrier文件均0字节 |
+
+两轮池统计均 `starts=1,reuses=1`，第一轮PID `[14087,14112]`，第二轮 `[58841,58880]`，复用期间没有换进程。两个返回请求均在这些原进程执行，但第二局没有真正开局，不能称为“同PID两局通过”。观察结束只向自己启动、命令逐字匹配的驱动PID发SIGINT，由其finally清理本房；保留取消证据，不将取消转换为策略输赢或void。
+
+**最早可见的分叉。** A7历史成功 `work/a7/continuous-v43-final/result.json` 两局同PID通过，第二局启动25.109806秒；对应第一房主返回状态为 `31 → 34`，随后 `A7_REPEAT returned generation=1`。本次两轮房主及加入端都走 `31 → 33 → 27 → 29 → 29 → 30`，完成LDN清理到0，却没有新的Progress/returned标记。第一轮房主返回阶段 RESOURCE_FRAME 13020→22680，第二轮13080→22260，说明大厅present持续增长；这不是120秒受控present停帧，也不是第二局受控帧。阶段分叉发生在策略再次运行之前。
+
+**结论边界。** A8后的翻译层改动不是本次卡点的必要条件：完全相同的A7原二进制也会失败。恢复全部变动的原驱动后仍失败，因此不能把默认选择器、pixels=False或新版熟练度夹具指定为原因；当前环境/时序差异或原有潜在非确定性仍待定位。当前环境没有重新得到“已知通过”的参考端，继续以源码提交做二分不能证明首个坏提交。本轮没有强写PIA/场景状态、伪造Progress、用延时替代成功判据、放宽samples/readback保护，或凭栈猜测缓存/调度器为根因。若继续，需要针对历史成功与当前失败的原生退出分叉建立环境/时序对照；这只是剩余方向，不是已验证修复。
+
+**恢复与检查。** 7个驱动文件与 `hle_rl.c` 已逐字节恢复到本轮开始状态，当前相机宿主v15清单的122项编译输入全部匹配；没有留下临时回退源代码。`upstream/dm/host/dmhost` 仍为 `628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d`；参考与原存档仍为 `89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd`。默认选择/验收门的 `test_a8_selection` 4项组件测试通过，日志 `work/a8/bisect-final-components.log`。未修改alpha/bravo，未删除work原件；本次房间已全部清理。
+
+提交的索引为 `arena/results/a8-continuous-bisect-20261021.json`，绑定原始结果、取消记录、宿主/模块/源码版本及日志SHA。原始两轮分别在 `work/a8/bisect-a7-{current,accepted}-driver/`。此前9+9局自噪声对照、4房探测与性能数字保持原证据：21.492526→24.986447 present/s（+16.256444%），未新增性能/BO3数据。A4温泉补测、三份新版完整熟练度卡、真实三图BO3墙钟及最终A8验收均未执行或完成；不据历史14项成功补签最终完整回归。默认激活门保持关闭，停止等待后续指示。
