@@ -10,11 +10,25 @@ import itertools
 import json
 from pathlib import Path
 import statistics
+import re
 import sys
 import numpy as np
 from probe_a7_trial import ROOT,sha
 from probe_a7_repeatability import compare,spawn_identity
 from arena.runner import write_json_atomic
+
+
+def actual_copy_reduction(lines,mode):
+    for line in lines:
+        match=re.search(r'A8_COPY '+re.escape(mode)+r' native_updates=(\d+) '+('copies' if mode=='coalesce' else 'dispatches')+r'=(\d+)',line)
+        if not match:continue
+        native,encoded=map(int,match.groups())
+        if not 0<encoded<native:continue
+        if mode=='coalesce':
+            saved=re.search(r' saved=(\d+)',line)
+            if not saved or int(saved[1])!=native-encoded:continue
+        return True
+    return False
 
 
 def gpu_timings(session,barriers):
@@ -133,7 +147,7 @@ def analyze(before,after):
             if (t['inputs'][i] if i<len(t['inputs']) else tail)!=(reference['inputs'][i] if i<len(reference['inputs']) else tail):raise ValueError('executed input differs at '+str(i))
     for t in trials[1]:
         if builds[1]['render_mode']=='camera' and not all(t['skips']):raise ValueError('candidate did not actually skip camera draws on both players')
-        if copy_mode!='none' and not all(any(f'A8_COPY {copy_mode} native_updates=' in line for line in lines) for lines in t['copies']):raise ValueError('candidate did not actually optimize uniform copies on both players')
+        if copy_mode!='none' and not all(actual_copy_reduction(lines,copy_mode) for lines in t['copies']):raise ValueError('candidate did not actually reduce uniform operations on both players')
         if b'A8_SHADOW layer=%d' in Path(plans[1]['host']).read_bytes():
             if not all(all(any(f'A8_SHADOW layer={layer} ' in line for line in lines) for layer in (0,1)) for lines in t['shadows']):raise ValueError('both shadow layers must actually be skipped on both players')
         if b'A8_HDR skipped=%llu' in Path(plans[1]['host']).read_bytes():
@@ -145,13 +159,16 @@ def analyze(before,after):
         for key in ('position','hp','ink'):
             arrays=[[[v[player][key] for v in t['samples'].values()] for t in group] for group in trials]
             measurements[player+'/'+key]=trajectory_comparison(*arrays)
-    def metrics(group):
+    def metrics(group,directory):
+        done=json.loads((directory/'completed.json').read_text())
         return dict(controlled_fps=statistics.mean(t['result']['controlled_fps'] for t in group),
+            trials=len(group),batch_wall_seconds=done['wall_seconds'],games_per_hour=3600*len(group)/done['wall_seconds'],
             wall_seconds=statistics.mean(t['result']['wall_seconds'] for t in group),
             gpu_percent=statistics.mean(t['result']['gpu_utilization_percent_by_phase']['controlled']['mean'] for t in group),
             phase_wall_seconds={key:statistics.mean(t['result']['phase_wall_seconds'][key] for t in group) for key in group[0]['result']['phase_wall_seconds']})
-    performance=dict(before=metrics(trials[0]),after=metrics(trials[1]))
+    performance=dict(before=metrics(trials[0],before),after=metrics(trials[1],after))
     performance['fps_ratio']=performance['after']['controlled_fps']/performance['before']['controlled_fps']
+    performance['batch_throughput_ratio']=performance['after']['games_per_hour']/performance['before']['games_per_hour']
     return dict(schema='arena.a8.comparison.v1',passed=score['passed'] and turf['passed'] and all(m['passed'] for m in measurements.values()) and performance['fps_ratio']>=1.2,
         equivalence_passed=score['passed'] and turf['passed'] and all(m['passed'] for m in measurements.values()),
         significant_speedup=performance['fps_ratio']>=1.2,scores=score,turf_ratios=turf,trajectories=measurements,performance=performance,

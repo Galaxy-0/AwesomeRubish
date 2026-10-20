@@ -2,7 +2,7 @@
   "schema": "arena.a8.copy-research.v1",
   "passed": false,
   "full_a8_passed": false,
-  "status": "final_native_smoke_and_9_per_group_comparison_pending",
+  "status": "coalesce_equivalent_below_20_percent_scatter_smoke_running",
   "profile": {
     "path": "arena/results/a8-copy-profile-20261020.json",
     "sha256": "2faf50ef4220befe8f006f5b75d9902a231869186ccd2b2feb85afd8c73e888c"
@@ -111,5 +111,31 @@
   "limitations": [
     "numeric/source checkpoint only; no final performance or A1-A6 regression acceptance yet",
     "HDR remains unsupported and disabled; copy candidates preserve full rendering"
+  ],
+  "final_smoke": {
+    "path": "work/a8/coalesce-v14-smoke/trial-0/result.json",
+    "sha256": "65522b90add7c2e822c1e43e7eb9fc6dd4a99328d73d997a700a1a6ef0f80eec",
+    "passed": true,
+    "controlled_fps": 33.832822570301566,
+    "wall_seconds": 370.9380021095276
+  },
+  "control_summary": {
+    "passed": true,
+    "trials": 9,
+    "controlled_fps_mean": 21.453483323290932,
+    "batch_wall_seconds": 1736.4308109283447,
+    "games_per_hour": 18.65896400598769,
+    "completed_path": "work/a8/copy-control-v14-nine/completed.json",
+    "completed_sha256": "34453742011cdee6759159b9c97b045ba12f850dfee26f725b37ff81d20d64ae"
+  },
+  "comparisons": [
+    {
+      "mode": "coalesce",
+      "path": "arena/results/a8-copy-coalesce-v14-20261020.json",
+      "sha256": "e627adbeac205e87045da92ac6d51a37b4d0a774165f3a21f602b7768ff8cd6b",
+      "passed": false,
+      "equivalence_passed": true,
+      "fps_ratio": 1.0068480334313443
+    }
   ]
 }
