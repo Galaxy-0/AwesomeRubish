@@ -12,7 +12,18 @@ ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from test_a3a import native_run
 
 
-def accepted_damage():
+def accepted_damage(fresh_job=None):
+    if fresh_job is not None:
+        job=json.loads(Path(fresh_job).read_text())
+        if not job.get('passed'):raise AssertionError('fresh damage job failed')
+        for path,digest in job['runtime_sha256'].items():
+            if hashlib.sha256(Path(path).read_bytes()).hexdigest()!=digest:raise AssertionError('fresh damage runtime changed')
+        proofs=[x for x in job['evidence'] if x.get('a1_damage_passed')]
+        if len(proofs)!=1:raise AssertionError('fresh damage evidence ambiguous')
+        proof=proofs[0];path=Path(proof['path']);native=json.loads(path.read_text())
+        if hashlib.sha256(path.read_bytes()).hexdigest()!=proof['sha256'] or not native['a1_damage_passed'] or not native['probe_completed'] or native['errors']:
+            raise AssertionError('fresh damage proof invalid')
+        return dict(reused_accepted_partial=False,fresh_runtime_job=str(fresh_job),path=str(path),sha256=proof['sha256'],damage=native['damage'])
     # Explicitly carry the already accepted partial proof, with unchanged
     # native host/time transport and unchanged aiming/painting implementations.
     proof=ROOT/'work/tests/a4-stage1-20261018-231611-601829/result.json'
@@ -35,9 +46,11 @@ def main(args):
     out=ROOT/'work/tests'/datetime.datetime.now().strftime('a4-%Y%m%d-%H%M%S-%f');out.mkdir(parents=True)
     result=dict(passed=False,full_a4_passed=False,errors=[],artifacts=str(out),maps=[])
     try:
-        result['a1_damage']=accepted_damage()
-        with (out/'map-build.log').open('w') as log:
-            subprocess.run([sys.executable,str(ROOT/'tools/build_arena_maps.py'),'--stage',*[str(s) for s in args.stages]],stdout=log,stderr=subprocess.STDOUT,check=True,timeout=1200)
+        result['a1_damage']=accepted_damage(getattr(args,'damage_job',None))
+        if not getattr(args,'existing_maps',False):
+            with (out/'map-build.log').open('w') as log:
+                subprocess.run([sys.executable,str(ROOT/'tools/build_arena_maps.py'),'--stage',*[str(s) for s in args.stages]],stdout=log,stderr=subprocess.STDOUT,check=True,timeout=1200)
+        result['existing_maps']=getattr(args,'existing_maps',False)
         subprocess.run([sys.executable,str(ROOT/'tests/test_a4_process.py')],check=True,timeout=30)
         from probe_a4_routes import preset_goals,MapAtlas
         for stage in args.stages:
@@ -71,4 +84,6 @@ def main(args):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--timeout',type=float,default=3000)
+    p.add_argument('--damage-job',type=Path,help='Fresh version-bound A7/A8 continuous/paused damage job; otherwise inherit accepted historical proof')
+    p.add_argument('--existing-maps',action='store_true',help='Use and hash the already accepted map assets; do not regenerate assets during parallel regression')
     p.add_argument('--stages',type=int,choices=(1,2,3),nargs='+',default=[2,1,3]);raise SystemExit(main(p.parse_args()))
