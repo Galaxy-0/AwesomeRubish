@@ -299,7 +299,7 @@ A6卡片仍使用A6冻结的参考/alpha/bravo版本，不修改两位策略作�
 `work/a7/patched-seeds-v16`的SHA。它采用v4的主镜头颜色+深度减绘，HDR与copy实验关闭。
 `tests/t1_round.py`、`tests/test_a5.py`、`tests/proficiency.py`及`python -m arena.runner`
 不传宿主参数时均读取这份候选配置。配置还要求`arena/results/a8-acceptance-20261021.json`
-是完整通过且绑定该宿主的签收报告；当前报告未生成，CLI会报`A8 default is not activated`并拒绝开房。
+是完整通过且绑定该宿主的签收报告；2026-10-21已生成通过报告并激活。报告缺失/无效时，CLI仍会报`A8 default is not activated`或对应身份错误并拒绝开房。
 这是最终功能验收的自动激活条件，不需要另一次人工批准。配置缺失、宿主/源码/模块变更也拒绝运行。
 显式`--native-host/--native-patched`仍可指定对照宿主；`--legacy-menu`只用于诊断旧菜单流程。
 原`upstream/dm/host/dmhost`继续保留，不能通过旧`run_all.sh`的通用构建分支覆盖它。
@@ -316,9 +316,10 @@ A6卡片仍使用A6冻结的参考/alpha/bravo版本，不修改两位策略作�
 ```sh
 bash tests/run_all.sh --milestone a8 \
   --before work/a8/accept-v15-full-nine --after work/a8/accept-v15-camera-nine \
-  --regression work/a8/accept-v15-regression/result.json \
-  --components work/a8/accept-v15-components.json --capacity work/a8/accept-v15-capacity.json \
+  --regression work/a8/final-fresh-regression/result.json \
+  --components work/a8/final-fresh-components-v2.json --capacity work/a8/accept-v15-capacity.json \
   --user-decision arena/a8-user-decision-20261020.json \
+  --continuous-fallback arena/a8-continuous-fallback-20261021.json \
   --out arena/results/a8-acceptance-20261021.json
 ```
 
@@ -326,18 +327,25 @@ bash tests/run_all.sh --milestone a8 \
 或critical压力即停止；四房是否完成及推荐并发以最终容量报告为准，不能用三房FPS外推。
 收尾完成后停止，不自动启动S1校准或alpha/bravo的T1研究。
 
-当前结果：同源完整/相机各9局自噪声等价通过，受控present/s提升16.256444%，4房探测4/4有效，
-默认像素M6两次会话都全程完整渲染。最终回归仅14项通过，尚未满足19项门：A4温泉一次原生120秒
-停帧；冻结alpha第三次静止靶遇到正常180秒比赛结束，静止重复现已拆为新局，评分与13次总数不变，
-但新版三份完整卡片未重测；连续A5相机两次及同源完整渲染一次都停于LobbyLocal返回state30，
-没有Progress/下一代次，第二局实际未开局。全部失败和主动取消原件保留，不能视为策略输赢或成功回归。
-没有继续开房、没有测真实三图BO3墙钟，也未宣称camera-v3能解决这个共同路径问题。
-卡点汇总见`arena/results/a8-closeout-blocked-20261021.json`。修复共同返回流程后须跑最终版本完整回归，
-不能直接沿用修复前的14项成功记录。诊断补测草案保存在ignored work，未作为已验证的生产入口提交。
+2026-10-21最终签收已完成。默认宿主为v4算法的同源v15相机构建，HDR/copy关闭，
+`session_lifecycle=fresh_per_match`：arena、T1 BO3及熟练度每局新建NativeSession，结束后清理本房，
+不保留进程等待LobbyLocal。连续开局仍为已知问题：五次有界诊断均在31后进入33，没有验证到安全修复。
+不得把配置改回reuse沿用本签收；默认选择器要求报告与配置生命周期一致并明确披露该已知问题。
+诊断直接使用NativeSessionPool不属于已签收的正式运行路径。
 
-2026-10-21 按两轮上限回溯：A7签收原二进制分别搭配当前驱动和eead162原驱动，均在第一局
-Winners后停于返回NetRoot state30；第二局未进入InGame，不能记为有效局、策略输赢或void。
-原二进制SHA及15个patched文件均匹配A7冻结证据，原驱动临时恢复的7个文件也逐项匹配该提交。
-这两次参考回退没有复现A7历史成功，尚不能建立源码二分的通过端或指定首个坏提交。
-按用户指示停止，未试改PIA/场景状态或放宽判定；当前驱动/宿主源码已恢复，默认激活条件保持不变。
-详见`arena/results/a8-continuous-bisect-20261021.json`及PROGRESS末节。未启动S1/T1。
+独立例外记录为`arena/a8-continuous-fallback-20261021.json`，绑定宿主、三项实验和实际三图BO3。
+不传`--continuous-fallback`的审计仍要求同PID连续两局；传入后要求两局换边且PID不同、三图各有
+正常Winners/六个独立PID，无DM_TEST_SPECIAL，并保持全部19项功能验收。低于20%的性能接受是
+另一份2026-10-20用户决定，自动fps_ratio>=1.2门没有改变。
+
+实际结果：完整渲染/v4三图BO3均3/3有效，墙钟596.95/534.02秒；自然原生随机状态下三图胜者一致，
+比分原值保留，这两次BO3只用于墙钟和新进程路径验证。固定输入语义及性能仍采用同源各9局自噪声门，
+present/s21.492526→24.986447（+16.256444%），单局均值576.89→503.36秒。
+A4三图各10/10、三份冻结版本熟练度卡各13/13及独立原生轨迹审计通过，A5新进程换边双局通过；
+14项原生成功的全部runtime SHA未变并显式继承，5项补测，共19项；189项组件和32个宿主选项用例通过。
+默认像素M6沿用相同运行时成功证据，所有会话完整渲染历史帧；没有新增8人M6实测。
+
+4房原生探测4/4有效、新增swapout0、压力1；第4房实际吞吐只比3房样本高约0.7%，不是显著提升，
+推荐正式并发仍为3房。探测是一批4局，不能外推为长期资源保证。
+全部失败、取消、独立缓存和中断的work原件保留，未恢复alpha/bravo T1或启动S1。
+证据见`arena/results/a8-closeout-20261021.json`、`arena/results/a8-acceptance-20261021.json`和PROGRESS末节。

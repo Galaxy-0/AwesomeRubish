@@ -1,0 +1,17 @@
+{
+  "schema": "arena.a8.continuous-fallback.v1",
+  "decision": "user_acceptance_with_fresh_processes",
+  "decision_date": "2026-10-21",
+  "session_lifecycle": "fresh_per_match",
+  "host_sha256": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+  "diagnostics": {
+    "path": "arena/results/a8-return-experiments-20261021.json",
+    "sha256": "f34e458a4629cbfff90259a3601882d7970e8117f7f1c83e60344edaa2d158d2"
+  },
+  "bo3": {
+    "path": "work/a8/fresh-bo3-camera/result.json",
+    "sha256": "916420df46e036b9ca76de879758605b8d71f6ba2e54321d9b095db39a9fe296"
+  },
+  "known_issue": "same-PID return may enter NetRoot33 and never reach LobbyLocal Progress",
+  "automatic_performance_fps_ratio_threshold": 1.2
+}

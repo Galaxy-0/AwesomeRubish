@@ -1,0 +1,515 @@
+{
+  "schema": "arena.a8.return-experiments.v1",
+  "completed": true,
+  "fix_validated": false,
+  "reference_host_sha256": "533c6e1bcc634141d723773e162db6088ce98bcd329b36a87012ab489cb00063",
+  "entry": {
+    "path": "tests/probe_a7_return.py",
+    "sha256": "1c593491d62a78d0e1b197d634c5e75228444cc9bab2c7032de43b74a7429144"
+  },
+  "astra_analysis": {
+    "path": "work/codex/astra-a8.md",
+    "sha256": "d7960eae7b5e6a0f765f761468f9764eb9ef20961c4713ea76219e2d0e83bba0"
+  },
+  "cases": {
+    "immediate": {
+      "path": "work/a8/return-exp/immediate/result.json",
+      "sha256": "4d65dbf2def1ad1c484e1ea8c323b1be825df20da69a1ee84554a2d6b055d8a7"
+    },
+    "delay120": {
+      "path": "work/a8/return-exp/delay120/result.json",
+      "sha256": "ce779f729a3aa547b170cd4a19c1fa7d35a6c1a41fcb7c386307e3075a7734d6"
+    },
+    "calendar": {
+      "path": "work/a8/return-exp/calendar/result.json",
+      "sha256": "4e660e2cc88438c35df55bc4231352881c14e5d7fe1fc4aab607eace026f1b40"
+    },
+    "cold": {
+      "path": "work/a8/return-exp/cold/result.json",
+      "sha256": "613b4db952adde0dedfbfa55e9af426f4281c6143401cd67dd414e538f5ab01e"
+    },
+    "warm": {
+      "path": "work/a8/return-exp/warm/result.json",
+      "sha256": "c02bcc4754de7170c6eaed84c619b943966e8f0311fabc771172929b019da309"
+    }
+  },
+  "observations": {
+    "immediate": {
+      "delay_native_presents": 0,
+      "window": {
+        "start_frames": {
+          "0": 13020,
+          "1": 12660
+        },
+        "target_frames": {
+          "0": 13020,
+          "1": 12660
+        },
+        "request_frames": {
+          "0": 13020,
+          "1": 12660
+        }
+      },
+      "fixed_calendar_seconds": null,
+      "pipeline_cache": null,
+      "post_request_wall_seconds": 3.499596118927002,
+      "peers": [
+        {
+          "player": 0,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032037-718925/player-0/host.log",
+            "sha256": "62c8c0e89cf173bd940cdcb697bb4864086f4235032ebf394dad4b81d431cd4b"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032037-718925/player-0/input.json",
+            "sha256": "14c26a233311f338e9aeb37025af937ad623a256a9399429894df4f7f8d45b6e"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 13150,
+              "state": 31
+            },
+            {
+              "frame": 13210,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 6,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [361.9241s] T=1022 x0=0x1 x1=0x6 x2=0x10b7928d0 x3=0x717bfd3f18 x4=0x71857dca30 x5=0x70cac75a60 x6=0 x7=0x40000000 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10c9e9f60 lr=0x10a24103c x8=0x1022 [x20+0x130]=01000000060000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [361.9243s] T=1022 x0=0x1 x1=0x6 x2=0x10b7928d0 x3=0x717bfd3f18 x4=0x71857dca30 x5=0x70cac75a60 x6=0 x7=0x40000000 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10c9e9f60 lr=0x10a24103c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [361.9245s] T=1022 x0=0x1 x1=0x6 x2=0x10b7928d0 x3=0x717bfd3f18 x4=0x71857dca30 x5=0x70cac75a60 x6=0 x7=0x40000000 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10c9e9f60 lr=0x10a24103c x8=0x8 [x20+0x130]=01000000060000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1401 miss=0 write=0 error=0",
+          "calendar_option": null
+        },
+        {
+          "player": 1,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032037-718925/player-1/host.log",
+            "sha256": "4e279697337f59f949f2ec489d2a7df190db32fa5996ef9685002b00ef1ee21b"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032037-718925/player-1/input.json",
+            "sha256": "5336c5b16080a315c374abb3def1cbfa2010d3aa7aeeb0f79ec906ade7111854"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 12778,
+              "state": 31
+            },
+            {
+              "frame": 12838,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 7,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [354.9745s] T=1023 x0=0x1 x1=0x7 x2=0x10fc328d0 x3=0x1 x4=0x717a14bd19 x5=0x70d456dca1 x6=0x69676f4c x7=0 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x110e89f60 lr=0x10e6e103c x8=0x1023 [x20+0x130]=01000000070000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [354.9747s] T=1023 x0=0x1 x1=0x7 x2=0x10fc328d0 x3=0x1 x4=0x717a14bd19 x5=0x70d456dca1 x6=0x69676f4c x7=0 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x110e89f60 lr=0x10e6e103c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [354.9748s] T=1023 x0=0x1 x1=0x7 x2=0x10fc328d0 x3=0x1 x4=0x717a14bd19 x5=0x70d456dca1 x6=0x69676f4c x7=0 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x110e89f60 lr=0x10e6e103c x8=0x8 [x20+0x130]=01000000070000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1401 miss=0 write=0 error=0",
+          "calendar_option": null
+        }
+      ]
+    },
+    "delay120": {
+      "delay_native_presents": 120,
+      "window": {
+        "start_frames": {
+          "0": 12960,
+          "1": 12600
+        },
+        "target_frames": {
+          "0": 13080,
+          "1": 12720
+        },
+        "request_frames": {
+          "0": 13080,
+          "1": 12720
+        }
+      },
+      "fixed_calendar_seconds": null,
+      "pipeline_cache": null,
+      "post_request_wall_seconds": 3.6680190563201904,
+      "peers": [
+        {
+          "player": 0,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032647-315816/player-0/host.log",
+            "sha256": "188f9f02bc81f579cd8a72770da510b3923bb5116cf6a61582e3f977c3e71621"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032647-315816/player-0/input.json",
+            "sha256": "1f23337878e29b7d572f97060b68f32e61855312eed6b9f1c07e4367ebb344b7"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 13170,
+              "state": 31
+            },
+            {
+              "frame": 13230,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 6,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [366.0892s] T=1001 x0=0x1 x1=0x6 x2=0x10fb828d0 x3=0x7a806a87dc x4=0x7a8c54bd19 x5=0x16b338e11 \"x3?\" x6=0x69676f4c x7=0x16b338940 x19=0x7a8de22cb0 x20=0x7aa3ae44e0 x21=0x1 x22=0x1f x23=0x110dd9f60 lr=0x10e63103c x8=0x1001 [x20+0x130]=01000000060000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [366.0895s] T=1001 x0=0x1 x1=0x6 x2=0x10fb828d0 x3=0x7a806a87dc x4=0x7a8c54bd19 x5=0x16b338e11 \"x3?\" x6=0x69676f4c x7=0x16b338940 x19=0x7a8de22cb0 x20=0x7aa3ae44e0 x21=0x1 x22=0x1f x23=0x110dd9f60 lr=0x10e63103c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [366.0898s] T=1001 x0=0x1 x1=0x6 x2=0x10fb828d0 x3=0x7a806a87dc x4=0x7a8c54bd19 x5=0x16b338e11 \"x3?\" x6=0x69676f4c x7=0x16b338940 x19=0x7a8de22cb0 x20=0x7aa3ae44e0 x21=0x1 x22=0x1f x23=0x110dd9f60 lr=0x10e63103c x8=0x8 [x20+0x130]=01000000060000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1401 miss=0 write=0 error=0",
+          "calendar_option": null
+        },
+        {
+          "player": 1,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032647-315816/player-1/host.log",
+            "sha256": "0a83a72b4c372065c2c810b29fd678f867d2efe2189d56cfb46a6c3ee8f95e0d"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-032647-315816/player-1/input.json",
+            "sha256": "b94201bb0a9af3e9fbec5c51ea1051e8ff118c1059c00b647c1083712307a8e6"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 12801,
+              "state": 31
+            },
+            {
+              "frame": 12861,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 7,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [359.3712s] T=1001 x0=0x1 x1=0x7 x2=0x10dd7e8d0 x3=0xffffffff x4=0x16cfc4c54 x5=0x16cfc4cac x6=0x2 x7=0x16cfc4930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10efd5f60 lr=0x10c82d03c x8=0x1001 [x20+0x130]=01000000070000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [359.3715s] T=1001 x0=0x1 x1=0x7 x2=0x10dd7e8d0 x3=0xffffffff x4=0x16cfc4c54 x5=0x16cfc4cac x6=0x2 x7=0x16cfc4930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10efd5f60 lr=0x10c82d03c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [359.3717s] T=1001 x0=0x1 x1=0x7 x2=0x10dd7e8d0 x3=0xffffffff x4=0x16cfc4c54 x5=0x16cfc4cac x6=0x2 x7=0x16cfc4930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10efd5f60 lr=0x10c82d03c x8=0x8 [x20+0x130]=01000000070000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1401 miss=0 write=0 error=0",
+          "calendar_option": null
+        }
+      ]
+    },
+    "calendar": {
+      "delay_native_presents": 0,
+      "window": {
+        "start_frames": {
+          "0": 13020,
+          "1": 12660
+        },
+        "target_frames": {
+          "0": 13020,
+          "1": 12660
+        },
+        "request_frames": {
+          "0": 13020,
+          "1": 12660
+        }
+      },
+      "fixed_calendar_seconds": 1792488261,
+      "pipeline_cache": null,
+      "post_request_wall_seconds": 3.44745135307312,
+      "peers": [
+        {
+          "player": 0,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033253-972126/player-0/host.log",
+            "sha256": "55a8471726ccdaa71b512e5e6f79c63b6de4d4f4c470c68799ed3fd13b39e058"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033253-972126/player-0/input.json",
+            "sha256": "67fd375349781e323a2cdc5322ca9278481b3355e5a3c229f77294bf7c4ee85f"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 13130,
+              "state": 31
+            },
+            {
+              "frame": 13190,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 6,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [359.8402s] T=1001 x0=0x1 x1=0x6 x2=0x10b6628d0 x3=0x1 x4=0x735bbb1aa0 x5=0x16f8c4bb0 x6=0 x7=0x16f8c4920 x19=0x7351e22cb0 x20=0x7367ae44e0 x21=0x1 x22=0x1f x23=0x10c8b9f60 lr=0x10a11103c x8=0x1001 [x20+0x130]=01000000060000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [359.8405s] T=1001 x0=0x1 x1=0x6 x2=0x10b6628d0 x3=0x1 x4=0x735bbb1aa0 x5=0x16f8c4bb0 x6=0 x7=0x16f8c4920 x19=0x7351e22cb0 x20=0x7367ae44e0 x21=0x1 x22=0x1f x23=0x10c8b9f60 lr=0x10a11103c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [359.8408s] T=1001 x0=0x1 x1=0x6 x2=0x10b6628d0 x3=0x1 x4=0x735bbb1aa0 x5=0x16f8c4bb0 x6=0 x7=0x16f8c4920 x19=0x7351e22cb0 x20=0x7367ae44e0 x21=0x1 x22=0x1f x23=0x10c8b9f60 lr=0x10a11103c x8=0x8 [x20+0x130]=01000000060000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1401 miss=0 write=0 error=0",
+          "calendar_option": "1792488261"
+        },
+        {
+          "player": 1,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033253-972126/player-1/host.log",
+            "sha256": "d2c3b126f9c706d142dbe4b9c4720591e12330ee154c9f756f616fbefe6d98d7"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033253-972126/player-1/input.json",
+            "sha256": "f9bb6103f307617150d37f0f31ab483e09af5b78b3171e8e0b689cb612c9d845"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 12758,
+              "state": 31
+            },
+            {
+              "frame": 12818,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 7,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [353.4308s] T=1022 x0=0x1 x1=0x7 x2=0x10de3a8d0 x3=0x1 x4=0x717a14bd19 x5=0x70c9ba7ca1 x6=0x69676f4c x7=0x1 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10f091f60 lr=0x10c8e903c x8=0x1022 [x20+0x130]=01000000070000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [353.4310s] T=1022 x0=0x1 x1=0x7 x2=0x10de3a8d0 x3=0x1 x4=0x717a14bd19 x5=0x70c9ba7ca1 x6=0x69676f4c x7=0x1 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10f091f60 lr=0x10c8e903c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [353.4313s] T=1022 x0=0x1 x1=0x7 x2=0x10de3a8d0 x3=0x1 x4=0x717a14bd19 x5=0x70c9ba7ca1 x6=0x69676f4c x7=0x1 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10f091f60 lr=0x10c8e903c x8=0x8 [x20+0x130]=01000000070000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1401 miss=0 write=0 error=0",
+          "calendar_option": "1792488261"
+        }
+      ]
+    },
+    "cold": {
+      "delay_native_presents": 0,
+      "window": {
+        "start_frames": {
+          "0": 12720,
+          "1": 12360
+        },
+        "target_frames": {
+          "0": 12720,
+          "1": 12360
+        },
+        "request_frames": {
+          "0": 12720,
+          "1": 12360
+        }
+      },
+      "fixed_calendar_seconds": null,
+      "pipeline_cache": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a8/return-exp/pipeline-cache",
+      "post_request_wall_seconds": 3.377609968185425,
+      "peers": [
+        {
+          "player": 0,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033854-320621/player-0/host.log",
+            "sha256": "ea98bf240d2415cc36c641416ba358ce5f0d2042ad00c1248cee5d14869b46f6"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033854-320621/player-0/input.json",
+            "sha256": "4ab6e5c73f2c7a5933cf56675b8cbff916f306630be1a62ede760e2142a5fe56"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 12834,
+              "state": 31
+            },
+            {
+              "frame": 12894,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 6,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [372.0118s] T=1023 x0=0x1 x1=0x6 x2=0x10f9168d0 x3=0x1 x4=0x717a14bd19 x5=0x70d091fca1 x6=0x69676f4c x7=0x70d091f730 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x110b6df60 lr=0x10e3c503c x8=0x1023 [x20+0x130]=01000000060000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [372.0122s] T=1023 x0=0x1 x1=0x6 x2=0x10f9168d0 x3=0x1 x4=0x717a14bd19 x5=0x70d091fca1 x6=0x69676f4c x7=0x70d091f730 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x110b6df60 lr=0x10e3c503c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [372.0126s] T=1023 x0=0x1 x1=0x6 x2=0x10f9168d0 x3=0x1 x4=0x717a14bd19 x5=0x70d091fca1 x6=0x69676f4c x7=0x70d091f730 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x110b6df60 lr=0x10e3c503c x8=0x8 [x20+0x130]=01000000060000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=409 miss=992 write=992 error=0",
+          "calendar_option": null
+        },
+        {
+          "player": 1,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033854-320621/player-1/host.log",
+            "sha256": "a1aa7d25e5f79ccc238d1b920b5145843ddade4fb42fa2e92756664819560af8"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-033854-320621/player-1/input.json",
+            "sha256": "9dfd76ac943b434ddf11f9f14ab955cb0b983d54de5802375d3a23f3c63a6e7a"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 12475,
+              "state": 31
+            },
+            {
+              "frame": 12535,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 7,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [359.2742s] T=1023 x0=0x1 x1=0x7 x2=0x10bcee8d0 x3=0x1 x4=0x717a14bd19 x5=0x70cb6c4ca1 x6=0x69676f4c x7=0x40000000 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10cf45f60 lr=0x10a79d03c x8=0x1023 [x20+0x130]=01000000070000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [359.2745s] T=1023 x0=0x1 x1=0x7 x2=0x10bcee8d0 x3=0x1 x4=0x717a14bd19 x5=0x70cb6c4ca1 x6=0x69676f4c x7=0x40000000 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10cf45f60 lr=0x10a79d03c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [359.2748s] T=1023 x0=0x1 x1=0x7 x2=0x10bcee8d0 x3=0x1 x4=0x717a14bd19 x5=0x70cb6c4ca1 x6=0x69676f4c x7=0x40000000 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10cf45f60 lr=0x10a79d03c x8=0x8 [x20+0x130]=01000000070000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=953 miss=448 write=448 error=0",
+          "calendar_option": null
+        }
+      ]
+    },
+    "warm": {
+      "delay_native_presents": 0,
+      "window": {
+        "start_frames": {
+          "0": 13020,
+          "1": 12660
+        },
+        "target_frames": {
+          "0": 13020,
+          "1": 12660
+        },
+        "request_frames": {
+          "0": 13020,
+          "1": 12660
+        }
+      },
+      "fixed_calendar_seconds": null,
+      "pipeline_cache": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a8/return-exp/pipeline-cache",
+      "post_request_wall_seconds": 3.403592824935913,
+      "peers": [
+        {
+          "player": 0,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-034506-784580/player-0/host.log",
+            "sha256": "826092ae0b9715cbee5dfd30ebfcb469f5b007d6c63f7827dee2490cbf1f7cc6"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-034506-784580/player-0/input.json",
+            "sha256": "9a176920525ddef1e786beb47698c78c0aba0365e13d519e695a3c1d3a854907"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 13112,
+              "state": 31
+            },
+            {
+              "frame": 13172,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 6,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [366.1754s] T=1001 x0=0x1 x1=0x6 x2=0x10d9168d0 x3=0x1 x4=0x717a14bd19 x5=0x16d4d0e01 x6=0x69676f4c x7=0x16d4d0930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10eb6df60 lr=0x10c3c503c x8=0x1001 [x20+0x130]=01000000060000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [366.1757s] T=1001 x0=0x1 x1=0x6 x2=0x10d9168d0 x3=0x1 x4=0x717a14bd19 x5=0x16d4d0e01 x6=0x69676f4c x7=0x16d4d0930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10eb6df60 lr=0x10c3c503c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [366.1759s] T=1001 x0=0x1 x1=0x6 x2=0x10d9168d0 x3=0x1 x4=0x717a14bd19 x5=0x16d4d0e01 x6=0x69676f4c x7=0x16d4d0930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x10eb6df60 lr=0x10c3c503c x8=0x8 [x20+0x130]=01000000060000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1367 miss=34 write=34 error=0",
+          "calendar_option": null
+        },
+        {
+          "player": 1,
+          "log": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-034506-784580/player-1/host.log",
+            "sha256": "932187656cbf1674b14a1ea9ed9c01c5f519e8def139798f47968d15d372abe4"
+          },
+          "options": {
+            "path": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-034506-784580/player-1/input.json",
+            "sha256": "d57e1e70959b990fe06a76d4407ef71986197328c5e037e0e9732bde24cf9c97"
+          },
+          "branch": 33,
+          "states": [
+            {
+              "frame": 12745,
+              "state": 31
+            },
+            {
+              "frame": 12805,
+              "state": 33
+            }
+          ],
+          "branch_fields": {
+            "netroot_134": 7,
+            "netroot_13c": 8,
+            "task_query_return_w21": 1,
+            "state_w22": 31,
+            "upper_20c": 1
+          },
+          "raw_probe_lines": [
+            "[dm] PROBE main+0x38a10fc #1 [359.7740s] T=1001 x0=0x1 x1=0x7 x2=0x10eea28d0 x3=0x1 x4=0x717a14bd19 x5=0x16bd54e01 x6=0x69676f4c x7=0x16bd54930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x1100f9f60 lr=0x10d95103c x8=0x1001 [x20+0x130]=01000000070000000000000008000000",
+            "[dm] PROBE main+0x38a1144 #1 [359.7744s] T=1001 x0=0x1 x1=0x7 x2=0x10eea28d0 x3=0x1 x4=0x717a14bd19 x5=0x16bd54e01 x6=0x69676f4c x7=0x16bd54930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x1100f9f60 lr=0x10d95103c x8=0x8 [x19+0x20c]=01000000000000000800000000000000",
+            "[dm] PROBE main+0x38a1170 #1 [359.7746s] T=1001 x0=0x1 x1=0x7 x2=0x10eea28d0 x3=0x1 x4=0x717a14bd19 x5=0x16bd54e01 x6=0x69676f4c x7=0x16bd54930 x19=0x717ba22cb0 x20=0x71916e44e0 x21=0x1 x22=0x1f x23=0x1100f9f60 lr=0x10d95103c x8=0x8 [x20+0x130]=01000000070000000000000008000000"
+          ],
+          "pipeline_last_counter": "PIPELINE_DISK hit=1397 miss=4 write=4 error=0",
+          "calendar_option": null
+        }
+      ]
+    }
+  },
+  "conclusion": "All five runs chose 31 -> 33 on both peers. No safe continuity fix identified by the three requested discriminating experiments. Use the explicit fresh-process fallback; do not claim the race cause is proven.",
+  "limitations": [
+    "120-present diagnostic window measured from RESOURCE_FRAME checkpoints (60-present reporting granularity), not an instrumented per-peer RL-release instruction timestamp",
+    "pipeline cache is initially empty for the cold process pair; peers can populate and share it within that run",
+    "DM_FIXED_TIME fixes game-visible user/calendar time, not native RNG, monotonic time, fixed60 or RPC deadlines",
+    "branch probes are read-only observations; no native state or task fields overwritten"
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "schema": "arena.a8.fresh-bo3-comparison.v1",
+  "passed": true,
+  "session_lifecycle": "fresh_per_match",
+  "before": {
+    "mode": "full",
+    "result": {
+      "path": "work/a8/fresh-bo3-full/result.json",
+      "sha256": "6d6a155ccc16a7edcf9d81bf705b5d92f71e65abd914fa80f2b4ad9db2196815"
+    },
+    "summary": {
+      "path": "work/a8/fresh-bo3-full/summary.json",
+      "sha256": "4661a79924a86d3fe50fe45c9e95f36029ecb3138d7a5cda2722a55df77532d1"
+    },
+    "wall_seconds": 596.9546780586243,
+    "host": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a8/dmhost-full-v15",
+    "host_sha256": "0f1981db8a026e573e2c15bfbe3cf2334670d419c7c2bfd8a0b44189e072f30f",
+    "policy_source_sha256": [
+      "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+      "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+    ],
+    "games": [
+      {
+        "stage": 1,
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "host_pids": [
+          52230,
+          52301
+        ],
+        "score_by_role": [
+          1.10000002,
+          2.5
+        ],
+        "outcome": "b",
+        "wall_seconds": 595.2963891029358,
+        "controlled_seconds": 531.2554731369019,
+        "score_max_difference_pp": 0.0,
+        "suspect": false
+      },
+      {
+        "stage": 2,
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "host_pids": [
+          52228,
+          52299
+        ],
+        "score_by_role": [
+          1.0,
+          0.400000006
+        ],
+        "outcome": "a",
+        "wall_seconds": 596.6824481487274,
+        "controlled_seconds": 556.1041507720947,
+        "score_max_difference_pp": 0.0,
+        "suspect": false
+      },
+      {
+        "stage": 3,
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "host_pids": [
+          52229,
+          52300
+        ],
+        "score_by_role": [
+          1.10000002,
+          4.69999981
+        ],
+        "outcome": "b",
+        "wall_seconds": 595.7530281543732,
+        "controlled_seconds": 535.6645538806915,
+        "score_max_difference_pp": 0.0,
+        "suspect": false
+      }
+    ]
+  },
+  "after": {
+    "mode": "camera",
+    "result": {
+      "path": "work/a8/fresh-bo3-camera/result.json",
+      "sha256": "916420df46e036b9ca76de879758605b8d71f6ba2e54321d9b095db39a9fe296"
+    },
+    "summary": {
+      "path": "work/a8/fresh-bo3-camera/summary.json",
+      "sha256": "41cb7c426a29bb45d0ac758980864373970dbfd51c645851424456e856f3d7e7"
+    },
+    "wall_seconds": 534.0159800052643,
+    "host": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a8/dmhost-arena-v15",
+    "host_sha256": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+    "policy_source_sha256": [
+      "83b02edad96c5fad2014a498c22fdfe237cfa33bef7df890b1e6d211666435dd",
+      "01494775b815e808cda82f0c04177b0f8ea83d8cf468e2302216393d06bb7ea5"
+    ],
+    "games": [
+      {
+        "stage": 1,
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "host_pids": [
+          82113,
+          82498
+        ],
+        "score_by_role": [
+          1.10000002,
+          1.29999995
+        ],
+        "outcome": "b",
+        "wall_seconds": 532.0122208595276,
+        "controlled_seconds": 470.50358605384827,
+        "score_max_difference_pp": 0.0,
+        "suspect": false
+      },
+      {
+        "stage": 2,
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "host_pids": [
+          82115,
+          82504
+        ],
+        "score_by_role": [
+          1.20000005,
+          0.400000006
+        ],
+        "outcome": "a",
+        "wall_seconds": 533.7488288879395,
+        "controlled_seconds": 493.4973530769348,
+        "score_max_difference_pp": 0.0,
+        "suspect": false
+      },
+      {
+        "stage": 3,
+        "role_to_policy": [
+          0,
+          1
+        ],
+        "host_pids": [
+          82114,
+          82488
+        ],
+        "score_by_role": [
+          1.10000002,
+          4.9000001
+        ],
+        "outcome": "b",
+        "wall_seconds": 533.3539118766785,
+        "controlled_seconds": 475.066832780838,
+        "score_max_difference_pp": 0.0,
+        "suspect": false
+      }
+    ]
+  },
+  "wall_reduction_fraction": 0.10543295892754367,
+  "scope": "one real three-map BO3 per renderer; same policy revisions/roles, natural native RNG; fixed-input equivalence/performance gate remains the separate nine-plus-nine cohort",
+  "same_winners_by_map": true
+}

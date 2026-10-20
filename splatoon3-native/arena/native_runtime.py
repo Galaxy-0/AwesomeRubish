@@ -1,10 +1,11 @@
 """Version-pinned arena host selection; no changes to policy observations."""
 from multiprocessing.util import Finalize
+from functools import partial
 from pathlib import Path
 import json
 import hashlib
 
-from rl.native_start import NativeSessionPool,validate_runtime
+from rl.native_start import NativeSessionPool,NativeSession,validate_runtime
 
 _POOLS={}
 _FINALIZER=None
@@ -22,6 +23,8 @@ def default_runtime(*,require_accepted=True):
     build=json.loads(host.with_suffix('.build.json').read_text())
     if build.get('test_only') or build.get('experimental_hdr') or build.get('copy_mode','none')!='none' or build['render_mode']!='camera':
         raise ValueError('default arena host must be the selected camera-only production build')
+    lifecycle=record.get('session_lifecycle','reuse')
+    if lifecycle not in ('reuse','fresh_per_match'):raise ValueError('invalid native session lifecycle')
     if require_accepted:
         certificate=root/record['acceptance']
         if not certificate.is_file():
@@ -29,6 +32,10 @@ def default_runtime(*,require_accepted=True):
         accepted=json.loads(certificate.read_text())
         if not (accepted.get('passed') and accepted.get('full_a8_passed') and accepted.get('comparison',{}).get('equivalence_passed') and accepted.get('host_build',{}).get('output_sha256')==record['host_sha256']):
             raise ValueError('A8 default acceptance is invalid or belongs to another host')
+        if accepted.get('session_lifecycle','reuse')!=lifecycle:
+            raise ValueError('A8 acceptance session lifecycle differs from default')
+        if lifecycle=='fresh_per_match' and not (accepted.get('continuous_fallback') or {}).get('accepted_known_issue'):
+            raise ValueError('A8 fresh-process acceptance must disclose the continuous-start known issue')
     return dict(host=str(host),patched=str(patched))
 
 
@@ -61,6 +68,12 @@ def env_options(runtime):
     if runtime is None:return {}
     if set(runtime)!={'host','patched'}:raise ValueError('native runtime keys must be host and patched')
     key=(str(Path(runtime['host']).resolve()),str(Path(runtime['patched']).resolve()))
+    lifecycle=json.loads(DEFAULT_RUNTIME.read_text()).get('session_lifecycle','reuse')
+    if lifecycle not in ('reuse','fresh_per_match'):raise ValueError('invalid native session lifecycle')
+    if lifecycle=='fresh_per_match':
+        host,patched=validate_runtime(*key)
+        build=json.loads(host.with_suffix('.build.json').read_text())
+        return dict(patched=patched,session_factory=partial(NativeSession,host=host),session_releaser=None,pixels=build.get('render_mode')!='camera')
     if key not in _POOLS:
         _POOLS[key]=NativeSessionPool(*key)
         if _FINALIZER is None:_FINALIZER=Finalize(None,close_pools,exitpriority=10)

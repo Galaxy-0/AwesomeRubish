@@ -25,5 +25,6 @@
     "main.fixups.tsv": "6f83f654b9d6c3bd04b91557667e9d64c1e83357ecd14e3cc5afe7c8118dcab7",
     "sdk.fixups.tsv": "63cebe532bd9f6c81d6944caa7bfc66befc226e816e42adfcf9d07da53ea071b"
   },
-  "acceptance": "arena/results/a8-acceptance-20261021.json"
+  "acceptance": "arena/results/a8-acceptance-20261021.json",
+  "session_lifecycle": "fresh_per_match"
 }
