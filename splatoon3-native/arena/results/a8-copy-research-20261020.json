@@ -2,7 +2,7 @@
   "schema": "arena.a8.copy-research.v1",
   "passed": false,
   "full_a8_passed": false,
-  "status": "coalesce_equivalent_below_20_percent_scatter_smoke_running",
+  "status": "stopped_after_two_copy_candidates_below_20_percent",
   "profile": {
     "path": "arena/results/a8-copy-profile-20261020.json",
     "sha256": "2faf50ef4220befe8f006f5b75d9902a231869186ccd2b2feb85afd8c73e888c"
@@ -135,7 +135,173 @@
       "sha256": "e627adbeac205e87045da92ac6d51a37b4d0a774165f3a21f602b7768ff8cd6b",
       "passed": false,
       "equivalence_passed": true,
-      "fps_ratio": 1.0068480334313443
+      "performance": {
+        "before": {
+          "controlled_fps": 21.453483323290932,
+          "trials": 9,
+          "batch_wall_seconds": 1736.4308109283447,
+          "games_per_hour": 18.65896400598769,
+          "wall_seconds": 575.4936580657959,
+          "gpu_percent": 95.46800437532453,
+          "phase_wall_seconds": {
+            "boot": 8.111235115263197,
+            "room": 15.281919452879164,
+            "loading": 23.385211017396713,
+            "controlled": 514.6705816321903,
+            "settlement": 13.958317438761393,
+            "cleanup": 0.08639340930514866
+          }
+        },
+        "after": {
+          "controlled_fps": 21.600397494307618,
+          "trials": 9,
+          "batch_wall_seconds": 1729.7778837680817,
+          "games_per_hour": 18.73072855424714,
+          "wall_seconds": 572.1969046327803,
+          "gpu_percent": 92.4758761195696,
+          "phase_wall_seconds": {
+            "boot": 8.199701256222195,
+            "room": 14.58077065149943,
+            "loading": 24.170372168223064,
+            "controlled": 511.5894985463884,
+            "settlement": 13.56356954574585,
+            "cleanup": 0.09299246470133464
+          }
+        },
+        "fps_ratio": 1.0068480334313443,
+        "batch_throughput_ratio": 1.0038461164422858
+      },
+      "score_mean_difference_pp": [
+        0.04444444177777773,
+        1.4444444307315507e-08
+      ],
+      "score_noise_upper_pp": [
+        0.7000000500000001,
+        0.49999987999999984
+      ]
+    },
+    {
+      "mode": "scatter",
+      "path": "arena/results/a8-copy-scatter-v14-20261020.json",
+      "sha256": "637a0f159758babec15665a6b4173ec2bd63a25b7b84ee1c98b389996ab97cc4",
+      "passed": false,
+      "equivalence_passed": true,
+      "performance": {
+        "before": {
+          "controlled_fps": 21.453483323290932,
+          "trials": 9,
+          "batch_wall_seconds": 1736.4308109283447,
+          "games_per_hour": 18.65896400598769,
+          "wall_seconds": 575.4936580657959,
+          "gpu_percent": 95.46800437532453,
+          "phase_wall_seconds": {
+            "boot": 8.111235115263197,
+            "room": 15.281919452879164,
+            "loading": 23.385211017396713,
+            "controlled": 514.6705816321903,
+            "settlement": 13.958317438761393,
+            "cleanup": 0.08639340930514866
+          }
+        },
+        "after": {
+          "controlled_fps": 21.562312691989426,
+          "trials": 9,
+          "batch_wall_seconds": 1728.0433869361877,
+          "games_per_hour": 18.74952923343264,
+          "wall_seconds": 572.1279662450155,
+          "gpu_percent": 95.07960131696454,
+          "phase_wall_seconds": {
+            "boot": 8.01283433702257,
+            "room": 14.324378199047512,
+            "loading": 23.678258445527817,
+            "controlled": 512.3215233749813,
+            "settlement": 13.714745177163017,
+            "cleanup": 0.07622671127319336
+          }
+        },
+        "fps_ratio": 1.0050728064556465,
+        "batch_throughput_ratio": 1.0048537114609304
+      },
+      "score_mean_difference_pp": [
+        0.17222221655555547,
+        0.2166666571111111
+      ],
+      "score_noise_upper_pp": [
+        0.8000000079999999,
+        1.1999999239999997
+      ]
     }
-  ]
+  ],
+  "scatter_smoke": {
+    "path": "work/a8/scatter-v14-smoke/trial-0/result.json",
+    "sha256": "52835c1ef0d0bd46bc1d1ba152bef65d8285695ca06650d6b7a7f2bc7c262cb7",
+    "passed": true,
+    "controlled_fps": 35.21369830336047,
+    "wall_seconds": 357.89602303504944
+  },
+  "stopped": true,
+  "two_rounds_completed": true,
+  "equivalence_passed": true,
+  "significant_speedup": false,
+  "resource_groups": [
+    {
+      "mode": "copy-control",
+      "valid_games": 9,
+      "void": 0,
+      "completed_path": "work/a8/copy-control-v14-nine/completed.json",
+      "completed_sha256": "34453742011cdee6759159b9c97b045ba12f850dfee26f725b37ff81d20d64ae",
+      "max_new_swapout_bytes": 0,
+      "max_pressure": 1,
+      "max_room_rss_mib": 3379.0,
+      "max_room_footprint_mib": 5250.0
+    },
+    {
+      "mode": "coalesce",
+      "valid_games": 9,
+      "void": 0,
+      "completed_path": "work/a8/coalesce-v14-nine/completed.json",
+      "completed_sha256": "08ba9857cda975071d44aaa06a1011101584b4ec4d15a26af27234197c76b2d0",
+      "max_new_swapout_bytes": 0,
+      "max_pressure": 1,
+      "max_room_rss_mib": 3349.0,
+      "max_room_footprint_mib": 5196.0
+    },
+    {
+      "mode": "scatter",
+      "valid_games": 9,
+      "void": 0,
+      "completed_path": "work/a8/scatter-v14-nine/completed.json",
+      "completed_sha256": "d8b2948f1627c42a7ece0bb7fe3f89272f3408fc73eac04af4162d2cb9482230",
+      "max_new_swapout_bytes": 0,
+      "max_pressure": 1,
+      "max_room_rss_mib": 3406.0,
+      "max_room_footprint_mib": 5184.0
+    }
+  ],
+  "components": {
+    "path": "work/a8/components-copy-final.json",
+    "sha256": "21da308a278499adf4c77200347cb5021a6c3925b94060432d8c7ae36b7f9394",
+    "component_tests": 55,
+    "gpu_byte_submissions": 306,
+    "native_render_checks": 296
+  },
+  "not_run": {
+    "four_room_resource_probe": "No candidate passed the performance gate; stopped after round two",
+    "final_a1_a6_regression": "No accepted optimization; final native regression gate was not entered"
+  },
+  "remaining_options": [
+    "Attribute CPU fence waits by caller and assess lower-perturbation GPU timing before removing synchronization",
+    "Assess versioned uniform binding or narrower proven resource/stage barriers; preserve native copy/readback escape semantics",
+    "Assess camera-only internal resolution with consumer/alias guards, full-size paint/storage/samples and pixel-session protection"
+  ],
+  "negative_milestone_audit": {
+    "passed": true,
+    "expected_rejection": true,
+    "exit_code": 1,
+    "log": "work/a8/copy-v14-acceptance-negative.log",
+    "sha256": "b2fad2f7ba5ff864dda81835dc83bfcda65650a45e144dee43b453b98fbfaa89",
+    "acceptance_created": false
+  },
+  "default_host_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+  "old_interrupted_v5_preserved": true
 }
