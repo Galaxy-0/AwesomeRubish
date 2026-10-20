@@ -49,6 +49,8 @@ def collect(corpus):
                     np.isfinite(s0[:, :11]).all(axis=1) & np.isfinite(s1[:, :11]).all(axis=1) &
                     np.isfinite(s2[:, :11]).all(axis=1) &
                     (s0[:, 10] == 1) & (s1[:, 10] == 1) & (s2[:, 10] == 1) &
+                    np.isin(s0[:, 8], (0, 1)) & np.isin(s1[:, 8], (0, 1)) & np.isin(s2[:, 8], (0, 1)) &
+                    np.isin(s0[:, 9], (0, 4, 5)) & np.isin(s1[:, 9], (0, 4, 5)) & np.isin(s2[:, 9], (0, 4, 5)) &
                     (s0[:, 1] < 20) & (s1[:, 1] < 20) & (s2[:, 1] < 20) &
                     (np.linalg.norm(v0, axis=1) < .8) & (np.linalg.norm(v1, axis=1) < .8) &
                     (s1[:, 8] == s2[:, 8]))

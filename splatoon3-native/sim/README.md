@@ -1,6 +1,7 @@
 # S1 offline 1v1 simulator
 
 Python + NumPy，只做工作刮水刀、占地、Yunohana / District00 / Yagara。
+第二阶段已加入历史辨识、短时域主评估、预扣/退款和完整核心的批量运动查询；原生一致性仍未签收。
 此目录的程序不构建宿主、不启动游戏、不修改原生擂台或策略。
 从项目目录用 `.venv/bin/python -m sim.parameters` 开始。
 
@@ -31,8 +32,8 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 `frames` 是 fixed60 游戏帧数；同时提交两端输入，先移动/发射，再统一结算伤害，
 允许互杀。轻挥/满蓄采用 RomFS 球列、速度和存活时间；接触斩采用参数盒体与
 胶囊近似。伤害/HP/墨量均归一化到 0..1。下潜取消蓄力；满蓄使用20内部计数
-加首帧边界，站立21/出墨26是 A6 实测锚点。墨量在释放时扣款，尚未模拟原生
-蓄力过程的预扣/退款，因此中途墨量曲线存在已知差异。
+加首帧边界，站立21/出墨26是 A6 实测锚点。未传 `WeaponModel` 时保留第一阶段
+释放扣款基线；传入第二阶段模型会执行预扣/退款与经原生采样区间拟合的HP生效延迟。
 
 `Assumptions` 集中所有未提取默认值；A2 的 AP19 游速与 AP38 主墨效只是两个
 经验锚点，其间线性插值不代表原生技能曲线。其他配装效果在 `unsupported`
@@ -43,7 +44,7 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 近似碰撞。涂地以导航节点为带高度层的粗格，墙阻断传播、同队重复涂色不再次
 充能；计分分母含未涂格。节点可潜游性不等于原生可计分地面，原生纹理/涂点
 映射仍未知。特殊量有近似面积充能，大招效果留待后续。出生从导航落地点开始，
-重生直接回落地点，不模拟发射台飞行。移动/跳跃、回血回墨和重生均待实机校准。
+重生直接回落地点，不模拟发射台飞行。移动/跳跃已有离线辨识，回血回墨和重生等仍待实机校准。
 
 观测复用 `PolicyProjector`、`GeometricVision` 和 typed own-special encoder，
 保持 FOV/墙遮挡/静止潜墨隐藏/溅墨例外及最后目击记忆；敌方 HP/墨量与裁判
@@ -59,8 +60,9 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 
 `sim.interfaces.ParallelEnv` 提供字典式 reset/step 与双端 reward/termination；
 `BatchSimulator` 提供批量输入形状，复用只读地图/参数，每个环境有独立墨图。
-当前 CPU 串行步进，不宣称已向量化或通过官方 Gym/PettingZoo API 验证；尚未
-提供 spaces/注册适配器。核心每帧不做渲染，无需游戏引擎。
+`BatchSimulator` 保留串行兼容接口；`sim.batch.VectorBatchSimulator` 向量化同图多局
+的运动/分桶地面查询，近墙回退同一标量判定。武器/涂地仍逐局处理，完整核心均执行。
+未通过官方 Gym/PettingZoo API 验证，尚未提供 spaces/注册适配器。无渲染、无需游戏引擎。
 
 ## 历史同输入对照
 
@@ -78,9 +80,8 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 输入缺口报错，不偷偷填中立。A1/A2较早的原件没有完整动作，报告明确单列为
 按已签收夹具脚本重建；A2调参锚点不作为独立验证。
 
-本轮固定的对照结果见 [COMPARISON.md](COMPARISON.md)。当前 T1 长轨迹与
-最终占地差异明显，**未通过原生一致性验收**。本轮按要求在核心与报告完成后
-停止，实机校准及后续操作的清单在 `notes/PROGRESS.md`。
+当前结果见 [COMPARISON.md](COMPARISON.md)。短时域是主指标，长轨迹与最终占地
+为次要诊断，**未通过原生一致性验收**。实机校准及后续操作清单在 `notes/PROGRESS.md`。
 
 ## 第二阶段保真度
 
@@ -97,3 +98,15 @@ obs, info = env.step({'player_0': neutral(), 'player_1': neutral()}, frames=12)
 或 `.venv/bin/python -m sim.horizon --model work/sim/fidelity/motion.json --out work/sim/fidelity/horizon-fitted.json`。
 未传模型时保留第一阶段方程用于可复现基线。支持面与墙体分别处理，坡道不因脚部
 判定球碰到其支撑面而被误判成墙。人形所在墨色、完整AP曲线和台阶材质上限仍不可辨识。
+
+```sh
+.venv/bin/python -m sim.calibrate_weapon
+.venv/bin/python -m sim.horizon --model work/sim/fidelity/motion.json --weapon-model work/sim/fidelity/weapon.json --vector-batch 16 --out work/sim/fidelity/horizon-final.json
+.venv/bin/python -m sim.speed --games 16 --frames 600 --out work/sim/fidelity/speed-final.json
+.venv/bin/python -m sim.fidelity_report
+.venv/bin/python -m sim.run arena/policies/rush arena/policies/high-ground --frames 60 --motion-model work/sim/fidelity/motion.json --weapon-model work/sim/fidelity/weapon.json
+```
+
+预扣曲线66点属于校准重算，独立combat房另报验证。5帧HP延迟是对端包反馈的有效模型，
+不是已分解的物理命中时间；接触斩关节起点仍是A1校准候选。原始模型JSON、历史曲线与
+证据哈希只在work/。单/双CPU吞吐分别报计算和进程启动成本，最多两个worker，BLAS线程1。

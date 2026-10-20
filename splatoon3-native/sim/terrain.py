@@ -48,6 +48,51 @@ class Mesh(CollisionMesh):
         hits = self.hits((x, top, z), (x, bottom, z), .00001)
         return top - hits[0] if len(hits) else None
 
+    def floor_batch(self, positions, top, bottom):
+        """Group rays by spatial bin; vectorize query x triangle barycentrics."""
+        positions = np.asarray(positions)
+        top = np.broadcast_to(top, len(positions))
+        bottom = np.broadcast_to(bottom, len(positions))
+        result = np.full(len(positions), np.nan)
+        keys = np.floor(positions[:, [0, 2]]/self.cell).astype(int)
+        for key in np.unique(keys, axis=0):
+            ids = np.flatnonzero((keys == key).all(axis=1))
+            triangles = self.triangles[self.bins.get(tuple(key), np.empty(0, int))]
+            if not len(triangles): continue
+            a, ab, ac = triangles[:, 0], triangles[:, 1]-triangles[:, 0], triangles[:, 2]-triangles[:, 0]
+            denom = ab[:, 0]*ac[:, 2]-ab[:, 2]*ac[:, 0]
+            valid = abs(denom) > 1e-12
+            for offset in range(0, len(ids), 256):
+                selected = ids[offset:offset+256]
+                dx = positions[selected, 0, None]-a[:, 0]
+                dz = positions[selected, 2, None]-a[:, 2]
+                safe = np.where(valid, denom, 1.)
+                u = (dx*ac[:, 2]-dz*ac[:, 0])/safe
+                v = (ab[:, 0]*dz-ab[:, 2]*dx)/safe
+                y = a[:, 1]+u*ab[:, 1]+v*ac[:, 1]
+                keep = valid & (u >= -1e-8) & (v >= -1e-8) & (u+v <= 1+1e-8)
+                keep &= (y < top[selected, None]-.00001) & (y > bottom[selected, None]+.00001)
+                highest = np.max(np.where(keep, y, -np.inf), axis=1)
+                result[selected] = np.where(np.isfinite(highest), highest, np.nan)
+        return result
+
+    def broadphase_batch(self, low, high):
+        """Conservative AABB query: false permits skipping scalar wall sweeps."""
+        a = np.floor(low[:, [0, 2]]/self.cell).astype(int)
+        b = np.floor(high[:, [0, 2]]/self.cell).astype(int)
+        keys = np.column_stack([a, b])
+        result = np.zeros(len(low), bool)
+        for key in np.unique(keys, axis=0):
+            ids = np.flatnonzero((keys == key).all(axis=1))
+            groups = [self.bins[x, z] for x in range(key[0], key[2]+1)
+                      for z in range(key[1], key[3]+1) if (x, z) in self.bins]
+            if not groups: continue
+            tri = np.unique(np.concatenate(groups))
+            overlap = ((self.low[tri][None] <= high[ids, None]) &
+                       (self.high[tri][None] >= low[ids, None])).all(axis=2)
+            result[ids] = overlap.any(axis=1)
+        return result
+
     def sweep(self, start, end, radius):
         """Conservative sampled sphere sweep (center and six axial lanes)."""
         a, b = np.asarray(start), np.asarray(end)
@@ -153,6 +198,25 @@ class Terrain:
                 p = q
                 if grounded and floor is not None:
                     p[1] = floor
+        return p
+
+    def move_batch(self, positions, deltas, grounded, radius=.3):
+        """Support-aware batch equivalent; exact scalar fallback near walls."""
+        p = np.array(positions, float, copy=True)
+        for axis in (0, 2):
+            q = p.copy()
+            q[:, axis] += deltas[:, axis]
+            floors = self.human.floor_batch(q, p[:, 1]+.205, p[:, 1]-.5)
+            q[:, 1] = np.where(grounded & np.isfinite(floors), floors, p[:, 1])
+            if self.obstacles is not None:
+                low, high = np.minimum(p, q)-radius, np.maximum(p, q)+radius
+                low[:, 1] = np.minimum(p[:, 1], q[:, 1])+.02
+                high[:, 1] = np.maximum(p[:, 1], q[:, 1])+1.3+radius
+                near = self.obstacles.broadphase_batch(low, high)
+                for i in np.flatnonzero(near):
+                    d = np.zeros(3); d[axis] = deltas[i, axis]
+                    q[i] = self.move(p[i], d, radius, bool(grounded[i]), support_aware=True)
+            p = q
         return p
 
 

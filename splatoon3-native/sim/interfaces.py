@@ -4,6 +4,7 @@ Dictionary observations match arena.policy.v1. This is a PettingZoo-style
 adapter, not registered Gym/PettingZoo conformance (spaces need a later wrapper).
 """
 from .engine import Simulator, BatchSimulator
+from .batch import VectorBatchSimulator
 
 
 class ParallelEnv:
@@ -38,4 +39,4 @@ class ParallelEnv:
         pass
 
 
-__all__ = ['ParallelEnv', 'BatchSimulator']
+__all__ = ['ParallelEnv', 'BatchSimulator', 'VectorBatchSimulator']

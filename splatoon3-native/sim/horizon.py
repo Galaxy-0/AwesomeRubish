@@ -24,6 +24,22 @@ def action_dict(array):
                                buttons=array[i, 7:].tolist()) for i in range(2)}
 
 
+def measure(player, row):
+    """Unknown native discrete fields contribute no invented mismatch sample."""
+    values = dict(position=float(np.linalg.norm(player.position-row[:3])),
+        horizontal=float(np.linalg.norm((player.position-row[:3])[[0, 2]])),
+        vertical=abs(float(player.position[1]-row[1])),
+        heading=angle_error(player.heading,row[3]),yaw=angle_error(player.yaw,row[4]),
+        ink=abs(player.ink-row[7]),hp=abs(player.hp-row[6]))
+    if row[8] in (0, 1):
+        values['squid'] = int(player.squid != bool(row[8]))
+        if row[8] == 0 or row[9] in (0, 4, 5):
+            values['submerged'] = int(player.submerged != bool(row[8] == 1 and row[9] == 0))
+    if row[10] in (0, 1):
+        values['alive'] = int(player.alive != bool(row[10]))
+    return {name:value for name,value in values.items() if math.isfinite(value)}
+
+
 def reset_native(env, trace, anchor):
     """Reset all observable fields, infer hidden state from PAST only.
 
@@ -127,14 +143,7 @@ def evaluate(entries, horizons=(30, 60, 120, 300), *, model=None, max_windows=No
                         if not np.isfinite(row[0]):
                             continue
                         counts['samples'] += 1
-                        values = dict(position=float(np.linalg.norm(p.position-row[:3])),
-                                      horizontal=float(np.linalg.norm((p.position-row[:3])[[0, 2]])),
-                                      vertical=abs(float(p.position[1]-row[1])),
-                                      heading=angle_error(p.heading, row[3]), yaw=angle_error(p.yaw, row[4]),
-                                      ink=abs(p.ink-row[7]), hp=abs(p.hp-row[6]),
-                                      squid=int(p.squid != bool(row[8])),
-                                      submerged=int(p.submerged != bool(row[8] == 1 and row[9] == 0)),
-                                      alive=int(p.alive != bool(row[10])))
+                        values = measure(p, row)
                         for name, value in values.items():
                             if math.isfinite(value):
                                 errors[name].append(value)
