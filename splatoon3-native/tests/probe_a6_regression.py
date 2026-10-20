@@ -5,7 +5,9 @@ Each suite owns one ordinary-length game. Effect assertions remain separate
 from completed inputs. Zip traversal and charge-keep remain unsupported.
 """
 import argparse
+import json
 import math
+from pathlib import Path
 import traceback
 from unittest.mock import patch
 from a6_lab import Lab,neutral
@@ -17,6 +19,7 @@ from a6_metrics import large_hp_drops
 from stamper import charge_slash,emerge_charge,light_combo,burst_bomb
 from rl.loadout import uniform_loadout
 from rl.native_start import NativeSession
+from a6_special_gate import FILL
 
 
 def combat(lab):
@@ -41,8 +44,6 @@ def roll(lab):
     lab.navigate({0:(0.,3.,8.),1:(18.,3.,8.)})
     for x in (3.,6.,0.):lab.navigate({0:(x,3.,8.)});lab.paint_floor(0)
     for name,reverse,jump in [('swim-forward-jump-control',False,True),('swim-reverse-control',True,False),('squid-roll-matched',True,True)]:roll_case(lab,name,reverse,jump)
-    lab.save()
-    if not calibrate_roll(lab.out/'result.json')['passed']:raise AssertionError('roll matched-control witness failed')
 
 
 def aim_surge(lab):
@@ -78,8 +79,26 @@ def special(lab):
                 if not i['alive'] or not i['special_valid']:raise AssertionError('special feedback unavailable')
             if all(interior.values()) and lab.info(0)['special']==0. and lab.info(1)['special']==1.:break
         else:raise AssertionError('special lifecycle/full-infinite behavior failed')
-        lab.add(dict(kind='special-cycle',number=cycle,before=before,history=history,after={n:lab.info(n) for n in (0,1)}))
+        for n in players:
+            samples=[h['infos'][f'player_{n}'] for h in history]
+            values=[i['special'] for i in samples]
+            if min(values)>.04 or len({v for v in values if .05<v<.95})<20 or samples[-1]['frame']-before[n]['frame']<450 or not all(i['hp_valid'] and i['hp']>=.999 for i in samples):raise AssertionError('special lacks gradual native consumption')
+        if cycle==2 and any(h['infos']['player_0']['special']!=0. for h in history):raise AssertionError('full unexpectedly refilled')
+        lab.add(dict(kind='special-cycle',number=cycle,players=players,before=before,history=history,after={n:lab.info(n) for n in (0,1)}))
         idle('after-special',{0:0.,1:1.})
+
+
+def audit_special_closed(lab):
+    first=next(c for c in lab.result['cases'] if c['kind']=='special-cycle')
+    session=Path(lab.result['session']);fills={}
+    for n,mode,count in ((0,'full',1),(1,'infinite',3)):
+        player=session/f'player-{n}'
+        if json.loads((player/'input.json').read_text()).get('DM_TEST_SPECIAL')!=mode:raise AssertionError('special mode missing from actual launch')
+        rows=FILL.findall((player/'host.log').read_text(errors='replace'))
+        slot=first['before'][n]['self_slot']
+        if len(rows)!=count or any(int(r[1])!=slot or r[2]!=mode or int(r[3])!=i+1 or abs(float(r[4]))>.02 or int(r[5])!=0 or float(r[6])!=210. for i,r in enumerate(rows)):raise AssertionError('native special fill count/slot/consumption mismatch')
+        fills[f'player_{n}']=rows
+    lab.result['host_fills']=fills;lab.save()
 
 
 def main(args):
@@ -94,6 +113,15 @@ def main(args):
         lab.result.update(passed=True,probe_completed=True)
     except BaseException as e:lab.result['errors'].append(repr(e));lab.result['traceback']=traceback.format_exc()
     finally:lab.close()
+    if lab.result['passed'] and not lab.result['errors']:
+        try:
+            if args.suite=='roll':
+                calibration=calibrate_roll(lab.out/'result.json')
+                if not calibration['passed']:raise AssertionError('roll matched-control witness failed')
+                (lab.out/'roll-calibration.json').write_text(json.dumps(calibration,indent=2)+'\n')
+            elif args.suite=='special':audit_special_closed(lab)
+        except BaseException as e:
+            lab.result.update(passed=False,traceback=traceback.format_exc());lab.result['errors'].append(repr(e));lab.save()
     print(lab.out,flush=True);return 0 if lab.result['passed'] and not lab.result['errors'] else 1
 
 

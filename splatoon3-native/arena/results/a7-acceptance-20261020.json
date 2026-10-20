@@ -1,0 +1,720 @@
+{
+  "schema": "arena.a7.acceptance.v1",
+  "passed": true,
+  "full_a7_passed": true,
+  "score_criterion": "per-role absolute difference of route means <= max of the two within-route ranges; no confidence/determinism claim",
+  "noise_upper_pp": [
+    2.199999988,
+    1.2999998879999999
+  ],
+  "mean_difference_pp": [
+    0.2666666706666667,
+    0.36666661266666645
+  ],
+  "maximum_cross_difference_pp": [
+    2.199999988,
+    1.2999998879999999
+  ],
+  "all_cross_pairs_within_noise": true,
+  "scores_by_route": {
+    "menu": [
+      [
+        1.79999995,
+        0.800000012
+      ],
+      [
+        0.800000012,
+        2.0
+      ],
+      [
+        1.20000005,
+        2.0999999
+      ]
+    ],
+    "native": [
+      [
+        0.800000012,
+        2.0999999
+      ],
+      [
+        3.0,
+        1.79999995
+      ],
+      [
+        0.800000012,
+        2.0999999
+      ]
+    ]
+  },
+  "outcomes": {
+    "menu": {
+      "a": 1,
+      "b": 2,
+      "draw": 0
+    },
+    "native": {
+      "a": 1,
+      "b": 2,
+      "draw": 0
+    }
+  },
+  "baseline": {
+    "path": "work/a7/repeatability-v43/result.json",
+    "sha256": "b239bea6306b1732b72db70382232fbffb47dfde7192d2ae6a497983259df459"
+  },
+  "regression": {
+    "path": "work/a7/final-regression-v43-supplement/result.json",
+    "sha256": "5bd1492254e99541a70d7682519c135ff5f72e01671c0d561144ebf6f5595315"
+  },
+  "cross_map_continuous": {
+    "path": "work/a7/continuous-v43-final/result.json",
+    "sha256": "cd2fa2be73c10c60bbc7a38e784f7e59ffe949c813939d9add6e4739d2023d79"
+  },
+  "regression_plan": {
+    "path": "work/a7/final-regression-v43-supplement/plan.json",
+    "sha256": "6fdab85e0b07c1db3fa480e4b228a1ba4cd426f7607b939a7042f897533bfce2"
+  },
+  "historical_a5": {
+    "path": "work/a7/final-regression-v43/a5-historical.json",
+    "sha256": "16f008a6ea73adede4fd6227717cb50781f7cf64b2c1f97d99deeff4b14285de"
+  },
+  "scorecards": {
+    "reference": {
+      "path": "work/a7/final-regression-v43-supplement/card-reference-scorecard.json",
+      "sha256": "77b7a8c3445141fe5dba63a8d9b88ed74b3ddbe07102a6cf0b80d1e045db5f96",
+      "policy_source_sha256": "c6f89806a95a7db5ad09e509a9b636cd2902cbf1aa2563cacffc6c71a6b0bd8f",
+      "measured": 13,
+      "total": 13,
+      "aggregate_score": 35.449,
+      "lateral_window_hits": 2,
+      "lateral_window_trials": 9,
+      "approach_downs": 1,
+      "approach_trials": 1
+    },
+    "alpha": {
+      "path": "work/a7/final-regression-v43-supplement/card-alpha-scorecard.json",
+      "sha256": "c99f9c89d249285f41132bf0cda17c2c05cb95fdd067a1ccf248f47d7285812c",
+      "policy_source_sha256": "ed6fb4707adaa2f4f49fe8fc822330afa2765b1d9959b0f060001d67b3ae217c",
+      "measured": 13,
+      "total": 13,
+      "aggregate_score": 42.051,
+      "lateral_window_hits": 3,
+      "lateral_window_trials": 9,
+      "approach_downs": 1,
+      "approach_trials": 1
+    },
+    "bravo": {
+      "path": "work/a7/final-regression-v43-supplement/card-bravo-scorecard.json",
+      "sha256": "7f9b56725195b03c56b5f0facead9e8eba33733783fb367355e6e74d20db0f10",
+      "policy_source_sha256": "3a06d9795b94d3ab816766f9ab04bad5b5e316e43897424545555dd1aeb64d6c",
+      "measured": 13,
+      "total": 13,
+      "aggregate_score": 6.474,
+      "lateral_window_hits": 0,
+      "lateral_window_trials": 9,
+      "approach_downs": 0,
+      "approach_trials": 1
+    }
+  },
+  "jobs": {
+    "a1": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a1.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/test_a1.py",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "8e64740be945f08f123b042ae4707f7f2e628aca22b2c21023fd33100c506215",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a1.json",
+      "record_sha256": "ccd0adb08b661f857e931eaa2db861e5ba7aff2981168715237634fadf30725f"
+    },
+    "a2": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/a2.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/test_a2.py",
+        "--timeout",
+        "2400"
+      ],
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/a2.json",
+      "record_sha256": "0149e30aad5e9b3cd264d9dfe26cb520fc3fb45a2bcea724c3248be1740d9012",
+      "log_sha256": "2b1af06dafee0860c833c3852fe73f5d11dae43fa2a1caf0a63e55eb716ecae9"
+    },
+    "a3a": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a3a.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/test_a3a.py",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "3736ef058e869a325d9b8a6fd27b1c29a03aa75c4ed453585ef738f7d4063e5d",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a3a.json",
+      "record_sha256": "d688d1966a942ded228e109805c7ffe5bb4bbaec89b342fc1fc3755fd1365f87"
+    },
+    "a6-timing": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-timing.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_refine.py",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "49eaabc3bf49908fb477b5311cbfe854c0d4e28a94a3475d97751fb962bc0995",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-timing.json",
+      "record_sha256": "8b711a3684facbbce0024eb301c95a5d62438a0cc0bbee0682bb05b6832b70bf",
+      "thresholds": {
+        "standing-charge": 21,
+        "surface-charge": 26
+      }
+    },
+    "damage": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/damage.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a4_skills.py",
+        "--stage",
+        "1",
+        "--damage",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "efcfd637d867f07319975611ce6dde94524ef9edd067ae81da78ba79de616f03",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/damage.json",
+      "record_sha256": "43b359f8b4a248a154d52dba196f7460ffcb0ec1848aeb3e19027aec36b771c0"
+    },
+    "a6-combat": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-combat.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_regression.py",
+        "--suite",
+        "combat",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "9e7a318a3173ced59a19eb646850a1063cd2d4dfea3f0e56ad1471a5e4196b63",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-combat.json",
+      "record_sha256": "698520c3108a3cdbf85d0ce08db2a6d6dc1428f403c1b789029a61002d4e1d99"
+    },
+    "a6-combo_bomb": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-combo_bomb.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_regression.py",
+        "--suite",
+        "combo_bomb",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "8cce5e91cac74a0462e12df32d106faf20f775e3969ade5382b5a856c7224e96",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-combo_bomb.json",
+      "record_sha256": "7e3a983d79614168f0a92a84354ddb76ee86280eac3a1b6f90c0658bdef06b3c"
+    },
+    "a6-roll": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/a6-roll.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_regression.py",
+        "--suite",
+        "roll",
+        "--timeout",
+        "2400"
+      ],
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/a6-roll.json",
+      "record_sha256": "1446b559f913bcebe2467a096982c1ab3960aae8b1df1a49479a9f595401be38",
+      "log_sha256": "97089dcca0839c8e4d9c8e15b54fd64059c0fa345e7a1929348fac5cac09ac90"
+    },
+    "a6-special": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-special-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/a6-special.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_regression.py",
+        "--suite",
+        "special",
+        "--timeout",
+        "2400"
+      ],
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43-supplement/a6-special.json",
+      "record_sha256": "373759a3f14c2b0dfab786f9afd5eeaac22716ca9700ca9a106bfaafa2aa5d81",
+      "log_sha256": "bb51b943ae0791705f6e13e6ffb43d422038e9e74b45fb87e712b95a638c6cf6"
+    },
+    "a6-aim_surge": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-aim_surge.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_regression.py",
+        "--suite",
+        "aim_surge",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "38b3fe268b83fd1529ee0902c676f4c71824211780d5ecff5865b5477878c214",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-aim_surge.json",
+      "record_sha256": "ee175e0a40984236b4a7ca96db20ed527e35fd62233e6d4dcdcf42ff55901ecb"
+    },
+    "a6-range-light": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-range-light.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_combat.py",
+        "--phase",
+        "range",
+        "--kind",
+        "light",
+        "--range-distances",
+        "18",
+        "20",
+        "--precise-poses",
+        "--charge",
+        "21",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "a9c6cc1ee2e014db0ae922fc153f89c9ab233a2d5f8b98f16a9f39e9bec48617",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-range-light.json",
+      "record_sha256": "5e9754b42b776f2f0992d542783f9984381a0f5975fc286c84c97b6b352f6d77"
+    },
+    "a6-range-full": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-range-full.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/probe_a6_combat.py",
+        "--phase",
+        "range",
+        "--kind",
+        "full",
+        "--range-distances",
+        "22",
+        "23",
+        "--precise-poses",
+        "--charge",
+        "21",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "27668c9ffe9a0c48033e3a3e2eb7fb34038a8e1d6203e8b101022922e1662910",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-range-full.json",
+      "record_sha256": "c67254d520a3d1dca379657b29f28cff898e02c79b32e4057242cb08957282e7"
+    },
+    "a6-moving-emerge": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-moving-emerge.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/benchmark_a6.py",
+        "--policy",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/frozen-policies-20261019-150539/arena/proficiency-reference",
+        "--scenario",
+        "approach",
+        "--repeats",
+        "1",
+        "--verify-emerge",
+        "--emerge-frames",
+        "26",
+        "--out",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/moving-emerge-card.json",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "be0476b2cdfdce2b4a9111d1c2e97507f3a1ff58379c28a0736b426834005935",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a6-moving-emerge.json",
+      "record_sha256": "cf725dd833f40d32c2053ee60653925b483904885988149eedd28acb8707bfe7"
+    },
+    "a4": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/run_native_regression.py",
+        "--host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--record",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a4.json",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/test_a4.py",
+        "--timeout",
+        "2400",
+        "--existing-maps",
+        "--damage-job",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/damage.json"
+      ],
+      "log_sha256": "882eebcc157fe577619731114021a75669be930e59629f6a6081d0cb15ef2946",
+      "record": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/a4.json",
+      "record_sha256": "f6a1afd1432261b5be0f2c860022d5c4cdf9bbdb451eeaa3edc86bfe32ba9748"
+    },
+    "card-reference": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/proficiency.py",
+        "--policy",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/frozen-policies-20261019-150539/arena/proficiency-reference",
+        "--out",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/card-reference-scorecard.json",
+        "--repeats",
+        "3",
+        "--native-host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--native-patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--timeout",
+        "2400",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots"
+      ],
+      "log_sha256": "1dc30d773cc154747f5b9d1ce81e62eace757e62640b2e02d025f3314cd70182"
+    },
+    "card-alpha": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/proficiency.py",
+        "--policy",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/frozen-policies-20261019-150539/arena/policies/alpha",
+        "--out",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/card-alpha-scorecard.json",
+        "--repeats",
+        "3",
+        "--native-host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--native-patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--timeout",
+        "2400",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots"
+      ],
+      "log_sha256": "b391a71f700d19bfd37fb288dd1067c70951d51d86f5d8d21fd4e94e0a729faa"
+    },
+    "card-bravo": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/proficiency.py",
+        "--policy",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/frozen-policies-20261019-150539/arena/policies/bravo",
+        "--out",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/card-bravo-scorecard.json",
+        "--repeats",
+        "3",
+        "--native-host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--native-patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--timeout",
+        "2400",
+        "--shared-load-slots",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/final-regression-v43/loader-slots"
+      ],
+      "log_sha256": "1232db163e49a21561904e69bca35f2933dccea9b7eb07f33d43db3a4b26a7cc"
+    },
+    "a5": {
+      "exit_code": 0,
+      "passed": true,
+      "command": [
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/.venv/bin/python",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/test_a5.py",
+        "--games",
+        "2",
+        "--parallel",
+        "1",
+        "--native-host",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+        "--native-patched",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/patched-seeds-v16",
+        "--timeout",
+        "2400"
+      ],
+      "log_sha256": "d823c6e5d8ecd5f8b59eeed21bf3cea37b863fda4329a5ae52eaaf20993f25fe",
+      "evidence": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/arena/tournament-20261020-170616-172038/result.json",
+      "evidence_sha256": "a7ba0425e6b05756ae658329f0d73bd3c55f3b7dfb11dce3d35d72da721d3f15",
+      "continuous_same_pids": true
+    }
+  },
+  "cross_map_startup_seconds": [
+    43.19725012779236,
+    25.109806060791016
+  ],
+  "cross_map_match_wall_seconds": [
+    438.8855299949646,
+    346.71598386764526
+  ],
+  "auditor": {
+    "path": "tests/audit_a7.py",
+    "sha256": "ff578a806e01c3938a648253c3f2e54add7462b706e8ca19459e5fc2098af999"
+  },
+  "roll_calibration": {
+    "path": "work/a6/regression-roll-20261020-172116-779068/roll-calibration.json",
+    "sha256": "cc98d8bc8ec0d6b9a9c4a2f2c62bee87a59023e7e040ca5215a8ed11c10e652a"
+  },
+  "fixture_revision_proof": {
+    "path": "work/a7/fixture-revision-proof.json",
+    "sha256": "83e7c05375a8896004219e58695f52abf1e4fa4059830b4546c48a7f17aea6fa"
+  },
+  "host_build": {
+    "schema": "arena.a7.host-build.v1",
+    "output": "work/a7/dmhost-team-v43",
+    "output_sha256": "533c6e1bcc634141d723773e162db6088ce98bcd329b36a87012ab489cb00063",
+    "default_sha256": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+    "default_unchanged": true,
+    "command": [
+      "clang",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wno-unused-function",
+      "-I../gfx/nvn/include",
+      "-Igen/0100C2500FC20000/",
+      "-I../games/0100C2500FC20000",
+      "-I../third_party/libvpx",
+      "-I../third_party/stb_vorbis",
+      "-fobjc-arc",
+      "-o",
+      "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a7/dmhost-team-v43",
+      "main.c",
+      "loader.c",
+      "hle.c",
+      "host_stubs.c",
+      "crash.c",
+      "probe.c",
+      "thread.c",
+      "memstat.m",
+      "../ios/Sources/dm_touch_controls.c",
+      "hle_account.c",
+      "hle_audio.c",
+      "hle_audren.c",
+      "hle_bigstack.c",
+      "hle_codec.c",
+      "hle_count.c",
+      "hle_fdstat.c",
+      "hle_friends.c",
+      "hle_fs.c",
+      "hle_guestthread.c",
+      "hle_hid.c",
+      "hle_ldn.c",
+      "hle_lifecycle.c",
+      "hle_misc.c",
+      "hle_movie.c",
+      "hle_net.c",
+      "hle_nvdrv.c",
+      "hle_oe.c",
+      "hle_offline.c",
+      "hle_os.c",
+      "hle_rl.c",
+      "hle_ro.c",
+      "hle_sdk16.c",
+      "hle_sdkinit.c",
+      "hle_spl3.c",
+      "hle_spl3_gear.c",
+      "hle_spl3_scene.c",
+      "hle_spl3_unlock.c",
+      "hle_svc.c",
+      "hle_swkbd.c",
+      "hle_table.c",
+      "hle_thread.c",
+      "hle_time.c",
+      "hle_touch.c",
+      "front_mac.m",
+      "entry.S",
+      "dm_i18n.c",
+      "../gfx/hle_nv.c",
+      "../gfx/hle_vi.c",
+      "../gfx/nvn/hle_nvn.c",
+      "../gfx/nvn/nvn_cmdwatch.c",
+      "../gfx/nvn/nvn_dirty.c",
+      "../gfx/nvn/nvn_entry.S",
+      "../gfx/nvn/nvn_mtl.m",
+      "../gfx/nvn/nvn_refl.m",
+      "../gfx/nvn/nvn_tex.c",
+      "../gfx/nvn/nvn_thunks.S",
+      "../gfx/tex/nvn_bcdec.c",
+      "../gfx/tex/nvn_deswizzle.c",
+      "../gfx/tex/nvn_deswizzle_gpu.m",
+      "../gfx/tex/nvn_fmt_mtl.c",
+      "gen/vpx/libvpx.a",
+      "-framework",
+      "Cocoa",
+      "-framework",
+      "QuartzCore",
+      "-framework",
+      "Metal",
+      "-framework",
+      "AudioToolbox",
+      "-framework",
+      "ImageIO",
+      "-framework",
+      "UniformTypeIdentifiers"
+    ],
+    "source_sha256": {
+      "upstream/dm/host/hle_spl3_scene.c": "c566c20916699f527af937be722a79d9c9741c69d5a5a9cbbd8b013c4a422ec2",
+      "upstream/dm/host/hle_rl.c": "c95720c928bcefb351e585f88294a320ea8f68981f5e2d31d44fcac13d5c29c9",
+      "upstream/dm/host/hle_os.c": "852e77df65c7b130e4775080b2554858f002db9a0e3e3a6c6ee9aefe9af00edd",
+      "upstream/dm/host/hle.h": "e6fded4117e720a334f9d08fd9979bba73b0f7e78cc42222c4f2686f5da0f8ab",
+      "upstream/dm/host/main.c": "d6d18c46b0a37d5f5a801941f3710779abf2e086672bdfdc3e57390e844d45fd",
+      "upstream/dm/host/dm.h": "22052ac6287bf2d15a634762d9ca3ce84dfa142812440ef2d93ce48d789e2f46",
+      "upstream/dm/tools/patch_nso.py": "a1ae26930ba3881f9e0db25f96342f51244bc34be40802714f592a1f8256104f"
+    }
+  },
+  "phase_wall_mean_seconds": {
+    "menu": {
+      "boot": 113.89823158582051,
+      "room": 286.4882007439931,
+      "loading": 53.11726236343384,
+      "controlled": 458.6543021996816,
+      "settlement": 14.131356795628866,
+      "cleanup": 0.11718289057413737
+    },
+    "native": {
+      "boot": 8.459540923436483,
+      "room": 14.24835236867269,
+      "loading": 17.930163145065308,
+      "controlled": 428.8673009077708,
+      "settlement": 12.462926308314005,
+      "cleanup": 0.11579298973083496
+    }
+  },
+  "controlled_fps_group_mean": {
+    "menu": 25.19963246363073,
+    "native": 26.4008386315357
+  },
+  "performance_scope": "Three-worker mixed-route batch; overlap varies. Not an isolated GPU speedup.",
+  "interpretation": "Empirical measured equivalence, not determinism or a confidence interval. A3b and accepted A6 unsupported operations remain unsupported.",
+  "a8_started": false
+}

@@ -23,12 +23,22 @@ from arena.runner import write_json_atomic
 from arena.runner import link_load_slots
 
 
+def owns_result(result,owned,known):
+    refs=[result.get('session'),*result.get('sessions',[])]
+    refs += [row.get('session') for row in result.get('rounds',[]) if isinstance(row,dict)]
+    links=[result.get('native_evidence'),*[m.get('evidence') for m in result.get('maps',[])]]
+    return any(str(x) in owned for x in refs) or any(str(x) in known for x in links)
+
+
 def main(args):
     host,modules=validate_runtime(args.host,args.patched)
     record=args.record.resolve();record.parent.mkdir(parents=True,exist_ok=True)
     if record.exists():raise FileExistsError(record)
     original=rl.NativeParallelEnv;environments=[];sessions=[];children=[]
-    runtime=[host,host.with_suffix('.build.json'),*[p for p in modules.iterdir() if p.is_file()],*list((ROOT/'rl').glob('*.py')),*list((ROOT/'arena/lib').glob('*.py'))]
+    build=json.loads(host.with_suffix('.build.json').read_text())
+    entry_sha=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    fixture_sha=hashlib.sha256(args.script.read_bytes()).hexdigest()
+    runtime=[host,host.with_suffix('.build.json'),*[ROOT/name for name in build['source_sha256']],*[p for p in modules.iterdir() if p.is_file()],*list((ROOT/'rl').glob('*.py')),*list((ROOT/'arena/lib').glob('*.py'))]
     runtime += [ROOT/f'work/arena/maps/{name}/{file}' for name in ('Yunohana','District00','Yagara') for file in ('navigation.json','sight.npz','human.npz')]
     frozen={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in runtime}
     def results():return set(p for base in ('work/tests','work/a6','work/arena') for p in (ROOT/base).glob('*/result.json'))
@@ -79,17 +89,16 @@ def main(args):
         for p in new:
             try:r=json.loads(p.read_text())
             except (FileNotFoundError,json.JSONDecodeError):continue # unrelated parallel fixture mid-write
-            refs=[r.get('session'),*r.get('sessions',[])]
-            links=[r.get('native_evidence'),*[m.get('evidence') for m in r.get('maps',[])]]
-            if str(p) not in known and (any(str(x) in owned for x in refs) or any(str(x) in known for x in links)):
+            if str(p) not in known and owns_result(r,owned,known):
                 evidence.append(dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest(),passed=r.get('passed'),probe_completed=r.get('probe_completed'),a1_damage_passed=r.get('a1_damage_passed'),errors=r.get('errors')))
         if not evidence:errors.append('no version-bound owned native result')
         if any(hashlib.sha256(Path(p).read_bytes()).hexdigest()!=digest for p,digest in frozen.items()):errors.append('regression runtime changed')
+        if hashlib.sha256(Path(__file__).read_bytes()).hexdigest()!=entry_sha or hashlib.sha256(args.script.read_bytes()).hexdigest()!=fixture_sha:errors.append('regression entry/fixture source changed during execution')
         report=dict(schema='arena.native-regression-job.v1',passed=code==0 and not errors,exit_code=code,errors=errors,
             command=sys.argv,wall_seconds=time.time()-started,evidence=evidence,owned_sessions=sorted(owned),
             runtime_sha256=frozen,
             host_sha256=hashlib.sha256(host.read_bytes()).hexdigest(),build=json.loads(host.with_suffix('.build.json').read_text()),
-            entry_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),fixture_sha256=hashlib.sha256(args.script.read_bytes()).hexdigest())
+            entry_sha256=entry_sha,fixture_sha256=fixture_sha)
         write_json_atomic(record,report)
     return code if code else int(bool(errors))
 

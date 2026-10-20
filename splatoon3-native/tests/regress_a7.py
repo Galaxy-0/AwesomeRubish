@@ -26,6 +26,12 @@ from analyze_a6_timing import analyze as analyze_timing
 
 def main(args):
     host,modules=validate_runtime(args.host,args.patched);out=args.out.resolve();out.mkdir(parents=True,exist_ok=False)
+    special=out/'dmhost-test-special'
+    if args.special_host:special=args.special_host.resolve()
+    else:subprocess.run([sys.executable,str(ROOT/'tools/build_a7_host.py'),'--out',str(special),'--test-special-of',str(host)],check=True)
+    special,_=validate_runtime(special,modules)
+    special_build=json.loads(special.with_suffix('.build.json').read_text())
+    if special_build.get('production_parent',{}).get('sha256')!=sha(host):raise ValueError('special-test host must derive from the selected production host')
     slots=out/'loader-slots';slots.mkdir()
     for n in (0,1):(slots/f'slot-{n}').touch()
     jobs=[]
@@ -39,13 +45,13 @@ def main(args):
     for name,path in [('reference','arena/proficiency-reference'),('alpha','arena/policies/alpha'),('bravo','arena/policies/bravo')]:jobs.append(dict(name='card-'+name,kind='card',policy=str(ROOT/'work/a6/frozen-policies-20261019-150539'/path)))
     jobs.append(dict(name='a5',kind='a5'))
     routes=dict(name='a4',kind='fixture',script='test_a4.py',args=['--timeout','2400','--existing-maps','--damage-job',str(out/'damage.json')])
-    write_json_atomic(out/'plan.json',dict(schema='arena.a7.regression-plan.v1',jobs=jobs,dependent_jobs=[dict(job=routes,after='damage')],parallel=args.parallel,host=str(host),patched=str(modules),host_sha256=sha(host),entry_sha256=sha(__file__)))
+    write_json_atomic(out/'plan.json',dict(schema='arena.a7.regression-plan.v1',jobs=jobs,dependent_jobs=[dict(job=routes,after='damage')],parallel=args.parallel,host=str(host),special_host=str(special),patched=str(modules),host_sha256=sha(host),entry_sha256=sha(__file__)))
     report=dict(schema='arena.a7.regression.v1',passed=False,jobs={},errors=[],started_wall=time.time(),parallel=args.parallel,host_sha256=sha(host))
     def save():report['wall_seconds']=time.time()-report['started_wall'];write_json_atomic(out/'result.json',report)
     def run(job):
         name=job['name'];record=out/(name+'.json')
         before=set((ROOT/'work/arena').glob('tournament-*')) if job['kind']=='a5' else set()
-        if job['kind']=='fixture':command=[sys.executable,str(ROOT/'tests/run_native_regression.py'),'--host',str(host),'--patched',str(modules),'--record',str(record),'--shared-load-slots',str(slots),str(ROOT/'tests'/job['script']),*job['args']]
+        if job['kind']=='fixture':command=[sys.executable,str(ROOT/'tests/run_native_regression.py'),'--host',str(special if name=='a6-special' else host),'--patched',str(modules),'--record',str(record),'--shared-load-slots',str(slots),str(ROOT/'tests'/job['script']),*job['args']]
         elif job['kind']=='card':command=[sys.executable,str(ROOT/'tests/proficiency.py'),'--policy',job['policy'],'--out',str(out/(name+'-scorecard.json')),'--repeats','3','--native-host',str(host),'--native-patched',str(modules),'--timeout','2400','--shared-load-slots',str(slots)]
         else:command=[sys.executable,str(ROOT/'tests/test_a5.py'),'--games','2','--parallel','1','--native-host',str(host),'--native-patched',str(modules),'--timeout','2400']
         with (out/(name+'.log')).open('w') as log:code=subprocess.call(command,stdout=log,stderr=subprocess.STDOUT)
@@ -103,5 +109,5 @@ def main(args):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--host',type=Path,required=True);p.add_argument('--patched',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--parallel',type=int,choices=(1,2,3),default=3)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--host',type=Path,required=True);p.add_argument('--patched',type=Path,required=True);p.add_argument('--special-host',type=Path,help='Test-only derivative; otherwise build one under --out');p.add_argument('--out',type=Path,required=True);p.add_argument('--parallel',type=int,choices=(1,2,3),default=3)
     r=main(p.parse_args());print(json.dumps(r,indent=2));raise SystemExit(0 if r['passed'] else 1)

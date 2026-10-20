@@ -149,7 +149,7 @@ high-ground以3–0获胜；三局均在额外480present结算后到达双方Win
 数值与证据哈希索引见`arena/results/t1-entry-smoke-20261020.json`。
 这次证明入口和3＋1并发可用；五项冒烟不替代默认13项正式熟练度表，BO3不替代A5统计签收。
 
-A7 原生开局为显式实验选项，默认入口仍使用已接受的菜单流程。先构建独立宿主和模块；不要覆盖默认dmhost或work/build/patched_v720896：
+A7 原生开局为已签收的显式选项，默认入口仍使用已接受的菜单流程。先构建独立宿主和模块；不要覆盖默认dmhost或work/build/patched_v720896：
 
 ```sh
 .venv/bin/python tools/build_a7_host.py --out work/a7/dmhost-native
@@ -159,13 +159,13 @@ A7 原生开局为显式实验选项，默认入口仍使用已接受的菜单�
 .venv/bin/python tests/proficiency.py --policy arena/policies/rush --out work/arena/rush-native-card --repeats 1 --native-host work/a7/dmhost-native --native-patched work/a7/patched-native
 ```
 
-两个native参数必须一起提供；宿主可执行文件、构建源哈希、原生观察门均校验后才开局。当前适配层只开放两人占地与三张擂台地图。阵营固定player_0/1为0/1，轮次换侧继续由原有roles映射策略，outcome a/b口径不变。Python入口尚不开放原生种子参数；Gym seed仅动作空间种子。底层`DM_SCENE_SEEDS`四个uint32的实验已验证原生发布/两端读取，但固定这些值仍未使新旧流程比分等价，不可当作完整确定性控制。
+两个native参数必须一起提供；宿主可执行文件、构建源哈希、原生观察门均校验后才开局。当前适配层只开放两人占地与三张擂台地图。阵营固定player_0/1为0/1，轮次换侧继续由原有roles映射策略，outcome a/b口径不变。Python入口尚不开放原生种子参数；Gym seed仅动作空间种子。底层`DM_SCENE_SEEDS`四个uint32的实验已验证原生发布/两端读取，但未证明这些值覆盖所有随机流，不可当作完整确定性控制；比分按下述自身复现波动口径验收。
 
 复用池由协调进程持有，完整双方Winners且有效比分后才可保留。下一局换图仍经游戏场景、Create/Find/Join、私房设置发布和MatchFix流程。装备/配装变化、未到Winners的训练夹具或取消会关闭原进程再建房；不在旧进程里冒充热更新装备。已保留房间的进程若意外退出，下一次租用先完整清理再重建；存档/参考文件完整性异常继续报错，不能被恢复逻辑吞掉。A5同一worker的连续任务可复用；当前t1_round CLI一轮退出会回收三个worker及其宿主，不声称跨CLI命令保存房间。熟练度夹具通常提前结束，因此使用统一原生开局但关闭未结算房间。
 
 2026-10-20阶段结果：两局同PID换图均到双方Winners；原生三图BO3通过（rush 0–3 high-ground、0 void），一份参考策略五项熟练度全部measured。单房旧流程695.789秒→原生375.279秒；三房BO3为633.589秒，尚未达到原10分钟目标。此阶段推荐最多三房，熟练度在BO3之后串行；原生路径未重新验证3＋1并发，不沿用旧菜单的四房结论。证据见`arena/results/a7-entry-smoke-20261020.json`。
 
-**A7未签收，现按用户修订的自身复现波动口径重测中。** 此前首受控帧屏障修正后，同输入比分差0.200/0.150个百分点；再固定原生对战种子，11502条输入完全相同仍差0.000/0.300，超过当时预设0.1个百分点。旧单对照诊断保留；当前不再以0.1pp作为A7/A8验收阈值。完整A1–A6新运行版本回归仍待完成；历史分数表仍绑定各自运行哈希，不能用于当前源码的新版本验收。不要据此把实验路径设成正式T1默认，也未开展A8。
+**A7已签收（2026-10-20 17:37），full_a7_passed=true。** v43/v16菜单与原生各3局，同输入/种子/实际出生侧；均值差0.266667/0.366667pp≤自身波动上界2.2/1.3pp，全部九对跨组差也≤上界。最终18项A1–A6作业、三份13/13分数表原始轨迹独立审计、41项A7组件全部通过。当前A5新测为同图换侧同PID两局；另外最终v43的District→Yagara两完整局也到双方Winners并复用同PID，原生场景/阶段/代次读回已校验。总审计、原件SHA及范围见`arena/results/a7-acceptance-20261020.json`。此前0.1pp单对照负例保留，当前按自身复现波动验收，不声称确定性。正式T1仍用显式native参数选择新路径；A8在A7推送后另建渲染实验版本。
 
 离线入口：`tests/test_a7_scene.py`、`tests/test_a7_start.py`、`tests/test_a7_comparison.py`。严格比分审计示例（失败仍写JSON并返回非零）：
 
@@ -181,6 +181,17 @@ A7 原生开局为显式实验选项，默认入口仍使用已接受的菜单�
 .venv/bin/python tests/regress_a7.py --host work/a7/dmhost-team-v43 --patched work/a7/patched-seeds-v16 --out work/a7/final-regression-v43 --parallel 3
 ```
 
-输入须先冻结；旧Session菜单与生产NativeSession各至少3局，固定原生四字种子，并检查实际消费、实际出生位置/朝向/槽、全部逐present动作和双端Winners。逐策略比较两组均值差≤两组内部最大两两差的较大值；输出所有组内/跨组差和胜负频数。这是经验波动口径，不声称确定性或置信界。任何参数/运行失败都不得混入噪声分布。v42曾发现一局原生出生侧相反，整组不签收；v43在MatchFix初始化后重新提交游戏自身队伍选择并读回，仍待完整复测。
+输入须先冻结；旧Session菜单与生产NativeSession各至少3局，固定原生四字种子，并检查实际消费、实际出生位置/朝向/槽、全部逐present动作和双端Winners。逐策略比较两组均值差≤两组内部最大两两差的较大值；输出所有组内/跨组差和胜负频数。这是经验波动口径，不声称确定性或置信界。任何参数/运行失败都不得混入噪声分布。v42曾发现一局原生出生侧相反，整组不签收；v43在MatchFix初始化后重新提交游戏自身队伍选择并读回，六局实际出生侧一致。3+3结果：菜单组内最大差1.0/1.3pp，原生2.2/0.3pp，自身波动上界2.2/1.3pp；组均值差0.266667/0.366667pp，全部九对跨组差也均≤上界，两组均a1/b2。原件SHA和全部差值见`arena/results/a7-repeatability-20261020.json`。
 
-最终回归不调用会重编默认dmhost的旧run_all分支；A1/A2/A3a与A4三图30路线使用原断言，伤害新测，A6重测支持操作/控制组/时序/射程/特殊量生命周期及三份冻结策略各13次试验的分数表（原始轨迹独立审计）。A5严格重审70局历史原件，再测当前运行版两局换侧、换图且要求同PIDs连续开局。全部通过才能签收A7，之后才开始A8。
+最终回归不调用会重编默认dmhost的旧run_all分支；A1/A2/A3a与A4三图30路线使用原断言，伤害新测，A6重测支持操作/控制组/时序/射程/特殊量生命周期及三份冻结策略各13次试验的分数表（原始轨迹独立审计）。A5严格重审70局历史原件，再测当前运行版两局同图换侧且要求同PIDs连续开局。本次全部通过，A7签收后继续A8。
+
+最终回归需要特殊量测试时，构建生产宿主的显式测试派生版，只添加既有测试宏，不改变生产宿主；构建记录绑定父宿主与相同生产源码。新运行的`regress_a7.py`会自动构建该派生版，也可传`--special-host`指定已验证构建。正式T1/A5对战仍拒绝`DM_TEST_SPECIAL`。本次旧队列的三项测试驱动错误保留原件，队列完整结束后再补测，禁止与原队列抢占额外房间：
+
+```bash
+.venv/bin/python tools/build_a7_host.py --test-special-of work/a7/dmhost-team-v43 --out work/a7/dmhost-team-special-v43
+.venv/bin/python tests/retry_a7_regression.py --previous work/a7/final-regression-v43/result.json --special-host work/a7/dmhost-team-special-v43 --out work/a7/final-regression-v43-supplement --parallel 3
+.venv/bin/python tests/probe_a7_continuous.py --host work/a7/dmhost-team-v43 --patched work/a7/patched-seeds-v16 --out work/a7/continuous-v43-final --timeout 2400
+.venv/bin/python tests/audit_a7.py --baseline work/a7/repeatability-v43/result.json --regression work/a7/final-regression-v43-supplement/result.json --continuous work/a7/continuous-v43-final/result.json --out arena/results/a7-acceptance-20261020.json
+```
+
+跨图补测放在上述三项补跑之后串行执行（本次在补跑释放名额后启动，始终≤3房）。最终审计要求完整18项作业、相同生产宿主/运行文件、三份13/13分数表及原始轨迹独立复核、新鲜A5同图换侧同PID两局及额外跨图连续开局、历史70局精确审计、关闭日志后的乌贼滑对照校准。任何失败或哈希漂移均拒绝产生签收文件。
