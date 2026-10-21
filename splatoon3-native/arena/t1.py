@@ -61,6 +61,8 @@ def runtime_hashes(native_runtime=None):
 
 
 def run_round(policy_a,policy_b,number,out,timeout=7200,shared_slots=DEFAULT_SLOTS,native_runtime=None):
+    if os.environ.get('DM_TEST_AIM') or os.environ.get('DM_TEST_AIM_FILE'):
+        raise ValueError('DM_TEST_AIM is forbidden in arena/T1 matches')
     tasks=fixtures(number)
     if os.environ.get('DM_TEST_SPECIAL'):raise ValueError('DM_TEST_SPECIAL is forbidden in arena/T1 matches')
     if not math.isfinite(timeout) or timeout<=0:raise ValueError('timeout must be positive and finite')

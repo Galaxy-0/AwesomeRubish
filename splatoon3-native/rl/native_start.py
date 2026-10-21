@@ -18,6 +18,8 @@ MAPS={1:'Vss_Yunohana',2:'Vss_District00',3:'Vss_Yagara'}
 
 
 def validate_runtime(host,patched):
+    if os.environ.get('DM_TEST_AIM') or os.environ.get('DM_TEST_AIM_FILE'):
+        raise ValueError('A7 arena startup rejects DM_TEST_AIM; direct aim is an isolated measurement fixture')
     host=Path(host).resolve();patched=Path(patched).resolve()
     manifest=json.loads(host.with_suffix('.build.json').read_text())
     if hashlib.sha256(host.read_bytes()).hexdigest()!=manifest['output_sha256']:

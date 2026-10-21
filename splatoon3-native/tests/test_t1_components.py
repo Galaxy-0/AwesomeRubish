@@ -90,6 +90,18 @@ class T1Tests(unittest.TestCase):
             snapshot.assert_not_called()
             with self.assertRaisesRegex(ValueError,'natural meter'):proficiency.run('missing','unused')
 
+    def test_direct_aim_fixture_rejected_before_any_runtime_or_policy_io(self):
+        from arena.runner import tournament,run_match
+        from rl.native_start import validate_runtime
+        for key,value in [('DM_TEST_AIM','1'),('DM_TEST_AIM_FILE','/private/fixture-only')]:
+            with patch.dict(os.environ,{key:value}),patch('arena.t1.snapshot_policy')as snapshot:
+                with self.assertRaisesRegex(ValueError,'DM_TEST_AIM'):run_round('missing','missing',1,'unused')
+                with self.assertRaisesRegex(ValueError,'DM_TEST_AIM'):tournament('missing','missing')
+                with self.assertRaisesRegex(ValueError,'DM_TEST_AIM'):run_match({})
+                with self.assertRaisesRegex(ValueError,'DM_TEST_AIM'):proficiency.run('missing','unused')
+                with self.assertRaisesRegex(ValueError,'DM_TEST_AIM'):validate_runtime('missing','missing')
+                snapshot.assert_not_called()
+
     def test_snapshot_preserves_hash_and_author_updates_do_not_touch_copy(self):
         with self.temporary() as directory:
             root=Path(directory);source=root/'source';shutil.copytree(ROOT/'arena/policies/rush',source)

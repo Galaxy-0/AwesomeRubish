@@ -1,0 +1,217 @@
+{
+  "schema": "inklab.d3r.step1.v1",
+  "date": "2026-10-21",
+  "step1_scoped_passed": true,
+  "direct_aim_fixture_ready_for_mapping": true,
+  "full_d3r_passed": false,
+  "runtime": {
+    "host": "work/d3r/aim-v1/dmhost-aim",
+    "sha256": "d826e11e51c2fcac5e51db4853cbf834e6b284158306ced46f3ee3c6499adffb",
+    "test_only": true,
+    "test_switch": "DM_TEST_AIM=1 plus DM_TEST_AIM_FILE absolute path",
+    "default_off": true,
+    "protected_hosts_modules_unchanged": true
+  },
+  "canonical_state": {
+    "type": "PlayerCamera",
+    "vtable": "main+5d31468",
+    "owner": "object+19c0",
+    "yaw_horizontal_vector": "object+18c",
+    "native_pitch_scalar": "object+16c",
+    "apply_context": "native camera compute entry main+28ed548; original instruction replayed",
+    "physical_sensor": "native velocity getter/setter main+1a40710/1a40720, vector+1130; readonly"
+  },
+  "comparisons": {
+    "gun": [
+      {
+        "style": "52",
+        "mean_angle_degrees": 0.7864551528921653,
+        "controller_internal_max_degrees": 3.6151142034457204,
+        "direct_internal_max_degrees": 5.229087007163262,
+        "n": [
+          6,
+          6
+        ]
+      }
+    ],
+    "sword": [
+      {
+        "style": "-light",
+        "mean_angle_degrees": 2.561320938754782e-06,
+        "controller_internal_max_degrees": 0.0,
+        "direct_internal_max_degrees": 0.0,
+        "n": [
+          3,
+          3
+        ]
+      },
+      {
+        "style": "-full",
+        "mean_angle_degrees": 0.0,
+        "controller_internal_max_degrees": 0.0,
+        "direct_internal_max_degrees": 0.0,
+        "n": [
+          3,
+          3
+        ]
+      }
+    ],
+    "hook": {
+      "casts_per_mode": 1,
+      "mean_angle_degrees": 0.029877866934374477,
+      "anchor_distance": 0.0270538330078125
+    },
+    "sword_changed_direction_degrees": {
+      "light": 56.77642306926478,
+      "full": 56.77642414895859
+    }
+  },
+  "default_off_control": {
+    "artifact": "work/a6/d3-r-direct-gun-v1-20261021-230154-544698/result.json",
+    "sha256": "a164a0fc04da1cca54113623e1b1ac213aaab6c7eaef6fda16c7239059cdc7df",
+    "requested_yaw_change": 1.0,
+    "observed_yaw_drift": -3.510699999997868e-05,
+    "no_activation_or_write_logs": true
+  },
+  "formal_entry_guards": [
+    "arena.runner.run_match",
+    "arena.runner.tournament",
+    "arena.t1.run_round",
+    "tests.proficiency.run",
+    "rl.native_start.validate_runtime"
+  ],
+  "component_log": {
+    "path": "work/d3r/guard-components-v1.log",
+    "sha256": "285548ee2c5894b533d61549ebb7b09239f29358db6fae5224ef4b70ba619da0",
+    "cases": 11
+  },
+  "evidence": {
+    "gun-r2-direction": {
+      "path": "work/d3r/gun-r2-direction.json",
+      "sha256": "02146fd4bf6943549afb647adb8b2c9cabfdef8cf980cc1e2619586133fa315a"
+    },
+    "sword-v1-retry-direction": {
+      "path": "work/d3r/sword-v1-retry-direction.json",
+      "sha256": "6dd8136612671e7abd457ea8a5d32f1a9037ac81b1a039cc7dd8bc26fa346ab7"
+    },
+    "hook-v1-direction": {
+      "path": "work/d3r/hook-v1-direction.json",
+      "sha256": "8ecd4f9a979643150a0caf428058fce507b83898109b9e25af8c51631f416eb9"
+    }
+  },
+  "native_runs": [
+    {
+      "artifact": "work/a6/d3-r-direct-sword-v1-20261021-230154-584544/result.json",
+      "sha256": "f4a22cced73e244ffd9bacd4748eb7bcc1888f83d2f62342af988fbf934bb678",
+      "passed": false,
+      "errors": [
+        "RuntimeError('native RL connection closed or invalid observation header')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit -6')"
+      ],
+      "owned_pids": [
+        27993,
+        28076
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-gun-r1-20261021-223139-615306/result.json",
+      "sha256": "d0e9ec90bd22fa11488f95237686aa796ce0a7464975685b4f307dd8933159a7",
+      "passed": true,
+      "errors": [],
+      "owned_pids": [
+        16968,
+        18051
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-hook-r1-20261021-223356-267570/result.json",
+      "sha256": "74c241282d12638a3486b93bba87cbd2e6d903b0fb40a5fc6ad3b1c2cb6dde65",
+      "passed": false,
+      "errors": [
+        "RuntimeError('native RL connection closed or invalid observation header')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit -6')"
+      ],
+      "owned_pids": [
+        26856,
+        28468
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-gun-v1-20261021-230154-544698/result.json",
+      "sha256": "a164a0fc04da1cca54113623e1b1ac213aaab6c7eaef6fda16c7239059cdc7df",
+      "passed": true,
+      "errors": [],
+      "owned_pids": [
+        27992,
+        28077
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-gun-r2-20261021-224705-413706/result.json",
+      "sha256": "e20d33aed5a9a0c86c5b302c82a2a9be7e54e559c819960bca83977e4f37cb75",
+      "passed": true,
+      "errors": [],
+      "owned_pids": [
+        78206,
+        78286
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-sword-r2-20261021-224705-413706/result.json",
+      "sha256": "5f89d34cf81bad8ccddd49301eed31d34ad63eee90dfdba4e46f9723fce12762",
+      "passed": true,
+      "errors": [],
+      "owned_pids": [
+        78204,
+        78288
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-sword-v1-retry-20261021-231054-285493/result.json",
+      "sha256": "d7cc06272563d2c1e48ce816747bcdab542d7b5408fd409aaaa32cea4ccbafe3",
+      "passed": true,
+      "errors": [],
+      "owned_pids": [
+        54293,
+        54769
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-hook-v1-20261021-230154-584298/result.json",
+      "sha256": "e0748cb8aef97ae030c4a4b65fbe313becdef9df8ade77653642dc84a4c333d5",
+      "passed": true,
+      "errors": [],
+      "owned_pids": [
+        27991,
+        28075
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-direct-hook-r2-20261021-224705-413697/result.json",
+      "sha256": "e3cb3e36b328b1f57c1ef5a4488ca3abc70bf99e72a5213ee882da12bcf719a8",
+      "passed": true,
+      "errors": [],
+      "owned_pids": [
+        78205,
+        78287
+      ]
+    }
+  ],
+  "resource": {
+    "rooms": 9,
+    "owned_hosts": 18,
+    "peak_rooms": 3,
+    "all_owned_hosts_exited": true
+  },
+  "limits": [
+    "Scoped fixed-pose diagonal direction A/B, not all directions/forms/gyro states or complete game-state equivalence.",
+    "52 mean difference is compatible with observed stochastic spread; no bitwise RNG-stream equivalence claim.",
+    "Hook first-difference direction uses two 4f tip samples per cast; no sub-frame precision claim.",
+    "Native pitch scalar is not identical to emitted world elevation; measure/invert per weapon/context before aiming at world targets.",
+    "R1 hook stalled during ordinary navigation before any enabled aim/hook. V1 sword refill omitted disable;600f expiry protected host, corrected retry completed. Originals retained.",
+    "No body/position/HP/armor/weapon-damage or projectile writes; no policy interface extension. Stage2–6 pending."
+  ],
+  "source_sha256": {
+    "tools/zipcaster_d3r/report_step1.py": "74a66665a78e337d9de97407dd7b7a7f912629b4348a9a70f6e2387198bbb7ac"
+  }
+}

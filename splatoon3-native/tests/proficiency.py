@@ -38,6 +38,8 @@ def episode_repeats(scenario,repeats):
 
 
 def run(policy,out,repeats=3,timeout=3600,shared_slots=DEFAULT_SLOTS,native_runtime=None):
+    if os.environ.get('DM_TEST_AIM') or os.environ.get('DM_TEST_AIM_FILE'):
+        raise ValueError('DM_TEST_AIM is forbidden in main-weapon proficiency')
     if os.environ.get('DM_TEST_SPECIAL'):
         raise ValueError('main-weapon proficiency uses natural meter; unset DM_TEST_SPECIAL (special tests use probe_a6_test_special.py)')
     if not math.isfinite(timeout) or timeout<=0:raise ValueError('timeout must be positive and finite')
