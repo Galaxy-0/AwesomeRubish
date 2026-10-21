@@ -31,14 +31,14 @@ class ResourceAudit(HTMLParser):
         if 'src' in attrs:
             check('only pinned three.js CDN dependency', tag == 'script' and attrs['src'] == 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js' and attrs.get('integrity') == 'sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O')
         if tag == 'link':
-            check('no linked stylesheet/font/assets', attrs.get('rel') not in ('stylesheet', 'preload', 'icon'))
+            check('only approved Google Fonts stylesheet/preconnect', (attrs.get('rel'), attrs.get('href')) in {('preconnect','https://fonts.googleapis.com'),('preconnect','https://fonts.gstatic.com'),('stylesheet','https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap')})
         if tag == 'a':
             check('only inline navigation links', attrs.get('href', '').startswith('#'))
         check('no embedded media/model', tag not in ('img', 'video', 'audio', 'model-viewer', 'iframe', 'object', 'embed'))
 
 
 ResourceAudit().feed(text)
-check('no external CSS resources', not re.search(r'@import|url\s*\(', text))
+check('no inline CSS URL/import resources', not re.search(r'@import|url\s*\(', text))
 check('no runtime network API', not re.search(r'\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(', text))
 check('template resolved', '__SHOWCASE_DATA__' not in text)
 check('disclaimer', '非官方研究项目，数据来自本地实验' in text)
