@@ -1,0 +1,4732 @@
+{
+  "schema": "inklab.d3.joint.report.v1",
+  "date": "2026-10-21",
+  "full_d3_passed": false,
+  "native_joint_validated": false,
+  "maps": [
+    {
+      "id": "Yunohana",
+      "best_expected": {
+        "map": "Yunohana",
+        "id": "Yunohana-hook-0507",
+        "start_region": "center",
+        "source": [
+          0.0,
+          3.0,
+          -5.0
+        ],
+        "sequence": [
+          "Yunohana-hook-0507"
+        ],
+        "anchors": [
+          [
+            12.716,
+            11.545,
+            -36.412
+          ]
+        ],
+        "style": "full-light",
+        "expected_kills": 0.21484375,
+        "worst_kills": 0.21484375,
+        "behavior": [
+          {
+            "behavior": "stand",
+            "n": 256,
+            "mean_kills": 0.21484375,
+            "p_any": 0.20703125,
+            "p_two": 0.0078125,
+            "std_error": 0.026884714885128627,
+            "survive_return_bracket": [
+              0.90625,
+              0.90625
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 67,
+            "light_emissions": 47
+          },
+          {
+            "behavior": "strafe",
+            "n": 256,
+            "mean_kills": 0.21484375,
+            "p_any": 0.19921875,
+            "p_two": 0.015625,
+            "std_error": 0.028001114339586172,
+            "survive_return_bracket": [
+              0.91015625,
+              0.91015625
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 62,
+            "light_emissions": 48
+          },
+          {
+            "behavior": "retreat",
+            "n": 256,
+            "mean_kills": 0.21484375,
+            "p_any": 0.20703125,
+            "p_two": 0.0078125,
+            "std_error": 0.026884714885128627,
+            "survive_return_bracket": [
+              0.90625,
+              0.90625
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 67,
+            "light_emissions": 47
+          }
+        ],
+        "seconds": 37.506614374928176,
+        "native_joint_validated": false,
+        "mc_uniform_family_interval": [
+          0,
+          0.47669526728464
+        ]
+      },
+      "best_maxmin": {
+        "map": "Yunohana",
+        "id": "Yunohana-hook-0507",
+        "start_region": "center",
+        "source": [
+          0.0,
+          3.0,
+          -5.0
+        ],
+        "sequence": [
+          "Yunohana-hook-0507"
+        ],
+        "anchors": [
+          [
+            12.716,
+            11.545,
+            -36.412
+          ]
+        ],
+        "style": "full-light",
+        "expected_kills": 0.21484375,
+        "worst_kills": 0.21484375,
+        "behavior": [
+          {
+            "behavior": "stand",
+            "n": 256,
+            "mean_kills": 0.21484375,
+            "p_any": 0.20703125,
+            "p_two": 0.0078125,
+            "std_error": 0.026884714885128627,
+            "survive_return_bracket": [
+              0.90625,
+              0.90625
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 67,
+            "light_emissions": 47
+          },
+          {
+            "behavior": "strafe",
+            "n": 256,
+            "mean_kills": 0.21484375,
+            "p_any": 0.19921875,
+            "p_two": 0.015625,
+            "std_error": 0.028001114339586172,
+            "survive_return_bracket": [
+              0.91015625,
+              0.91015625
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 62,
+            "light_emissions": 48
+          },
+          {
+            "behavior": "retreat",
+            "n": 256,
+            "mean_kills": 0.21484375,
+            "p_any": 0.20703125,
+            "p_two": 0.0078125,
+            "std_error": 0.026884714885128627,
+            "survive_return_bracket": [
+              0.90625,
+              0.90625
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 67,
+            "light_emissions": 47
+          }
+        ],
+        "seconds": 37.506614374928176,
+        "native_joint_validated": false,
+        "mc_uniform_family_interval": [
+          0,
+          0.47669526728464
+        ]
+      },
+      "records": [
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0650",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0650"
+          ],
+          "anchors": [
+            [
+              0.0,
+              3.917,
+              12.5
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.0625,
+          "worst_kills": 0.05859375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.0625,
+              "p_two": 0.0,
+              "std_error": 0.01515847656477081,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 18,
+              "light_emissions": 14
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.05859375,
+              "p_any": 0.05859375,
+              "p_two": 0.0,
+              "std_error": 0.014707677395041599,
+              "survive_return_bracket": [
+                0.91796875,
+                0.91796875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 16,
+              "light_emissions": 14
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.06640625,
+              "p_any": 0.06640625,
+              "p_two": 0.0,
+              "std_error": 0.015592413937419483,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 18,
+              "light_emissions": 16
+            }
+          ],
+          "seconds": 16.23897683317773,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.32435151728464
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0650",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0650"
+          ],
+          "anchors": [
+            [
+              0.0,
+              3.917,
+              12.5
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.057291666666666664,
+          "worst_kills": 0.0546875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.0546875,
+              "p_two": 0.0,
+              "std_error": 0.014238414945897898,
+              "survive_return_bracket": [
+                0.9140625,
+                0.9140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 42
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.0546875,
+              "p_two": 0.0,
+              "std_error": 0.014238414945897898,
+              "survive_return_bracket": [
+                0.91796875,
+                0.91796875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 43
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.0625,
+              "p_two": 0.0,
+              "std_error": 0.01515847656477081,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 49
+            }
+          ],
+          "seconds": 16.89861691603437,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3191431839513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0717",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0717"
+          ],
+          "anchors": [
+            [
+              6.5,
+              8.833,
+              -1.833
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.14583333333333334,
+          "worst_kills": 0.14453125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.14453125,
+              "p_any": 0.14453125,
+              "p_two": 0.0,
+              "std_error": 0.022019774337095684,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 44,
+              "light_emissions": 31
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.14453125,
+              "p_any": 0.14453125,
+              "p_two": 0.0,
+              "std_error": 0.022019774337095684,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 47,
+              "light_emissions": 27
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.1484375,
+              "p_any": 0.1484375,
+              "p_two": 0.0,
+              "std_error": 0.022264348411116113,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 46,
+              "light_emissions": 30
+            }
+          ],
+          "seconds": 33.632107750047,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.4076848506179733
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0717",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0717"
+          ],
+          "anchors": [
+            [
+              6.5,
+              8.833,
+              -1.833
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.11458333333333333,
+          "worst_kills": 0.10546875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.12109375,
+              "p_any": 0.12109375,
+              "p_two": 0.0,
+              "std_error": 0.0204297028772015,
+              "survive_return_bracket": [
+                0.94921875,
+                0.94921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 94
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.10546875,
+              "p_any": 0.10546875,
+              "p_two": 0.0,
+              "std_error": 0.019234883830537286,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 81
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.1171875,
+              "p_any": 0.1171875,
+              "p_two": 0.0,
+              "std_error": 0.020142102022804344,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 90
+            }
+          ],
+          "seconds": 34.39554870896973,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3764348506179733
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0507",
+          "start_region": "center",
+          "source": [
+            0.0,
+            3.0,
+            -5.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0507"
+          ],
+          "anchors": [
+            [
+              12.716,
+              11.545,
+              -36.412
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.21484375,
+          "worst_kills": 0.21484375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.21484375,
+              "p_any": 0.20703125,
+              "p_two": 0.0078125,
+              "std_error": 0.026884714885128627,
+              "survive_return_bracket": [
+                0.90625,
+                0.90625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 67,
+              "light_emissions": 47
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.21484375,
+              "p_any": 0.19921875,
+              "p_two": 0.015625,
+              "std_error": 0.028001114339586172,
+              "survive_return_bracket": [
+                0.91015625,
+                0.91015625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 62,
+              "light_emissions": 48
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.21484375,
+              "p_any": 0.20703125,
+              "p_two": 0.0078125,
+              "std_error": 0.026884714885128627,
+              "survive_return_bracket": [
+                0.90625,
+                0.90625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 67,
+              "light_emissions": 47
+            }
+          ],
+          "seconds": 37.506614374928176,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.47669526728464
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0507",
+          "start_region": "center",
+          "source": [
+            0.0,
+            3.0,
+            -5.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0507"
+          ],
+          "anchors": [
+            [
+              12.716,
+              11.545,
+              -36.412
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.18229166666666666,
+          "worst_kills": 0.1796875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.1796875,
+              "p_any": 0.171875,
+              "p_two": 0.0078125,
+              "std_error": 0.025284646379265616,
+              "survive_return_bracket": [
+                0.90625,
+                0.90625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 140
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.1875,
+              "p_any": 0.171875,
+              "p_two": 0.015625,
+              "std_error": 0.026832359012879923,
+              "survive_return_bracket": [
+                0.90625,
+                0.90625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 148
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.1796875,
+              "p_any": 0.171875,
+              "p_two": 0.0078125,
+              "std_error": 0.025284646379265616,
+              "survive_return_bracket": [
+                0.90625,
+                0.90625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 140
+            }
+          ],
+          "seconds": 38.29175112489611,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.4441431839513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0471",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0471"
+          ],
+          "anchors": [
+            [
+              -13.875,
+              10.0,
+              14.5
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.10416666666666667,
+          "worst_kills": 0.0859375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.11328125,
+              "p_any": 0.109375,
+              "p_two": 0.00390625,
+              "std_error": 0.020604692821500212,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 34,
+              "light_emissions": 24
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.11328125,
+              "p_any": 0.11328125,
+              "p_two": 0.0,
+              "std_error": 0.01984732000463593,
+              "survive_return_bracket": [
+                0.94140625,
+                0.94140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 32,
+              "light_emissions": 27
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.9296875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 25,
+              "light_emissions": 19
+            }
+          ],
+          "seconds": 30.493156958837062,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3660181839513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0471",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0471"
+          ],
+          "anchors": [
+            [
+              -13.875,
+              10.0,
+              14.5
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.09114583333333333,
+          "worst_kills": 0.07421875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.08984375,
+              "p_two": 0.00390625,
+              "std_error": 0.019073998059158555,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 72
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.10546875,
+              "p_any": 0.10546875,
+              "p_two": 0.0,
+              "std_error": 0.019234883830537286,
+              "survive_return_bracket": [
+                0.9375,
+                0.9375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 83
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.07421875,
+              "p_two": 0.0,
+              "std_error": 0.01641500116744455,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 57
+            }
+          ],
+          "seconds": 31.097442958969623,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3529973506179733
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0316",
+          "start_region": "center",
+          "source": [
+            0.0,
+            3.0,
+            -5.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0316"
+          ],
+          "anchors": [
+            [
+              -14.0,
+              5.0,
+              -15.0
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.15104166666666666,
+          "worst_kills": 0.140625,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.1640625,
+              "p_any": 0.16015625,
+              "p_two": 0.00390625,
+              "std_error": 0.023842497573948195,
+              "survive_return_bracket": [
+                0.96484375,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 49,
+              "light_emissions": 35
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.140625,
+              "p_any": 0.140625,
+              "p_two": 0.0,
+              "std_error": 0.021769704563101122,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 46,
+              "light_emissions": 27
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.1484375,
+              "p_any": 0.14453125,
+              "p_two": 0.00390625,
+              "std_error": 0.02294206758497432,
+              "survive_return_bracket": [
+                0.94140625,
+                0.94140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 46,
+              "light_emissions": 30
+            }
+          ],
+          "seconds": 22.07914579194039,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.4128931839513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0316",
+          "start_region": "center",
+          "source": [
+            0.0,
+            3.0,
+            -5.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0316"
+          ],
+          "anchors": [
+            [
+              -14.0,
+              5.0,
+              -15.0
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.11979166666666667,
+          "worst_kills": 0.10546875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.13671875,
+              "p_any": 0.1328125,
+              "p_two": 0.00390625,
+              "std_error": 0.022214571564578827,
+              "survive_return_bracket": [
+                0.96484375,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 105
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.10546875,
+              "p_any": 0.10546875,
+              "p_two": 0.0,
+              "std_error": 0.019234883830537286,
+              "survive_return_bracket": [
+                0.94921875,
+                0.94921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 81
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.1171875,
+              "p_any": 0.11328125,
+              "p_two": 0.00390625,
+              "std_error": 0.020888789548440083,
+              "survive_return_bracket": [
+                0.94140625,
+                0.94140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 91
+            }
+          ],
+          "seconds": 22.890219625085592,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3816431839513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0621",
+          "start_region": "central_high",
+          "source": [
+            -5.0,
+            6.0015,
+            -3.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0621"
+          ],
+          "anchors": [
+            [
+              -23.5,
+              6.5,
+              8.5
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.0,
+          "worst_kills": 0.0,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.953125,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.94921875,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.96875,
+                0.9765625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            }
+          ],
+          "seconds": 27.109880291856825,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.26185151728464
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0621",
+          "start_region": "central_high",
+          "source": [
+            -5.0,
+            6.0015,
+            -3.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0621"
+          ],
+          "anchors": [
+            [
+              -23.5,
+              6.5,
+              8.5
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.0,
+          "worst_kills": 0.0,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.953125,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.94921875,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.96875,
+                0.9765625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            }
+          ],
+          "seconds": 27.496919041965157,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.26185151728464
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0656",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0775",
+            "Yunohana-hook-0656"
+          ],
+          "anchors": [
+            [
+              3.995,
+              7.501,
+              3.581
+            ],
+            [
+              -1.333,
+              4.833,
+              11.5
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.09635416666666667,
+          "worst_kills": 0.08984375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.87890625,
+                0.87890625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 28,
+              "light_emissions": 24
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.10546875,
+              "p_any": 0.10546875,
+              "p_two": 0.0,
+              "std_error": 0.019234883830537286,
+              "survive_return_bracket": [
+                0.90625,
+                0.91015625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 30,
+              "light_emissions": 27
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.890625,
+                0.89453125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 28,
+              "light_emissions": 23
+            }
+          ],
+          "seconds": 40.38139249989763,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3582056839513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0656",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0775",
+            "Yunohana-hook-0656"
+          ],
+          "anchors": [
+            [
+              3.995,
+              7.501,
+              3.581
+            ],
+            [
+              -1.333,
+              4.833,
+              11.5
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.09635416666666667,
+          "worst_kills": 0.08984375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.87890625,
+                0.87890625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 72
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.10546875,
+              "p_any": 0.10546875,
+              "p_two": 0.0,
+              "std_error": 0.019234883830537286,
+              "survive_return_bracket": [
+                0.90625,
+                0.91015625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 81
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.890625,
+                0.89453125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 70
+            }
+          ],
+          "seconds": 41.0329044170212,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3582056839513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0659",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0775",
+            "Yunohana-hook-0659"
+          ],
+          "anchors": [
+            [
+              3.995,
+              7.501,
+              3.581
+            ],
+            [
+              -1.0,
+              6.333,
+              11.5
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.09244791666666667,
+          "worst_kills": 0.0859375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.875,
+                0.875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 26,
+              "light_emissions": 23
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.1015625,
+              "p_any": 0.1015625,
+              "p_two": 0.0,
+              "std_error": 0.018916489185701057,
+              "survive_return_bracket": [
+                0.91015625,
+                0.91015625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 30,
+              "light_emissions": 26
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.88671875,
+                0.88671875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 26,
+              "light_emissions": 22
+            }
+          ],
+          "seconds": 43.336097749881446,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3542994339513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0659",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0775",
+            "Yunohana-hook-0659"
+          ],
+          "anchors": [
+            [
+              3.995,
+              7.501,
+              3.581
+            ],
+            [
+              -1.0,
+              6.333,
+              11.5
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.09244791666666667,
+          "worst_kills": 0.0859375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.875,
+                0.875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 69
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.1015625,
+              "p_any": 0.1015625,
+              "p_two": 0.0,
+              "std_error": 0.018916489185701057,
+              "survive_return_bracket": [
+                0.91015625,
+                0.91015625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 79
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.88671875,
+                0.88671875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 66
+            }
+          ],
+          "seconds": 43.954140583984554,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3542994339513067
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0775",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0786",
+            "Yunohana-hook-0775"
+          ],
+          "anchors": [
+            [
+              3.757,
+              8.751,
+              -0.208
+            ],
+            [
+              3.995,
+              7.501,
+              3.581
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.08984375,
+          "worst_kills": 0.078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.90234375,
+                0.90234375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 31,
+              "light_emissions": 24
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.09765625,
+              "p_any": 0.09765625,
+              "p_two": 0.0,
+              "std_error": 0.0185894242372986,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 39,
+              "light_emissions": 25
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 28,
+              "light_emissions": 20
+            }
+          ],
+          "seconds": 42.210349957924336,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.35169526728464
+          ]
+        },
+        {
+          "map": "Yunohana",
+          "id": "Yunohana-hook-0775",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "sequence": [
+            "Yunohana-hook-0786",
+            "Yunohana-hook-0775"
+          ],
+          "anchors": [
+            [
+              3.757,
+              8.751,
+              -0.208
+            ],
+            [
+              3.995,
+              7.501,
+              3.581
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.08984375,
+          "worst_kills": 0.078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.90234375,
+                0.90234375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 73
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.09765625,
+              "p_any": 0.09765625,
+              "p_two": 0.0,
+              "std_error": 0.0185894242372986,
+              "survive_return_bracket": [
+                0.9296875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 75
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 61
+            }
+          ],
+          "seconds": 43.05952666606754,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.35169526728464
+          ]
+        }
+      ],
+      "highest_native_proven": false,
+      "mc_champion_separated": false
+    },
+    {
+      "id": "District00",
+      "best_expected": {
+        "map": "District00",
+        "id": "District00-hook-1309",
+        "start_region": "east_lane",
+        "source": [
+          18.0,
+          6.0,
+          -2.0
+        ],
+        "sequence": [
+          "District00-hook-1309"
+        ],
+        "anchors": [
+          [
+            -0.276,
+            7.913,
+            -15.865
+          ]
+        ],
+        "style": "full-light",
+        "expected_kills": 0.11197916666666667,
+        "worst_kills": 0.1015625,
+        "behavior": [
+          {
+            "behavior": "stand",
+            "n": 256,
+            "mean_kills": 0.125,
+            "p_any": 0.125,
+            "p_two": 0.0,
+            "std_error": 0.02071042173948785,
+            "survive_return_bracket": [
+              0.96484375,
+              0.96484375
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 39,
+            "light_emissions": 25
+          },
+          {
+            "behavior": "strafe",
+            "n": 256,
+            "mean_kills": 0.109375,
+            "p_any": 0.10546875,
+            "p_two": 0.00390625,
+            "std_error": 0.02031367832178073,
+            "survive_return_bracket": [
+              0.953125,
+              0.95703125
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 34,
+            "light_emissions": 22
+          },
+          {
+            "behavior": "retreat",
+            "n": 256,
+            "mean_kills": 0.1015625,
+            "p_any": 0.1015625,
+            "p_two": 0.0,
+            "std_error": 0.018916489185701057,
+            "survive_return_bracket": [
+              0.96875,
+              0.96875
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 32,
+            "light_emissions": 20
+          }
+        ],
+        "seconds": 24.953106292057782,
+        "native_joint_validated": false,
+        "mc_uniform_family_interval": [
+          0,
+          0.3738306839513067
+        ]
+      },
+      "best_maxmin": {
+        "map": "District00",
+        "id": "District00-hook-1309",
+        "start_region": "east_lane",
+        "source": [
+          18.0,
+          6.0,
+          -2.0
+        ],
+        "sequence": [
+          "District00-hook-1309"
+        ],
+        "anchors": [
+          [
+            -0.276,
+            7.913,
+            -15.865
+          ]
+        ],
+        "style": "full-light",
+        "expected_kills": 0.11197916666666667,
+        "worst_kills": 0.1015625,
+        "behavior": [
+          {
+            "behavior": "stand",
+            "n": 256,
+            "mean_kills": 0.125,
+            "p_any": 0.125,
+            "p_two": 0.0,
+            "std_error": 0.02071042173948785,
+            "survive_return_bracket": [
+              0.96484375,
+              0.96484375
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 39,
+            "light_emissions": 25
+          },
+          {
+            "behavior": "strafe",
+            "n": 256,
+            "mean_kills": 0.109375,
+            "p_any": 0.10546875,
+            "p_two": 0.00390625,
+            "std_error": 0.02031367832178073,
+            "survive_return_bracket": [
+              0.953125,
+              0.95703125
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 34,
+            "light_emissions": 22
+          },
+          {
+            "behavior": "retreat",
+            "n": 256,
+            "mean_kills": 0.1015625,
+            "p_any": 0.1015625,
+            "p_two": 0.0,
+            "std_error": 0.018916489185701057,
+            "survive_return_bracket": [
+              0.96875,
+              0.96875
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 32,
+            "light_emissions": 20
+          }
+        ],
+        "seconds": 24.953106292057782,
+        "native_joint_validated": false,
+        "mc_uniform_family_interval": [
+          0,
+          0.3738306839513067
+        ]
+      },
+      "records": [
+        {
+          "map": "District00",
+          "id": "District00-hook-0398",
+          "start_region": "center",
+          "source": [
+            -1.0,
+            6.0,
+            1.0
+          ],
+          "sequence": [
+            "District00-hook-0398"
+          ],
+          "anchors": [
+            [
+              4.244,
+              16.667,
+              17.113
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.08723958333333333,
+          "worst_kills": 0.0859375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.98046875,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 30,
+              "light_emissions": 22
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.96484375,
+                0.96484375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 32,
+              "light_emissions": 18
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.97265625,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 26,
+              "light_emissions": 25
+            }
+          ],
+          "seconds": 30.722432374954224,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3490911006179733
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-0398",
+          "start_region": "center",
+          "source": [
+            -1.0,
+            6.0,
+            1.0
+          ],
+          "sequence": [
+            "District00-hook-0398"
+          ],
+          "anchors": [
+            [
+              4.244,
+              16.667,
+              17.113
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.07421875,
+          "worst_kills": 0.0625,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.07421875,
+              "p_two": 0.0,
+              "std_error": 0.01641500116744455,
+              "survive_return_bracket": [
+                0.97265625,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 58
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.0625,
+              "p_two": 0.0,
+              "std_error": 0.01515847656477081,
+              "survive_return_bracket": [
+                0.95703125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 51
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.97265625,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 66
+            }
+          ],
+          "seconds": 31.729155292036012,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.33607026728464
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1309",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-1309"
+          ],
+          "anchors": [
+            [
+              -0.276,
+              7.913,
+              -15.865
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.11197916666666667,
+          "worst_kills": 0.1015625,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.125,
+              "p_any": 0.125,
+              "p_two": 0.0,
+              "std_error": 0.02071042173948785,
+              "survive_return_bracket": [
+                0.96484375,
+                0.96484375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 39,
+              "light_emissions": 25
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.109375,
+              "p_any": 0.10546875,
+              "p_two": 0.00390625,
+              "std_error": 0.02031367832178073,
+              "survive_return_bracket": [
+                0.953125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 34,
+              "light_emissions": 22
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.1015625,
+              "p_any": 0.1015625,
+              "p_two": 0.0,
+              "std_error": 0.018916489185701057,
+              "survive_return_bracket": [
+                0.96875,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 32,
+              "light_emissions": 20
+            }
+          ],
+          "seconds": 24.953106292057782,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3738306839513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1309",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-1309"
+          ],
+          "anchors": [
+            [
+              -0.276,
+              7.913,
+              -15.865
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.08723958333333333,
+          "worst_kills": 0.078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09765625,
+              "p_any": 0.09765625,
+              "p_two": 0.0,
+              "std_error": 0.0185894242372986,
+              "survive_return_bracket": [
+                0.95703125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 75
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.08203125,
+              "p_two": 0.00390625,
+              "std_error": 0.01840340400032069,
+              "survive_return_bracket": [
+                0.953125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 67
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 61
+            }
+          ],
+          "seconds": 25.72693945793435,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3490911006179733
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1049",
+          "start_region": "center",
+          "source": [
+            -1.0,
+            6.0,
+            1.0
+          ],
+          "sequence": [
+            "District00-hook-1049"
+          ],
+          "anchors": [
+            [
+              -21.001,
+              22.35,
+              10.945
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.059895833333333336,
+          "worst_kills": 0.0546875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.06640625,
+              "p_any": 0.0625,
+              "p_two": 0.00390625,
+              "std_error": 0.016545713260473063,
+              "survive_return_bracket": [
+                0.9765625,
+                0.9765625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 21,
+              "light_emissions": 13
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.05859375,
+              "p_any": 0.05859375,
+              "p_two": 0.0,
+              "std_error": 0.014707677395041599,
+              "survive_return_bracket": [
+                0.9609375,
+                0.96484375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 21,
+              "light_emissions": 11
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.05078125,
+              "p_two": 0.00390625,
+              "std_error": 0.015276443142090682,
+              "survive_return_bracket": [
+                0.96875,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 14,
+              "light_emissions": 14
+            }
+          ],
+          "seconds": 45.88620037515648,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3217473506179733
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1049",
+          "start_region": "center",
+          "source": [
+            -1.0,
+            6.0,
+            1.0
+          ],
+          "sequence": [
+            "District00-hook-1049"
+          ],
+          "anchors": [
+            [
+              -21.001,
+              22.35,
+              10.945
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.049479166666666664,
+          "worst_kills": 0.04296875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.05078125,
+              "p_any": 0.046875,
+              "p_two": 0.00390625,
+              "std_error": 0.014821157988211299,
+              "survive_return_bracket": [
+                0.97265625,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 39
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.04296875,
+              "p_any": 0.04296875,
+              "p_two": 0.0,
+              "std_error": 0.012698994328475655,
+              "survive_return_bracket": [
+                0.95703125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 36
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.05078125,
+              "p_two": 0.00390625,
+              "std_error": 0.015276443142090682,
+              "survive_return_bracket": [
+                0.96875,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 42
+            }
+          ],
+          "seconds": 46.54434820800088,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3113306839513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-0943",
+          "start_region": "central_high",
+          "source": [
+            -15.0,
+            9.0,
+            -14.0
+          ],
+          "sequence": [
+            "District00-hook-0943"
+          ],
+          "anchors": [
+            [
+              -21.0,
+              29.847,
+              -25.486
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.07421875,
+          "worst_kills": 0.0703125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0703125,
+              "p_any": 0.0703125,
+              "p_two": 0.0,
+              "std_error": 0.016010860571811874,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 23,
+              "light_emissions": 14
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 27,
+              "light_emissions": 17
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0703125,
+              "p_any": 0.0703125,
+              "p_two": 0.0,
+              "std_error": 0.016010860571811874,
+              "survive_return_bracket": [
+                0.9453125,
+                0.9453125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 25,
+              "light_emissions": 13
+            }
+          ],
+          "seconds": 49.77968895807862,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.33607026728464
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-0943",
+          "start_region": "central_high",
+          "source": [
+            -15.0,
+            9.0,
+            -14.0
+          ],
+          "sequence": [
+            "District00-hook-0943"
+          ],
+          "anchors": [
+            [
+              -21.0,
+              29.847,
+              -25.486
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.057291666666666664,
+          "worst_kills": 0.05078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.0546875,
+              "p_two": 0.0,
+              "std_error": 0.014238414945897898,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 47
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.06640625,
+              "p_any": 0.06640625,
+              "p_two": 0.0,
+              "std_error": 0.015592413937419483,
+              "survive_return_bracket": [
+                0.94921875,
+                0.94921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 58
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.05078125,
+              "p_any": 0.05078125,
+              "p_two": 0.0,
+              "std_error": 0.013748798827881614,
+              "survive_return_bracket": [
+                0.9453125,
+                0.9453125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 46
+            }
+          ],
+          "seconds": 50.46966337505728,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3191431839513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1086",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-1086"
+          ],
+          "anchors": [
+            [
+              -21.0,
+              18.295,
+              -15.133
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.06510416666666667,
+          "worst_kills": 0.0625,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0703125,
+              "p_any": 0.0703125,
+              "p_two": 0.0,
+              "std_error": 0.016010860571811874,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 23,
+              "light_emissions": 13
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.0625,
+              "p_two": 0.0,
+              "std_error": 0.01515847656477081,
+              "survive_return_bracket": [
+                0.96875,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 20,
+              "light_emissions": 13
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.0625,
+              "p_two": 0.0,
+              "std_error": 0.01515847656477081,
+              "survive_return_bracket": [
+                0.95703125,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 22,
+              "light_emissions": 12
+            }
+          ],
+          "seconds": 33.2504368328955,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3269556839513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1086",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-1086"
+          ],
+          "anchors": [
+            [
+              -21.0,
+              18.295,
+              -15.133
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.049479166666666664,
+          "worst_kills": 0.046875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.05078125,
+              "p_any": 0.05078125,
+              "p_two": 0.0,
+              "std_error": 0.013748798827881614,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 40
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.05078125,
+              "p_any": 0.05078125,
+              "p_two": 0.0,
+              "std_error": 0.013748798827881614,
+              "survive_return_bracket": [
+                0.96875,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 40
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.046875,
+              "p_any": 0.046875,
+              "p_two": 0.0,
+              "std_error": 0.01323657060837845,
+              "survive_return_bracket": [
+                0.95703125,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 39
+            }
+          ],
+          "seconds": 33.798140458064154,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3113306839513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1226",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-1226"
+          ],
+          "anchors": [
+            [
+              -21.0,
+              15.066,
+              -7.532
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.040364583333333336,
+          "worst_kills": 0.0234375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.04296875,
+              "p_any": 0.04296875,
+              "p_two": 0.0,
+              "std_error": 0.012698994328475655,
+              "survive_return_bracket": [
+                0.98046875,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 13,
+              "light_emissions": 9
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.046875,
+              "p_two": 0.0078125,
+              "std_error": 0.01624829129402505,
+              "survive_return_bracket": [
+                0.9765625,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 17,
+              "light_emissions": 11
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0234375,
+              "p_any": 0.0234375,
+              "p_two": 0.0,
+              "std_error": 0.009474047852981757,
+              "survive_return_bracket": [
+                0.9765625,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 8,
+              "light_emissions": 5
+            }
+          ],
+          "seconds": 28.790037415921688,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3022161006179733
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1226",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-1226"
+          ],
+          "anchors": [
+            [
+              -21.0,
+              15.066,
+              -7.532
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.032552083333333336,
+          "worst_kills": 0.01953125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.03515625,
+              "p_any": 0.03515625,
+              "p_two": 0.0,
+              "std_error": 0.011533461648261191,
+              "survive_return_bracket": [
+                0.98046875,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 27
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.04296875,
+              "p_any": 0.03515625,
+              "p_two": 0.0078125,
+              "std_error": 0.014917740001708651,
+              "survive_return_bracket": [
+                0.9765625,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 33
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.01953125,
+              "p_any": 0.01953125,
+              "p_two": 0.0,
+              "std_error": 0.008665862769678052,
+              "survive_return_bracket": [
+                0.9765625,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 16
+            }
+          ],
+          "seconds": 29.356825415976346,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.2944036006179733
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1298",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-0307",
+            "District00-hook-1298"
+          ],
+          "anchors": [
+            [
+              -4.5,
+              8.5,
+              -23.5
+            ],
+            [
+              -9.582,
+              10.781,
+              -29.682
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.07682291666666667,
+          "worst_kills": 0.07421875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.07421875,
+              "p_two": 0.0,
+              "std_error": 0.01641500116744455,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 26,
+              "light_emissions": 19
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.9296875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 27,
+              "light_emissions": 21
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.07421875,
+              "p_two": 0.0,
+              "std_error": 0.01641500116744455,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 25,
+              "light_emissions": 19
+            }
+          ],
+          "seconds": 30.82575645809993,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3386744339513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1298",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-0307",
+            "District00-hook-1298"
+          ],
+          "anchors": [
+            [
+              -4.5,
+              8.5,
+              -23.5
+            ],
+            [
+              -9.582,
+              10.781,
+              -29.682
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.07682291666666667,
+          "worst_kills": 0.07421875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.07421875,
+              "p_two": 0.0,
+              "std_error": 0.01641500116744455,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 57
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.9296875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 63
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.07421875,
+              "p_two": 0.0,
+              "std_error": 0.01641500116744455,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 57
+            }
+          ],
+          "seconds": 31.43816141691059,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3386744339513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-0501",
+          "start_region": "central_high",
+          "source": [
+            -15.0,
+            9.0,
+            -14.0
+          ],
+          "sequence": [
+            "District00-hook-1298",
+            "District00-hook-0501"
+          ],
+          "anchors": [
+            [
+              -9.582,
+              10.781,
+              -29.682
+            ],
+            [
+              -12.5,
+              14.5,
+              -37.5
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.057291666666666664,
+          "worst_kills": 0.05078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.0546875,
+              "p_two": 0.0,
+              "std_error": 0.014238414945897898,
+              "survive_return_bracket": [
+                0.921875,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 15,
+              "light_emissions": 14
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.06640625,
+              "p_any": 0.06640625,
+              "p_two": 0.0,
+              "std_error": 0.015592413937419483,
+              "survive_return_bracket": [
+                0.921875,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 19,
+              "light_emissions": 17
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.05078125,
+              "p_any": 0.05078125,
+              "p_two": 0.0,
+              "std_error": 0.013748798827881614,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 14,
+              "light_emissions": 13
+            }
+          ],
+          "seconds": 39.79458325006999,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3191431839513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-0501",
+          "start_region": "central_high",
+          "source": [
+            -15.0,
+            9.0,
+            -14.0
+          ],
+          "sequence": [
+            "District00-hook-1298",
+            "District00-hook-0501"
+          ],
+          "anchors": [
+            [
+              -9.582,
+              10.781,
+              -29.682
+            ],
+            [
+              -12.5,
+              14.5,
+              -37.5
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.057291666666666664,
+          "worst_kills": 0.05078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.0546875,
+              "p_two": 0.0,
+              "std_error": 0.014238414945897898,
+              "survive_return_bracket": [
+                0.921875,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 43
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.06640625,
+              "p_any": 0.06640625,
+              "p_two": 0.0,
+              "std_error": 0.015592413937419483,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 52
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.05078125,
+              "p_any": 0.05078125,
+              "p_two": 0.0,
+              "std_error": 0.013748798827881614,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 40
+            }
+          ],
+          "seconds": 40.40152066689916,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3191431839513067
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1297",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-0499",
+            "District00-hook-1297"
+          ],
+          "anchors": [
+            [
+              -4.5,
+              10.0,
+              -23.5
+            ],
+            [
+              -9.766,
+              9.891,
+              -29.363
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.08723958333333333,
+          "worst_kills": 0.08203125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 27,
+              "light_emissions": 21
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 30,
+              "light_emissions": 24
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.921875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 26,
+              "light_emissions": 22
+            }
+          ],
+          "seconds": 31.175862417090684,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3490911006179733
+          ]
+        },
+        {
+          "map": "District00",
+          "id": "District00-hook-1297",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "District00-hook-0499",
+            "District00-hook-1297"
+          ],
+          "anchors": [
+            [
+              -4.5,
+              10.0,
+              -23.5
+            ],
+            [
+              -9.766,
+              9.891,
+              -29.363
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.08723958333333333,
+          "worst_kills": 0.08203125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 63
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 72
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.921875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 66
+            }
+          ],
+          "seconds": 31.753674917155877,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3490911006179733
+          ]
+        }
+      ],
+      "highest_native_proven": false,
+      "mc_champion_separated": false
+    },
+    {
+      "id": "Yagara",
+      "best_expected": {
+        "map": "Yagara",
+        "id": "Yagara-hook-0015",
+        "start_region": "west_lane",
+        "source": [
+          -16.0,
+          6.0,
+          6.0
+        ],
+        "sequence": [
+          "Yagara-hook-0015"
+        ],
+        "anchors": [
+          [
+            4.5,
+            6.333,
+            18.148
+          ]
+        ],
+        "style": "full-light",
+        "expected_kills": 0.10026041666666667,
+        "worst_kills": 0.09375,
+        "behavior": [
+          {
+            "behavior": "stand",
+            "n": 256,
+            "mean_kills": 0.09375,
+            "p_any": 0.09375,
+            "p_two": 0.0,
+            "std_error": 0.018253222922509426,
+            "survive_return_bracket": [
+              0.95703125,
+              0.9609375
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 29,
+            "light_emissions": 20
+          },
+          {
+            "behavior": "strafe",
+            "n": 256,
+            "mean_kills": 0.11328125,
+            "p_any": 0.109375,
+            "p_two": 0.00390625,
+            "std_error": 0.020604692821500212,
+            "survive_return_bracket": [
+              0.95703125,
+              0.95703125
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 37,
+            "light_emissions": 21
+          },
+          {
+            "behavior": "retreat",
+            "n": 256,
+            "mean_kills": 0.09375,
+            "p_any": 0.09375,
+            "p_two": 0.0,
+            "std_error": 0.018253222922509426,
+            "survive_return_bracket": [
+              0.953125,
+              0.953125
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 30,
+            "light_emissions": 18
+          }
+        ],
+        "seconds": 24.136612792033702,
+        "native_joint_validated": false,
+        "mc_uniform_family_interval": [
+          0,
+          0.3621119339513067
+        ]
+      },
+      "best_maxmin": {
+        "map": "Yagara",
+        "id": "Yagara-hook-0015",
+        "start_region": "west_lane",
+        "source": [
+          -16.0,
+          6.0,
+          6.0
+        ],
+        "sequence": [
+          "Yagara-hook-0015"
+        ],
+        "anchors": [
+          [
+            4.5,
+            6.333,
+            18.148
+          ]
+        ],
+        "style": "full-light",
+        "expected_kills": 0.10026041666666667,
+        "worst_kills": 0.09375,
+        "behavior": [
+          {
+            "behavior": "stand",
+            "n": 256,
+            "mean_kills": 0.09375,
+            "p_any": 0.09375,
+            "p_two": 0.0,
+            "std_error": 0.018253222922509426,
+            "survive_return_bracket": [
+              0.95703125,
+              0.9609375
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 29,
+            "light_emissions": 20
+          },
+          {
+            "behavior": "strafe",
+            "n": 256,
+            "mean_kills": 0.11328125,
+            "p_any": 0.109375,
+            "p_two": 0.00390625,
+            "std_error": 0.020604692821500212,
+            "survive_return_bracket": [
+              0.95703125,
+              0.95703125
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 37,
+            "light_emissions": 21
+          },
+          {
+            "behavior": "retreat",
+            "n": 256,
+            "mean_kills": 0.09375,
+            "p_any": 0.09375,
+            "p_two": 0.0,
+            "std_error": 0.018253222922509426,
+            "survive_return_bracket": [
+              0.953125,
+              0.953125
+            ],
+            "mean_budget_spent": 1.0,
+            "full_emissions": 30,
+            "light_emissions": 18
+          }
+        ],
+        "seconds": 24.136612792033702,
+        "native_joint_validated": false,
+        "mc_uniform_family_interval": [
+          0,
+          0.3621119339513067
+        ]
+      },
+      "records": [
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0015",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "sequence": [
+            "Yagara-hook-0015"
+          ],
+          "anchors": [
+            [
+              4.5,
+              6.333,
+              18.148
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.10026041666666667,
+          "worst_kills": 0.09375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.95703125,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 29,
+              "light_emissions": 20
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.11328125,
+              "p_any": 0.109375,
+              "p_two": 0.00390625,
+              "std_error": 0.020604692821500212,
+              "survive_return_bracket": [
+                0.95703125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 37,
+              "light_emissions": 21
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 30,
+              "light_emissions": 18
+            }
+          ],
+          "seconds": 24.136612792033702,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3621119339513067
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0015",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "sequence": [
+            "Yagara-hook-0015"
+          ],
+          "anchors": [
+            [
+              4.5,
+              6.333,
+              18.148
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.07682291666666667,
+          "worst_kills": 0.0703125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.95703125,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 61
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.078125,
+              "p_two": 0.00390625,
+              "std_error": 0.01805380021083362,
+              "survive_return_bracket": [
+                0.95703125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 63
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0703125,
+              "p_any": 0.0703125,
+              "p_two": 0.0,
+              "std_error": 0.016010860571811874,
+              "survive_return_bracket": [
+                0.9453125,
+                0.9453125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 55
+            }
+          ],
+          "seconds": 24.958995250053704,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3386744339513067
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0919",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0919"
+          ],
+          "anchors": [
+            [
+              -6.0,
+              10.931,
+              -4.0
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.08984375,
+          "worst_kills": 0.0625,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.10546875,
+              "p_any": 0.1015625,
+              "p_two": 0.00390625,
+              "std_error": 0.020015444308738826,
+              "survive_return_bracket": [
+                0.96484375,
+                0.96484375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 36,
+              "light_emissions": 19
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.1015625,
+              "p_any": 0.1015625,
+              "p_two": 0.0,
+              "std_error": 0.018916489185701057,
+              "survive_return_bracket": [
+                0.97265625,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 38,
+              "light_emissions": 15
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.05859375,
+              "p_two": 0.00390625,
+              "std_error": 0.01613743060919757,
+              "survive_return_bracket": [
+                0.9765625,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 19,
+              "light_emissions": 14
+            }
+          ],
+          "seconds": 28.09265841706656,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.35169526728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0919",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0919"
+          ],
+          "anchors": [
+            [
+              -6.0,
+              10.931,
+              -4.0
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.0625,
+          "worst_kills": 0.0546875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.0703125,
+              "p_two": 0.00390625,
+              "std_error": 0.017323092051627697,
+              "survive_return_bracket": [
+                0.96484375,
+                0.96484375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 60
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.05859375,
+              "p_any": 0.05859375,
+              "p_two": 0.0,
+              "std_error": 0.014707677395041599,
+              "survive_return_bracket": [
+                0.97265625,
+                0.97265625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 45
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0546875,
+              "p_any": 0.05078125,
+              "p_two": 0.00390625,
+              "std_error": 0.015276443142090682,
+              "survive_return_bracket": [
+                0.9765625,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 42
+            }
+          ],
+          "seconds": 29.134563584113494,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.32435151728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0448",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0448"
+          ],
+          "anchors": [
+            [
+              16.5,
+              8.333,
+              -28.333
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.09765625,
+          "worst_kills": 0.08984375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09765625,
+              "p_any": 0.09765625,
+              "p_two": 0.0,
+              "std_error": 0.0185894242372986,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 36,
+              "light_emissions": 16
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.10546875,
+              "p_any": 0.10546875,
+              "p_two": 0.0,
+              "std_error": 0.019234883830537286,
+              "survive_return_bracket": [
+                0.953125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 35,
+              "light_emissions": 21
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.95703125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 38,
+              "light_emissions": 11
+            }
+          ],
+          "seconds": 25.88592941686511,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.35950776728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0448",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0448"
+          ],
+          "anchors": [
+            [
+              16.5,
+              8.333,
+              -28.333
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.0625,
+          "worst_kills": 0.04296875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.0625,
+              "p_two": 0.0,
+              "std_error": 0.01515847656477081,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 49
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.953125,
+                0.95703125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 64
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.04296875,
+              "p_any": 0.04296875,
+              "p_two": 0.0,
+              "std_error": 0.012698994328475655,
+              "survive_return_bracket": [
+                0.94921875,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 37
+            }
+          ],
+          "seconds": 26.57680099993013,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.32435151728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0848",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "sequence": [
+            "Yagara-hook-0848"
+          ],
+          "anchors": [
+            [
+              -18.056,
+              4.111,
+              27.0
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.057291666666666664,
+          "worst_kills": 0.04296875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0625,
+              "p_any": 0.0625,
+              "p_two": 0.0,
+              "std_error": 0.01515847656477081,
+              "survive_return_bracket": [
+                0.96484375,
+                0.96875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 23,
+              "light_emissions": 9
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.06640625,
+              "p_any": 0.06640625,
+              "p_two": 0.0,
+              "std_error": 0.015592413937419483,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 22,
+              "light_emissions": 13
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.04296875,
+              "p_any": 0.04296875,
+              "p_two": 0.0,
+              "std_error": 0.012698994328475655,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 12,
+              "light_emissions": 10
+            }
+          ],
+          "seconds": 19.98405491700396,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3191431839513067
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0848",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "sequence": [
+            "Yagara-hook-0848"
+          ],
+          "anchors": [
+            [
+              -18.056,
+              4.111,
+              27.0
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.041666666666666664,
+          "worst_kills": 0.03515625,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.03515625,
+              "p_any": 0.03515625,
+              "p_two": 0.0,
+              "std_error": 0.011533461648261191,
+              "survive_return_bracket": [
+                0.9609375,
+                0.96484375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 27
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.05078125,
+              "p_any": 0.05078125,
+              "p_two": 0.0,
+              "std_error": 0.013748798827881614,
+              "survive_return_bracket": [
+                0.9609375,
+                0.9609375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 40
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0390625,
+              "p_any": 0.0390625,
+              "p_two": 0.0,
+              "std_error": 0.012132701086805225,
+              "survive_return_bracket": [
+                0.953125,
+                0.953125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 30
+            }
+          ],
+          "seconds": 20.679774249903858,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3035181839513067
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0536",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "sequence": [
+            "Yagara-hook-0536"
+          ],
+          "anchors": [
+            [
+              -31.092,
+              6.964,
+              -10.676
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.03125,
+          "worst_kills": 0.01953125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.03515625,
+              "p_any": 0.03515625,
+              "p_two": 0.0,
+              "std_error": 0.011533461648261191,
+              "survive_return_bracket": [
+                0.98046875,
+                0.984375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 14,
+              "light_emissions": 4
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.01953125,
+              "p_any": 0.01953125,
+              "p_two": 0.0,
+              "std_error": 0.008665862769678052,
+              "survive_return_bracket": [
+                0.9765625,
+                0.984375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 8,
+              "light_emissions": 2
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0390625,
+              "p_any": 0.0390625,
+              "p_two": 0.0,
+              "std_error": 0.012132701086805225,
+              "survive_return_bracket": [
+                0.98046875,
+                0.984375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 17,
+              "light_emissions": 3
+            }
+          ],
+          "seconds": 29.80405450006947,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.29310151728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0536",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "sequence": [
+            "Yagara-hook-0536"
+          ],
+          "anchors": [
+            [
+              -31.092,
+              6.964,
+              -10.676
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.01171875,
+          "worst_kills": 0.0078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.015625,
+              "p_any": 0.015625,
+              "p_two": 0.0,
+              "std_error": 0.007766408152307944,
+              "survive_return_bracket": [
+                0.97265625,
+                0.9765625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 12
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0078125,
+              "p_any": 0.0078125,
+              "p_two": 0.0,
+              "std_error": 0.005513429182282041,
+              "survive_return_bracket": [
+                0.98046875,
+                0.98046875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 6
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.01171875,
+              "p_any": 0.01171875,
+              "p_two": 0.0,
+              "std_error": 0.006739238596207857,
+              "survive_return_bracket": [
+                0.97265625,
+                0.9765625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 9
+            }
+          ],
+          "seconds": 30.51447525015101,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.27357026728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0492",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0492"
+          ],
+          "anchors": [
+            [
+              -31.1,
+              1.583,
+              -15.25
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.0,
+          "worst_kills": 0.0,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.9921875,
+                0.9921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.984375,
+                0.98828125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.9765625,
+                0.984375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            }
+          ],
+          "seconds": 15.915749249979854,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.26185151728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0492",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0492"
+          ],
+          "anchors": [
+            [
+              -31.1,
+              1.583,
+              -15.25
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.0,
+          "worst_kills": 0.0,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.9921875,
+                0.9921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.984375,
+                0.98828125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0,
+              "p_any": 0.0,
+              "p_two": 0.0,
+              "std_error": 0.0,
+              "survive_return_bracket": [
+                0.9765625,
+                0.984375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 0
+            }
+          ],
+          "seconds": 16.29838545806706,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.26185151728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0361",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0915",
+            "Yagara-hook-0361"
+          ],
+          "anchors": [
+            [
+              -6.0,
+              9.861,
+              -2.0
+            ],
+            [
+              4.5,
+              10.333,
+              27.333
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.08203125,
+          "worst_kills": 0.07421875,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 29,
+              "light_emissions": 21
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.09375,
+              "p_any": 0.09375,
+              "p_two": 0.0,
+              "std_error": 0.018253222922509426,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 36,
+              "light_emissions": 26
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.07421875,
+              "p_any": 0.07421875,
+              "p_two": 0.0,
+              "std_error": 0.01641500116744455,
+              "survive_return_bracket": [
+                0.91796875,
+                0.91796875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 28,
+              "light_emissions": 20
+            }
+          ],
+          "seconds": 45.81470066704787,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.34388276728464
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0361",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0915",
+            "Yagara-hook-0361"
+          ],
+          "anchors": [
+            [
+              -6.0,
+              9.861,
+              -2.0
+            ],
+            [
+              4.5,
+              10.333,
+              27.333
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.08723958333333333,
+          "worst_kills": 0.078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 66
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.1015625,
+              "p_any": 0.1015625,
+              "p_two": 0.0,
+              "std_error": 0.018916489185701057,
+              "survive_return_bracket": [
+                0.9375,
+                0.9375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 79
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.921875,
+                0.921875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 66
+            }
+          ],
+          "seconds": 46.5191205420997,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3490911006179733
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0563",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0915",
+            "Yagara-hook-0563"
+          ],
+          "anchors": [
+            [
+              -6.0,
+              9.861,
+              -2.0
+            ],
+            [
+              4.5,
+              10.0,
+              26.46
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.08333333333333333,
+          "worst_kills": 0.078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.94140625,
+                0.94140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 29,
+              "light_emissions": 25
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.92578125,
+                0.92578125
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 31,
+              "light_emissions": 23
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.0859375,
+              "p_any": 0.0859375,
+              "p_two": 0.0,
+              "std_error": 0.017551296929203233,
+              "survive_return_bracket": [
+                0.9296875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 28,
+              "light_emissions": 25
+            }
+          ],
+          "seconds": 44.44827237492427,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3451848506179733
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0563",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0915",
+            "Yagara-hook-0563"
+          ],
+          "anchors": [
+            [
+              -6.0,
+              9.861,
+              -2.0
+            ],
+            [
+              4.5,
+              10.0,
+              26.46
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.09505208333333333,
+          "worst_kills": 0.08984375,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.09765625,
+              "p_any": 0.09765625,
+              "p_two": 0.0,
+              "std_error": 0.0185894242372986,
+              "survive_return_bracket": [
+                0.9375,
+                0.9375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 75
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.9296875,
+                0.9296875
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 71
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.09765625,
+              "p_any": 0.09765625,
+              "p_two": 0.0,
+              "std_error": 0.0185894242372986,
+              "survive_return_bracket": [
+                0.93359375,
+                0.93359375
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 76
+            }
+          ],
+          "seconds": 45.14882174995728,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3569036006179733
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0721",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0861",
+            "Yagara-hook-0721"
+          ],
+          "anchors": [
+            [
+              9.0,
+              13.0,
+              1.5
+            ],
+            [
+              -4.5,
+              8.167,
+              33.083
+            ]
+          ],
+          "style": "full-light",
+          "expected_kills": 0.08333333333333333,
+          "worst_kills": 0.078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.91015625,
+                0.90625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 27,
+              "light_emissions": 20
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.91015625,
+                0.9140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 35,
+              "light_emissions": 23
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.9140625,
+                0.9140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 27,
+              "light_emissions": 21
+            }
+          ],
+          "seconds": 46.102837207959965,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3451848506179733
+          ]
+        },
+        {
+          "map": "Yagara",
+          "id": "Yagara-hook-0721",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "sequence": [
+            "Yagara-hook-0861",
+            "Yagara-hook-0721"
+          ],
+          "anchors": [
+            [
+              9.0,
+              13.0,
+              1.5
+            ],
+            [
+              -4.5,
+              8.167,
+              33.083
+            ]
+          ],
+          "style": "triple-light",
+          "expected_kills": 0.08333333333333333,
+          "worst_kills": 0.078125,
+          "behavior": [
+            {
+              "behavior": "stand",
+              "n": 256,
+              "mean_kills": 0.078125,
+              "p_any": 0.078125,
+              "p_two": 0.0,
+              "std_error": 0.01680586783321382,
+              "survive_return_bracket": [
+                0.91015625,
+                0.90625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 62
+            },
+            {
+              "behavior": "strafe",
+              "n": 256,
+              "mean_kills": 0.08984375,
+              "p_any": 0.08984375,
+              "p_two": 0.0,
+              "std_error": 0.017907370657537124,
+              "survive_return_bracket": [
+                0.90625,
+                0.91015625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 69
+            },
+            {
+              "behavior": "retreat",
+              "n": 256,
+              "mean_kills": 0.08203125,
+              "p_any": 0.08203125,
+              "p_two": 0.0,
+              "std_error": 0.017184366358720803,
+              "survive_return_bracket": [
+                0.9140625,
+                0.9140625
+              ],
+              "mean_budget_spent": 1.0,
+              "full_emissions": 0,
+              "light_emissions": 63
+            }
+          ],
+          "seconds": 46.86422529187985,
+          "native_joint_validated": false,
+          "mc_uniform_family_interval": [
+            0,
+            0.3451848506179733
+          ]
+        }
+      ],
+      "highest_native_proven": false,
+      "mc_champion_separated": false
+    }
+  ],
+  "scale": {
+    "tactics_programs": 54,
+    "programs": [
+      "full-light repeat110f",
+      "triple-light30f repeat110f"
+    ],
+    "defenders": 2,
+    "mc_episodes": 41472,
+    "simulated_frame_updates": 29030400,
+    "stage_wall_seconds": [
+      299.1637597498484,
+      321.2549422499724,
+      286.7365987498779
+    ]
+  },
+  "scope": "Two independent uniformly sampled all-map initial .52 defenders,8 headings,valid forms; shared attackerHP/gauge, persistent enemyHP, joint crossfire. Finite hook candidates and two repeated110f programs; native two-enemy calibration absent.",
+  "mc_family_delta": 0.05,
+  "mc_uniform_halfwidth": 0.26185151728464,
+  "limits": [
+    "No continuous/global optimum claim or 4v4 player guarantee.",
+    "Single-defender model/ideal targeting assumptions carry over.",
+    "Return hit rule unknown; survival bracket uses vulnerable clear-LOS upper risk vs100f invulnerable bound.",
+    "No armor benefit/contact blast; static terminal floor and turn template.",
+    "Full-light repeat and target switching unverified jointly; triple-light30f individual input rhythm from A6.",
+    "MC uncertainty plus much larger structural/native model error.",
+    "Ranks are estimates over54 finite path/program combinations; simultaneous MC intervals overlap, no highest-kill proof.",
+    "Action feasibility/reliability is the pre-calibration model; native cohort applies to single-defender full-light C only.",
+    "Expected kills can exceed1 per realization; global all-map expectation is diluted by distant enemies."
+  ],
+  "source_sha256": {
+    "tools/zipcaster_d3/report_joint.py": "3dc7b1d272a862d028cae35064c24de17207f1a76fd403eed81fc8fed3bf58f5",
+    "work/d3/joint-v1-stage1/result.json": "5027dfd9fcaceade90615a6aa524d45ba899aca66e01ff2c394979192ebd71bb",
+    "work/d3/joint-v1-stage2/result.json": "67706c15f3f9ba394dd02020fdfb6995ad32fb251ac12bb1036822364b5a9b3e",
+    "work/d3/joint-v1-stage3/result.json": "bf2f611461d8c0e15dd3b24adfb476f2de9273922948357edbc0cf2e1c00a332"
+  }
+}

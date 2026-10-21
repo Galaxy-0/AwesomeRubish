@@ -42,6 +42,12 @@ def main(args):
             if args.attempt>1:
                 hub=list(lab.atlas.points[lab.atlas.nearest(lab.atlas.region('center'))]);lab.navigate({0:hub,1:hub},'hint-duel-hub')
             lab.navigate({0:p['source'],1:p['target']},'hint-duel-place')
+            if args.attempt>1:
+                # Setup-only recovery; never write HP/pose or repair a measured
+                # combat outcome. Original failed setup remains in its cohort.
+                for n in (0,1):
+                    if lab.info(n)['hp']<.999:
+                        lab.paint_floor(n);lab.refill(n,240)
             if min(lab.info(n)['hp']for n in (0,1))<.999:raise AssertionError('full health setup missing')
             fast_align(lab,0,p['requested_anchor'],'hint-duel-hook-aim')
             q=lab.info(1)['position'];h=p.get('heading',args.trial*math.pi/2)
@@ -70,7 +76,11 @@ def main(args):
             mark('combo-end');lab.result.update(passed=True,driver_completed=True)
     except DuelEnded:
         # A defeat interrupts the script; do not label it as an aim exception.
-        qualified=qualified or stage=='hook';lab.result.update(passed=True,driver_completed=True,ended_stage=stage);mark('duel-end')
+        qualified=qualified or stage=='hook';lab.result.update(passed=True,driver_completed=True,ended_stage=stage);mark('first-down')
+        # Emitted ink blades can arrive after their owner is down. Neutralize
+        # both inputs and settle a bounded window before classifying a trade.
+        for _ in range(60):original(lab.actions(),'hint-duel-pending-settle',1)
+        mark('duel-end')
     except HookFailed as e:
         lab.result.update(passed=True,driver_completed=True,tactic_failure=str(e));mark('hook-failed')
     except AssertionError as e:

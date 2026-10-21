@@ -67,3 +67,25 @@ OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 .venv/bin/python tools/zipcaster
 按玩家B跳离与槽预算提示重置卡点计数。`hint_probe.py` / `report_hint_summary.py`为独立新cohort，旧停止原件不动。机制检查点见`notes/d3-hint-20261021.md/.json`：B6两图静止靶KO、到达后预瞄/B/续钩见证、XOR剩余计数与动作成本。
 
 `budget.py`有限随机资源DP、`model_v2.py`跳离/落地模板与预算、`search_v2.py`/`hooks_v2.py`另路径重跑；当前仍未完成原生排名校准与多目标条件转移。`validate_hint.py`是新B6/有界普通瞄准对练原型，只把通过前置条件的窗口标可统计，结果仍需与同条件模型匹配。不得把`calibration_eligible`等同已校准。运行命令、原件SHA及未定项见检查点；不覆盖任何旧输出。
+
+## 恢复后的第4/5步（2026-10-21）
+
+上面的“停止点”是旧轮历史。新B/预算方向已完成27路径v2续算、两组真实.52威胁控制，以及每图6点×3初态的54案校准；见 `notes/d3-model-v2-20261021.md`、`notes/d3-reactive-controls-20261021.json`、`notes/d3-calibration-v2-20261021.md/.json`。结论仍是原生最高挂点未证明，不把弱相关或全负留出集的误差下降当验证成功。
+
+- `batch_calibration.py select|batch`：固定种子初态、每图高/中/低两点，独立进程至多3房。`--attempt 2`仅在测量前经hub/普通涂地潜墨恢复健康；不能修复已经发生的战斗结果。失败原件保留。正式批次源码已归档到其`source-snapshot/`，测试自己的源与通用helper分开绑定。
+- `report_calibration.py` / `native_calibration_data.py`：实际锚点、HP、过滤可见门、输入与失败归约；先验不同的排名单列。试次0/1训练，试次2留出。`calibration_stats.py`无SciPy依赖，支持并列秩和Beta区间。
+- `calibrated_model.py`：独立控制替代模型，旧`model.py/model_v2.py`和所有旧遍历不动。0.25/0.50只是有效控制保留率，不能当武器伤害/普遍精度。最后弹体发出前须符合R时0.96槽；发出后的等待可触发声明的回程路径，不抹掉已发弹体。
+- `joint_duel.py/joint_search.py/report_joint.py`：双敌共享水刀HP/槽、敌HP跨出刀保留的有限程序比较，另有回程受伤两种边界；没有原生双敌认证。`budget.py`只对调用方给定的有限条件核求DP最优。
+- `search_calibrated.py`：同27方案以训练参数重算，不重新择优抽样或覆盖v2；初始潜墨开火后视点转人形是显式近似，材料/落点/弹道结构误差未解决。页面仍标模型未认证。
+
+```sh
+PYTHONPATH=tools/zipcaster_d3 .venv/bin/python -m unittest discover -s tools/zipcaster_d3 -p 'test_*.py'
+.venv/bin/python tools/zipcaster_d3/report_calibration.py \
+  --batches work/d3/calibration-v2/final/batch.json work/d3/calibration-v2/retry/batch.json \
+  --out work/d3/new-fit
+OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 .venv/bin/python tools/zipcaster_d3/search_calibrated.py \
+  --input work/d3/fine-v2-stage1/result.json --calibration work/d3/new-fit/report.json \
+  --out work/d3/new-corrected-stage1/result.json
+```
+
+所有输出用新路径；完整每敌人格热度、native逐帧和派生图不提交。`return_control.py`为有界回程受伤夹具；没命中不能反推无敌，不追飞行中再R。当前只交付研究模型/可视化，不改变策略、正式host、存档或T1/S1状态。

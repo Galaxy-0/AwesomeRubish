@@ -28,6 +28,7 @@ def select(a):
     a.selection.write_text(json.dumps(data,ensure_ascii=False,separators=(',',':'))+'\n');print('CASES '+str(len(ordered)))
 
 def batch(a):
+    a.out=a.out.resolve()
     if a.out.exists():raise ValueError('fresh batch output required')
     a.out.mkdir(parents=True);cases=json.loads(a.selection.read_text())['points'][a.offset:][:a.limit or None];driver=Path(__file__).with_name('validate_hint.py');began=time.monotonic();results=[]
     freeze={str(p.relative_to(ROOT)):sha(p)for p in [Path(__file__),driver,driver.with_name('native.py'),driver.with_name('validate.py'),ROOT/'tools/zipcaster/serve.py',a.selection.resolve()]}
