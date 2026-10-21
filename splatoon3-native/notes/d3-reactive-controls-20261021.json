@@ -1,0 +1,127 @@
+{
+  "schema": "inklab.d3.reactive.controls.v1",
+  "full_d3_passed": false,
+  "controls": [
+    {
+      "artifact": "work/a6/d3-hint-reactive-control-r1-20261021-190037-648811/result.json",
+      "raw_sha256": {
+        "work/a6/d3-hint-reactive-control-r1-20261021-190037-648811/steps.jsonl": "01a501d4156745dea15306d566025b9627c25e869d9cb4c9e02f69ff367fc50e",
+        "work/tests/m6-2p-20261021-190037-709921/player-0/host.log": "c3db1793fd8e2f1919c1f9eaddd6331e619903b69c196e77e53090e37b29143e",
+        "work/tests/m6-2p-20261021-190037-709921/player-1/host.log": "b0f9615bb1e7132164357c1e216123e80fbe518d3d89773aae25bae8fd776f2e",
+        "work/a6/d3-hint-reactive-control-r1-20261021-190037-648811/result.json": "a271502275ba974e43d8b2c495b755b01fbbe2b4fb761cadb2a0b5d8350f28fa"
+      },
+      "first_visible_tick": 1,
+      "first_fired_tick": 19,
+      "visible_ticks": 37,
+      "fire_ticks": 19,
+      "damage_notifications": [
+        {
+          "frame": 4258,
+          "before": 100,
+          "after": 47.9999989,
+          "damage": 52.000001100000006,
+          "label": "control-reactive",
+          "target_position": [
+            -0.302934438,
+            3.00000763,
+            8.42591667
+          ],
+          "shooter_position": [
+            -7.57560635,
+            3.00000048,
+            7.42551422
+          ],
+          "distance": 7.341155345149077
+        },
+        {
+          "frame": 4265,
+          "before": 47.9999989,
+          "after": 0,
+          "damage": 47.9999989,
+          "label": "control-reactive",
+          "target_position": [
+            -0.121932156,
+            3.00000048,
+            8.45353985
+          ],
+          "shooter_position": [
+            -7.57560635,
+            3.00000048,
+            7.42551422
+          ],
+          "distance": 7.524233893642492
+        }
+      ],
+      "two_hit_notification_gap": 7,
+      "full_health_before": true,
+      "ko": true,
+      "owned_pids": [
+        87290,
+        88284
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-hint-duel-District00-hook-0585-3-20261021-190038-862174/result.json",
+      "raw_sha256": {
+        "work/a6/d3-hint-duel-District00-hook-0585-3-20261021-190038-862174/steps.jsonl": "a4672a5a0f81a251e0a187d95bce7bbd892726de6ab794e8c0752aab58953e0e",
+        "work/tests/m6-2p-20261021-190038-912789/player-0/host.log": "d251e898394311c01aa04b7b19b8dac224e6cb276540ea526944a236bcc5d302",
+        "work/tests/m6-2p-20261021-190038-912789/player-1/host.log": "1a0631a95a7b001324ba57c23ed4be1f88339e88b39a5cad52a162b2dfe7a725",
+        "work/a6/d3-hint-duel-District00-hook-0585-3-20261021-190038-862174/result.json": "58dd356076058c098e39a865633e24b9f739dbdfa7ddcc544d233219f587f6b9"
+      },
+      "first_visible_tick": 30,
+      "first_fired_tick": 93,
+      "visible_ticks": 214,
+      "fire_ticks": 51,
+      "damage_notifications": [
+        {
+          "frame": 4266,
+          "before": 100,
+          "after": 47.9999989,
+          "damage": 52.000001100000006,
+          "label": "hint-duel-charge",
+          "target_position": [
+            8.3116703,
+            6.00000048,
+            -8.05307674
+          ],
+          "shooter_position": [
+            17.1564884,
+            6.00000381,
+            -2.40531492
+          ],
+          "distance": 10.494189859038592
+        },
+        {
+          "frame": 4328,
+          "before": 47.9999989,
+          "after": 0,
+          "damage": 47.9999989,
+          "label": "hint-duel-light-release",
+          "target_position": [
+            8.04034519,
+            6.00000048,
+            -8.23917389
+          ],
+          "shooter_position": [
+            17.648489,
+            6,
+            -2.08594513
+          ],
+          "distance": 11.409585954211165
+        }
+      ],
+      "two_hit_notification_gap": 62,
+      "full_health_before": true,
+      "ko": true,
+      "owned_pids": [
+        87763,
+        88289
+      ]
+    }
+  ],
+  "conclusion": "Filtered visible-only .52 script produces native52 damage and two-hit KO on flat near target and on arrived Zipcaster attacker. This validates threat existence, not all ballistic/distribution assumptions.",
+  "source_sha256": {
+    "tools/zipcaster_d3/report_reactive.py": "893986759d042b383cb873f039261b7119cd8a794ba5ad586759b18a5207a841",
+    "tools/zipcaster_d3/validate.py": "a8984e2212c3170a6952a18875eeaba4682a6ad359eead967b1340d734909bc4"
+  }
+}

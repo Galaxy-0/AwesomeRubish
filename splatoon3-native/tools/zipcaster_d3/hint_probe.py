@@ -59,6 +59,12 @@ def main(args):
                         step('hint-face',6,sticks=[0,.85,0,0]);step('hint-face-settle',8)
                     from serve import run
                     for label,n,buttons in [('charge',21,[1,0,0,0,0,0]),('full-release',36,[0]*6),('light',1,[1,0,0,0,0,0]),('light-release',42,[0]*6)]:
+                        if label=='light' and args.air_light_face:
+                            for _ in range(100):
+                                if lab.info(0).get('referee_motion',{}).get('ground_contact')==4:break
+                                step('hint-wait-ground')
+                            if lab.info(0).get('referee_motion',{}).get('ground_contact')!=4:raise AssertionError('no observed ground before light')
+                            step('hint-light-face',8,sticks=[0,.85,0,0]);step('hint-light-face-settle',8);mark('ground-light-ready')
                         run(lab,dict(op='track_step',label='hint-'+label,frames=n,player=0,target_player=1,offset=[0,1.1,0],buttons=buttons))
                     mark('combo-end')
                 elif args.mode=='rehook':
@@ -77,4 +83,4 @@ def main(args):
         path=lab.out/'sensors.jsonl';path.write_text(''.join(json.dumps(s)+'\n'for s in read_sensors(lab.result['session'])));lab.result['sensor_sha256']=sha(path);lab.save()
     print('HINT_CLOSED '+str(lab.out),flush=True);return 0 if lab.result['passed']else 1
 if __name__=='__main__':
-    ap=argparse.ArgumentParser();ap.add_argument('--name',required=True);ap.add_argument('--point',default='Yunohana-hook-0532');ap.add_argument('--mode',choices=['control','combo','rehook','meter','natural'],default='control');ap.add_argument('--jump',action='store_true');ap.add_argument('--jump-frames',type=int,default=1);ap.add_argument('--anchor-dy',type=float,default=0.);ap.add_argument('--return-window',type=int,default=0);ap.add_argument('--meter',choices=['full','infinite'],default='infinite');ap.add_argument('--anchor-dx',type=float,default=4.);ap.add_argument('--source',nargs=3,type=float);ap.add_argument('--next-anchor',nargs=3,type=float);ap.add_argument('--preaim-rehook',action='store_true');ap.add_argument('--air-combo',action='store_true');raise SystemExit(main(ap.parse_args()))
+    ap=argparse.ArgumentParser();ap.add_argument('--name',required=True);ap.add_argument('--point',default='Yunohana-hook-0532');ap.add_argument('--mode',choices=['control','combo','rehook','meter','natural'],default='control');ap.add_argument('--jump',action='store_true');ap.add_argument('--jump-frames',type=int,default=1);ap.add_argument('--anchor-dy',type=float,default=0.);ap.add_argument('--return-window',type=int,default=0);ap.add_argument('--meter',choices=['full','infinite'],default='infinite');ap.add_argument('--anchor-dx',type=float,default=4.);ap.add_argument('--source',nargs=3,type=float);ap.add_argument('--next-anchor',nargs=3,type=float);ap.add_argument('--preaim-rehook',action='store_true');ap.add_argument('--air-combo',action='store_true');ap.add_argument('--air-light-face',action='store_true');raise SystemExit(main(ap.parse_args()))
