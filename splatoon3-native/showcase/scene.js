@@ -2,7 +2,7 @@
 (() => {
   const host=$('scene'),traceSelect=$('trace-select'),timeline=$('trace-time');
   const THREE=window.THREE,reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
-  let app=null,clip=DATA.traces.find(t=>t.id==='zipcaster-high')||DATA.traces[0],frame=clip.start_frame,playing=false,previousTick=null,selectedZip=null;
+  let app=null,clip=DATA.traces.find(t=>t.id==='d3r-control-Yunohana')||DATA.traces.find(t=>t.id==='d3r-native-win')||DATA.traces.find(t=>t.id==='zipcaster-high')||DATA.traces[0],frame=clip.start_frame,playing=false,previousTick=null,selectedZip=null;
 
   const regionNames={center:'中路',central_high:'中央高台',west_lane:'西侧通路',east_lane:'东侧通路'};
   const measured=p=>p.status!=='candidate';
@@ -41,9 +41,10 @@
     $('zip-replay').hidden=!visible||!selectedZip?.clip_id;$('zip-replay').textContent='看这个点的原生回放 ↗';
     if(!visible)selectedZip=null;
   }
-  window.clearZipFocus=()=>{$('show-zip').checked=false;updateZipUI()};
+  window.clearZipFocus=()=>{$('show-zip').checked=false;$('show-d3').checked=false;updateZipUI();d3UpdateUI()};
   window.drawZip2D=(ctx,xy)=>{if(!$('show-zip').checked)return;for(const p of zipPoints()){const[x,y]=xy(p.position);ctx.beginPath();ctx.arc(x,y,measured(p)?5:3,0,Math.PI*2);ctx.strokeStyle=pointColor(p);ctx.lineWidth=p.id===selectedZip?.id?2.5:1;ctx.stroke();if(measured(p)){ctx.fillStyle=pointColor(p);ctx.fill()}}};
 
+  /* __D3_FUNCTIONS__ */
   const formName={human:'人形',squid:'乌贼',submerged:'潜墨'};
   function sample(player,f){
     const rows=player.states;if(!rows.length||f<rows[0][0]||f>rows.at(-1)[0]+6)return null;
@@ -63,7 +64,7 @@
     $('quick-follow').value=$('follow-player').value;
     $('trace-stamp').textContent=`${((frame-clip.start_frame)/60).toFixed(2)} / ${(duration/60).toFixed(0)} s`;
     $('trace-frame').textContent=`F ${Math.round(frame)}`;
-    $('trace-source').textContent=clip.source_kind==='native_observation'?'原生 · 自身观测':'S1 · 模拟状态';
+    $('trace-source').textContent=clip.ideal_operation_fixture?'原生 · 直接瞄准夹具':clip.source_kind==='native_observation'?'原生 · 自身观测':'S1 · 模拟状态';
     $('play-trace').textContent=playing?'Ⅱ 暂停':'▶ 播放';$('play-trace').setAttribute('aria-label',playing?'暂停回放':'播放回放');
     $('replay-hud').replaceChildren(...clip.players.map(p=>{
       const s=sample(p,frame),card=el('div',`player-hud ${p.id}`),head=el('div');
@@ -72,6 +73,7 @@
       hp.append(el('small','',`HP ${s&&s[7]!==null?Math.round(s[7]*100)+'%':'—'} · 采样 F${s?s[1]:'—'}`),track);card.append(head,hp);return card;
     }));
     const recent=clip.players.flatMap(p=>p.events.filter(e=>e.frame<=frame&&e.frame>frame-120&&['ZR_release','R_release'].includes(e.type)).map(e=>({...e,who:p.id}))).sort((a,b)=>b.frame-a.frame).slice(0,4);
+    const annotations=(clip.annotations||[]).filter(e=>e.frame<=frame),step=annotations.at(-1);$('d3-step-status').textContent=step?`F${step.frame} · ${step.label}${clip.first_seen_frame!==null&&clip.first_seen_frame!==undefined&&frame>=clip.first_seen_frame?' · 已进入.52过滤观测':''}`:'';
     $('event-feed').replaceChildren(...(recent.length?recent.map(e=>{const span=el('span');span.append(el('b',e.who,e.who),document.createTextNode(` · F${e.frame} 松 ${e.type==='R_release'?'R / 出钩输入':'ZR'} · 持 ${e.hold_frames??'?'} 帧`));return span}):[el('span','',currentMap().id===clip.map?'此刻没有新的出刀输入。':'此图暂无片段；播放将切回温泉峡谷。')]));
   }
   // These are visual ticks over recorded input/state edges, never inferred hits.
@@ -84,6 +86,7 @@
         if((previous[6]==='submerged')!==(s[6]==='submerged'))ticks.push({frame:s[0],kind:'dive',text:'潜墨切换',who:p.id});
       });
     }
+    for(const e of clip.annotations||[])ticks.push({frame:e.frame,kind:e.kind,text:e.label,who:'传感 / 记录'});
     for(const id of ['quick-events','trace-events'])$(id).replaceChildren(...ticks.map(t=>{
       const marker=el('i',t.kind);marker.style.left=`${100*(t.frame-clip.start_frame)/(clip.end_frame-clip.start_frame)}%`;
       marker.title=`${t.who} · ${t.text} · F${t.frame}`;marker.dataset.event=t.kind;return marker;
@@ -151,6 +154,7 @@
       const prompt=el('option','',`选择伏击候选（${m.ambush.length}）`);prompt.value='';prompt.disabled=true;prompt.selected=true;
       $('ambush-select').replaceChildren(prompt,...m.ambush.map((p,i)=>{const o=el('option','',`${p.label} / 对 ${p.approach_side} 侧接近 / ${p.distance}u`);o.value=String(i);return o}));
       this.zipGroup=new THREE.Group();zipPoints(m,false).forEach(p=>{const native=measured(p);const marker=new THREE.Mesh(native?new THREE.OctahedronGeometry(1.4):new THREE.RingGeometry(.7,.95,24),new THREE.MeshBasicMaterial({transparent:true,opacity:native?1:.8,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));marker.position.set(p.position[0],p.position[1]+.5,p.position[2]);marker.renderOrder=12;marker.userData.zipId=p.id;marker.userData.candidate=!native;this.zipGroup.add(marker);if(native){const label=this.label(statusName(p)+' · '+p.label,p.position,'zip');label.zipId=p.id;label.element.classList.add('zip-scene-label')}});this.root.add(this.zipGroup);
+      setupD3(this,m);
       this.overlay=new THREE.Group();this.root.add(this.overlay);this.setClipPaths();
       const index=document.querySelector('.point-index');index.replaceChildren(...m.points.map((p,i)=>{const s=el('span');s.append(el('b','',String(i+1).padStart(2,'0')),document.createTextNode(p.label));return s}));
     }
@@ -172,13 +176,13 @@
         this.overlay.add(this.line([new THREE.Vector3(...end).add(new THREE.Vector3(0,1,0)),new THREE.Vector3(...target).add(new THREE.Vector3(0,1,0))],cssToken('--accent'),1,true));
         const marker=new THREE.Mesh(new THREE.OctahedronGeometry(1.1),new THREE.MeshBasicMaterial({color:cssToken('--accent'),depthTest:false}));marker.position.set(target[0],target[1]+1,target[2]);marker.renderOrder=12;this.overlay.add(marker);
         if($('ranges').checked){this.overlay.add(this.ring(end,19,cssToken('--accent')));this.overlay.add(this.ring(end,22,cssToken('--accent'),true))}
-      }else if(selected){
+      }else if(selected&&!$('show-d3').checked){
         if($('routes').checked&&selected.routes)selected.routes.forEach((r,i)=>{if(r.length)this.overlay.add(this.line(r.map(p=>new THREE.Vector3(p[0],p[1]+.7,p[2])),i?colors.bravo:colors.alpha,2))});
         if($('ranges').checked){this.overlay.add(this.ring(selected.position,19,cssToken('--accent')));this.overlay.add(this.ring(selected.position,22,cssToken('--accent'),true))}
       }
       if(selected?.ambush&&this.ambushGroup.visible){const a=selected.ambush,threat=new THREE.Mesh(new THREE.SphereGeometry(1.3,8,6),new THREE.MeshBasicMaterial({color:colors.alpha}));threat.position.set(a.threat[0],a.threat[1]+1.1,a.threat[2]);this.overlay.add(threat);this.overlay.add(this.line([new THREE.Vector3(...a.position).add(new THREE.Vector3(0,.25,0)),threat.position.clone()],colors.alpha,1,true))}
-      for(const [id,actor]of Object.entries(this.actorObjects))for(const key of ['body','arrow','ring','slash'])actor[key].material.color.set(id==='alpha'?colors.alpha:colors.bravo);
-      this.setClipPaths();updateHUD();
+      for(const [id,actor]of Object.entries(this.actorObjects))for(const key of ['body','arrow','ring','slash','fov'])actor[key].material.color.set(id==='alpha'?colors.alpha:colors.bravo);
+      refreshD3(this);this.setClipPaths();updateHUD();
     }
     makeActor(id){
       const color=id==='alpha'?colors.alpha:colors.bravo,group=new THREE.Group();
@@ -186,18 +190,29 @@
       const arrow=new THREE.Mesh(new THREE.ConeGeometry(.65,1.9,3),new THREE.MeshBasicMaterial({color}));arrow.rotation.x=Math.PI/2;arrow.position.set(0,.5,1.6);group.add(arrow);
       const ring=this.ring([0,0,0],22,color,true);ring.material.opacity=.24;group.add(ring);const slash=this.ring([0,0,0],19,color);group.add(slash);
       for(const object of [body,arrow,ring,slash]){object.material.depthTest=false;object.material.depthWrite=false;object.renderOrder=20}
-      const label=el('div',`scene-label actor-label ${id}`,id==='alpha'?'α':'β');host.append(label);const actor={group,body,arrow,ring,slash,label};this.actors.add(group);this.actorObjects[id]=actor;return actor;
+      const fanShape=new THREE.Shape();fanShape.moveTo(0,0);for(let i=0;i<=32;i++){const a=-Math.PI/3+i/32*2*Math.PI/3;fanShape.lineTo(Math.sin(a)*30,Math.cos(a)*30)}fanShape.lineTo(0,0);const fov=new THREE.Mesh(new THREE.ShapeGeometry(fanShape).rotateX(Math.PI/2),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.09,side:THREE.DoubleSide,depthWrite:false,depthTest:false}));fov.position.y=.4;fov.renderOrder=8;group.add(fov);
+      const label=el('div',`scene-label actor-label ${id}`,id==='alpha'?'α':'β');host.append(label);const actor={group,body,arrow,ring,slash,fov,label};this.actors.add(group);this.actorObjects[id]=actor;return actor;
     }
     setClipPaths(){
       if(this.trails){this.root.remove(this.trails);this.trails.traverse(o=>{o.geometry?.dispose();o.material?.dispose()})}
       this.trails=new THREE.Group();this.root.add(this.trails);
       if(clip&&clip.map===this.mapId)clip.players.forEach(p=>{const segments=[];p.states.forEach((s,i)=>{if(!i||s[0]-p.states[i-1][0]>18)segments.push([]);segments.at(-1).push(new THREE.Vector3(s[2],s[3]+.8,s[4]))});segments.filter(v=>v.length>1).forEach(points=>{const path=this.line(points,p.id==='alpha'?colors.alpha:colors.bravo);path.material.opacity=.18;path.material.depthTest=false;path.renderOrder=10;this.trails.add(path)})});
+      if(this.projectileGroup){this.root.remove(this.projectileGroup);this.projectileGroup.traverse(o=>{o.geometry?.dispose();o.material?.dispose()})}
+      this.projectileGroup=new THREE.Group();this.projectileObjects=[];this.root.add(this.projectileGroup);
+      if(clip.map===this.mapId)for(const p of clip.projectiles||[]){
+        const color=p.who==='alpha'?colors.alpha:colors.bravo,core=new THREE.Mesh(new THREE.SphereGeometry(p.radius,8,6),new THREE.MeshBasicMaterial({color,depthTest:false,depthWrite:false}));core.renderOrder=21;
+        const trail=this.line(p.states.map(s=>new THREE.Vector3(...s.slice(1))),color);trail.material.depthTest=false;trail.material.opacity=.65;trail.renderOrder=18;this.projectileGroup.add(core,trail);this.projectileObjects.push({data:p,core,trail});
+      }
     }
     updateActors(){
-      this.actors.visible=clip.map===this.mapId;
+      this.actors.visible=clip.map===this.mapId&&!$('show-d3').checked;if(this.trails)this.trails.visible=this.actors.visible;
+      if(this.projectileGroup)this.projectileGroup.visible=this.actors.visible;
+      for(const p of this.projectileObjects||[]){const states=p.data.states;let index=-1;while(index+1<states.length&&states[index+1][0]<=frame)index++;p.core.visible=index>=0&&frame<=states.at(-1)[0]+3;p.trail.visible=index>=0&&frame<=states.at(-1)[0]+18;if(index>=0){const a=states[index],b=states[Math.min(index+1,states.length-1)],t=b[0]>a[0]&&b[0]-a[0]<=4?Math.min(1,(frame-a[0])/(b[0]-a[0])):0;p.core.position.set(...a.slice(1).map((v,i)=>v+(b[i+1]-v)*t));p.trail.geometry.setDrawRange(0,index+1)}}
       for(const p of clip.players){const actor=this.actorObjects[p.id]||this.makeActor(p.id),s=sample(p,frame);actor.group.visible=!!s;if(!s)continue;
         actor.group.position.set(s[2],s[3],s[4]);actor.group.rotation.y=s[5]??0;
-        const squid=s[6]==='squid'||s[6]==='submerged';actor.body.scale.set(squid?1.4:1,squid?.3:1,squid?1.2:1);actor.body.position.y=squid?.35:1.15;actor.body.material.opacity=s[8]===false?.25:1;actor.body.material.transparent=s[8]===false;actor.ring.visible=$('ranges').checked;
+        const aims=p.aim_states||[],aim=aims.length?aims.reduce((a,b)=>Math.abs(b[0]-frame)<Math.abs(a[0]-frame)?b:a):null;
+        actor.arrow.rotation.order='YXZ';actor.arrow.rotation.y=aim?aim[1]-(s[5]??0):0;
+        const squid=s[6]==='squid'||s[6]==='submerged';actor.body.scale.set(squid?1.4:1,squid?.3:1,squid?1.2:1);actor.body.position.y=squid?.35:1.15;actor.body.material.opacity=s[8]===false?.25:1;actor.body.material.transparent=s[8]===false;actor.ring.visible=$('ranges').checked;actor.fov.visible=p.id==='bravo'&&$('enemy-fov').checked;
         const release=p.events.find(e=>e.type==='ZR_release'&&e.frame<=frame&&e.frame>frame-12);actor.slash.visible=!!release;const r=release?.hold_frames>=21?22:19;actor.slash.scale.set(r/19,1,r/19);actor.slash.material.opacity=release?Math.max(0,1-(frame-release.frame)/12):0;
         if($('follow-player').value===p.id&&this.actors.visible){const t=reducedMotion.matches?1:.16;this.target.lerp(new THREE.Vector3(s[2],s[3]+2,s[4]),t);this.radius+=(70-this.radius)*t}
       }
@@ -205,8 +220,8 @@
     renderLabels(){
       const W=host.clientWidth,H=host.clientHeight,occupied=[],items=[];
       for(const l of this.labels){
-        l.element.hidden=true;if(l.kind!=='zip'&&!(l.kind==='spawn'?this.spawnGroup.visible:this.regionGroup.visible))continue;
-        const expanded=l.kind==='eta'&&!selectedZip&&(l.pointId===selectedKey||l.pointId===this.hoverKey);
+        l.element.hidden=true;if(l.kind==='d3'){if(!this.d3Group.visible||l.d3Id!==selectedD3?.id)continue;items.push({element:l.element,position:l.position,priority:0});continue}if(l.kind!=='zip'&&!(l.kind==='spawn'?this.spawnGroup.visible:this.regionGroup.visible))continue;
+        const expanded=l.kind==='eta'&&!selectedZip&&!$('show-d3').checked&&(l.pointId===selectedKey||l.pointId===this.hoverKey);
         if(l.kind==='zip'){if(!this.zipGroup.visible||l.zipId!==selectedZip?.id)continue;items.push({element:l.element,position:l.position,priority:0});continue}
         l.element.classList.toggle('point-number',l.kind==='eta'&&!expanded);
         if(l.kind==='eta'){
@@ -233,6 +248,7 @@
     pick(x,y,hover=false){
       const r=host.getBoundingClientRect();this.raycaster.setFromCamera(new THREE.Vector2((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1),this.camera);
       const targets=hover?this.regionGroup.children:[this.floors,...(this.regionGroup.visible?this.regionGroup.children:[]),...(this.ambushGroup.visible?this.ambushGroup.children:[])];
+      const d3Hit=!hover&&this.d3Group.visible?this.raycaster.intersectObjects(this.d3Group.children.filter(o=>o.visible),false)[0]:null;if(d3Hit){selectedD3=d3Points().find(p=>p.id===d3Hit.object.userData.d3Id);drawMap();return}
       const zipHit=!hover&&this.zipGroup.visible?this.raycaster.intersectObjects(this.zipGroup.children.filter(o=>o.visible),false)[0]:null;const hit=zipHit||this.raycaster.intersectObjects(targets,false)[0];if(hover){this.hoverKey=hit?.object.userData.point;return}if(!hit)return;
       if(hit.object.userData.zipId){selectedZip=zipPoints().find(p=>p.id===hit.object.userData.zipId);drawMap();return}
       if(hit.object.userData.point){window.clearZipFocus();choosePoint(hit.object.userData.point);return}if(hit.object.userData.ambush!==undefined){this.selectAmbush(hit.object.userData.ambush);return}
@@ -256,14 +272,15 @@
       host.addEventListener('wheel',e=>{e.preventDefault();this.radius=Math.max(25,Math.min(550,this.radius*Math.exp(e.deltaY*.001)));this.freeCamera()},{passive:false});
     }
   }
+  bindD3();
   traceSelect.replaceChildren(...DATA.traces.map(c=>{const o=el('option','',c.label);o.value=c.id;return o}));
   $('quick-clip').replaceChildren(...DATA.traces.map(c=>{const o=el('option','',c.short_label||`${c.source_kind==='native_observation'?'原生':'模拟'} R${c.id.slice(-1)}`);o.value=c.id;return o}));
-  function chooseClip(id){const point=DATA.zipcaster.verified.find(p=>p.clip_id===id);if(point){selectedZip=point;$('show-zip').checked=true;if($('zip-region').value!=='all')$('zip-region').value=point.region;if($('zip-combo').value!=='all')$('zip-combo').value='full-light'}clip=DATA.traces.find(t=>t.id===id);traceSelect.value=id;$('quick-clip').value=id;$('clip-description').textContent=clip.description||'';frame=clip.start_frame;playing=false;const i=DATA.maps.findIndex(m=>m.id===clip.map);if(i!==mapIndex)switchMap(i);app?.setClipPaths();paintEventTicks();updateHUD()}
+  function chooseClip(id,inspect=true){if(inspect){$('show-d3').checked=false;d3UpdateUI()}const point=DATA.zipcaster.verified.find(p=>p.clip_id===id);if(point){selectedZip=point;$('show-zip').checked=true;if($('zip-region').value!=='all')$('zip-region').value=point.region;if($('zip-combo').value!=='all')$('zip-combo').value='full-light'}clip=DATA.traces.find(t=>t.id===id);traceSelect.value=id;$('quick-clip').value=id;$('clip-description').textContent=clip.description||'';frame=clip.start_frame;playing=false;const i=DATA.maps.findIndex(m=>m.id===clip.map);if(i!==mapIndex)switchMap(i);app?.setClipPaths();paintEventTicks();updateHUD()}
   traceSelect.onchange=()=>{$('quick-clip').value=traceSelect.value;chooseClip(traceSelect.value)};
   $('quick-clip').onchange=()=>{traceSelect.value=$('quick-clip').value;chooseClip(traceSelect.value)};
   function seek(value){frame=clip.start_frame+Number(value);playing=false;updateHUD()}
   timeline.oninput=()=>seek(timeline.value);$('quick-time').oninput=()=>seek($('quick-time').value);
-  $('play-trace').onclick=()=>{if(currentMap().id!==clip.map)switchMap(DATA.maps.findIndex(m=>m.id===clip.map));if(frame>=clip.end_frame)frame=clip.start_frame;playing=!playing;updateHUD()};
+  $('play-trace').onclick=()=>{if($('show-d3').checked){$('show-d3').checked=false;d3UpdateUI();drawMap()}if(currentMap().id!==clip.map)switchMap(DATA.maps.findIndex(m=>m.id===clip.map));if(frame>=clip.end_frame)frame=clip.start_frame;playing=!playing;updateHUD()};
   $('quick-play').onclick=()=>$('play-trace').onclick();
   $('rewind-trace').onclick=()=>{frame=clip.start_frame;playing=false;updateHUD()};
   $('quick-speed').onchange=()=>{$('play-speed').value=$('quick-speed').value};$('play-speed').onchange=()=>{$('quick-speed').value=$('play-speed').value};
@@ -273,7 +290,7 @@
   $('ambush-select').onchange=()=>{if($('ambush-select').value!=='')app?.selectAmbush(Number($('ambush-select').value))};
   $('reset-camera').onclick=()=>app?.reset();
   $('view-toggle').onclick=()=>{const show3D=host.hidden;canvas.hidden=show3D;host.hidden=!show3D;$('view-toggle').textContent=show3D?'2D':'3D';drawMap();app?.resize()};
-  for(const id of ['show-spawns','show-eta','show-ambush','show-walls','show-zip'])$(id).onchange=()=>{updateZipUI();drawMap()};
+  for(const id of ['show-spawns','show-eta','show-ambush','show-walls','show-zip'])$(id).onchange=()=>{if(id==='show-zip'&&$('show-zip').checked){$('show-d3').checked=false;d3UpdateUI()}updateZipUI();drawMap()};
   for(const id of ['zip-region','zip-combo'])$(id).onchange=()=>{selectedZip=null;updateZipUI();drawMap()};
   $('zip-point').onchange=()=>{selectedZip=zipPoints().find(p=>p.id===$('zip-point').value);drawMap()};
   function showCombo(pick=null){const chosen=pick?.clip_id?pick:selectedZip?.clip_id?selectedZip:DATA.zipcaster.verified.find(p=>p.id==='native-high-side');$('show-zip').checked=true;$('zip-region').value=chosen.region;$('zip-combo').value='full-light';selectedZip=chosen;chooseClip(chosen.clip_id);drawMap();app?.setPreset('follow');$('maps').scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});}
@@ -288,6 +305,6 @@
   updateZipUI();
   try{if(!THREE)throw new Error('three.js CDN 未加载');app=new AtlasScene();window.updateScene=()=>app.refresh();app.refresh()}catch(error){host.append(el('div','webgl-error',`3D 未能初始化：${error.message}。可以使用“2D”查看相同离线图层。`));$('reset-camera').disabled=true}
   let hudLast=0;
-  function tick(time){const dt=previousTick===null?0:Math.min(.1,(time-previousTick)/1000);previousTick=time;if(playing&&document.visibilityState==='visible'){frame=Math.min(clip.end_frame,frame+dt*60*Number($('play-speed').value));if(frame>=clip.end_frame)playing=false}if(time-hudLast>90){updateHUD();hudLast=time}app?.render();requestAnimationFrame(tick)}
-  chooseClip(clip.id);requestAnimationFrame(tick);
+  function tick(time){const dt=previousTick===null?0:Math.min(.1,(time-previousTick)/1000);previousTick=time;if(playing&&document.visibilityState==='visible'){frame=Math.min(clip.end_frame,frame+dt*60*Number($('play-speed').value)*($('key-slow').checked&&(clip.annotations||[]).some(e=>Math.abs(frame-e.frame)<12)?.35:1));if(frame>=clip.end_frame)playing=false}if(time-hudLast>90){updateHUD();hudLast=time}app?.render();requestAnimationFrame(tick)}
+  chooseClip(clip.id,false);requestAnimationFrame(tick);
 })();

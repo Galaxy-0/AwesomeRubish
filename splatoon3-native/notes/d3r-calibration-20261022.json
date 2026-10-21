@@ -5106,6 +5106,548 @@
       "probability_after": 0.0
     }
   ],
+  "elevation_evidence": {
+    "full": {
+      "n": 22,
+      "actor_above_target_range": [
+        -1.3199682199999998,
+        16.77641775
+      ],
+      "muzzle_above_target_range": [
+        0.5000968000000006,
+        18.59803105
+      ],
+      "witnesses": [
+        {
+          "id": "Yunohana-b0-c5",
+          "trial": 0,
+          "birth_frame": 4259,
+          "own_ack_frame": 4259,
+          "target_ack_frame": 4000,
+          "actor_above_target": 4.80335807,
+          "muzzle_above_target": 6.625146389999999,
+          "horizontal_distance": 18.839683106998258,
+          "velocity": [
+            1.26747131,
+            -0.393005073,
+            0.356610775
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b0-c5-t0-20261022-011413-249701/result.json"
+        },
+        {
+          "id": "Yunohana-b0-c5",
+          "trial": 1,
+          "birth_frame": 4280,
+          "own_ack_frame": 4280,
+          "target_ack_frame": 3968,
+          "actor_above_target": 4.5569963399999995,
+          "muzzle_above_target": 6.625146389999999,
+          "horizontal_distance": 17.448529663223862,
+          "velocity": [
+            1.28919351,
+            -0.433872312,
+            0.207992002
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b0-c5-t1-20261022-011553-078329/result.json"
+        },
+        {
+          "id": "Yunohana-b0-c5",
+          "trial": 2,
+          "birth_frame": 4255,
+          "own_ack_frame": 4255,
+          "target_ack_frame": 3974,
+          "actor_above_target": 4.80335474,
+          "muzzle_above_target": 6.62514592,
+          "horizontal_distance": 17.91148458556439,
+          "velocity": [
+            1.17732465,
+            -0.409817576,
+            0.575338185
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b0-c5-t2-20261022-011601-663242/result.json"
+        },
+        {
+          "id": "Yunohana-b2-c2",
+          "trial": 0,
+          "birth_frame": 4455,
+          "own_ack_frame": 4455,
+          "target_ack_frame": 4120,
+          "actor_above_target": 2.6086626,
+          "muzzle_above_target": 4.675898070000001,
+          "horizontal_distance": 18.48346216703876,
+          "velocity": [
+            0.784544468,
+            -0.288833767,
+            -1.07809198
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b2-c2-t0-20261022-005724-961937/result.json"
+        },
+        {
+          "id": "Yunohana-b2-c2",
+          "trial": 2,
+          "birth_frame": 4787,
+          "own_ack_frame": 4787,
+          "target_ack_frame": 4464,
+          "actor_above_target": 2.6070709199999995,
+          "muzzle_above_target": 4.671991820000001,
+          "horizontal_distance": 17.269474393870144,
+          "velocity": [
+            0.922351182,
+            -0.306645066,
+            0.953657866
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b2-c2-t2-20261022-005724-961923/result.json"
+        },
+        {
+          "id": "Yunohana-b2-c4",
+          "trial": 0,
+          "birth_frame": 4856,
+          "own_ack_frame": 4856,
+          "target_ack_frame": 4572,
+          "actor_above_target": 5.639725031186066,
+          "muzzle_above_target": 7.707148851186066,
+          "horizontal_distance": 14.546988019464697,
+          "velocity": [
+            -1.06813002,
+            -0.587731957,
+            -0.69569242
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b2-c4-t0-20261022-010419-189383/result.json"
+        },
+        {
+          "id": "Yunohana-b2-c4",
+          "trial": 1,
+          "birth_frame": 4542,
+          "own_ack_frame": 4542,
+          "target_ack_frame": 4254,
+          "actor_above_target": 2.7636761599999997,
+          "muzzle_above_target": 4.703242299999999,
+          "horizontal_distance": 11.457246958454594,
+          "velocity": [
+            0.931865215,
+            -0.411733478,
+            0.930079758
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b2-c4-t1-20261022-010444-137692/result.json"
+        },
+        {
+          "id": "Yunohana-b3-c4",
+          "trial": 0,
+          "birth_frame": 5146,
+          "own_ack_frame": 5146,
+          "target_ack_frame": 4815,
+          "actor_above_target": 2.9920206,
+          "muzzle_above_target": 4.6993798899999994,
+          "horizontal_distance": 14.486035802764501,
+          "velocity": [
+            -0.2386664,
+            -0.351315022,
+            -1.29814816
+          ],
+          "artifact": "work/a6/d3-r-ideal5-Yunohana-b3-c4-t0-20261022-020148-573301/result.json"
+        },
+        {
+          "id": "Yunohana-b3-c4",
+          "trial": 2,
+          "birth_frame": 4515,
+          "own_ack_frame": 4515,
+          "target_ack_frame": 4214,
+          "actor_above_target": 5.876049049999999,
+          "muzzle_above_target": 7.6954746499999995,
+          "horizontal_distance": 17.192691094021846,
+          "velocity": [
+            -1.17074502,
+            -0.496671021,
+            0.562141955
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b3-c4-t2-20261022-010830-626378/result.json"
+        },
+        {
+          "id": "Yunohana-b4-c1",
+          "trial": 0,
+          "birth_frame": 5211,
+          "own_ack_frame": 5211,
+          "target_ack_frame": 4887,
+          "actor_above_target": -0.31175423,
+          "muzzle_above_target": 1.3946423499999998,
+          "horizontal_distance": 17.52032579615475,
+          "velocity": [
+            0.0713496804,
+            -0.061094664,
+            -1.3466084
+          ],
+          "artifact": "work/a6/d3-r-ideal5-Yunohana-b4-c1-t0-20261022-020148-573326/result.json"
+        },
+        {
+          "id": "District00-b0-c1",
+          "trial": 2,
+          "birth_frame": 4174,
+          "own_ack_frame": 4174,
+          "target_ack_frame": 3878,
+          "actor_above_target": 0.3737387700000001,
+          "muzzle_above_target": 2.3946576100000003,
+          "horizontal_distance": 10.535915967249329,
+          "velocity": [
+            -1.01673782,
+            -0.250558853,
+            0.8631621
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b0-c1-t2-20261022-013003-379591/result.json"
+        },
+        {
+          "id": "District00-b0-c4",
+          "trial": 0,
+          "birth_frame": 4117,
+          "own_ack_frame": 4117,
+          "target_ack_frame": 3843,
+          "actor_above_target": 16.77641775,
+          "muzzle_above_target": 18.59803105,
+          "horizontal_distance": 11.495946597870484,
+          "velocity": [
+            0.737584591,
+            -1.28991354,
+            0.762619793
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b0-c4-t0-20261022-011733-175699/result.json"
+        },
+        {
+          "id": "District00-b1-c2",
+          "trial": 0,
+          "birth_frame": 5018,
+          "own_ack_frame": 5018,
+          "target_ack_frame": 4733,
+          "actor_above_target": 9.41402819,
+          "muzzle_above_target": 11.480733890000002,
+          "horizontal_distance": 11.566774158764284,
+          "velocity": [
+            0.653666914,
+            -0.997925282,
+            0.955599964
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b1-c2-t0-20261022-013118-853059/result.json"
+        },
+        {
+          "id": "District00-b1-c2",
+          "trial": 2,
+          "birth_frame": 5153,
+          "own_ack_frame": 5153,
+          "target_ack_frame": 4864,
+          "actor_above_target": 6.53893373,
+          "muzzle_above_target": 8.480731030000001,
+          "horizontal_distance": 13.103634176285375,
+          "velocity": [
+            0.118832484,
+            -0.672787428,
+            -1.24538541
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b1-c2-t2-20261022-013319-555676/result.json"
+        },
+        {
+          "id": "District00-b1-c4",
+          "trial": 0,
+          "birth_frame": 5031,
+          "own_ack_frame": 5031,
+          "target_ack_frame": 4740,
+          "actor_above_target": 8.323265089999998,
+          "muzzle_above_target": 10.39091679,
+          "horizontal_distance": 15.05657704492767,
+          "velocity": [
+            -1.01086211,
+            -0.750198185,
+            -0.703488171
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b1-c4-t0-20261022-013518-329669/result.json"
+        },
+        {
+          "id": "District00-b1-c4",
+          "trial": 1,
+          "birth_frame": 4967,
+          "own_ack_frame": 4967,
+          "target_ack_frame": 4671,
+          "actor_above_target": 8.908943170000002,
+          "muzzle_above_target": 10.730508770000002,
+          "horizontal_distance": 9.905737567370279,
+          "velocity": [
+            0.294508606,
+            -1.03287244,
+            -1.09996355
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b1-c4-t1-20261022-013718-592670/result.json"
+        },
+        {
+          "id": "Yagara-b1-c6",
+          "trial": 0,
+          "birth_frame": 4756,
+          "own_ack_frame": 4756,
+          "target_ack_frame": 4476,
+          "actor_above_target": 3.66441631,
+          "muzzle_above_target": 5.73062234,
+          "horizontal_distance": 10.770152740784633,
+          "velocity": [
+            1.25867045,
+            -0.568599522,
+            -0.22891362
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b1-c6-t0-20261022-015237-065410/result.json"
+        },
+        {
+          "id": "Yagara-b2-c5",
+          "trial": 0,
+          "birth_frame": 4537,
+          "own_ack_frame": 4537,
+          "target_ack_frame": 4250,
+          "actor_above_target": 4.10675621,
+          "muzzle_above_target": 6.1720371499999995,
+          "horizontal_distance": 6.87082769362892,
+          "velocity": [
+            -0.0460653007,
+            -0.864544988,
+            -1.20031142
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b2-c5-t0-20261022-013913-050574/result.json"
+        },
+        {
+          "id": "Yagara-b2-c5",
+          "trial": 1,
+          "birth_frame": 5321,
+          "own_ack_frame": 5321,
+          "target_ack_frame": 5034,
+          "actor_above_target": 1.4673924499999993,
+          "muzzle_above_target": 3.17203667,
+          "horizontal_distance": 14.979626383631912,
+          "velocity": [
+            1.32471967,
+            -0.219758794,
+            0.194994673
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b2-c5-t1-20261022-014116-648037/result.json"
+        },
+        {
+          "id": "Yagara-b3-c6",
+          "trial": 0,
+          "birth_frame": 4653,
+          "own_ack_frame": 4653,
+          "target_ack_frame": 4374,
+          "actor_above_target": -1.3199682199999998,
+          "muzzle_above_target": 0.5000968000000006,
+          "horizontal_distance": 15.283971291958911,
+          "velocity": [
+            -0.334866554,
+            0.0144919716,
+            -1.3067174
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b3-c6-t0-20261022-014547-057989/result.json"
+        },
+        {
+          "id": "Yagara-b3-c6",
+          "trial": 2,
+          "birth_frame": 4358,
+          "own_ack_frame": 4358,
+          "target_ack_frame": 4065,
+          "actor_above_target": 0.17734337,
+          "muzzle_above_target": 1.9961910200000004,
+          "horizontal_distance": 17.71045399326067,
+          "velocity": [
+            -1.03216076,
+            -0.0963560268,
+            -0.866760612
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b3-c6-t2-20261022-014839-558491/result.json"
+        },
+        {
+          "id": "Yagara-b4-c5",
+          "trial": 0,
+          "birth_frame": 4184,
+          "own_ack_frame": 4184,
+          "target_ack_frame": 3909,
+          "actor_above_target": 4.056140899999999,
+          "muzzle_above_target": 5.87515735,
+          "horizontal_distance": 16.02992414615079,
+          "velocity": [
+            0.261350244,
+            -0.398816615,
+            -1.28773797
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b4-c5-t0-20261022-014239-182091/result.json"
+        }
+      ],
+      "scope": "Observed HP-compatible hit windows and own/target feet nearest projectile birth. Not a continuous pitch/height boundary; target may be displaced by previous hit, not an independent stationary elevation scan."
+    },
+    "light": {
+      "n": 10,
+      "actor_above_target_range": [
+        -4.478515509999999,
+        8.49812509
+      ],
+      "muzzle_above_target_range": [
+        -3.14058185,
+        7.285359400000001
+      ],
+      "witnesses": [
+        {
+          "id": "Yunohana-b0-c5",
+          "trial": 1,
+          "birth_frame": 4321,
+          "own_ack_frame": 4321,
+          "target_ack_frame": 4009,
+          "actor_above_target": 0,
+          "muzzle_above_target": 1.0039672900000003,
+          "horizontal_distance": 17.226343766571755,
+          "velocity": [
+            4.15960169,
+            0.00970299542,
+            0.680915594
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yunohana-b0-c5-t1-20261022-011553-078329/result.json"
+        },
+        {
+          "id": "District00-b0-c1",
+          "trial": 0,
+          "birth_frame": 4141,
+          "own_ack_frame": 4141,
+          "target_ack_frame": 3850,
+          "actor_above_target": 9.500000004436515e-07,
+          "muzzle_above_target": 1.0040111500000002,
+          "horizontal_distance": 12.387333476520308,
+          "velocity": [
+            -0.499546409,
+            0.0193866473,
+            4.18112898
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b0-c1-t0-20261022-012812-775459/result.json"
+        },
+        {
+          "id": "District00-b0-c1",
+          "trial": 2,
+          "birth_frame": 4215,
+          "own_ack_frame": 4215,
+          "target_ack_frame": 3919,
+          "actor_above_target": 3.8099999999374745e-06,
+          "muzzle_above_target": 1.0079188300000004,
+          "horizontal_distance": 10.489291012814624,
+          "velocity": [
+            -3.21015406,
+            0.0226189438,
+            2.72526836
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b0-c1-t2-20261022-013003-379591/result.json"
+        },
+        {
+          "id": "District00-b0-c4",
+          "trial": 0,
+          "birth_frame": 4158,
+          "own_ack_frame": 4158,
+          "target_ack_frame": 3884,
+          "actor_above_target": 8.2225285,
+          "muzzle_above_target": 7.285359400000001,
+          "horizontal_distance": 10.905554383046985,
+          "velocity": [
+            2.77203536,
+            -2.52235222,
+            2.86612415
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b0-c4-t0-20261022-011733-175699/result.json"
+        },
+        {
+          "id": "District00-b0-c4",
+          "trial": 1,
+          "birth_frame": 4572,
+          "own_ack_frame": 4572,
+          "target_ack_frame": 4267,
+          "actor_above_target": 8.49812509,
+          "muzzle_above_target": 6.711129189999999,
+          "horizontal_distance": 4.094467493081799,
+          "velocity": [
+            2.89973354,
+            -3.88273931,
+            1.33797622
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b0-c4-t1-20261022-011920-433290/result.json"
+        },
+        {
+          "id": "District00-b0-c4",
+          "trial": 2,
+          "birth_frame": 4045,
+          "own_ack_frame": 4045,
+          "target_ack_frame": 3917,
+          "actor_above_target": 7.94639969,
+          "muzzle_above_target": 7.1173858899999995,
+          "horizontal_distance": 8.348865649017567,
+          "velocity": [
+            1.00026238,
+            -2.92234302,
+            3.66822362
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b0-c4-t2-20261022-011923-552656/result.json"
+        },
+        {
+          "id": "District00-b1-c2",
+          "trial": 2,
+          "birth_frame": 5194,
+          "own_ack_frame": 5194,
+          "target_ack_frame": 4905,
+          "actor_above_target": 1.4483767000000007,
+          "muzzle_above_target": 2.2697029000000004,
+          "horizontal_distance": 12.749942410426463,
+          "velocity": [
+            0.407528669,
+            -0.416131914,
+            -4.27097225
+          ],
+          "artifact": "work/a6/d3-r-ideal4-District00-b1-c2-t2-20261022-013319-555676/result.json"
+        },
+        {
+          "id": "Yagara-b1-c6",
+          "trial": 0,
+          "birth_frame": 4797,
+          "own_ack_frame": 4797,
+          "target_ack_frame": 4517,
+          "actor_above_target": 1.53076029,
+          "muzzle_above_target": 2.3086976999999997,
+          "horizontal_distance": 10.539428767539162,
+          "velocity": [
+            4.23415136,
+            -0.517525911,
+            -0.763352573
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b1-c6-t0-20261022-015237-065410/result.json"
+        },
+        {
+          "id": "Yagara-b2-c5",
+          "trial": 0,
+          "birth_frame": 4578,
+          "own_ack_frame": 4578,
+          "target_ack_frame": 4291,
+          "actor_above_target": 0.2594547199999999,
+          "muzzle_above_target": 1.2188367800000002,
+          "horizontal_distance": 6.692651363699496,
+          "velocity": [
+            -0.182249263,
+            -0.0911914855,
+            -4.2394762
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b2-c5-t0-20261022-013913-050574/result.json"
+        },
+        {
+          "id": "Yagara-b3-c6",
+          "trial": 0,
+          "birth_frame": 4694,
+          "own_ack_frame": 4694,
+          "target_ack_frame": 4415,
+          "actor_above_target": -4.478515509999999,
+          "muzzle_above_target": -3.14058185,
+          "horizontal_distance": 15.430483119090399,
+          "velocity": [
+            -0.936027527,
+            1.05970943,
+            -3.67601514
+          ],
+          "artifact": "work/a6/d3-r-ideal4-Yagara-b3-c6-t0-20261022-014547-057989/result.json"
+        }
+      ],
+      "scope": "Observed HP-compatible hit windows and own/target feet nearest projectile birth. Not a continuous pitch/height boundary; target may be displaced by previous hit, not an independent stationary elevation scan."
+    }
+  },
   "points": [
     {
       "id": "District00-b0-c1",
@@ -5768,10 +6310,10 @@
       "kind": "kill"
     },
     {
-      "artifact": "work/a6/d3-r-ideal4-District00-b1-c4-t0-20261022-013518-329669/result.json",
+      "artifact": "work/a6/d3-r-ideal4-District00-b1-c4-t2-20261022-013731-522102/result.json",
       "clip_id": "d3r-duel-District00-b1-c4",
       "label": "原生上限 · District00-b1-c4 · 未击倒",
-      "description": "直接瞄准测量夹具 · 40f满蓄＋轻斩 · 试次0。.52看见后R18、有限转速；满槽只作夹具预填，不写HP/位置。此片未击倒，不能代表全点成功率。",
+      "description": "直接瞄准测量夹具 · 40f满蓄＋轻斩 · 试次2。.52看见后R18、有限转速；满槽只作夹具预填，不写HP/位置。此片未击倒，不能代表全点成功率。",
       "kind": "loss"
     },
     {
@@ -5864,6 +6406,13 @@
       "label": "原生上限 · Yunohana-b4-c1 · 未击倒",
       "description": "直接瞄准测量夹具 · 40f满蓄＋轻斩 · 试次0。.52看见后R18、有限转速；满槽只作夹具预填，不写HP/位置。此片未击倒，不能代表全点成功率。",
       "kind": "loss"
+    },
+    {
+      "artifact": "work/a6/d3-r-ideal4-District00-b0-c4-t2-20261022-011923-552656/result.json",
+      "clip_id": "d3r-counter-District00",
+      "label": "原生上限 · 正面切入被.52反杀",
+      "description": "直接瞄准夹具；同一个挂点的失败试次2。.52由过滤可见性触发R18/有限转速，原生枪弹体和HP边沿分开保留。成功片段不能替代反杀风险。",
+      "kind": "counter"
     }
   ],
   "search": {
@@ -6821,7 +7370,7 @@
     "all_owned_hosts_closed": true
   },
   "source_sha256": {
-    "tools/zipcaster_d3r/report_calibration.py": "0097cfe281db7458a9e454b03b37e4b5310cd4f4817cb6b51ff44cdcd42d1030",
+    "tools/zipcaster_d3r/report_calibration.py": "9e20d037303994101bc9ff6912b636b177dc2ab2753ce9a52baeec90f668d319",
     "tools/zipcaster_d3r/calibration_data.py": "61e51a9205625a73dea68a8773d428ae08b2a1a6505bc524a5c22a055c5e2f25",
     "tools/zipcaster_d3r/conditional.py": "94e60cb2e62634ca11640f4c31913a383d365ba50927e31e1cd879c1a9f4292c",
     "tools/zipcaster_d3r/conditional_v2.py": "8268e21f82851117dac15bf6d6f62f978f42918191b71f874b21c52a1304a2a0",

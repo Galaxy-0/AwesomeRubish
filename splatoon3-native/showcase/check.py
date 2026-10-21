@@ -9,7 +9,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT))
+sys.path[:0]=[str(ROOT/'showcase'),str(ROOT)]
 PAGE = ROOT / 'showcase/index.html'
 text = PAGE.read_text()
 match = re.search(r'<script id="showcase-data" type="application/json">(.*?)</script>', text, re.S)
@@ -56,7 +56,7 @@ for m in data['maps']:
             check(f"{m['id']} {point['id']} ETA sanity {side}", abs(length / data['speed'] - point['times'][side]) < .4)
 check('page under 10MB', PAGE.stat().st_size < 10_000_000)
 check('preview has no download control or API', 'download-data' not in text and 'createObjectURL' not in text and '.download=' not in text)
-check('scene script resolved', '__SCENE_SCRIPT__' not in text)
+check('scene script resolved', '__SCENE_SCRIPT__' not in text and '__D3_FUNCTIONS__' not in text)
 check('generated index ignored', '/index.html' in (ROOT/'showcase/.gitignore').read_text())
 check('derived data ignored', '/data/' in (ROOT/'showcase/.gitignore').read_text())
 check('R0–R9', [r['round'] for r in data['story']['rounds']] == list(range(10)))
@@ -91,7 +91,42 @@ for m in data['maps']:
         witness=vision.witnesses(RefereeSnapshot('check',0,(enemy,candidate)),'e')[0]
         check('ambush static concealment witness', witness.line_clear is False)
         check('ambush standing ray to choke', mesh.clear(np.array(a['position'])+[0,1.1,0],np.array(target)+[0,.7,0]))
-check('native examples and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==4+len(data['zipcaster']['recommendations']) and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
+check('native examples and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==4+len(data['zipcaster']['recommendations'])+sum(t['id'].startswith(('d3-','d3r-'))for t in data['traces']) and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
+if 'd3'in data:
+    d3=data['d3'];check('finite model not native certificate',d3['model_calibrated']is False)
+    check('three maps and27 finite D3 tactics',len(d3['maps'])==3 and all(len(m['points'])==9 for m in d3['maps']))
+    if d3['calibration']:
+        check('fixed native cohort retained',d3['calibration']['native_trials']==54 and sum(p['n']for p in d3['calibration']['points'])==54)
+        check('native ranking proof not manufactured',d3['calibration']['model_native_rank_proven']is False)
+    for m in d3['maps']:
+        for p in m['points']:
+            for v in [p]+([p['corrected']]if 'corrected'in p else[]):
+                check('D3 avg worst ordered',0<=v['worst']<=v['expected']<=1)
+                check('D3 enemy probabilities bounded',all(len(e)==5 and 0<=e[4]<=e[3]+.000101<=1.000101 for e in v['enemy']))
+                check('D3 startup-inclusive gauge bounded',0<=v['spent']<=1)
+            if d3['has_corrected']:check('same finite point has corrected model', 'corrected'in p)
+            if len(p['sequence'])>1:check('single-hook native not attributed to multi',p['native']is None)
+from showcase.d3r import compile_d3r
+rdata,rclips=compile_d3r(ROOT,lambda p:ROOT/p)
+check('D3R numerical compiler reconstruction',data['d3r']==rdata)
+check('D3R no manufactured native ranking',rdata['native_rank_proven']is False and rdata['calibration']['model_native_rank_proven']is False)
+check('D3R fixed cohort54 valid',rdata['calibration']['native_trials']==54 and sum(p['n']for p in rdata['calibration']['points'])==54)
+check('D3R setup voids separate',rdata['calibration']['void_attempts']==4)
+check('D3R finite189 variants',rdata['search']['single_tactics']==18 and rdata['search']['sequence_tactics']==9 and rdata['search']['fine_variants']==189)
+check('D3R four explicit operation bands',rdata['speeds']==[20,40,60,129])
+for m in rdata['maps']:
+    check('D3R each map9 finite tactics',len(m['points'])==9)
+    for p in m['points']:
+        check('D3R measured singles distinct from predicted chains',(p['native']is None)==(len(p['sequence'])>1))
+        check('D3R seven legal variants',len(p['variants'])==7)
+        for v in p['variants']:
+            check('D3R20 full precharge not fabricated',v['speed']!=20 or(v['style']=='light3'and not v['requires_precharge']))
+            check('D3R global and local probability bounds',0<=v['worst']<=v['expected']<=v['local']+1e-9<=1+1e-9 and 0<=v['local_worst']<=v['local'])
+            check('D3R startup inclusive finite budget',0<v['spent']<=1)
+            check('D3R conditional cells12',len(v['enemy'])==v['sampled_enemy_nodes']==12 and all(len(e)==5 and 0<=e[4]<=e[3]+.000101<=1.000101 for e in v['enemy']))
+            check('D3R declared prior mass',0<v['near_prior_mass']<=1 and abs(v['expected']-v['local']*v['near_prior_mass'])<1e-8)
+rlookup={t['id']:t for t in rclips}
+
 from showcase.zipcaster import compile_zipcaster
 zipdata,zipclips=compile_zipcaster(ROOT,lambda p:ROOT/p)
 check('D2 presentation selection reproducible',data['zipcaster']==zipdata)
@@ -103,6 +138,27 @@ for m in zipdata['maps']:
         check('bounded per-region selection',sum(any(t['region']==region for t in p['targets'])for p in m['candidates'])<=zipdata['per_region'])
     check('all static points remain candidates',all(p['status']=='candidate'for p in m['candidates']))
 for t in data['traces']:
+    if t['id'].startswith('d3r-'):
+        check('D3R native trace reconstruction',t==rlookup[t['id']])
+        check('D3R ideal fixture disclosed',t['ideal_operation_fixture']is True)
+        check('D3R annotated timeline bounded',all(t['start_frame']<=e['frame']<=t['end_frame']for e in t['annotations']))
+        check('D3R own-state columns',all(len(s)==10 for p in t['players']for s in p['states']))
+        for p in t['players']:
+            check('D3R finite aim samples',all(len(s)==3 and all(math.isfinite(v)for v in s)and t['start_frame']<=s[0]<=t['end_frame']for s in p['aim_states']))
+        for p in t['projectiles']:
+            check('D3R owner and weapon type',p['kind']in(['full','light']if p['who']=='alpha'else['gun']))
+            check('D3R readonly projectile finite positions',all(len(s)==4 and t['start_frame']<=s[0]<=t['end_frame']and all(math.isfinite(v)and abs(v)<1000 for v in s[1:])for s in p['states']))
+            check('D3R pooled projectile jumps not joined',all(a[0]<b[0]and math.dist(a[1:],b[1:])<=12*(b[0]-a[0])for a,b in zip(p['states'],p['states'][1:])))
+        continue
+    if t['id'].startswith('d3-'):
+        from showcase.d3 import native_trace
+        path=Path(t['evidence']['result']).parent
+        expected=native_trace(ROOT,lambda p:ROOT/p,path,t['id'],t['label'])
+        check('D3 native trace reconstruction',t==expected)
+        check('D3 annotated timeline bounded',all(t['start_frame']<=e['frame']<=t['end_frame']for e in t['annotations']))
+        check('D3 has native hook/charge markers',any(e['kind']in('hook','hook_input')for e in t['annotations']))
+        check('D3 own-state columns',all(len(s)==10 for p in t['players']for s in p['states']))
+        continue
     if t['id']=='zipcaster-mid':
         check('D2 clip identity and inputs preserved',t==zipclips[0])
         from tools.zipcaster.export import trace

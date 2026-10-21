@@ -19,6 +19,8 @@ from arena.referee import PlayerTruth, RefereeSnapshot
 from derive_3d import enrich_map
 from derive_traces import compile_traces
 from zipcaster import compile_zipcaster
+from d3 import compile_d3
+from d3r import compile_d3r
 
 MAPS = [('Yunohana', '温泉峡谷'), ('District00', 'District00'), ('Yagara', 'Yagara')]
 REGIONS = {'center': '中路', 'central_high': '中央高台', 'west_lane': '西侧通路', 'east_lane': '东侧通路'}
@@ -261,6 +263,15 @@ def main():
     source('showcase/zipcaster.py')
     data['zipcaster'], zip_clips = compile_zipcaster(ROOT, source)
     data['traces'][:0] = zip_clips
+    source('showcase/d3.py')
+    data['d3'], d3_clips = compile_d3(ROOT, source)
+    data['traces'][:0] = d3_clips
+    source('showcase/d3r.py')
+    source('showcase/projectiles.py')
+    data['d3r'], ideal_clips = compile_d3r(ROOT, source)
+    data['traces'][:0] = ideal_clips
+    data['snapshot'] = '2026-10-22'
+    d3_scene = source('showcase/d3_scene.js')
     scene_path = source('showcase/scene.js')
     template_path = source('showcase/template.html')
     source('showcase/build.py')
@@ -271,7 +282,7 @@ def main():
     template = template_path.read_text()
     assert template.count('__SHOWCASE_DATA__') == 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(template.replace('__SHOWCASE_DATA__', payload).replace('__SCENE_SCRIPT__', scene_path.read_text()))
+    args.out.write_text(template.replace('__SHOWCASE_DATA__', payload).replace('__SCENE_SCRIPT__', scene_path.read_text().replace('/* __D3_FUNCTIONS__ */',d3_scene.read_text())))
     assert args.out.stat().st_size < 10_000_000, 'preview must stay under10MB'
     print(f'Built {args.out} ({args.out.stat().st_size:,} bytes), {len(SOURCES)} evidence files.')
 
