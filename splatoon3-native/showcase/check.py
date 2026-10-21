@@ -54,7 +54,8 @@ for m in data['maps']:
             check(f"{m['id']} {point['id']} route endpoints {side}", route[0] == m['spawns'][side] and route[-1] == point['position'])
             length = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
             check(f"{m['id']} {point['id']} ETA sanity {side}", abs(length / data['speed'] - point['times'][side]) < .4)
-check('page under 15MB', PAGE.stat().st_size < 15_000_000)
+check('page under 10MB', PAGE.stat().st_size < 10_000_000)
+check('preview has no download control or API', 'download-data' not in text and 'createObjectURL' not in text and '.download=' not in text)
 check('scene script resolved', '__SCENE_SCRIPT__' not in text)
 check('generated index ignored', '/index.html' in (ROOT/'showcase/.gitignore').read_text())
 check('derived data ignored', '/data/' in (ROOT/'showcase/.gitignore').read_text())
@@ -90,8 +91,24 @@ for m in data['maps']:
         witness=vision.witnesses(RefereeSnapshot('check',0,(enemy,candidate)),'e')[0]
         check('ambush static concealment witness', witness.line_clear is False)
         check('ambush standing ray to choke', mesh.clear(np.array(a['position'])+[0,1.1,0],np.array(target)+[0,.7,0]))
-check('two native and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==2 and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
+check('three native and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==3 and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
+from showcase.zipcaster import compile_zipcaster
+zipdata,zipclip=compile_zipcaster(ROOT,lambda p:ROOT/p)
+check('D2 presentation selection reproducible',data['zipcaster']==zipdata)
+check('D2 native pose is not a static point certification',len(zipdata['verified'])==1 and '实际锚点' in zipdata['verified'][0]['caveat'])
+for m in zipdata['maps']:
+    for region in ('center','central_high','west_lane','east_lane'):
+        check('bounded per-region selection',sum(any(t['region']==region for t in p['targets'])for p in m['candidates'])<=zipdata['per_region'])
+    check('all static points remain candidates',all(p['status']=='candidate'for p in m['candidates']))
 for t in data['traces']:
+    if t['id']=='zipcaster-mid':
+        check('D2 clip identity and inputs preserved',t==zipclip)
+        from tools.zipcaster.export import trace
+        raw=trace((ROOT/t['evidence']['raw_steps']).parent,'mc')
+        check('D2 trace raw reconstruction',raw['players']==t['players'] and raw['start_frame']==t['start_frame'] and raw['end_frame']==t['end_frame'])
+        check('D2 actual target down present',any(s[7]==0 and s[8]is False for s in t['players'][1]['states']))
+        check('D2 R release edge present',any(e['type']=='R_release'for e in t['players'][0]['events']))
+        continue
     n=int(t['id'][-1]);check('generic trace schema', t['schema']=='inklab.trace.v1' and t['fps']==60 and t['stride']==6 and t['end_frame']-t['start_frame']==1800)
     for player in t['players']:
         rows=player['states'];check('monotonic trace samples', len(rows)>250 and all(len(r)==10 for r in rows) and all(a[0]<b[0] for a,b in zip(rows,rows[1:])))

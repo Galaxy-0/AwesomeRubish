@@ -18,6 +18,7 @@ from arena.lib import stamper_data as weapon
 from arena.referee import PlayerTruth, RefereeSnapshot
 from derive_3d import enrich_map
 from derive_traces import compile_traces
+from zipcaster import compile_zipcaster
 
 MAPS = [('Yunohana', '温泉峡谷'), ('District00', 'District00'), ('Yagara', 'Yagara')]
 REGIONS = {'center': '中路', 'central_high': '中央高台', 'west_lane': '西侧通路', 'east_lane': '东侧通路'}
@@ -257,6 +258,9 @@ def main():
                     repeat=weapon.LIGHT_REPEAT_INPUT_PERIOD, special_points=weapon.SPECIAL_BASE_POINTS))
     source('arena/lib/stamper_data.py')
     source('showcase/derive_traces.py')
+    source('showcase/zipcaster.py')
+    data['zipcaster'], zip_clip = compile_zipcaster(ROOT, source)
+    data['traces'].insert(0, zip_clip)
     scene_path = source('showcase/scene.js')
     template_path = source('showcase/template.html')
     source('showcase/build.py')
@@ -268,6 +272,7 @@ def main():
     assert template.count('__SHOWCASE_DATA__') == 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(template.replace('__SHOWCASE_DATA__', payload).replace('__SCENE_SCRIPT__', scene_path.read_text()))
+    assert args.out.stat().st_size < 10_000_000, 'preview must stay under10MB'
     print(f'Built {args.out} ({args.out.stat().st_size:,} bytes), {len(SOURCES)} evidence files.')
 
 

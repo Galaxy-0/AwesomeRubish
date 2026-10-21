@@ -2,7 +2,43 @@
 (() => {
   const host=$('scene'),traceSelect=$('trace-select'),timeline=$('trace-time');
   const THREE=window.THREE,reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
-  let app=null,clip=DATA.traces[0],frame=clip.start_frame,playing=false,previousTick=null;
+  let app=null,clip=DATA.traces[0],frame=clip.start_frame,playing=false,previousTick=null,selectedZip=null;
+
+  const regionNames={center:'中路',central_high:'中央高台',west_lane:'西侧通路',east_lane:'东侧通路'};
+  function zipPoints(map=currentMap(),filtered=true){
+    const region=$('zip-region').value,combo=$('zip-combo').value;
+    const native=DATA.zipcaster.verified.filter(p=>p.map===map.id&&(!filtered||((region==='all'||p.region===region)&&(combo==='all'||combo===p.combo))));
+    const candidates=DATA.zipcaster.maps.find(m=>m.id===map.id).candidates.flatMap(p=>{
+      const targets=p.targets.filter(t=>!filtered||((region==='all'||t.region===region)&&(combo==='all'||combo==='full-light'&&t.full_light||combo==='bomb-full'&&t.bomb_full_geometry)));
+      return targets.length?[{...p,displayTarget:targets.find(t=>t.full_light)||targets[0]}]:[];
+    });return [...native,...candidates];
+  }
+  function zipDetail(point){
+    const box=$('zip-detail');box.replaceChildren();if(!point){box.append(el('p','',$('zip-combo').value==='bomb-light'?'60＋35＝95，不足击倒100血。这个筛选没有满血击倒候选。':'当前筛选无匹配点；此图仍没有原生已验证挂点。'));return}
+    const native=point.status==='verified',target=point.displayTarget;
+    box.append(el('strong','',native?'已实测验证 · 中路夹具':'待验证候选 · '+point.id.split('-').at(-1)));
+    const dl=el('dl');
+    const entries=native?[['连招','蓄斩70 → 轻斩收尾'],['观测耗时','150f · 含重瞄'],['样本','静止满血靶 · 1次'],['位置',point.position.map(x=>fmt(x,1)).join(' / ')]]:
+      [['目标区域',regionNames[target.region]],['距估计落点',fmt(target.distance,1)+' u'],['落点潜在视域',point.view===null?'—':fmt(point.view,1)+'%'],['出钩参考距离',fmt(point.approach_range,1)+' u']];
+    for(const[k,v]of entries){const row=el('div');row.append(el('dt','',k),el('dd','',v));dl.append(row)}box.append(dl);
+    box.append(el('p','',native?point.caveat:($('zip-combo').value==='bomb-full'?'130只是条件伤害算术。大招内炸弹输入、投掷轨迹和命中未验证。':target.full_light?'满足估计落点19u内与中心射线条件；105伤害须两刀命中且目标未回血。':'只满足静态切入筛选，未证实能在落点接满血击倒连招。')));
+    if(!native)box.append(el('p','','虚线为几何参考连线，非原生飞行轨迹；标记穿透显示，不代表对手可见性。'));
+  }
+  function updateZipUI(){
+    const visible=$('show-zip').checked,points=zipPoints(),native=points.filter(p=>p.status==='verified').length;
+    $('zip-panel').hidden=!visible;
+    selectedZip=points.find(p=>p.id===selectedZip?.id)||points[0]||null;
+    document.querySelector('.inspector').classList.toggle('zip-active',visible);
+    $('zip-count').textContent=`${native} 处实测 / ${points.length-native} 处候选 · 原始${DATA.zipcaster.maps.find(m=>m.id===currentMap().id).total}处节选`;
+    const options=points.map(p=>{const o=el('option','',p.status==='verified'?'● 实测 · 中路夹具':`○ ${regionNames[p.displayTarget.region]} · ${p.id.split('-').at(-1)}`);o.value=p.id;return o});
+    if(!options.length){const o=el('option','','无匹配点');o.value='';options.push(o)}
+    $('zip-point').replaceChildren(...options);$('zip-point').value=selectedZip?.id||'';zipDetail(selectedZip);
+    $('zip-replay').hidden=!visible||currentMap().id!=='Yunohana';
+    if(!visible)selectedZip=null;
+  }
+  window.clearZipFocus=()=>{$('show-zip').checked=false;updateZipUI()};
+  window.drawZip2D=(ctx,xy)=>{if(!$('show-zip').checked)return;for(const p of zipPoints()){const[x,y]=xy(p.position);ctx.beginPath();ctx.arc(x,y,p.status==='verified'?5:3,0,Math.PI*2);ctx.strokeStyle=cssToken('--accent');ctx.lineWidth=p.id===selectedZip?.id?2.5:1;ctx.stroke();if(p.status==='verified'){ctx.fillStyle=cssToken('--accent');ctx.fill()}}};
+
   const formName={human:'人形',squid:'乌贼',submerged:'潜墨'};
   function sample(player,f){
     const rows=player.states;if(!rows.length||f<rows[0][0]||f>rows.at(-1)[0]+6)return null;
@@ -26,18 +62,18 @@
     $('play-trace').textContent=playing?'Ⅱ 暂停':'▶ 播放';$('play-trace').setAttribute('aria-label',playing?'暂停回放':'播放回放');
     $('replay-hud').replaceChildren(...clip.players.map(p=>{
       const s=sample(p,frame),card=el('div',`player-hud ${p.id}`),head=el('div');
-      head.append(el('strong','mono',p.id.toUpperCase()),el('div','form-label',s?`${formName[s[6]]||'形态未知'} · ${s[8]===true?'活动状态':s[8]===false?'倒下 / 待回场':'存活未知'}`:'状态缺失'));
+      head.append(el('strong','mono',p.display_name||p.id.toUpperCase()),el('div','form-label',s?`${formName[s[6]]||'形态未知'} · ${s[8]===true?'活动状态':s[8]===false?'倒下 / 待回场':'存活未知'}`:'状态缺失'));
       const hp=el('div'),track=el('div','hp-track'),bar=el('i');bar.style.width=s&&s[7]!==null?`${Math.max(0,Math.min(100,s[7]*100))}%`:'0';track.append(bar);
       hp.append(el('small','',`HP ${s&&s[7]!==null?Math.round(s[7]*100)+'%':'—'} · 采样 F${s?s[1]:'—'}`),track);card.append(head,hp);return card;
     }));
-    const recent=clip.players.flatMap(p=>p.events.filter(e=>e.frame<=frame&&e.frame>frame-120&&e.type==='ZR_release').map(e=>({...e,who:p.id}))).sort((a,b)=>b.frame-a.frame).slice(0,4);
-    $('event-feed').replaceChildren(...(recent.length?recent.map(e=>{const span=el('span');span.append(el('b',e.who,e.who),document.createTextNode(` · F${e.frame} 松 ZR / 持 ${e.hold_frames??'?'} 帧`));return span}):[el('span','',currentMap().id===clip.map?'此刻没有新的出刀输入。':'此图暂无片段；播放将切回温泉峡谷。')]));
+    const recent=clip.players.flatMap(p=>p.events.filter(e=>e.frame<=frame&&e.frame>frame-120&&['ZR_release','R_release'].includes(e.type)).map(e=>({...e,who:p.id}))).sort((a,b)=>b.frame-a.frame).slice(0,4);
+    $('event-feed').replaceChildren(...(recent.length?recent.map(e=>{const span=el('span');span.append(el('b',e.who,e.who),document.createTextNode(` · F${e.frame} 松 ${e.type==='R_release'?'R / 出钩输入':'ZR'} · 持 ${e.hold_frames??'?'} 帧`));return span}):[el('span','',currentMap().id===clip.map?'此刻没有新的出刀输入。':'此图暂无片段；播放将切回温泉峡谷。')]));
   }
   // These are visual ticks over recorded input/state edges, never inferred hits.
   function paintEventTicks(){
     const ticks=[];
     for(const p of clip.players){
-      for(const e of p.events)if(e.type==='ZR_release')ticks.push({frame:e.frame,kind:'slash',text:'出刀输入',who:p.id});
+      for(const e of p.events)if(e.type==='R_release')ticks.push({frame:e.frame,kind:'hook',text:'松R / 出钩输入',who:p.id});else if(e.type==='ZR_release')ticks.push({frame:e.frame,kind:'slash',text:'出刀输入',who:p.id});
       p.states.forEach((s,i)=>{if(!i)return;const previous=p.states[i-1];
         if(previous[8]===true&&s[8]===false)ticks.push({frame:s[0],kind:'down',text:'倒下状态',who:p.id});
         if((previous[6]==='submerged')!==(s[6]==='submerged'))ticks.push({frame:s[0],kind:'dive',text:'潜墨切换',who:p.id});
@@ -109,6 +145,7 @@
       this.ambushGroup=new THREE.Group();m.ambush.forEach((p,i)=>{const marker=new THREE.Mesh(new THREE.OctahedronGeometry(.9),new THREE.MeshStandardMaterial());marker.position.set(p.position[0],p.position[1]+1.3,p.position[2]);marker.userData.ambush=i;this.ambushGroup.add(marker)});this.root.add(this.ambushGroup);
       const prompt=el('option','',`选择伏击候选（${m.ambush.length}）`);prompt.value='';prompt.disabled=true;prompt.selected=true;
       $('ambush-select').replaceChildren(prompt,...m.ambush.map((p,i)=>{const o=el('option','',`${p.label} / 对 ${p.approach_side} 侧接近 / ${p.distance}u`);o.value=String(i);return o}));
+      this.zipGroup=new THREE.Group();zipPoints(m,false).forEach(p=>{const native=p.status==='verified';const marker=new THREE.Mesh(native?new THREE.OctahedronGeometry(1.4):new THREE.RingGeometry(.7,.95,24),new THREE.MeshBasicMaterial({transparent:true,opacity:native?1:.8,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));marker.position.set(p.position[0],p.position[1]+.5,p.position[2]);marker.renderOrder=12;marker.userData.zipId=p.id;marker.userData.candidate=!native;this.zipGroup.add(marker);if(native){const label=this.label('实测挂墙姿态',p.position,'zip');label.zipId=p.id;label.element.classList.add('zip-scene-label')}});this.root.add(this.zipGroup);
       this.overlay=new THREE.Group();this.root.add(this.overlay);this.setClipPaths();
       const index=document.querySelector('.point-index');index.replaceChildren(...m.points.map((p,i)=>{const s=el('span');s.append(el('b','',String(i+1).padStart(2,'0')),document.createTextNode(p.label));return s}));
     }
@@ -116,14 +153,21 @@
     line(points,color,width=1,dashed=false){const material=dashed?new THREE.LineDashedMaterial({color,dashSize:1.2,gapSize:.8,transparent:true,opacity:.8}):new THREE.LineBasicMaterial({color,transparent:true,opacity:.86,linewidth:width});const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),material);if(dashed)line.computeLineDistances();return line}
     ring(position,radius,color,dashed=false){return this.line(Array.from({length:81},(_,i)=>new THREE.Vector3(position[0]+Math.sin(i/80*Math.PI*2)*radius,position[1]+.35,position[2]+Math.cos(i/80*Math.PI*2)*radius)),color,1,dashed)}
     refresh(){
-      const m=currentMap();if(this.mapId!==m.id)this.setMap(m);
+      const m=currentMap();if(this.mapId!==m.id)this.setMap(m);updateZipUI();
       this.renderer.setClearColor(cssToken('--scene-bg'));this.scene.background=new THREE.Color(cssToken('--scene-bg'));
       m.cells.forEach((c,i)=>{this.floors.setColorAt(i,new THREE.Color(heightColor(c,m)));this.tint.setColorAt(i,new THREE.Color(cellColor(c,m)))});
       this.floors.instanceColor.needsUpdate=true;this.tint.instanceColor.needsUpdate=true;this.tint.visible=mode!=='height';
       this.walls.material.color.set(cssToken('--wall'));this.edges.material.color.set(cssToken('--edge'));this.grid.material.color.set(cssToken('--scene-grid'));
       this.spawnGroup.children.forEach((o,i)=>o.material.color.set(i?colors.bravo:colors.alpha));this.regionGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));this.ambushGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));
       this.spawnGroup.visible=$('show-spawns').checked;this.regionGroup.visible=$('show-eta').checked;this.ambushGroup.visible=$('show-ambush').checked;$('ambush-select').hidden=!this.ambushGroup.visible;this.walls.visible=$('show-walls').checked;
-      this.clearOverlay();if(selected){
+      const visibleIds=new Set(zipPoints().map(p=>p.id));this.zipGroup.visible=$('show-zip').checked;this.zipGroup.children.forEach(o=>{o.visible=visibleIds.has(o.userData.zipId);o.material.color.set(cssToken('--accent'));o.scale.setScalar(o.userData.zipId===selectedZip?.id?1.45:1)});
+      this.clearOverlay();if(selectedZip&&this.zipGroup.visible){
+        const p=selectedZip,end=p.landing?.every(v=>v!==null)?p.landing:p.position,target=p.status==='verified'?p.target:p.displayTarget.position;
+        this.overlay.add(this.line([new THREE.Vector3(...p.start),new THREE.Vector3(...p.position)],cssToken('--accent'),1,true));
+        this.overlay.add(this.line([new THREE.Vector3(...end).add(new THREE.Vector3(0,1,0)),new THREE.Vector3(...target).add(new THREE.Vector3(0,1,0))],cssToken('--accent'),1,true));
+        const marker=new THREE.Mesh(new THREE.OctahedronGeometry(1.1),new THREE.MeshBasicMaterial({color:cssToken('--accent'),depthTest:false}));marker.position.set(target[0],target[1]+1,target[2]);marker.renderOrder=12;this.overlay.add(marker);
+        if($('ranges').checked){this.overlay.add(this.ring(end,19,cssToken('--accent')));this.overlay.add(this.ring(end,22,cssToken('--accent'),true))}
+      }else if(selected){
         if($('routes').checked&&selected.routes)selected.routes.forEach((r,i)=>{if(r.length)this.overlay.add(this.line(r.map(p=>new THREE.Vector3(p[0],p[1]+.7,p[2])),i?colors.bravo:colors.alpha,2))});
         if($('ranges').checked){this.overlay.add(this.ring(selected.position,19,cssToken('--accent')));this.overlay.add(this.ring(selected.position,22,cssToken('--accent'),true))}
       }
@@ -142,7 +186,7 @@
     setClipPaths(){
       if(this.trails){this.root.remove(this.trails);this.trails.traverse(o=>{o.geometry?.dispose();o.material?.dispose()})}
       this.trails=new THREE.Group();this.root.add(this.trails);
-      if(clip&&clip.map===this.mapId)clip.players.forEach(p=>{const path=this.line(p.states.map(s=>new THREE.Vector3(s[2],s[3]+.8,s[4])),p.id==='alpha'?colors.alpha:colors.bravo);path.material.opacity=.18;path.material.depthTest=false;path.renderOrder=10;this.trails.add(path)});
+      if(clip&&clip.map===this.mapId)clip.players.forEach(p=>{const segments=[];p.states.forEach((s,i)=>{if(!i||s[0]-p.states[i-1][0]>18)segments.push([]);segments.at(-1).push(new THREE.Vector3(s[2],s[3]+.8,s[4]))});segments.filter(v=>v.length>1).forEach(points=>{const path=this.line(points,p.id==='alpha'?colors.alpha:colors.bravo);path.material.opacity=.18;path.material.depthTest=false;path.renderOrder=10;this.trails.add(path)})});
     }
     updateActors(){
       this.actors.visible=clip.map===this.mapId;
@@ -156,8 +200,9 @@
     renderLabels(){
       const W=host.clientWidth,H=host.clientHeight,occupied=[],items=[];
       for(const l of this.labels){
-        l.element.hidden=true;if(!(l.kind==='spawn'?this.spawnGroup.visible:this.regionGroup.visible))continue;
-        const expanded=l.kind==='eta'&&(l.pointId===selectedKey||l.pointId===this.hoverKey);
+        l.element.hidden=true;if(l.kind!=='zip'&&!(l.kind==='spawn'?this.spawnGroup.visible:this.regionGroup.visible))continue;
+        const expanded=l.kind==='eta'&&!selectedZip&&(l.pointId===selectedKey||l.pointId===this.hoverKey);
+        if(l.kind==='zip'){if(!this.zipGroup.visible||l.zipId!==selectedZip?.id)continue;items.push({element:l.element,position:l.position,priority:0});continue}
         l.element.classList.toggle('point-number',l.kind==='eta'&&!expanded);
         if(l.kind==='eta'){
           const signature=expanded?'full':'number';if(l.signature!==signature){l.signature=signature;l.element.replaceChildren(document.createTextNode(expanded?`${l.number} ${l.point.label}`:l.number));if(expanded){const small=el('small');small.append(el('span','alpha',`A ${fmt(l.point.times[0])}s`),document.createTextNode(' / '),el('span','bravo',`B ${fmt(l.point.times[1])}s`));l.element.append(el('br'),small)}}
@@ -178,16 +223,17 @@
     }
     render(){
       if(host.hidden||!host.clientWidth)return;this.updateActors();this.projectCamera();
-      this.camera.position.set(this.target.x+Math.sin(this.yaw)*Math.cos(this.elevation)*500,this.target.y+Math.sin(this.elevation)*500,this.target.z+Math.cos(this.yaw)*Math.cos(this.elevation)*500);this.camera.lookAt(this.target);this.renderer.render(this.scene,this.camera);this.renderLabels();
+      this.camera.position.set(this.target.x+Math.sin(this.yaw)*Math.cos(this.elevation)*500,this.target.y+Math.sin(this.elevation)*500,this.target.z+Math.cos(this.yaw)*Math.cos(this.elevation)*500);this.camera.lookAt(this.target);this.zipGroup.children.forEach(o=>{if(o.userData.candidate)o.quaternion.copy(this.camera.quaternion)});this.renderer.render(this.scene,this.camera);this.renderLabels();
     }
     pick(x,y,hover=false){
       const r=host.getBoundingClientRect();this.raycaster.setFromCamera(new THREE.Vector2((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1),this.camera);
       const targets=hover?this.regionGroup.children:[this.floors,...(this.regionGroup.visible?this.regionGroup.children:[]),...(this.ambushGroup.visible?this.ambushGroup.children:[])];
-      const hit=this.raycaster.intersectObjects(targets,false)[0];if(hover){this.hoverKey=hit?.object.userData.point;return}if(!hit)return;
-      if(hit.object.userData.point){choosePoint(hit.object.userData.point);return}if(hit.object.userData.ambush!==undefined){this.selectAmbush(hit.object.userData.ambush);return}
-      if(hit.instanceId!==undefined){const c=currentMap().cells[hit.instanceId];selectedKey=null;selected={position:c.slice(0,3),times:c.slice(3,5),vision:c[5],name:'自选站位',routes:null};updateInspector();drawMap()}
+      const zipHit=!hover&&this.zipGroup.visible?this.raycaster.intersectObjects(this.zipGroup.children.filter(o=>o.visible),false)[0]:null;const hit=zipHit||this.raycaster.intersectObjects(targets,false)[0];if(hover){this.hoverKey=hit?.object.userData.point;return}if(!hit)return;
+      if(hit.object.userData.zipId){selectedZip=zipPoints().find(p=>p.id===hit.object.userData.zipId);drawMap();return}
+      if(hit.object.userData.point){window.clearZipFocus();choosePoint(hit.object.userData.point);return}if(hit.object.userData.ambush!==undefined){this.selectAmbush(hit.object.userData.ambush);return}
+      if(hit.instanceId!==undefined){window.clearZipFocus();const c=currentMap().cells[hit.instanceId];selectedKey=null;selected={position:c.slice(0,3),times:c.slice(3,5),vision:c[5],name:'自选站位',routes:null};updateInspector();drawMap()}
     }
-    selectAmbush(index){const c=currentMap().ambush[index],cell=nearestCell(c.position);selectedKey=null;selected={position:c.position,times:cell.slice(3,5),vision:cell[5],name:`${c.label} · 伏击候选`,routes:null,ambush:c};$('ambush-select').value=String(index);updateInspector();$('point-insight').textContent=`假定对手由 ${c.approach_side} 侧接近，洋红球为观察位；潜墨低姿态被遮挡，距要道 ${c.distance}u。己墨与出墨命中待验证。`;$('point-insight').classList.add('ambush-hint');drawMap()}
+    selectAmbush(index){window.clearZipFocus();const c=currentMap().ambush[index],cell=nearestCell(c.position);selectedKey=null;selected={position:c.position,times:cell.slice(3,5),vision:cell[5],name:`${c.label} · 伏击候选`,routes:null,ambush:c};$('ambush-select').value=String(index);updateInspector();$('point-insight').textContent=`假定对手由 ${c.approach_side} 侧接近，洋红球为观察位；潜墨低姿态被遮挡，距要道 ${c.distance}u。己墨与出墨命中待验证。`;$('point-insight').classList.add('ambush-hint');drawMap()}
     freeCamera(){this.preset='free';$('follow-player').value='free';document.querySelectorAll('[data-camera]').forEach(b=>b.setAttribute('aria-pressed','false'))}
     bindInput(){
       host.oncontextmenu=e=>e.preventDefault();
@@ -206,8 +252,8 @@
     }
   }
   traceSelect.replaceChildren(...DATA.traces.map(c=>{const o=el('option','',c.label);o.value=c.id;return o}));
-  $('quick-clip').replaceChildren(...DATA.traces.map(c=>{const o=el('option','',`${c.source_kind==='native_observation'?'原生':'模拟'} R${c.id.slice(-1)}`);o.value=c.id;return o}));
-  function chooseClip(id){clip=DATA.traces.find(t=>t.id===id);frame=clip.start_frame;playing=false;const i=DATA.maps.findIndex(m=>m.id===clip.map);if(i!==mapIndex)switchMap(i);app?.setClipPaths();paintEventTicks();updateHUD()}
+  $('quick-clip').replaceChildren(...DATA.traces.map(c=>{const o=el('option','',c.short_label||`${c.source_kind==='native_observation'?'原生':'模拟'} R${c.id.slice(-1)}`);o.value=c.id;return o}));
+  function chooseClip(id){clip=DATA.traces.find(t=>t.id===id);traceSelect.value=id;$('quick-clip').value=id;$('clip-description').textContent=clip.description||'';frame=clip.start_frame;playing=false;const i=DATA.maps.findIndex(m=>m.id===clip.map);if(i!==mapIndex)switchMap(i);app?.setClipPaths();paintEventTicks();updateHUD()}
   traceSelect.onchange=()=>{$('quick-clip').value=traceSelect.value;chooseClip(traceSelect.value)};
   $('quick-clip').onchange=()=>{traceSelect.value=$('quick-clip').value;chooseClip(traceSelect.value)};
   function seek(value){frame=clip.start_frame+Number(value);playing=false;updateHUD()}
@@ -222,7 +268,12 @@
   $('ambush-select').onchange=()=>{if($('ambush-select').value!=='')app?.selectAmbush(Number($('ambush-select').value))};
   $('reset-camera').onclick=()=>app?.reset();
   $('view-toggle').onclick=()=>{const show3D=host.hidden;canvas.hidden=show3D;host.hidden=!show3D;$('view-toggle').textContent=show3D?'2D':'3D';drawMap();app?.resize()};
-  for(const id of ['show-spawns','show-eta','show-ambush','show-walls'])$(id).onchange=()=>app?.refresh();
+  for(const id of ['show-spawns','show-eta','show-ambush','show-walls','show-zip'])$(id).onchange=()=>{updateZipUI();drawMap()};
+  for(const id of ['zip-region','zip-combo'])$(id).onchange=()=>{selectedZip=null;updateZipUI();drawMap()};
+  $('zip-point').onchange=()=>{selectedZip=zipPoints().find(p=>p.id===$('zip-point').value);drawMap()};
+  function showCombo(){$('show-zip').checked=true;$('zip-region').value='center';$('zip-combo').value='full-light';selectedZip=DATA.zipcaster.verified[0];chooseClip('zipcaster-mid');drawMap();app?.setPreset('follow');$('maps').scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});}
+  $('zip-replay').onclick=showCombo;$('zip-card-replay').onclick=showCombo;
+  updateZipUI();
   try{if(!THREE)throw new Error('three.js CDN 未加载');app=new AtlasScene();window.updateScene=()=>app.refresh();app.refresh()}catch(error){host.append(el('div','webgl-error',`3D 未能初始化：${error.message}。可以使用“2D”查看相同离线图层。`));$('reset-camera').disabled=true}
   let hudLast=0;
   function tick(time){const dt=previousTick===null?0:Math.min(.1,(time-previousTick)/1000);previousTick=time;if(playing&&document.visibilityState==='visible'){frame=Math.min(clip.end_frame,frame+dt*60*Number($('play-speed').value));if(frame>=clip.end_frame)playing=false}if(time-hudLast>90){updateHUD();hudLast=time}app?.render();requestAnimationFrame(tick)}
