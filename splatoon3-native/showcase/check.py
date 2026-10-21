@@ -91,23 +91,39 @@ for m in data['maps']:
         witness=vision.witnesses(RefereeSnapshot('check',0,(enemy,candidate)),'e')[0]
         check('ambush static concealment witness', witness.line_clear is False)
         check('ambush standing ray to choke', mesh.clear(np.array(a['position'])+[0,1.1,0],np.array(target)+[0,.7,0]))
-check('three native and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==3 and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
+check('native examples and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==4+len(data['zipcaster']['recommendations']) and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
 from showcase.zipcaster import compile_zipcaster
-zipdata,zipclip=compile_zipcaster(ROOT,lambda p:ROOT/p)
+zipdata,zipclips=compile_zipcaster(ROOT,lambda p:ROOT/p)
 check('D2 presentation selection reproducible',data['zipcaster']==zipdata)
-check('D2 native pose is not a static point certification',len(zipdata['verified'])==1 and '实际锚点' in zipdata['verified'][0]['caveat'])
+check('D2 legacy native pose is not a static point certification','实际锚点' in zipdata['verified'][0]['caveat'])
+check('D2B native anchor is explicit',next(p for p in zipdata['verified']if p['id']=='native-high-side')['anchor']is not None)
+check('measured failures remain failures',all(p['status']in ['verified','failed','partial','incomplete']for p in zipdata['verified']))
 for m in zipdata['maps']:
     for region in ('center','central_high','west_lane','east_lane'):
         check('bounded per-region selection',sum(any(t['region']==region for t in p['targets'])for p in m['candidates'])<=zipdata['per_region'])
     check('all static points remain candidates',all(p['status']=='candidate'for p in m['candidates']))
 for t in data['traces']:
     if t['id']=='zipcaster-mid':
-        check('D2 clip identity and inputs preserved',t==zipclip)
+        check('D2 clip identity and inputs preserved',t==zipclips[0])
         from tools.zipcaster.export import trace
         raw=trace((ROOT/t['evidence']['raw_steps']).parent,'mc')
         check('D2 trace raw reconstruction',raw['players']==t['players'] and raw['start_frame']==t['start_frame'] and raw['end_frame']==t['end_frame'])
         check('D2 actual target down present',any(s[7]==0 and s[8]is False for s in t['players'][1]['states']))
         check('D2 R release edge present',any(e['type']=='R_release'for e in t['players'][0]['events']))
+        continue
+    if t['id']=='zipcaster-high':
+        from tools.zipcaster.export import trace
+        raw=trace((ROOT/t['evidence']['raw_steps']).parent,'high-side')
+        check('D2B high clip identity',t==zipclips[1])
+        check('D2B high trace raw reconstruction',raw['players']==t['players']and raw['start_frame']==t['start_frame']and raw['end_frame']==t['end_frame'])
+        check('D2B high actual KO',any(s[7]==0 and s[8]is False for s in t['players'][1]['states']))
+        continue
+    if t['id'].startswith('zipcaster-batch-'):
+        from tools.zipcaster.export import trace
+        raw=trace((ROOT/t['evidence']['raw_steps']).parent,'c')
+        check('D2C recommended trace raw reconstruction',raw['players']==t['players']and raw['start_frame']==t['start_frame']and raw['end_frame']==t['end_frame'])
+        check('D2C target KO retained',any(s[7]==0 and s[8]is False for s in t['players'][1]['states']))
+        check('D2C clip has a measured successful point',any(p.get('clip_id')==t['id']and p['status']=='verified'for p in zipdata['verified']))
         continue
     n=int(t['id'][-1]);check('generic trace schema', t['schema']=='inklab.trace.v1' and t['fps']==60 and t['stride']==6 and t['end_frame']-t['start_frame']==1800)
     for player in t['players']:

@@ -1,6 +1,6 @@
 # D2 Zipcaster 测量工具
 
-独立的协调方夹具和离线分析，不是策略实现，不接入正式擂台。当前 **D2B只读传感与侧角高台70+35已通过；实体天花板摆位和护甲倍率仍未定，没有D2全项签收**。最新见 [B报告](../../notes/d2b-20261021.md) 和 [B机器索引](../../notes/d2b-20261021.json)；首轮历史见 [研究报告](../../notes/d2-20261021.md) 和 [机器索引](../../notes/d2-20261021.json)。
+独立的协调方夹具和离线分析，不是策略实现，不接入正式擂台。**D2C三图24点／33次批测与页面接入已完成并停止**；天花板已知未定、护甲减伤倍率未定，D2全机制未签收。最新见[C报告](../../notes/d2c-20261021.md)／[数值索引](../../notes/d2c-20261021.json)；B传感见[B报告](../../notes/d2b-20261021.md)，首轮历史见[研究报告](../../notes/d2-20261021.md)。
 
 ## 文件
 
@@ -94,3 +94,44 @@ cat tools/zipcaster/plans/combat-v3.jsonl >> work/d2/replay-combat.commands.json
 ```
 
 `report_sensors.py`使用报告中指定的五个历史关闭run和四份decode目录，不能在仍运行的日志上生成最终哈希。其它decode目录以JSON所列session同法生成。新高台D1通用trace保存在`work/d2b/traces/high-side.json`，未修改旧`showcase/data/zipcaster-traces.json`或已发布页面。
+
+
+## D2C：候选批测与练习点
+
+- `validate_candidates.py select`：离线选点，三图各8、每区域2点，full-light条件优先，按原静态视域／暴露与距离排序；仅23/24满足原105几何条件，1个覆盖负例保留。源计划与SHA在`work/d2c/selection.json`，原件不覆盖。
+- `validate_candidates.py point|batch`：每点新进程，自动普通按键摆位／发索／满血靶／21帧满蓄接轻斩，原生只读传感，完整像素、fixed60。最多3房；每点最多2次由实验计划和审计核对。出现特殊接触先掉血时，只允许普通涂墨／潜墨回血再验证100HP，不注入HP，不改游戏机制。
+- `armor_candidates.py`：近距离早／晚受击探针；`--future-aim`为提前对准已测到达位置、等待视角稳定后再蓄力的对照。本轮5次中仅2次晚窗口确认70命中，早期接触仍未确认，不把armor清零算命中。
+- `report_candidates.py`：本轮关闭原件归约，记录全部33次、预定／实际锚点和法向、到达姿态／地面脚点、失败类别、两种计时、来源SHA及3个推荐回放。输出`notes/d2c-20261021.json`和ignored `work/d2c/results.json`，再由showcase编译。
+- `check_candidates.py`：572项离线证据审计；独立检查原生frame／fixed60／完整像素、满血70再轻斩KO、地面脚点证据、试验分母、每点上限及全部来源／受保护runtime SHA。检查数不是原生试验数。
+
+复现需要用户授权游戏运行；**当前已停止，以下只是用法**。另选全新计划／输出目录，不覆盖本轮`work/d2c/selection.json`和原始run。
+
+```sh
+.venv/bin/python tools/zipcaster/validate_candidates.py select \
+  --selection work/d2c/replay-selection.json
+.venv/bin/python tools/zipcaster/validate_candidates.py batch \
+  --selection work/d2c/replay-selection.json --rooms 3 \
+  --out work/d2c/replay-batch-new
+```
+
+`--ids Yunohana-hook-0740,District00-hook-0585`可缩小范围，`--attempt 2`使用替代接近／局部瞄准修正和一次小跳，仍只有一次R发射，不追飞行再R。初始摆位失败、满血前置失败、旁面绑定、未命中都保留，不能靠driver退出0计成功。脚本是研究夹具；本轮归约按本次点位原件集合构建，复现新cohort须单独整理索引，勿混进本轮33次。
+
+护甲示例**最多占1房**；与批测同时用时给批测留至多2房：
+
+```sh
+.venv/bin/python tools/zipcaster/armor_candidates.py --delay 32 --future-aim
+.venv/bin/python tools/zipcaster/armor_candidates.py --delay 70 --future-aim
+```
+
+离线重建本轮（无游戏进程）：
+
+```sh
+.venv/bin/python tools/zipcaster/report_candidates.py
+.venv/bin/python tools/zipcaster/check_candidates.py
+.venv/bin/python showcase/build.py
+.venv/bin/python showcase/check.py
+```
+
+绑定门是原生见证＋世界锚点在预定点2.5u邻域；不声称同一静态triangle。到达是原生Attack后首个Wait采样，可能仍挂墙；地面落点必须另有native ground_contact=4。最快蓄力→KO和到达→KO分开，后者含90帧观察等待余量／重瞄；不称理论极限。
+
+当前点位通过数：温泉绑定8/8、两刀3/8；District00绑定4/8、两刀1/8；Yagara绑定4/8、两刀1/8。页面保留5成功／18失败／1前置未完成，以及2个旧夹具；三图各1段练习回放在`work/d2c/traces/recommended.json`，B高台片段继续使用原件，旧T1/S1记录不变。生成HTML、trace／网格和截图仍不提交。

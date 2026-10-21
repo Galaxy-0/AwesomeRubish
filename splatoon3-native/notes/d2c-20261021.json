@@ -1,0 +1,2983 @@
+{
+  "schema": "inklab.d2c.report.v1",
+  "date": "2026-10-21",
+  "maps": [
+    {
+      "id": "Yunohana",
+      "selected": 8,
+      "completed_points": 8,
+      "attempts": 10,
+      "valid_bind_trials": 10,
+      "bind_success": 10,
+      "valid_combo_trials": 8,
+      "combo_success": 3,
+      "setup_failed": 0,
+      "points_bound": 8,
+      "points_combo": 3,
+      "fastest_full_light_frames": 78,
+      "fastest_arrival_to_ko_frames": 231
+    },
+    {
+      "id": "District00",
+      "selected": 8,
+      "completed_points": 8,
+      "attempts": 11,
+      "valid_bind_trials": 11,
+      "bind_success": 6,
+      "valid_combo_trials": 5,
+      "combo_success": 1,
+      "setup_failed": 0,
+      "points_bound": 4,
+      "points_combo": 1,
+      "fastest_full_light_frames": 77,
+      "fastest_arrival_to_ko_frames": 237
+    },
+    {
+      "id": "Yagara",
+      "selected": 8,
+      "completed_points": 8,
+      "attempts": 12,
+      "valid_bind_trials": 12,
+      "bind_success": 5,
+      "valid_combo_trials": 5,
+      "combo_success": 1,
+      "setup_failed": 0,
+      "points_bound": 4,
+      "points_combo": 1,
+      "fastest_full_light_frames": 78,
+      "fastest_arrival_to_ko_frames": 235
+    }
+  ],
+  "points": [
+    {
+      "id": "Yunohana-hook-0752",
+      "map": "Yunohana",
+      "region": "center",
+      "label": "中路 · 0752",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        2.0,
+        8.5,
+        -15.5
+      ],
+      "requested_normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        2.0,
+        8.768765449523926,
+        -15.119861602783203
+      ],
+      "normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "source": [
+        17.5937366,
+        3.0000062,
+        0.334997237
+      ],
+      "target": [
+        0.0251557585,
+        3.00000191,
+        -5.62743711
+      ],
+      "arrival_pose": [
+        2.59999967,
+        8.16876507,
+        -15.1198616
+      ],
+      "landing": [
+        2.73505163,
+        7.50000143,
+        -15.1271925
+      ],
+      "post_sword_position": [
+        2.73505163,
+        7.50000143,
+        -15.1271925
+      ],
+      "landing_error": 0.3731070701875697,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 33.7,
+      "exposure_fraction": 0.52775,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yunohana-hook-0355",
+      "map": "Yunohana",
+      "region": "center",
+      "label": "中路 · 0355",
+      "display_status": "verified",
+      "outcome": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -2.963,
+        7.0,
+        -20.0
+      ],
+      "requested_normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        -2.962890148162842,
+        6.688259124755859,
+        -19.5
+      ],
+      "normal": [
+        0.9627242684364319,
+        0.0,
+        0.27048468589782715
+      ],
+      "source": [
+        -1.32901692,
+        3.00000429,
+        -14.643095
+      ],
+      "target": [
+        -0.543335676,
+        3.00000095,
+        -5.12857389
+      ],
+      "arrival_pose": [
+        -2.38525558,
+        6.08825874,
+        -19.3377094
+      ],
+      "landing": [
+        -2.37937808,
+        5.96315289,
+        -19.2817192
+      ],
+      "post_sword_position": [
+        -2.37937808,
+        5.96315289,
+        -19.2817192
+      ],
+      "landing_error": 0.7382185873225332,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": 78,
+      "arrival_to_ko_frames": 256,
+      "view_percent": 32.6,
+      "exposure_fraction": 0.639,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/point.json",
+      "caveat": "点位邻域绑定，满血蓄斩70＋轻斩击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yunohana-hook-0740",
+      "map": "Yunohana",
+      "region": "central_high",
+      "label": "高台 · 0740",
+      "display_status": "verified",
+      "outcome": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -2.0,
+        8.5,
+        15.5
+      ],
+      "requested_normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        -2.0,
+        8.804518699645996,
+        14.911375045776367
+      ],
+      "normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "source": [
+        -17.9754353,
+        3.00000095,
+        -0.443515837
+      ],
+      "target": [
+        -5.30308056,
+        5.88815403,
+        -2.63465548
+      ],
+      "arrival_pose": [
+        -2.5999999,
+        8.20452023,
+        14.911376
+      ],
+      "landing": [
+        -2.64873958,
+        7.50020838,
+        14.9164705
+      ],
+      "post_sword_position": [
+        -2.64873958,
+        7.50020838,
+        14.9164705
+      ],
+      "landing_error": 0.5922502794014114,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": 79,
+      "arrival_to_ko_frames": 231,
+      "view_percent": 33.7,
+      "exposure_fraction": 0.52775,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/point.json",
+      "caveat": "点位邻域绑定，满血蓄斩70＋轻斩击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yunohana-hook-0801",
+      "map": "Yunohana",
+      "region": "central_high",
+      "label": "高台 · 0801",
+      "display_status": "partial",
+      "outcome": "绑定成功，满血静止靶前置未完成",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -8.975,
+        7.0,
+        15.0
+      ],
+      "requested_normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        -8.975000381469727,
+        6.862673759460449,
+        14.5
+      ],
+      "normal": [
+        0.4458690285682678,
+        0.0,
+        -0.8950982689857483
+      ],
+      "source": [
+        -4.93516016,
+        6.00153255,
+        -3.00001216
+      ],
+      "target": [
+        -5.471241,
+        5.8258152,
+        -2.47562957
+      ],
+      "arrival_pose": [
+        -8.70747852,
+        6.26267385,
+        13.9629412
+      ],
+      "landing": null,
+      "post_sword_position": null,
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 30.3,
+      "exposure_fraction": 0.52775,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/point.json",
+      "caveat": "绑定成功，满血静止靶前置未完成。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yunohana-hook-0533",
+      "map": "Yunohana",
+      "region": "west_lane",
+      "label": "西侧通路 · 0533",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -14.668,
+        12.262,
+        16.632
+      ],
+      "requested_normal": [
+        0.866,
+        0.0,
+        -0.501
+      ],
+      "anchor": [
+        -14.728515625,
+        12.880047798156738,
+        16.52734375
+      ],
+      "normal": [
+        0.34782829880714417,
+        0.0,
+        -0.9375581741333008
+      ],
+      "source": [
+        -9.75252151,
+        3.00000668,
+        -5.71156931
+      ],
+      "target": [
+        -17.9716949,
+        3.00000095,
+        -0.451875508
+      ],
+      "arrival_pose": [
+        -14.5198193,
+        12.2800484,
+        15.9648104
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -14.5198174,
+        10.5703144,
+        15.9648037
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 53.9,
+      "exposure_fraction": 0.58325,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yunohana-hook-0532",
+      "map": "Yunohana",
+      "region": "west_lane",
+      "label": "西侧通路 · 0532",
+      "display_status": "verified",
+      "outcome": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -14.577,
+        18.152,
+        16.79
+      ],
+      "requested_normal": [
+        0.866,
+        0.0,
+        -0.501
+      ],
+      "anchor": [
+        -14.728515625,
+        18.653818130493164,
+        16.52734375
+      ],
+      "normal": [
+        0.7591359615325928,
+        0.0,
+        -0.6509321331977844
+      ],
+      "source": [
+        -5.00662994,
+        5.99727297,
+        -2.92576218
+      ],
+      "target": [
+        -17.9749088,
+        3.00000286,
+        -0.443048239
+      ],
+      "arrival_pose": [
+        -14.2082567,
+        15.8481903,
+        15.9137592
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -14.2782221,
+        10.5703135,
+        15.593523
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": 78,
+      "arrival_to_ko_frames": 240,
+      "view_percent": 50.6,
+      "exposure_fraction": 0.611,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/point.json",
+      "caveat": "点位邻域绑定，满血蓄斩70＋轻斩击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。",
+      "clip_id": "zipcaster-batch-yunohana"
+    },
+    {
+      "id": "Yunohana-hook-0528",
+      "map": "Yunohana",
+      "region": "east_lane",
+      "label": "东侧通路 · 0528",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        14.698,
+        14.225,
+        -16.58
+      ],
+      "requested_normal": [
+        -0.866,
+        0.0,
+        0.501
+      ],
+      "anchor": [
+        14.728515625,
+        15.103599548339844,
+        -16.52734375
+      ],
+      "normal": [
+        -0.5958777070045471,
+        0.0,
+        0.8030751943588257
+      ],
+      "source": [
+        -0.522949278,
+        3.00000048,
+        -5.20398521
+      ],
+      "target": [
+        18.0272026,
+        3.00000334,
+        -0.547075868
+      ],
+      "arrival_pose": [
+        14.3709879,
+        14.5035973,
+        -16.045496
+      ],
+      "landing": null,
+      "post_sword_position": [
+        14.3709602,
+        10.5703135,
+        -16.0454597
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 53.9,
+      "exposure_fraction": 0.5835,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yunohana-hook-0523",
+      "map": "Yunohana",
+      "region": "east_lane",
+      "label": "东侧通路 · 0523",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        14.577,
+        18.152,
+        -16.79
+      ],
+      "requested_normal": [
+        -0.866,
+        0.0,
+        0.501
+      ],
+      "anchor": [
+        14.677762031555176,
+        19.632417678833008,
+        -16.615076065063477
+      ],
+      "normal": [
+        -0.8655894994735718,
+        0.0,
+        0.5007542371749878
+      ],
+      "source": [
+        -0.406115353,
+        3.00000048,
+        -5.18570232
+      ],
+      "target": [
+        18.042057,
+        3.00000238,
+        -0.610367239
+      ],
+      "arrival_pose": [
+        14.1584072,
+        19.0324173,
+        -16.3146229
+      ],
+      "landing": [
+        14.1405907,
+        18.7685356,
+        -16.3043156
+      ],
+      "post_sword_position": [
+        14.1405907,
+        18.7685356,
+        -16.3043156
+      ],
+      "landing_error": 8.250030367022731,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 51.7,
+      "exposure_fraction": 0.6112500000000001,
+      "selected_attempt": "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-0236",
+      "map": "District00",
+      "region": "center",
+      "label": "中路 · 0236",
+      "display_status": "failed",
+      "outcome": "绑定到旁面／实际锚点偏离预定点",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        5.572,
+        25.712,
+        17.232
+      ],
+      "requested_normal": [
+        -0.189,
+        -0.069,
+        -0.979
+      ],
+      "anchor": [
+        -0.4900768995285034,
+        11.0,
+        3.752110719680786
+      ],
+      "normal": [
+        -0.41351747512817383,
+        -0.8111760020256042,
+        0.41351747512817383
+      ],
+      "source": [
+        -1.61251974,
+        6.00000238,
+        1.21741819
+      ],
+      "target": [
+        1.1319741,
+        6.00000191,
+        2.74190307
+      ],
+      "arrival_pose": [
+        -0.708330631,
+        6.00000048,
+        3.92898226
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -0.436174989,
+        6.00000572,
+        3.74628568
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 33.9,
+      "exposure_fraction": 0.4445,
+      "selected_attempt": "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/point.json",
+      "caveat": "绑定到旁面／实际锚点偏离预定点。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-0593",
+      "map": "District00",
+      "region": "center",
+      "label": "中路 · 0593",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -6.5,
+        8.833,
+        9.333
+      ],
+      "requested_normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        -6.590948104858398,
+        8.350406646728516,
+        8.5
+      ],
+      "normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "source": [
+        -1.00181937,
+        6.00000334,
+        -8.46635723
+      ],
+      "target": [
+        -1.36568904,
+        6.00001717,
+        1.34670281
+      ],
+      "arrival_pose": [
+        -6.5909481,
+        7.7504077,
+        7.9000001
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -6.5909481,
+        6.00002909,
+        7.89999866
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 32.1,
+      "exposure_fraction": 0.5,
+      "selected_attempt": "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-0606",
+      "map": "District00",
+      "region": "central_high",
+      "label": "高台 · 0606",
+      "display_status": "failed",
+      "outcome": "绑定到旁面／实际锚点偏离预定点",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -4.419,
+        11.667,
+        -0.531
+      ],
+      "requested_normal": [
+        -0.949,
+        0.0,
+        0.317
+      ],
+      "anchor": [
+        -11.344669342041016,
+        9.528579711914062,
+        -0.7500000596046448
+      ],
+      "normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "source": [
+        -17.468504,
+        6.00001717,
+        -1.97909224
+      ],
+      "target": [
+        -15.5509005,
+        9.00000191,
+        -14.1269512
+      ],
+      "arrival_pose": [
+        -11.3446703,
+        8.92858028,
+        -1.35000026
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -11.3474159,
+        6.00000334,
+        -1.37721241
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 31.2,
+      "exposure_fraction": 0.5835,
+      "selected_attempt": "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/point.json",
+      "caveat": "绑定到旁面／实际锚点偏离预定点。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-0084",
+      "map": "District00",
+      "region": "central_high",
+      "label": "高台 · 0084",
+      "display_status": "failed",
+      "outcome": "没有本次原生绑定见证",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -6.553,
+        26.187,
+        -17.199
+      ],
+      "requested_normal": [
+        -0.771,
+        0.278,
+        0.573
+      ],
+      "anchor": null,
+      "normal": null,
+      "source": [
+        -17.5110569,
+        6.00000572,
+        -1.98949564
+      ],
+      "target": [
+        -15.5523615,
+        9.00000095,
+        -14.1269817
+      ],
+      "arrival_pose": [
+        -17.5110569,
+        6.00001049,
+        -1.98949564
+      ],
+      "landing": null,
+      "post_sword_position": null,
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 32.1,
+      "exposure_fraction": 0.6667500000000001,
+      "selected_attempt": "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/point.json",
+      "caveat": "没有本次原生绑定见证。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-1228",
+      "map": "District00",
+      "region": "west_lane",
+      "label": "西侧通路 · 1228",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -21.0,
+        13.466,
+        -13.233
+      ],
+      "requested_normal": [
+        1.0,
+        -0.0,
+        0.0
+      ],
+      "anchor": [
+        -21.0,
+        13.497456550598145,
+        -13.626598358154297
+      ],
+      "normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "source": [
+        -15.5867662,
+        9.00000191,
+        -14.1779604
+      ],
+      "target": [
+        -18.0045471,
+        6.00001192,
+        -2.56089854
+      ],
+      "arrival_pose": [
+        -20.3999958,
+        12.8974562,
+        -13.6265965
+      ],
+      "landing": [
+        -20.369257,
+        10.4816923,
+        -13.6474094
+      ],
+      "post_sword_position": [
+        -20.369257,
+        10.4816923,
+        -13.6474094
+      ],
+      "landing_error": 0.43161621231905833,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 30.3,
+      "exposure_fraction": 0.6667500000000001,
+      "selected_attempt": "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-0490",
+      "map": "District00",
+      "region": "west_lane",
+      "label": "西侧通路 · 0490",
+      "display_status": "failed",
+      "outcome": "绑定到旁面／实际锚点偏离预定点",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -1.893,
+        6.951,
+        -0.473
+      ],
+      "requested_normal": [
+        -0.856,
+        0.0,
+        0.517
+      ],
+      "anchor": [
+        -15.636734962463379,
+        10.160767555236816,
+        -13.5
+      ],
+      "normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "source": [
+        -15.6037073,
+        9.00000286,
+        -14.1791677
+      ],
+      "target": [
+        -17.9940605,
+        6.00000763,
+        -2.59404063
+      ],
+      "arrival_pose": [
+        -15.6367378,
+        9.56076813,
+        -14.1000013
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -15.6365223,
+        9.00000095,
+        -14.3766394
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 28.4,
+      "exposure_fraction": 0.5835,
+      "selected_attempt": "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/point.json",
+      "caveat": "绑定到旁面／实际锚点偏离预定点。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-0580",
+      "map": "District00",
+      "region": "east_lane",
+      "label": "东侧通路 · 0580",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        6.5,
+        10.167,
+        -8.667
+      ],
+      "requested_normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        6.5,
+        10.3743257522583,
+        -8.605096817016602
+      ],
+      "normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "source": [
+        -17.5094986,
+        6.00000381,
+        -1.98148286
+      ],
+      "target": [
+        17.6735611,
+        6.00000191,
+        -2.31676245
+      ],
+      "arrival_pose": [
+        5.90000057,
+        9.77432728,
+        -8.60509777
+      ],
+      "landing": null,
+      "post_sword_position": [
+        5.64161777,
+        7.50000238,
+        -8.60371876
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 36.7,
+      "exposure_fraction": 0.6945,
+      "selected_attempt": "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "District00-hook-0585",
+      "map": "District00",
+      "region": "east_lane",
+      "label": "东侧通路 · 0585",
+      "display_status": "verified",
+      "outcome": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        7.5,
+        14.167,
+        -9.333
+      ],
+      "requested_normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        7.5,
+        13.925207138061523,
+        -8.5
+      ],
+      "normal": [
+        0.907094419002533,
+        0.0,
+        0.4209272563457489
+      ],
+      "source": [
+        7.6522994,
+        6.00000238,
+        -1.65545166
+      ],
+      "target": [
+        17.6173782,
+        6.00000334,
+        -2.33775425
+      ],
+      "arrival_pose": [
+        8.04425621,
+        13.3252068,
+        -8.2474432
+      ],
+      "landing": null,
+      "post_sword_position": [
+        8.04425716,
+        6.00000668,
+        -8.2474432
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": 77,
+      "arrival_to_ko_frames": 237,
+      "view_percent": 17.4,
+      "exposure_fraction": 0.5,
+      "selected_attempt": "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/point.json",
+      "caveat": "点位邻域绑定，满血蓄斩70＋轻斩击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。",
+      "clip_id": "zipcaster-batch-district00"
+    },
+    {
+      "id": "Yagara-hook-0861",
+      "map": "Yagara",
+      "region": "center",
+      "label": "中路 · 0861",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        9.0,
+        13.0,
+        1.5
+      ],
+      "requested_normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        9.0,
+        12.78300666809082,
+        0.8827869892120361
+      ],
+      "normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "source": [
+        0.065117918,
+        6.00000668,
+        -11.5990591
+      ],
+      "target": [
+        -0.608842373,
+        6.00000191,
+        -2.12952638
+      ],
+      "arrival_pose": [
+        8.40000057,
+        12.1830072,
+        0.882787049
+      ],
+      "landing": null,
+      "post_sword_position": [
+        8.39999771,
+        6.00000048,
+        0.861298144
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 56.9,
+      "exposure_fraction": 0.25,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yagara-hook-0624",
+      "map": "Yagara",
+      "region": "center",
+      "label": "中路 · 0624",
+      "display_status": "failed",
+      "outcome": "绑定到旁面／实际锚点偏离预定点",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        13.075,
+        16.575,
+        -1.445
+      ],
+      "requested_normal": [
+        -0.835,
+        0.027,
+        -0.55
+      ],
+      "anchor": [
+        -0.5267524123191833,
+        7.2462992668151855,
+        -1.5000001192092896
+      ],
+      "normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "source": [
+        -0.673687875,
+        6.00081778,
+        -2.17519903
+      ],
+      "target": [
+        2.69501615,
+        6.00000095,
+        -2.31623483
+      ],
+      "arrival_pose": [
+        -0.526752412,
+        6.64629936,
+        -2.10000038
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -0.537856996,
+        6.0001173,
+        -2.17152929
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 54.1,
+      "exposure_fraction": 0.38875,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/point.json",
+      "caveat": "绑定到旁面／实际锚点偏离预定点。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yagara-hook-0821",
+      "map": "Yagara",
+      "region": "central_high",
+      "label": "高台 · 0821",
+      "display_status": "verified",
+      "outcome": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        4.5,
+        7.0,
+        -19.75
+      ],
+      "requested_normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        4.500000476837158,
+        6.524733543395996,
+        -19.222951889038086
+      ],
+      "normal": [
+        -0.8980749249458313,
+        0.0,
+        0.4398426115512848
+      ],
+      "source": [
+        -0.608707666,
+        6.00000095,
+        -2.16917515
+      ],
+      "target": [
+        11.1296148,
+        6.04729843,
+        -7.35993147
+      ],
+      "arrival_pose": [
+        3.96115565,
+        5.92473316,
+        -18.9590454
+      ],
+      "landing": null,
+      "post_sword_position": [
+        3.92570496,
+        5.70000839,
+        -18.6968002
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": 78,
+      "arrival_to_ko_frames": 235,
+      "view_percent": 24.8,
+      "exposure_fraction": 0.47225,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/point.json",
+      "caveat": "点位邻域绑定，满血蓄斩70＋轻斩击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。",
+      "clip_id": "zipcaster-batch-yagara"
+    },
+    {
+      "id": "Yagara-hook-0635",
+      "map": "Yagara",
+      "region": "central_high",
+      "label": "高台 · 0635",
+      "display_status": "failed",
+      "outcome": "绑定到旁面／实际锚点偏离预定点",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        13.273,
+        21.189,
+        -1.182
+      ],
+      "requested_normal": [
+        -0.785,
+        0.048,
+        0.618
+      ],
+      "anchor": [
+        -0.3475419580936432,
+        7.294919490814209,
+        -1.5000001192092896
+      ],
+      "normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "source": [
+        -0.502728999,
+        6.00001669,
+        -2.18725872
+      ],
+      "target": [
+        11.1271667,
+        6.04517555,
+        -7.51179123
+      ],
+      "arrival_pose": [
+        -0.347541988,
+        6.69492006,
+        -2.10000038
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -0.358294994,
+        6.00000858,
+        -2.14698625
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 69.7,
+      "exposure_fraction": 0.4445,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/point.json",
+      "caveat": "绑定到旁面／实际锚点偏离预定点。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yagara-hook-0617",
+      "map": "Yagara",
+      "region": "west_lane",
+      "label": "西侧通路 · 0617",
+      "display_status": "failed",
+      "outcome": "绑定到旁面／实际锚点偏离预定点",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -12.85,
+        16.577,
+        1.171
+      ],
+      "requested_normal": [
+        0.89,
+        0.017,
+        0.456
+      ],
+      "anchor": [
+        -9.0,
+        13.5,
+        -0.23918737471103668
+      ],
+      "normal": [
+        0.8643907904624939,
+        0.5028206706047058,
+        0.0
+      ],
+      "source": [
+        -0.517654777,
+        6.00000381,
+        -2.1901958
+      ],
+      "target": [
+        -15.8928452,
+        6.00000525,
+        6.59156752
+      ],
+      "arrival_pose": [
+        -8.17967319,
+        13.2830572,
+        -0.239187375
+      ],
+      "landing": null,
+      "post_sword_position": [
+        -8.195364,
+        6.00000095,
+        -0.239187375
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 71.6,
+      "exposure_fraction": 0.3055,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/point.json",
+      "caveat": "绑定到旁面／实际锚点偏离预定点。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yagara-hook-0616",
+      "map": "Yagara",
+      "region": "west_lane",
+      "label": "西侧通路 · 0616",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        -12.986,
+        21.192,
+        1.268
+      ],
+      "requested_normal": [
+        0.89,
+        0.017,
+        0.456
+      ],
+      "anchor": [
+        -13.087986946105957,
+        22.268552780151367,
+        1.0221600532531738
+      ],
+      "normal": [
+        0.6151944398880005,
+        0.01798318512737751,
+        -0.788170337677002
+      ],
+      "source": [
+        -0.387438506,
+        6.00000191,
+        -2.17986202
+      ],
+      "target": [
+        -15.8941469,
+        6.00000095,
+        6.5933733
+      ],
+      "arrival_pose": [
+        -12.7122326,
+        21.6794415,
+        0.540752292
+      ],
+      "landing": [
+        -12.4307804,
+        13.5030785,
+        0.257924914
+      ],
+      "post_sword_position": [
+        -12.4307804,
+        13.5030785,
+        0.257924914
+      ],
+      "landing_error": 1.379444292448346,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 65.1,
+      "exposure_fraction": 0.361,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yagara-hook-0933",
+      "map": "Yagara",
+      "region": "east_lane",
+      "label": "东侧通路 · 0933",
+      "display_status": "failed",
+      "outcome": "绑定到旁面／实际锚点偏离预定点",
+      "attempts": 1,
+      "sample_scope": "1次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        12.75,
+        12.0,
+        -1.5
+      ],
+      "requested_normal": [
+        0.0,
+        -0.0,
+        -1.0
+      ],
+      "anchor": [
+        9.0,
+        9.0,
+        -3.5902938842773438
+      ],
+      "normal": [
+        -0.845221221446991,
+        0.5344166159629822,
+        0.0
+      ],
+      "source": [
+        5.9999876,
+        6.00000381,
+        -5.37440681
+      ],
+      "target": [
+        15.9865465,
+        6.00000525,
+        -6.45606136
+      ],
+      "arrival_pose": [
+        8.17221642,
+        8.81351662,
+        -3.59029365
+      ],
+      "landing": null,
+      "post_sword_position": [
+        8.19114399,
+        6.00000191,
+        -3.59029365
+      ],
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 33.0,
+      "exposure_fraction": 0.4165,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/point.json",
+      "caveat": "绑定到旁面／实际锚点偏离预定点。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    },
+    {
+      "id": "Yagara-hook-0867",
+      "map": "Yagara",
+      "region": "east_lane",
+      "label": "东侧通路 · 0867",
+      "display_status": "failed",
+      "outcome": "绑定成功，满血两刀未击倒",
+      "attempts": 2,
+      "sample_scope": "2次夹具尝试 · 满血前置单独核验",
+      "requested_anchor": [
+        13.5,
+        6.75,
+        3.5
+      ],
+      "requested_normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "anchor": [
+        13.5,
+        6.818719863891602,
+        1.0519908666610718
+      ],
+      "normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "source": [
+        16.6675606,
+        6.00344086,
+        -6.37759876
+      ],
+      "target": [
+        14.1582966,
+        1.50000155,
+        -5.70356417
+      ],
+      "arrival_pose": [
+        14.1000013,
+        6.21871948,
+        1.05199087
+      ],
+      "landing": null,
+      "post_sword_position": null,
+      "landing_error": null,
+      "arrival_semantics": "arrival_pose: after90 R-release presents, may hang. landing: post-sword foot sample only when native ground_contact=4, otherwise null. Arrival-to-KO starts at first sampled Attack-to-Wait, not necessarily ground contact.",
+      "frames": null,
+      "arrival_to_ko_frames": null,
+      "view_percent": 12.8,
+      "exposure_fraction": 0.27775,
+      "selected_attempt": "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/point.json",
+      "caveat": "绑定成功，满血两刀未击倒。两刀帧数从蓄力开始；到达→KO另列且含观察等待/重瞄。到达位置可能仍挂墙；每点1–2次，非实战安全或成功概率。"
+    }
+  ],
+  "attempts": [
+    {
+      "id": "Yunohana-hook-0752",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 3981,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.46555350701756415,
+      "observed_landing_error": 0.7837423179890012,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/point.json",
+      "source_sha256": {
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/result.json": "41d4ba5a155637e3fa4c9f1a2d93a1cf4a90ed54082299a0937d9a5c86047fca",
+        "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/steps.jsonl": "2cd21b20bb4d913e70e388be8be596faa35e8c82cc445893b8439a80c0c0b2b5",
+        "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/sensors.jsonl": "e6f417bb04bb283292e5d8bd83020c66452a10882e2feeb8b48039e9b016c34a",
+        "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/commands.jsonl": "1033b2b01515a856e8d2eb461181b376ce9f858d1b3d0d5797567dfbc55c94a1",
+        "work/tests/m6-2p-20261021-145235-816038/player-0/host.log": "0660c15e2fd71119b0eba9f315526f773fd4fbde2a9a7aa2455c70370be107ac",
+        "work/tests/m6-2p-20261021-145235-816038/player-1/host.log": "2454f0b4ad9269585f10727f2dc2816f2cf3675e865f6ee05b244929d9888eab",
+        "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/tested-validate_candidates.py": "515cffe58c5ec7d3f69660b19ac8680a77732ef8b49d06e605a7d047c69b1561",
+        "work/a6/d2-c-Yunohana-hook-0752-a1-20261021-145235-760417/point.json": "c7bab78fb4ced3d212eea1f04076485a9e72d1735201590f9031f0628661ebff"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0355",
+      "attempt": 1,
+      "status": "partial",
+      "reason": "绑定成功，满血静止靶前置未完成",
+      "bound": true,
+      "normal_dot": 0.6444606184959412,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4210,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.5126161838350951,
+      "observed_landing_error": 1.1464651522971179,
+      "full_health_before_charge": 0.616999984,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0355-a1-20261021-145612-836983/point.json",
+      "source_sha256": {
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0355-a1-20261021-145612-836983/result.json": "0e77a8f26b7a931bf93d824896616784df9af751a94f4a4a31a0659934c7b0f0",
+        "work/a6/d2-c-Yunohana-hook-0355-a1-20261021-145612-836983/steps.jsonl": "01a6a3e960d7fd0267235b17888464d76a625c679f2a92476b38c5cfae93228c",
+        "work/a6/d2-c-Yunohana-hook-0355-a1-20261021-145612-836983/sensors.jsonl": "dd5391160797758540ea4ad306a568dc513658c3f4f5d559f1267b41de98f0a2",
+        "work/a6/d2-c-Yunohana-hook-0355-a1-20261021-145612-836983/commands.jsonl": "7a0f06ed11cfbef783e71fbe9e13c132109dd866a348fedd2ebd2df7979ddea4",
+        "work/tests/m6-2p-20261021-145612-899708/player-0/host.log": "28afc877a0df2ef3c34968f6122834f824b79c548ac518f59fb17330c47fdb23",
+        "work/tests/m6-2p-20261021-145612-899708/player-1/host.log": "c4c00a64cfa694202ef2fe71afd511f421b0d2cf81345351384286bde09c5a14",
+        "work/a6/d2-c-Yunohana-hook-0355-a1-20261021-145612-836983/tested-validate_candidates.py": "515cffe58c5ec7d3f69660b19ac8680a77732ef8b49d06e605a7d047c69b1561",
+        "work/a6/d2-c-Yunohana-hook-0355-a1-20261021-145612-836983/point.json": "e137c7e6ec1431b1134ff7ceb280b539a1537f14bf912df1d9a78dda6ca15b14"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0355",
+      "attempt": 2,
+      "status": "verified",
+      "reason": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "bound": true,
+      "normal_dot": 0.9627242684364319,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": true,
+      "ko": true,
+      "arrival_native_frame": 4751,
+      "arrival_to_ko_frames": 256,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 0.5892218473252744,
+      "observed_landing_error": 0.6899930643679558,
+      "full_health_before_charge": 1,
+      "frames": 78,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/result.json": "ce00dfe2afac5d3f33f06c67060dc073e2a1c7f652e2300067951272a6f27e58",
+        "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/steps.jsonl": "a65334866a638e2d9c2a471d6bb72e97e20dae66725540a508ceb465c49e2863",
+        "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/sensors.jsonl": "d20ca3d67b992508b59ba98a94ec0c37be74f23eff3be2536f14f714608f8653",
+        "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/commands.jsonl": "2a6c034cbe4b6da55bf95bff0c8d59812162cc367850f45e47c4f0f6669f7a14",
+        "work/tests/m6-2p-20261021-152138-369398/player-0/host.log": "03a6c2e884ed0d5b49a6534dce46bed27fa9892fb3367fc9335ed38cb0b2deba",
+        "work/tests/m6-2p-20261021-152138-369398/player-1/host.log": "a3e99a48ab5e2437c3e62dec65e34b9d2a14c6ca77624f3a5a098dfde9c132e1",
+        "work/a6/d2-c-Yunohana-hook-0355-a2-20261021-152138-315978/point.json": "4c001e392864921aec761f42f0d3fac2c23df448a78f5a6f5cca0164aa5e550a"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0740",
+      "attempt": 1,
+      "status": "verified",
+      "reason": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "bound": true,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": true,
+      "ko": true,
+      "arrival_native_frame": 3897,
+      "arrival_to_ko_frames": 231,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 0.6627299413553474,
+      "observed_landing_error": 0.9302295404120761,
+      "full_health_before_charge": 1,
+      "frames": 79,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/tested-validate_candidates.py": "09fdf20e9996c8a24366eeeec088533d2eb7717fe9f410695b1063b17d933f75",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/result.json": "0e3f135e8e3431d13b5c912e0ecc1a0787e6d37dcf93ef59d08a5edd16d0118c",
+        "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/steps.jsonl": "5747e0a35911009a8ab6791cb4d25ed8406980d34d264db011228249a970ec36",
+        "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/sensors.jsonl": "95a6d8af25ff1c6a1925efe985be88eb8b83895042ecd0e3129d182051856d9e",
+        "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/commands.jsonl": "c7f8204a2c60a290941a3258194bbf173c576058a1a9a0944a949f24f0aef3e5",
+        "work/tests/m6-2p-20261021-145849-596901/player-0/host.log": "7a47608340ce6d2c808ba7c8be749c533c5e5730ceccd3f73dd984fdbb5062d1",
+        "work/tests/m6-2p-20261021-145849-596901/player-1/host.log": "d8aafb1acec1954199965fe9535c9ed5b957ed7249e2296aa8539bd402ec34ba",
+        "work/a6/d2-c-Yunohana-hook-0740-a1-20261021-145849-534513/point.json": "1874ca09ad76425ecab33c5e90dc08b2c5b237084868636d0726129ea74a37fa"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0801",
+      "attempt": 1,
+      "status": "partial",
+      "reason": "绑定成功，满血静止靶前置未完成",
+      "bound": true,
+      "normal_dot": 0.4458690285682678,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4123,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_unavailable",
+      "requested_anchor_error": 0.5185156664372563,
+      "observed_landing_error": 1.1735731883409124,
+      "full_health_before_charge": null,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/tested-validate_candidates.py": "4e20a911ff6c87ba68d5487c3d22fe80753d18cc7cf2ef9b478d1f6c40145d3c",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/result.json": "0beff02c64769a427fb5eb1022d01e0e72a773e79651c2105d0f737ef4613611",
+        "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/steps.jsonl": "6c60f3e32753977cb2c8670467491b8688f678a4739126a73ae5ea22e0d6b3ef",
+        "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/sensors.jsonl": "b4eba019d7c1c5a1e067ec8497b3e09115ad7d3ab3dfe35b7eafbf79613ae79f",
+        "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/commands.jsonl": "8dbfd893a78a535de2d257921c458461095bb2c585aa2b46e4041205a95c015b",
+        "work/tests/m6-2p-20261021-150148-275584/player-0/host.log": "2920b8eeb6b976b7d9f55d0342daa4be8c1ad6fa424bf91d91fcb1201af6ced7",
+        "work/tests/m6-2p-20261021-150148-275584/player-1/host.log": "66a9c8055d8d43a6203c1f4f5e5a22f6436dedd854058520137b5a56da0ec177",
+        "work/a6/d2-c-Yunohana-hook-0801-a1-20261021-150148-215199/point.json": "b214ec7031cb5e9aaa1368a483dbefe4f4951eca47f409cdc7484dde7a97d008"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0533",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 0.7709359520077705,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 3848,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.6297603927999881,
+      "observed_landing_error": 1.8502469601497018,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/result.json": "fd9f8c4037901797dfa3b2e6a2906d68adec15220e1ec168e14eaa6df57a8c09",
+        "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/steps.jsonl": "e9002d93c8450bfe1a2342c15c3e7c2c01f1987604d3f60c80ff3e3b41aaab47",
+        "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/sensors.jsonl": "da8764fb8096bef4f9b13a68240c357090c51f1aba9c150db3ae4c26f530ccc4",
+        "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/commands.jsonl": "7642e356773bcaab4b283af9fe1c68029fcada8a902254bbf23ce4e7a61916ac",
+        "work/tests/m6-2p-20261021-150454-026300/player-0/host.log": "b680e4923485097faddf7e1cc0ed482877cb02bf05414a2baacf00d12ce3b8b5",
+        "work/tests/m6-2p-20261021-150454-026300/player-1/host.log": "ef691177d3f1455c22a24b7ae9e34133ff94e13626c7b1b276637f11625f26b6",
+        "work/a6/d2-c-Yunohana-hook-0533-a1-20261021-150453-970366/point.json": "62f1964bc947dcc12987456c1a999c5a6e717ed90b78c792d9c55155a1e0f1f3"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0532",
+      "attempt": 1,
+      "status": "verified",
+      "reason": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "bound": true,
+      "normal_dot": 0.9835287414193153,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": true,
+      "ko": true,
+      "arrival_native_frame": 3878,
+      "arrival_to_ko_frames": 240,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 0.5863162341048181,
+      "observed_landing_error": 5.357018695234657,
+      "full_health_before_charge": 1,
+      "frames": 78,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/result.json": "140daa15481663cdd89ad00b02fcab8ba0b6fc9eabc267579814e27039c269de",
+        "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/steps.jsonl": "a3f61ae12d28ac5b795753631b2e67840a8bd44e4e3c8729e83758d116aa24b0",
+        "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/sensors.jsonl": "9bf80fbf56c71f2e255cf671fcfcc7d911e94fa1f8e6d6292c0dae6ea944e590",
+        "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/commands.jsonl": "d5ff018067452d6bd46972842594a8b2e82247ec0ed9c3a6324f7c957b677cf4",
+        "work/tests/m6-2p-20261021-150751-048291/player-0/host.log": "5c9f1b6df357b5fe57ceddddcedeae145a1afe82aa9ba6e388e7cc55937158a1",
+        "work/tests/m6-2p-20261021-150751-048291/player-1/host.log": "cfd5089f403e31caa263e0c76c1500f39ca2e075165344093ca97f4cdf21f676",
+        "work/a6/d2-c-Yunohana-hook-0532-a1-20261021-150750-992319/point.json": "7f3f901e9cd15b14d9b948dd9a06b1a60a977cbb4643b74cd60c379cccb5ee9f"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0528",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 0.9183707666397095,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4102,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.880704859970797,
+      "observed_landing_error": 4.019650614957685,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/result.json": "44fec47b2aef4e20d16593f1f25b9cab504a9607750e897c8bc5173c3b5697d6",
+        "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/steps.jsonl": "67571cc7ac19e3e43b9872d7baabd859f4e5251d80e866b4db7016e55ca38961",
+        "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/sensors.jsonl": "da10482b3244aef83dfda93aac5e38bcd8b097085dc87988f9a9e908d4e9b0cd",
+        "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/commands.jsonl": "898b3fefb26e54d989a6f834d3c04c3b10ef0e4d961c790dffaed7541c431a5e",
+        "work/tests/m6-2p-20261021-151050-356027/player-0/host.log": "d525a1fd087e6533ccb25546dcddd189d46ebc3621c5b0f0aad0b29e4b6b96e6",
+        "work/tests/m6-2p-20261021-151050-356027/player-1/host.log": "81985c3cb63abaf711704727df4b0d72e2d25a1721c883e44e76f04b374ffe10",
+        "work/a6/d2-c-Yunohana-hook-0528-a1-20261021-151050-303176/point.json": "cb315fb3b69c8bb049c38738b6cafa1d7f18100a164f967afc87cbc750795524"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0528",
+      "attempt": 2,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.000478379368782,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4466,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.34817599816316036,
+      "observed_landing_error": 3.299670846244851,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0528-a2-20261021-152138-308328/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0528-a2-20261021-152138-308328/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0528-a2-20261021-152138-308328/result.json": "db9efe25ff8691522628086679af8cb8b9f72a5d7dfb00e27e5fe70b5f477cda",
+        "work/a6/d2-c-Yunohana-hook-0528-a2-20261021-152138-308328/steps.jsonl": "0b1edf7aa9adf6dc43b4e1e19d3c24b1f7b8758fd68c6eac8d372ce2dcc35236",
+        "work/a6/d2-c-Yunohana-hook-0528-a2-20261021-152138-308328/sensors.jsonl": "30b213983b2fc5ae98b82800022421916fabee995d00a71dde5336cdf4ff9aa9",
+        "work/a6/d2-c-Yunohana-hook-0528-a2-20261021-152138-308328/commands.jsonl": "495af97b93eaf4529eb742882526111a9f40a5ec5fc8df7f4f18b17c4505eaa1",
+        "work/tests/m6-2p-20261021-152138-362225/player-0/host.log": "a01b8d6dfbcf03202ca4950217d42d80118b9545843d9acd7e86385aca2ce027",
+        "work/tests/m6-2p-20261021-152138-362225/player-1/host.log": "4ac5d071a81df8ddf39de2f414b807d93611965cc204a1300a11dccae4a77710",
+        "work/a6/d2-c-Yunohana-hook-0528-a2-20261021-152138-308328/point.json": "3a3adac98d3b0fdb9dd154b42b3400ae4d60c2e266802b3a92bced1294c16389"
+      }
+    },
+    {
+      "id": "Yunohana-hook-0523",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.000478379368782,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 3977,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 1.4941177576811375,
+      "observed_landing_error": 8.51414280596441,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/result.json": "09a47b2071d3cf8ae3fc4d1348fbb4068fc9699a8308d04222029e97630799e5",
+        "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/steps.jsonl": "711e64c804eac501e9ff5b14b1e4cb2b995191aecaada4b122cd0996f3cedde1",
+        "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/sensors.jsonl": "ad68fed0dd472bcf5c138f1b74fd725c6c3f6f22dfa249ca0f2e710bca485d1c",
+        "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/commands.jsonl": "4f2a854c752d4b9f8e93bdd559ac119b66f65544b3d23bfba65e1980a11894d3",
+        "work/tests/m6-2p-20261021-151403-399279/player-0/host.log": "c9647c650c0fec07078341cf774c5fb42d47f2238cfd5b02fead4cc0e5e8fcb4",
+        "work/tests/m6-2p-20261021-151403-399279/player-1/host.log": "62e5ca912510376ad86bc7c8d33f12b42a20283d99a164360dd5a0476e8495ca",
+        "work/a6/d2-c-Yunohana-hook-0523-a1-20261021-151403-343915/point.json": "b59472c6ce6afae8b77b2d6e49373180f0ecdfd2fcd5b06182b67f9e818376b0"
+      }
+    },
+    {
+      "id": "District00-hook-0236",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": -0.27070766121149065,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4662,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 20.85423542941486,
+      "observed_landing_error": 15.220358212732965,
+      "full_health_before_charge": 0.30399999,
+      "frames": 29,
+      "artifact": "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/point.json",
+      "source_sha256": {
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/result.json": "df10b3e6aa1efd904103d028f500824db06efe3554a67489c182b538fa125eb0",
+        "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/steps.jsonl": "0b43bb4c44a1b69531df6cb45d59823e2935a4cfa794198552b250f7594d5e51",
+        "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/sensors.jsonl": "95fc979910132c67830177a5e3738827718fe1955e29696e88fba96c47bd62d0",
+        "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/commands.jsonl": "01ed8fe0b4d696d1e718606b1849f3618377521ea988f3e0a15ad04bbccb4096",
+        "work/tests/m6-2p-20261021-145235-813941/player-0/host.log": "3af050db0cebeda8cb79afd4c3a7bc5b2813b1246b8dc0a2041e04dec93ae7a3",
+        "work/tests/m6-2p-20261021-145235-813941/player-1/host.log": "a65cf5a4f9bc49237807308f145ce696556f13cf657069d430ffff21882f478e",
+        "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/tested-validate_candidates.py": "515cffe58c5ec7d3f69660b19ac8680a77732ef8b49d06e605a7d047c69b1561",
+        "work/a6/d2-c-District00-hook-0236-a1-20261021-145235-760417/point.json": "019c6fed2c35a8d3428a9a854ad1b075a5210ae9de36f64a9780c7a1723d3c9a"
+      }
+    },
+    {
+      "id": "District00-hook-0593",
+      "attempt": 1,
+      "status": "partial",
+      "reason": "绑定成功，满血静止靶前置未完成",
+      "bound": true,
+      "normal_dot": 0.7955293655395508,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 3719,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.834551117760453,
+      "observed_landing_error": 1.4040668429368655,
+      "full_health_before_charge": 0.672999978,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-0593-a1-20261021-145726-578024/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0593-a1-20261021-145726-578024/tested-validate_candidates.py": "09fdf20e9996c8a24366eeeec088533d2eb7717fe9f410695b1063b17d933f75",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0593-a1-20261021-145726-578024/result.json": "3d6f58a6cb9a4db44b3082aa90942593c8f5f4b1b33661ffabbe7158dd2f1900",
+        "work/a6/d2-c-District00-hook-0593-a1-20261021-145726-578024/steps.jsonl": "83fb67f4a3b30d59ba67f88dc5ef2ab6cc8460d238c2d134e8e463b048646a9f",
+        "work/a6/d2-c-District00-hook-0593-a1-20261021-145726-578024/sensors.jsonl": "c731421250503bc416dda76ce0925b437fb5adac7e5a4983dd0fb18403a3376c",
+        "work/a6/d2-c-District00-hook-0593-a1-20261021-145726-578024/commands.jsonl": "40ca8226c927eabc7b528ba5ab5b38b354afa513c719d6ff4f00412ae6c40a27",
+        "work/tests/m6-2p-20261021-145726-632904/player-0/host.log": "97cb8f0ecccfc89696e2dee47e69daff8bcf60900a3fa37e4214f9adf4170ad0",
+        "work/tests/m6-2p-20261021-145726-632904/player-1/host.log": "6e45e5ad9f3f644cfff33099d176235f192336658be91077acb4ad0d40736fa3",
+        "work/a6/d2-c-District00-hook-0593-a1-20261021-145726-578024/point.json": "dbe9525bbc813c2435f5ca42fc47c73d3d4617daaf10ceebf0907316abb525a7"
+      }
+    },
+    {
+      "id": "District00-hook-0593",
+      "attempt": 2,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 0.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4043,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.9669834033731657,
+      "observed_landing_error": 1.6802935566480375,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/result.json": "1c45ceef2272884394830caf2a109aaea6435df7b37a43246accaf63ffc17567",
+        "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/steps.jsonl": "1d6d4e1f29f9d1c793c7a4df70e7c28de20f5ef43099302d9ebaffec44d402c4",
+        "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/sensors.jsonl": "15aa77a51dcd5f368372509ce679dfc34aec13c8250d291ebda675c18b5474a3",
+        "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/commands.jsonl": "709ed20eb7d8bb3c3fa66f890d98991aa5027fa4ddda8762d590ae2963054198",
+        "work/tests/m6-2p-20261021-152529-752960/player-0/host.log": "a46d1d7aab35b87a8c4c706cae8c93ce332616799a5b4ad79e8f68a38a915ab0",
+        "work/tests/m6-2p-20261021-152529-752960/player-1/host.log": "1124ed90b0edd2ec4a7a84b51d0d617aee8b5e2b06dd0324cc83fc5c2daf6e6e",
+        "work/a6/d2-c-District00-hook-0593-a2-20261021-152529-698891/point.json": "e5773d475126b007cc3869e9ca67a9f330a074271e127c7cab770a099675f295"
+      }
+    },
+    {
+      "id": "District00-hook-0606",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": -0.317,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4040,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 7.25159969867968,
+      "observed_landing_error": 6.95007414371581,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/tested-validate_candidates.py": "4e20a911ff6c87ba68d5487c3d22fe80753d18cc7cf2ef9b478d1f6c40145d3c",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/result.json": "89d5174622fcebf7119197e1b72b04e5db83ee0cf678592cb2c3eba671f08a7b",
+        "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/steps.jsonl": "d06e567df9fc0387672730eda639c6d714ff72b9979a06101c4cca78d48e4770",
+        "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/sensors.jsonl": "75759a01cc58b56503b1eb743dc3924504241b37f8c7ba36f633bda4622e26c0",
+        "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/commands.jsonl": "b590522344456102b390ef11455364ba5521662e0c504e3a2298a3edf08fc944",
+        "work/tests/m6-2p-20261021-150045-060408/player-0/host.log": "b3da1083eead361cb0d0ea4b293062268541fb80b33cbd76721fee4b8b2d098d",
+        "work/tests/m6-2p-20261021-150045-060408/player-1/host.log": "1834eb1ec01d8d29fe95565ab5edbeec2040b0ffca51a43f8c5fea232fac723e",
+        "work/a6/d2-c-District00-hook-0606-a1-20261021-150045-008247/point.json": "8bc3c7b77555c15a7203b12c0f53f8341bf22bfa33cad45f8967c18e943e025b"
+      }
+    },
+    {
+      "id": "District00-hook-0606",
+      "attempt": 2,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": -0.317,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 5131,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 9.671912527162151,
+      "observed_landing_error": 8.684134162260948,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-0606-a2-20261021-152547-667895/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0606-a2-20261021-152547-667895/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0606-a2-20261021-152547-667895/result.json": "fa806288a30bfec9085f4250c69675e1a51f315b843ca317ad032db4746943e7",
+        "work/a6/d2-c-District00-hook-0606-a2-20261021-152547-667895/steps.jsonl": "e0d453023141845efafc45e6956983f4921deb82373ef29ecbb067ef6bf4d323",
+        "work/a6/d2-c-District00-hook-0606-a2-20261021-152547-667895/sensors.jsonl": "481a26546d801da275e41530c5d7172ad6060dcdf0450cd3268902c50d2f5c0f",
+        "work/a6/d2-c-District00-hook-0606-a2-20261021-152547-667895/commands.jsonl": "09addb74e5c3f6992740882bcc6d633d19c3826042c9872745f2b4e845446a0e",
+        "work/tests/m6-2p-20261021-152547-718484/player-0/host.log": "5ccac87a48a37fe132790b06abe1337f7abc9cc604828017805cadaa441476d9",
+        "work/tests/m6-2p-20261021-152547-718484/player-1/host.log": "a97b191322a1ac872dffdcdc720ef4723b78684edd5f6eb4be72b29dac039ec5",
+        "work/a6/d2-c-District00-hook-0606-a2-20261021-152547-667895/point.json": "81492e1dbaabcda802daa55231e6d4c378352e479c34dfe70272b6df5cd04d86"
+      }
+    },
+    {
+      "id": "District00-hook-0084",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "没有本次原生绑定见证",
+      "bound": false,
+      "normal_dot": null,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": null,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "bind_failed",
+      "requested_anchor_error": null,
+      "observed_landing_error": 19.03022980643919,
+      "full_health_before_charge": null,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/result.json": "bbd12805018c986313b9a1aaec6aa128330a23e123f142359530387b4f50bd07",
+        "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/steps.jsonl": "5bbb7a9309ce381fd8392c187171da44f98ed631c49801d4e37e1b68ec502d49",
+        "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/sensors.jsonl": "ea90c3a434995330671f425d14b7832a8e7fbd73ad507b158a74ab9a75f94bb6",
+        "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/commands.jsonl": "5d7ce62a1fd23619305362620586c13597c9d9c66211fe48b323bec283a5947c",
+        "work/tests/m6-2p-20261021-150412-194863/player-0/host.log": "9ec1bbc3967d9f53e89ab6128b05e18865f3b8f6c31b7ab078a47fc3840a090b",
+        "work/tests/m6-2p-20261021-150412-194863/player-1/host.log": "63a045e7207080663c5fa1ec6434a7452694634c69a551a68f42065f5d05a795",
+        "work/a6/d2-c-District00-hook-0084-a1-20261021-150412-139464/point.json": "bed31bfcbad042490c47f2f70c63cfb1cdc975dedfe86a157b8482cd2aa5d115"
+      }
+    },
+    {
+      "id": "District00-hook-1228",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4802,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.3948533678687462,
+      "observed_landing_error": 2.43417607739217,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/result.json": "7292eecdc3d91804a490e981a1dee03f3656cb70d9e040aa2c5690a454382dd4",
+        "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/steps.jsonl": "6e55beedadea671ee0a02001feb34998e848f89e49f4db3e03ecc36506874548",
+        "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/sensors.jsonl": "063e744657f4105e89ca1eea132b423f2c360f5b6a1e147cecb7a31828180d03",
+        "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/commands.jsonl": "926ffb8f40cdb464c3bb999f1b94cb9886801afd2120a3e7e1be3938e6e02587",
+        "work/tests/m6-2p-20261021-150712-728447/player-0/host.log": "04f6df3fc49d6c80ae945db231ec6d1123c943925ac653142ff562183cc7d0c3",
+        "work/tests/m6-2p-20261021-150712-728447/player-1/host.log": "95e0aaf6b11713433d29d0d325cf94d493ba423f53e7a3adebad20cc5f9f4d36",
+        "work/a6/d2-c-District00-hook-1228-a1-20261021-150712-673968/point.json": "ae64b06fb51f01da93f3168570620f3879e72a1d6409046c1e87f93ef14a6cb4"
+      }
+    },
+    {
+      "id": "District00-hook-1228",
+      "attempt": 2,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 5028,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.3193282509629752,
+      "observed_landing_error": 2.1895239577406485,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-1228-a2-20261021-152832-274205/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-1228-a2-20261021-152832-274205/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-1228-a2-20261021-152832-274205/result.json": "8d416cf1e905ff0b49b0863be4e5698f7c630ad587525611283f6fdbb7e521b6",
+        "work/a6/d2-c-District00-hook-1228-a2-20261021-152832-274205/steps.jsonl": "e2bfa3d998e4061be46b23c1f8b58170884eca687e4c82367a6169bf24a46158",
+        "work/a6/d2-c-District00-hook-1228-a2-20261021-152832-274205/sensors.jsonl": "1ec801ad95bc3e0675f74fa76c759eaf6c990d1135a1d5a5ae2b279f21c94886",
+        "work/a6/d2-c-District00-hook-1228-a2-20261021-152832-274205/commands.jsonl": "27f2ce131659fb0db75784996665c4766ab23ff92419399ccfeea77dfcfdd3cf",
+        "work/tests/m6-2p-20261021-152832-328721/player-0/host.log": "2dfe29d0be4bdc44d24eb5504b59a6c4ebd07f241b872d9dbe5020789199f0cb",
+        "work/tests/m6-2p-20261021-152832-328721/player-1/host.log": "11dbd7ee9f4316f87cea4b3cd16bf295680e133c136b3d595f92562e73017c6e",
+        "work/a6/d2-c-District00-hook-1228-a2-20261021-152832-274205/point.json": "60d6ab2edbda8688f894f4c10a6d977609a1576f7268cc61b31796f0e086318c"
+      }
+    },
+    {
+      "id": "District00-hook-0490",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": -0.517,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4760,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 19.206654770602015,
+      "observed_landing_error": 19.512269525069968,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/result.json": "9d10fbceffa85f60b3637c0c972516b388477bf9d7031415a1e8eb4cb3090bb5",
+        "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/steps.jsonl": "fc9b150f1f7cdc2df0f4d6d338b4df45824694867275c6996e5a37d0604dc290",
+        "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/sensors.jsonl": "e0aed9dd102f1eb101c420e0e1c6d3da213e534b9345dba2af53e69b904f4707",
+        "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/commands.jsonl": "44eae8d176b1d34c6266108234ede37881899d6665270c424cff643cb23673f9",
+        "work/tests/m6-2p-20261021-151115-017750/player-0/host.log": "a297cf40db5b69a99b518d96da10eee2c12f9c4ffd11f98b67b530befe397423",
+        "work/tests/m6-2p-20261021-151115-017750/player-1/host.log": "f8e99119f6e16cb98f002a498a71329495a0572a6ecdb4465231e126a90b09e6",
+        "work/a6/d2-c-District00-hook-0490-a1-20261021-151114-966262/point.json": "9bb3c8bf68c887e361e8c6bc3b94c058f948a4f794869dfc51e33c3df4b1d98b"
+      }
+    },
+    {
+      "id": "District00-hook-0580",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4008,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.21636998778237818,
+      "observed_landing_error": 2.280108908283,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/tested-validate_candidates.py": "9630f2cb2bb6bdabfbb385a3d6ace08980698bc8de0cc04f644b05b221a5e40e",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/result.json": "e94bb95eee4d7edc81b0826750bca2dd6a8d127ae3b30ea23539c9c2f934065c",
+        "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/steps.jsonl": "5e0918c6e4a43368977cbf09aea469d7d3c3c90c27bd992248bb523d5b3a048a",
+        "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/sensors.jsonl": "8d70794778b01c462f494c8ef7167d51bf0ea6345ff12dfefae6c32ccc7c78f1",
+        "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/commands.jsonl": "2f872dbae301ac83c30fe960b5b8aef6922117a722c9be8b4ee99c1ca0e184d8",
+        "work/tests/m6-2p-20261021-151525-074334/player-0/host.log": "c58eae7dffcbc59d94ce1dc7643c911db4ce7394db1ea8d55e55753b4e146948",
+        "work/tests/m6-2p-20261021-151525-074334/player-1/host.log": "232a80db464a34ac1ce6ee788b9f90ae783b772a72dcbd822e60a6a7c15d44be",
+        "work/a6/d2-c-District00-hook-0580-a1-20261021-151525-018926/point.json": "d623ecd93df6fab6cc8fbaddb4d7f82f3df42a6a02d8a153ca237def5349fb49"
+      }
+    },
+    {
+      "id": "District00-hook-0585",
+      "attempt": 1,
+      "status": "verified",
+      "reason": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "bound": true,
+      "normal_dot": 0.907094419002533,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": true,
+      "ko": true,
+      "arrival_native_frame": 3768,
+      "arrival_to_ko_frames": 237,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 0.8673827229570574,
+      "observed_landing_error": 7.408064439238906,
+      "full_health_before_charge": 1,
+      "frames": 77,
+      "artifact": "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/tested-validate_candidates.py": "3d8da61505622988c89db84942f028559d5853763fbe1836ead22f14e927df0b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/result.json": "628094ed7e749ff3c392973c4546ff62b40fbbc6799a318b069dee336aea2cf2",
+        "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/steps.jsonl": "18b106149f3a962033f5fe522b0b97773136fb5c01003994aea14f977d195f73",
+        "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/sensors.jsonl": "ba87cd50f1dbb9594a619f4be9bd4bbf232030ce968d6a67c22e6af77baa6a0f",
+        "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/commands.jsonl": "441a14e2847bec234bfe8e25f8600924b3c733acba685a16db62938689ce94e6",
+        "work/tests/m6-2p-20261021-151828-033662/player-0/host.log": "779423e1f3f2bfa402f6a185329e1eab57999278ba9136f36f6079c2d414eaf4",
+        "work/tests/m6-2p-20261021-151828-033662/player-1/host.log": "071ebe1738bca8a166a9980f75c41997aaa0b3473a3a4d4609edadbab8af0062",
+        "work/a6/d2-c-District00-hook-0585-a1-20261021-151827-982785/point.json": "9c979ae70edd8e37ad7aa7213f7fe85d92fb04f5632a65811e32fa233558694f"
+      }
+    },
+    {
+      "id": "Yagara-hook-0861",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": 0.0,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4811,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 11.6527444009319,
+      "observed_landing_error": 11.015980845270107,
+      "full_health_before_charge": 0.284999996,
+      "frames": 30,
+      "artifact": "work/a6/d2-c-Yagara-hook-0861-a1-20261021-145235-760421/point.json",
+      "source_sha256": {
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0861-a1-20261021-145235-760421/result.json": "5914fe30a44e498f581995d81733768f11f0649a1a70eb4900c115c427329974",
+        "work/a6/d2-c-Yagara-hook-0861-a1-20261021-145235-760421/steps.jsonl": "8afdd0acc282a94ebb0e34745c05568d958b9ccb8ac1aa702b1fc1a145a43a7e",
+        "work/a6/d2-c-Yagara-hook-0861-a1-20261021-145235-760421/sensors.jsonl": "b93df7ecb9dc783b48e87aa60043bfe3368fa04d73a89b7d80722f652e31d6ac",
+        "work/a6/d2-c-Yagara-hook-0861-a1-20261021-145235-760421/commands.jsonl": "cd035fe28bf4b8eaaef5248a6f2cf4059d9e3f68ff44a0ca93d095d5f01bf295",
+        "work/tests/m6-2p-20261021-145235-814041/player-0/host.log": "c12ab6fc41542b609e4f6d2a6634b7440e28eac6de2627a9ac20d64b09a6bf7c",
+        "work/tests/m6-2p-20261021-145235-814041/player-1/host.log": "442b8b309cea6b0592cc2c2af7237d17e79933d2a063b963c54a46a9ba942499",
+        "work/a6/d2-c-Yagara-hook-0861-a1-20261021-145235-760421/tested-validate_candidates.py": "515cffe58c5ec7d3f69660b19ac8680a77732ef8b49d06e605a7d047c69b1561",
+        "work/a6/d2-c-Yagara-hook-0861-a1-20261021-145235-760421/point.json": "05278ad3aba5ec5fa4a125421072c611eb2198e31232dbce166095d7f532a817"
+      }
+    },
+    {
+      "id": "Yagara-hook-0861",
+      "attempt": 2,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4071,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.6542461362354314,
+      "observed_landing_error": 0.6610171201521888,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/result.json": "932d9060208991718362bcb764177b376d5243acdf7982b86954bfc453ede67c",
+        "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/steps.jsonl": "d383aee1a5fb398362b2a086b8886b68e7cf57915b9bd79d1a1cea34dea28d03",
+        "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/sensors.jsonl": "91c9640574a139cc2667ce9bd557c3b392481cc93ca89280224f3ed55e0377c6",
+        "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/commands.jsonl": "414a5096d98f08ef994b1238579c277dfb0bc2e8c48c0ca27523acc2770dd846",
+        "work/tests/m6-2p-20261021-153000-452916/player-0/host.log": "b31bf683c1ba1b45c94dbd342583e5ac90aac23edb2a4002f97afaf3a9cdb991",
+        "work/tests/m6-2p-20261021-153000-452916/player-1/host.log": "6000f81882023ac7bbdbf93c2fa36ba7daec205f62700983af3aa1f7da505405",
+        "work/a6/d2-c-Yagara-hook-0861-a2-20261021-153000-393718/point.json": "b21f09fe35360b475f03ea75f97886080e621c896003f0d3ed40d4285e8dea96"
+      }
+    },
+    {
+      "id": "Yagara-hook-0624",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": 0.55,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 3830,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 16.49349420433604,
+      "observed_landing_error": 14.320052369977576,
+      "full_health_before_charge": 0.234999999,
+      "frames": 30,
+      "artifact": "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/tested-validate_candidates.py": "09fdf20e9996c8a24366eeeec088533d2eb7717fe9f410695b1063b17d933f75",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/result.json": "e4ddfb66bb19e832ba17ae692d04517f1810f76da0bb91400f44d43505751d0a",
+        "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/steps.jsonl": "b112bc1e05265611b9c51be8c8293b7b15851e281540e4352d0ddb340b81375e",
+        "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/sensors.jsonl": "1d2a166dc49e5dc12f4783f20c17fd7595805a41652a8b065f63520c4319bdea",
+        "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/commands.jsonl": "b396ec70e82a0d5526d8d64b8cc2a9c0f916b00c81c33afc7cb269ac282fa59b",
+        "work/tests/m6-2p-20261021-145727-628440/player-0/host.log": "aa05cdd7d8a3b64559d02b7c8336bc6e6e3d96a4aee774a7f92b24030873f334",
+        "work/tests/m6-2p-20261021-145727-628440/player-1/host.log": "f203251f5f40915071382c3feaeb72673a3aadac1451579d75efe454b96ade19",
+        "work/a6/d2-c-Yagara-hook-0624-a1-20261021-145727-576508/point.json": "c0d18238e196b1afdc971664bc6bbea8b0edf73993b78c226be000a162894b5b"
+      }
+    },
+    {
+      "id": "Yagara-hook-0821",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 0.47362765669822693,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 3851,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 0.518445387337864,
+      "observed_landing_error": 1.159225217032294,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0821-a1-20261021-150038-582993/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0821-a1-20261021-150038-582993/tested-validate_candidates.py": "4e20a911ff6c87ba68d5487c3d22fe80753d18cc7cf2ef9b478d1f6c40145d3c",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0821-a1-20261021-150038-582993/result.json": "f9fc5be933ca7727f11d81777661285bffb7ba1a23842452f8bf11c01e85ca4c",
+        "work/a6/d2-c-Yagara-hook-0821-a1-20261021-150038-582993/steps.jsonl": "7934638b31ed2f088446a60068fe61d0d5e743bb592892eb733feac1ecc55bcf",
+        "work/a6/d2-c-Yagara-hook-0821-a1-20261021-150038-582993/sensors.jsonl": "b035fd1d5a712647d68595ffd3ffbfd38b248f6b7d512537f104832b8d594577",
+        "work/a6/d2-c-Yagara-hook-0821-a1-20261021-150038-582993/commands.jsonl": "cf015902108a889930cde9d5e2da09be2e0a09ce145de8acfc93c9bbaf9e4d9e",
+        "work/tests/m6-2p-20261021-150038-640678/player-0/host.log": "3e561b8b995e6ca78868bbcee76e9b78913c295dfc6416b1111f873bbd69443b",
+        "work/tests/m6-2p-20261021-150038-640678/player-1/host.log": "dea810a9bd2fec21146a20d6ee9c136e915725f028afe33a4c5fc006208d4176",
+        "work/a6/d2-c-Yagara-hook-0821-a1-20261021-150038-582993/point.json": "47612124ee93a5901ee855c38cc7ea90812429599b9c274ff1d5099183b3dcba"
+      }
+    },
+    {
+      "id": "Yagara-hook-0821",
+      "attempt": 2,
+      "status": "verified",
+      "reason": "点位邻域绑定，满血蓄斩70＋轻斩击倒",
+      "bound": true,
+      "normal_dot": 0.8980749249458313,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": true,
+      "ko": true,
+      "arrival_native_frame": 4181,
+      "arrival_to_ko_frames": 235,
+      "raw_outcome": "combo_ko",
+      "requested_anchor_error": 0.7096886049822662,
+      "observed_landing_error": 0.8221076480556951,
+      "full_health_before_charge": 1,
+      "frames": 78,
+      "artifact": "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/result.json": "afa9e67d69f42975a7bd3472904894d3002f48838ff1bc139b3847fd2b30ee34",
+        "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/steps.jsonl": "c21b48a16f3b4a9c0c68211febbb3a0ff371e429fdf90f7a6300827773b93b18",
+        "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/sensors.jsonl": "0964a0c6fc58aa0e763b11fd9ace6a4e060282f79ece188555a3e556c2494932",
+        "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/commands.jsonl": "0822b81ef941ebdd87a8aaa2c6e7abc651cc1ec03980bdac159a429c85027570",
+        "work/tests/m6-2p-20261021-153256-214525/player-0/host.log": "bd570a70cb8af85525da2863d970ea4a898942deacf3d12e62e140203ac020b2",
+        "work/tests/m6-2p-20261021-153256-214525/player-1/host.log": "53faefb9aa418397c213b9c657f795b99889748c9f5842040bd8d0e602df42e0",
+        "work/a6/d2-c-Yagara-hook-0821-a2-20261021-153256-159379/point.json": "b17b87a6761a89802bbd28b007bbf4e8b3bc6fcbeac601dfd730df73e67e6286"
+      }
+    },
+    {
+      "id": "Yagara-hook-0635",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": -0.618,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4000,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 19.459336075615298,
+      "observed_landing_error": 14.774392322603239,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/result.json": "9a14453cefb5593026cdc464b631d0234d0974663fd971c62ec1b984a4f77025",
+        "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/steps.jsonl": "9cce503e3ceae758413be373d03684b3421cf9ae30acfe0d6e0b3e5496b624d2",
+        "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/sensors.jsonl": "a10dbcfb9319adc65ab773ece9274ee922bee51a72377ca0c71171ddf2ed6536",
+        "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/commands.jsonl": "be6a29a6216b8414c8b06ca563f369faeaf6d676349a8d70e0e09e5ee65c4543",
+        "work/tests/m6-2p-20261021-150341-244132/player-0/host.log": "1ae353ab5e77977fb065232d6e663eae133b441a46b55fe632254086d0a329ee",
+        "work/tests/m6-2p-20261021-150341-244132/player-1/host.log": "44bfa182addb20c9559b41b6c1d9da3625b7cfbc49a3a3b88fc4989860ad191a",
+        "work/a6/d2-c-Yagara-hook-0635-a1-20261021-150341-185946/point.json": "f4d8ee028ac11f12f906df404abef03a358f1c983d4edaf995ea13e4084fab98"
+      }
+    },
+    {
+      "id": "Yagara-hook-0617",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": 0.7778557549118995,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4469,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 5.126310313646104,
+      "observed_landing_error": 4.372797203584452,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/result.json": "5574840caa89dfab80f2dc8a85a8280e8ec4c1cae0d2b484b55c1022820ec603",
+        "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/steps.jsonl": "08a6f01f767966a403cb2929ad1648ff4f33145a2b5d704790a922a77516cf44",
+        "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/sensors.jsonl": "275c1a7eee219e91ddfa30c8aa1a89b9fe9fbc49c452cb243b6c6646c1aff004",
+        "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/commands.jsonl": "8b5d0165e58ce6150a2892fe419d5d8bdc28450857eab3a65279743c2f6b6935",
+        "work/tests/m6-2p-20261021-150646-716762/player-0/host.log": "8f98bbba762787a91311cb15bd3e673d71fbb1b121fb068667b77196a6d6e5ec",
+        "work/tests/m6-2p-20261021-150646-716762/player-1/host.log": "10620d672495e504ed495c2c529153913e1ef136ec7924c626264d4d2e051812",
+        "work/a6/d2-c-Yagara-hook-0617-a1-20261021-150646-653606/point.json": "291b5cf9aac719a3992620ae58905357d8f002a9335a4b8d6620de8ad493059f"
+      }
+    },
+    {
+      "id": "Yagara-hook-0616",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 0.18842309166677298,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4593,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 1.1089655112058892,
+      "observed_landing_error": 8.502162929154455,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/result.json": "43af6f82545b487e9f0348f8e8c079dd234a9da0bdaf47b76cc639b78c147a4c",
+        "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/steps.jsonl": "a17b1f18167a36b7601ce567ff5af0aa96bfb7a43e2163ca7e2efef132cd1a41",
+        "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/sensors.jsonl": "c0175e7dc2f1af794adc3fc1a5cf031946d7101277a16ff60865925cfab3c47f",
+        "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/commands.jsonl": "3e402b7597c025984306c624f03cc0fa02966cd251192c8be331eaebb2808dcd",
+        "work/tests/m6-2p-20261021-151023-849431/player-0/host.log": "f4fb8a7638b30d2bf6a15f6dd31a53cb3203628236ac4b77ddff3492b995e810",
+        "work/tests/m6-2p-20261021-151023-849431/player-1/host.log": "88d595431657a1f969d29b75088f37f55b942bdfa2290cf4c7c56ef189418520",
+        "work/a6/d2-c-Yagara-hook-0616-a1-20261021-151023-791738/point.json": "b3d293cd308ae0c1b1bbff80c4487a61e955d4c13f3bb21c12fb0e9fdbe0838d"
+      }
+    },
+    {
+      "id": "Yagara-hook-0616",
+      "attempt": 2,
+      "status": "failed",
+      "reason": "没有本次原生绑定见证",
+      "bound": false,
+      "normal_dot": null,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": null,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "bind_failed",
+      "requested_anchor_error": null,
+      "observed_landing_error": 14.36645701965446,
+      "full_health_before_charge": null,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0616-a2-20261021-153308-250322/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0616-a2-20261021-153308-250322/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0616-a2-20261021-153308-250322/result.json": "cf0ee6efed3fd06970fccc357c07888f1de1e83f5607b8f11be4efb5fe7b287f",
+        "work/a6/d2-c-Yagara-hook-0616-a2-20261021-153308-250322/steps.jsonl": "bf188a86363a9262c5a8cf273c0a201de4ee8d5bfe8140cf4699b5e1863c03e3",
+        "work/a6/d2-c-Yagara-hook-0616-a2-20261021-153308-250322/sensors.jsonl": "91bdeeb00b4bfd7d7aa1feb9b3273c744845e0fbba8fde70295bea51f5ea13c5",
+        "work/a6/d2-c-Yagara-hook-0616-a2-20261021-153308-250322/commands.jsonl": "563992a37f9abc61ffe95e349c913217ce791f44f9a6c49f3962ea6878e244fe",
+        "work/tests/m6-2p-20261021-153308-304360/player-0/host.log": "85901fb542ce9a34fff844fba2c96e05e09693f86b806109c9574456921b0014",
+        "work/tests/m6-2p-20261021-153308-304360/player-1/host.log": "53db53de49a8284735bd49126a3a665fad8e8328e96365023e88166271d06d36",
+        "work/a6/d2-c-Yagara-hook-0616-a2-20261021-153308-250322/point.json": "cb74f34c16b7635bd5bbb15795abd5877da7c1c70504d7bf3e974fdc0380a8da"
+      }
+    },
+    {
+      "id": "Yagara-hook-0933",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": 0.0,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4133,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_missed",
+      "requested_anchor_error": 5.237540312269421,
+      "observed_landing_error": 4.776116389193647,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/tested-validate_candidates.py": "518eac4d73293ae992b355988fb8762541bb4471dbf07cb6828f213a557aeb7b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/result.json": "e40de6278b669b137f659e6b5768723803bd1ba7adddd20eb8bc77bd43ca7f1f",
+        "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/steps.jsonl": "96320aef0493466a2810f0f6452343b4bbcf2c45e5f03ab69f244f4695472928",
+        "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/sensors.jsonl": "e4ed8b48e5ba5f225db9fdb7ca19ca30b5fbdb2b0a58332fbe269a3c558cfe04",
+        "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/commands.jsonl": "92da49bb322159bb1b688c5d843552fabdc2c0e8aef318a34aa7ce782f52c96b",
+        "work/tests/m6-2p-20261021-151403-215567/player-0/host.log": "77613333aa43c08b8dcfcbae484e413b729517eed5fb0e51b8b5c177f951a337",
+        "work/tests/m6-2p-20261021-151403-215567/player-1/host.log": "4688e7d704c9f4b336001341ceb1bcfe03eaac33a81e2e6f71a80b0ae6e952a6",
+        "work/a6/d2-c-Yagara-hook-0933-a1-20261021-151403-156563/point.json": "bae2e75f23d8d2c7e592f78a1149ebcc0164a2a113254b88a04e16117bd17185"
+      }
+    },
+    {
+      "id": "Yagara-hook-0867",
+      "attempt": 1,
+      "status": "failed",
+      "reason": "绑定成功，满血两刀未击倒",
+      "bound": true,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": true,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 5095,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_unavailable",
+      "requested_anchor_error": 2.4489734863007584,
+      "observed_landing_error": 4.31624368811314,
+      "full_health_before_charge": 1,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/tested-validate_candidates.py": "3d8da61505622988c89db84942f028559d5853763fbe1836ead22f14e927df0b",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/result.json": "84ba68d61757ad1bfbae6d77d22b023a313dac2d31fca70cdf39ef3bc6570ec3",
+        "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/steps.jsonl": "bd0330cd0fba933e597c5c7dc037d370859bd5f2f888f513e9d47b05331cd9c8",
+        "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/sensors.jsonl": "bc966c8f76af1d9ff386db664d8f4dc81f6e9a5c7fb228128492e1e1b9a66078",
+        "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/commands.jsonl": "59cbc09516eeb4ab09d504303fd2b47c0c1b90f4237cbf183f8cd6ea437ef4c4",
+        "work/tests/m6-2p-20261021-151718-235624/player-0/host.log": "2a509be75f64813fd58ba46f17b0df8a5c813e6e317641c9f3c46a31f82a6bc5",
+        "work/tests/m6-2p-20261021-151718-235624/player-1/host.log": "cedbecf1a6d7e70d3ec84967f8380c9b6c2ad6c7714bd013ba0ae3b69c8eee7c",
+        "work/a6/d2-c-Yagara-hook-0867-a1-20261021-151718-181672/point.json": "12c0cfbff0fdafea81601974ab2c40d4f538f5220ccc323d0c4be503ebe435f8"
+      }
+    },
+    {
+      "id": "Yagara-hook-0867",
+      "attempt": 2,
+      "status": "failed",
+      "reason": "绑定到旁面／实际锚点偏离预定点",
+      "bound": false,
+      "normal_dot": 1.0,
+      "valid_bind": true,
+      "valid_combo": false,
+      "full_light": false,
+      "ko": false,
+      "arrival_native_frame": 4717,
+      "arrival_to_ko_frames": null,
+      "raw_outcome": "combo_unavailable",
+      "requested_anchor_error": 2.5638567861085098,
+      "observed_landing_error": 4.186680452267691,
+      "full_health_before_charge": null,
+      "frames": null,
+      "artifact": "work/a6/d2-c-Yagara-hook-0867-a2-20261021-153553-393220/point.json",
+      "source_sha256": {
+        "work/a6/d2-c-Yagara-hook-0867-a2-20261021-153553-393220/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+        "work/d2c/selection.json": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436",
+        "work/a6/d2-c-Yagara-hook-0867-a2-20261021-153553-393220/result.json": "56a54a217d2f97bfa54992a4249a33c637763e111c9f0db90bfe3c23ed56c6aa",
+        "work/a6/d2-c-Yagara-hook-0867-a2-20261021-153553-393220/steps.jsonl": "46ace6cdf265cb154e517e916fe6db90639ae1cc8c7f94e05d9aae634c08c142",
+        "work/a6/d2-c-Yagara-hook-0867-a2-20261021-153553-393220/sensors.jsonl": "17a963bdbe7ef63cb7fc7db6547d5b9531c1647efd459fcc1f193e8e8f837ca8",
+        "work/a6/d2-c-Yagara-hook-0867-a2-20261021-153553-393220/commands.jsonl": "2c8bbe527b3b5c89f2a7cfe737e1cb0e84347b9af3ee9af3b9241af11965251d",
+        "work/tests/m6-2p-20261021-153553-448787/player-0/host.log": "88aeab25c2ad4b9f8e2072cb0bc076a349315d50f0c4d876a477cd2d6b32ff07",
+        "work/tests/m6-2p-20261021-153553-448787/player-1/host.log": "ed33e4018046d9588d43183788a410f4e4a900c89170d9b5a66809b83db99330",
+        "work/a6/d2-c-Yagara-hook-0867-a2-20261021-153553-393220/point.json": "70a50bb3e77367b9933023a0bd8d0742c94da0164e1cab57f5fc0018574fd282"
+      }
+    }
+  ],
+  "armor": {
+    "status": "undetermined",
+    "controls": [
+      {
+        "id": "d2-c-armor-32-20261021-151742-754563",
+        "delay": 32,
+        "aim_mode": "track-current",
+        "before": 1,
+        "after": 1,
+        "confirmed_body_damage": false,
+        "release_actor0_frame": 4103,
+        "release_target_position": [
+          0.123092726,
+          5.1496377,
+          4.96497822
+        ],
+        "shooter_view_at_release": {
+          "yaw": 0.835926652,
+          "pitch": -0.00401486596,
+          "valid": 1
+        },
+        "arrival_after_release": [
+          0.145910323,
+          5.24777842,
+          4.9837966
+        ],
+        "native_changes": [
+          {
+            "native_frame": 4018,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": -1
+          },
+          {
+            "native_frame": 4022,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4078,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 1
+          },
+          {
+            "native_frame": 4082,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 2
+          },
+          {
+            "native_frame": 4094,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 2,
+            "state_native": 3
+          },
+          {
+            "native_frame": 4106,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4122,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          }
+        ],
+        "source_sha256": {
+          "work/a6/d2-c-armor-32-20261021-151742-754563/result.json": "08a8d5625313ab02a9fcc8046bcc21697ff05b8030639bbbb74d3845719bbf06",
+          "work/a6/d2-c-armor-32-20261021-151742-754563/commands.jsonl": "25f09d082bf9fb0fc22b7752468809101c82a39287ffe5d64bd4f64dd60e92f8",
+          "work/a6/d2-c-armor-32-20261021-151742-754563/steps.jsonl": "b055b1a2608597fff2f2087ac1df31e482f9872555949f63be2f50cacdd747f3",
+          "work/a6/d2-c-armor-32-20261021-151742-754563/sensors.jsonl": "3128d65c6ab3a644688d8a701d3b95a5f81972c2889bc5fc91a5821eac48aadd",
+          "work/a6/d2-c-armor-32-20261021-151742-754563/tested-armor_candidates.py": "5c962ce065a28e148a037a2fef2735976a608621ef54c7bd2ed34c81c7a6ebfd",
+          "work/a6/d2-c-armor-32-20261021-151742-754563/tested-validate_candidates.py": "3d8da61505622988c89db84942f028559d5853763fbe1836ead22f14e927df0b",
+          "work/tests/m6-2p-20261021-151742-813527/player-0/host.log": "6da4e76f28cb266f33ad8035daa3d21ddbeefcbe7296be361b5b54713cc23179",
+          "work/tests/m6-2p-20261021-151742-813527/player-1/host.log": "d1aaa5ca6d1786ffb1287f970c51dae847ed6d5dee548892eeeba2fab71b844c"
+        }
+      },
+      {
+        "id": "d2-c-armor-32-fixed-20261021-152807-598663",
+        "delay": 32,
+        "aim_mode": "fixed-future",
+        "before": 1,
+        "after": 1,
+        "confirmed_body_damage": false,
+        "release_actor0_frame": 4133,
+        "release_target_position": [
+          -0.0373566672,
+          4.26207161,
+          6.45844936
+        ],
+        "shooter_view_at_release": {
+          "yaw": 1.56848693,
+          "pitch": 0.488823235,
+          "valid": 1
+        },
+        "arrival_after_release": [
+          0.293807328,
+          5.31577969,
+          4.97217083
+        ],
+        "native_changes": [
+          {
+            "native_frame": 4049,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4109,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 2
+          },
+          {
+            "native_frame": 4125,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 2,
+            "state_native": 3
+          },
+          {
+            "native_frame": 4137,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4149,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          }
+        ],
+        "source_sha256": {
+          "work/a6/d2-c-armor-32-fixed-20261021-152807-598663/result.json": "849816dbe403b7fbccb80b16734549df8c3a7e0e3be8bc4804ec7fc2c53deec4",
+          "work/a6/d2-c-armor-32-fixed-20261021-152807-598663/commands.jsonl": "6673233181d9a6eadb841bb52ea33480e17546cd9777d433cbc7031b04c79e80",
+          "work/a6/d2-c-armor-32-fixed-20261021-152807-598663/steps.jsonl": "05e4cbc2cd2f2c554435df0292dc0054edea65fef94af7b5f44ca320024e7c3e",
+          "work/a6/d2-c-armor-32-fixed-20261021-152807-598663/sensors.jsonl": "0ce25c316930e9a126b36f2e03e8fd46d4c1037028516c56b2add121951745d9",
+          "work/a6/d2-c-armor-32-fixed-20261021-152807-598663/tested-armor_candidates.py": "44be44b117a4c17b17a4ec3272248c77dc246e670b77ba3055abfc5d201e8bc3",
+          "work/a6/d2-c-armor-32-fixed-20261021-152807-598663/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+          "work/tests/m6-2p-20261021-152807-663160/player-0/host.log": "2c78034e45ddbfd06a2cd380cecef00f071c640ba57acf101eb9d609467c9669",
+          "work/tests/m6-2p-20261021-152807-663160/player-1/host.log": "0df63b0b7119b89acb2731bb2f5532bbcd3de07d4949216dedaae4589919dba8"
+        }
+      },
+      {
+        "id": "d2-c-armor-36-20261021-152049-987320",
+        "delay": 36,
+        "aim_mode": "track-current",
+        "before": 1,
+        "after": 1,
+        "confirmed_body_damage": false,
+        "release_actor0_frame": 4142,
+        "release_target_position": [
+          0.191416129,
+          5.3746295,
+          4.64770985
+        ],
+        "shooter_view_at_release": {
+          "yaw": 1.03886843,
+          "pitch": 0.0114745824,
+          "valid": 1
+        },
+        "arrival_after_release": [
+          0.169459611,
+          5.27403831,
+          4.97924232
+        ],
+        "native_changes": [
+          {
+            "native_frame": 4054,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4114,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 2
+          },
+          {
+            "native_frame": 4130,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 2,
+            "state_native": 3
+          },
+          {
+            "native_frame": 4142,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4158,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          }
+        ],
+        "source_sha256": {
+          "work/a6/d2-c-armor-36-20261021-152049-987320/result.json": "14e6a62c93c9a1c436389d9070a25022744d216aa94a490ba11efd84aec2bdde",
+          "work/a6/d2-c-armor-36-20261021-152049-987320/commands.jsonl": "0833ab16bed539b7e1ef395dff3b2d8e52ae7ef8501f294981ba45b553dbc85e",
+          "work/a6/d2-c-armor-36-20261021-152049-987320/steps.jsonl": "e484f7bef5c78b6e94f1e1ed2057dfbc9d4a6bb09c5b98dfc76269149e6ba9c0",
+          "work/a6/d2-c-armor-36-20261021-152049-987320/sensors.jsonl": "8f17aca1378e2f8425f421764016892700f679105fe2da945d03120dbdd2a833",
+          "work/a6/d2-c-armor-36-20261021-152049-987320/tested-armor_candidates.py": "5c962ce065a28e148a037a2fef2735976a608621ef54c7bd2ed34c81c7a6ebfd",
+          "work/a6/d2-c-armor-36-20261021-152049-987320/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+          "work/tests/m6-2p-20261021-152050-046854/player-0/host.log": "454cee06ebe3d77e7277aa076bad41302f9cb0eb6809b336c8e847b0db3d1b66",
+          "work/tests/m6-2p-20261021-152050-046854/player-1/host.log": "421551a8d0dcbe87578422b873b7575ea27a9bd480d9d0221d920f69936f4cbe"
+        }
+      },
+      {
+        "id": "d2-c-armor-70-20261021-152352-274654",
+        "delay": 70,
+        "aim_mode": "track-current",
+        "before": 1,
+        "after": 0.300000012,
+        "confirmed_body_damage": true,
+        "release_actor0_frame": 4133,
+        "release_target_position": [
+          0.234336764,
+          5.26398468,
+          4.98112822
+        ],
+        "shooter_view_at_release": {
+          "yaw": 1.66108036,
+          "pitch": 0.476164401,
+          "valid": 1
+        },
+        "arrival_after_release": [
+          0.234336764,
+          5.26398468,
+          4.98112822
+        ],
+        "native_changes": [
+          {
+            "native_frame": 4012,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4072,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 2
+          },
+          {
+            "native_frame": 4084,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 2,
+            "state_native": 3
+          },
+          {
+            "native_frame": 4096,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4112,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4148,
+            "body_hp_native": 300,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          }
+        ],
+        "source_sha256": {
+          "work/a6/d2-c-armor-70-20261021-152352-274654/result.json": "c91abef6d70a4ee405c2896312fef8485030c544de8504bcd02e274afe3e6b17",
+          "work/a6/d2-c-armor-70-20261021-152352-274654/commands.jsonl": "8e5a685929bff17f7fe429acb30bb715c7b5a6b3cc2181b86365e8a078142e66",
+          "work/a6/d2-c-armor-70-20261021-152352-274654/steps.jsonl": "64bec0f77d547c8e37cc14f630ed64bacebdffcc9c3171fa008ce3ff21adfb8c",
+          "work/a6/d2-c-armor-70-20261021-152352-274654/sensors.jsonl": "62b76eafae998aeb81d43c3dd10e31ded8a4f1a2fc2cc20843a74c26f1ce46e9",
+          "work/a6/d2-c-armor-70-20261021-152352-274654/tested-armor_candidates.py": "5c962ce065a28e148a037a2fef2735976a608621ef54c7bd2ed34c81c7a6ebfd",
+          "work/a6/d2-c-armor-70-20261021-152352-274654/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+          "work/tests/m6-2p-20261021-152352-334481/player-0/host.log": "f0644907adf2a7663cb9f84b0b90433d850700f7fde53952740a4c86735deb6e",
+          "work/tests/m6-2p-20261021-152352-334481/player-1/host.log": "bca56e031c2ebaa1d096e3e459293c0672493a63464fd170e347df65f3cdaa28"
+        }
+      },
+      {
+        "id": "d2-c-armor-70-fixed-20261021-153107-496150",
+        "delay": 70,
+        "aim_mode": "fixed-future",
+        "before": 1,
+        "after": 0.300000012,
+        "confirmed_body_damage": true,
+        "release_actor0_frame": 4187,
+        "release_target_position": [
+          0.171501651,
+          5.27229118,
+          4.97955275
+        ],
+        "shooter_view_at_release": {
+          "yaw": 1.55337083,
+          "pitch": 0.485948086,
+          "valid": 1
+        },
+        "arrival_after_release": [
+          0.171501666,
+          5.27229118,
+          4.97955275
+        ],
+        "native_changes": [
+          {
+            "native_frame": 4064,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": -1
+          },
+          {
+            "native_frame": 4068,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4124,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 1
+          },
+          {
+            "native_frame": 4128,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 2
+          },
+          {
+            "native_frame": 4140,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 2,
+            "state_native": 3
+          },
+          {
+            "native_frame": 4152,
+            "body_hp_native": 1000,
+            "armor_hp_native": 300,
+            "armor_flags_native": 1,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4168,
+            "body_hp_native": 1000,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          },
+          {
+            "native_frame": 4204,
+            "body_hp_native": 300,
+            "armor_hp_native": 0,
+            "armor_flags_native": 0,
+            "collision_mask_21d_native": 0,
+            "state_native": 0
+          }
+        ],
+        "source_sha256": {
+          "work/a6/d2-c-armor-70-fixed-20261021-153107-496150/result.json": "92962fa39777a30dee760a2c3054d34e20194e27084ad827c8309c3495159bc9",
+          "work/a6/d2-c-armor-70-fixed-20261021-153107-496150/commands.jsonl": "e990dd7c537a11711bb26ca2ba24b5d95c081a8de227c30c0705ad6d675e1bfb",
+          "work/a6/d2-c-armor-70-fixed-20261021-153107-496150/steps.jsonl": "c5a3124c00e99dc34bd201920971325685ac1f128857976a213b80d85bf1ebec",
+          "work/a6/d2-c-armor-70-fixed-20261021-153107-496150/sensors.jsonl": "dbfb3ef6ad38b241ecb8f62d261794b46a017165adb66001c15a1e4139dd0de6",
+          "work/a6/d2-c-armor-70-fixed-20261021-153107-496150/tested-armor_candidates.py": "44be44b117a4c17b17a4ec3272248c77dc246e670b77ba3055abfc5d201e8bc3",
+          "work/a6/d2-c-armor-70-fixed-20261021-153107-496150/tested-validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+          "work/tests/m6-2p-20261021-153107-556828/player-0/host.log": "ce6e6bea583a1b2303caf97550066aaae0ddc7ae177dbd2c092f90fae5e8b52c",
+          "work/tests/m6-2p-20261021-153107-556828/player-1/host.log": "3f31886486af25f142793a43ed1fe358f49ad51b8e4bef744054fac32ffa6d7b"
+        }
+      }
+    ],
+    "interpretation": "Tracking early probes did not settle elevation before release. Fixed future-aim pair is recorded separately. Body damage confirms a hit; armor300-to0 alone is not a confirmed absorption event because natural expiry also clears it. No universal multiplier or invulnerability claimed."
+  },
+  "recommendations": [
+    {
+      "id": "Yunohana-hook-0532",
+      "map": "Yunohana",
+      "title": "西侧高柱下落斩",
+      "description": "队友压住中路时，从高台挂西侧高柱，边落边纵斩，再横斩收侧路。",
+      "frames": 78,
+      "arrival_frames": 240,
+      "clip_id": "zipcaster-batch-yunohana"
+    },
+    {
+      "id": "District00-hook-0585",
+      "map": "District00",
+      "title": "东侧墙点，落地补刀",
+      "description": "从右路内侧挂高墙，纵斩压外侧通路，落地后横斩收尾，别在墙上久留。",
+      "frames": 77,
+      "arrival_frames": 237,
+      "clip_id": "zipcaster-batch-district00"
+    },
+    {
+      "id": "Yagara-hook-0821",
+      "map": "Yagara",
+      "title": "高台前矮墙起跳",
+      "description": "上钩后小跳，再用纵斩接横斩压高台；本轮只验证了这套输入，别直接省掉小跳。",
+      "frames": 78,
+      "arrival_frames": 235,
+      "clip_id": "zipcaster-batch-yagara"
+    }
+  ],
+  "trace_output": {
+    "path": "work/d2c/traces/recommended.json",
+    "sha256": "fddba7a20232f965c1d730a2e5286b75bc05810fde2ab3c055185d9c811ddc60"
+  },
+  "full_d2_passed": false,
+  "ceiling": "known_undetermined_deferred_by_user",
+  "binding_gate": "Native bind witness plus world anchor within2.5u of selected point. Point-neighbourhood validation, not same mesh-triangle proof. Both normals retained; swept contact normal differs near edges; actor ID alone insufficient.",
+  "combo_gate": "nearby expected anchor, 100HP before charge, native70 decrease then later KO; prior special contact damage excluded",
+  "rate_semantics": "Observed trial fractions and unique-point counts at N1–2. Not a real-combat success probability.",
+  "selection": {
+    "path": "work/d2c/selection.json",
+    "sha256": "431fa6985187f645d911bd92dbfbb847e768ad5776f79a796c17794be4829436"
+  },
+  "source_provenance": {
+    "tools/zipcaster/report_candidates.py": "a451e013f7d1c24b7785a6535a39c2a8df34605214f13f5e68dce57131c0f2d9",
+    "tools/zipcaster/validate_candidates.py": "82f292e6899529c9437d2b55fce51d0cebf9e5c5f6b4b6de619bc3adfc96e482",
+    "tools/zipcaster/armor_candidates.py": "44be44b117a4c17b17a4ec3272248c77dc246e670b77ba3055abfc5d201e8bc3",
+    "tools/zipcaster/sensor.h": "4ec3d689d89857d0fba5c0aa293a2e3b576439cfb4f88708b0118e41f30971e4"
+  }
+}

@@ -259,8 +259,8 @@ def main():
     source('arena/lib/stamper_data.py')
     source('showcase/derive_traces.py')
     source('showcase/zipcaster.py')
-    data['zipcaster'], zip_clip = compile_zipcaster(ROOT, source)
-    data['traces'].insert(0, zip_clip)
+    data['zipcaster'], zip_clips = compile_zipcaster(ROOT, source)
+    data['traces'][:0] = zip_clips
     scene_path = source('showcase/scene.js')
     template_path = source('showcase/template.html')
     source('showcase/build.py')

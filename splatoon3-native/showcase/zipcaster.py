@@ -22,6 +22,32 @@ def compile_zipcaster(root, source):
                   start=before['position'], target=hanging['player_1']['position'],
                   combo='full-light', damage=105, frames=150, clip_id=clip['id'],
                   caveat='标记是原生人物挂墙位置，实际锚点/命中面尚未读取；只验证本夹具，不认证附近候选。')
+    b = json.loads(source('notes/d2b-20261021.json').read_text())
+    high = json.loads(source('work/d2b/traces/high-side.json').read_text())[0]
+    high.update(id='zipcaster-high',label='飞索实测 · 侧角上台接两刀',short_label='高台连招',
+                description='从侧角挂索落格栅，满蓄70接轻斩击倒高台满血靶。首次KO观测75帧，非最短；QS57AP。')
+    source(high['evidence']['raw_steps']);high_run=json.loads(source(high['evidence']['result']).read_text())
+    high_start=next(c['after']['player_0']['position']for c in high_run['cases']if c['kind']=='high-side-before')
+    anchor=b['native_anchors'][-1]
+    verified=[native,dict(id='native-high-side',status='verified',map='Yunohana',region='central_high',
+        label='侧角上台 · 两刀收高台',position=anchor['anchor_world'],anchor=anchor['anchor_world'],
+        normal=anchor['hit_normal_world'],start=high_start,
+        landing=b['high_combo']['before']['player_0']['position'],target=b['high_combo']['before']['player_1']['position'],
+        combo='full-light',damage=105,frames=75,clip_id=high['id'],
+        caveat='B原生1次：精确锚点和法线已读取；侧角上索后落格栅，两刀命中，非空中挂墙连招或实战安全保证。')]
+    batch_path=root/'work/d2c/results.json'
+    summaries=[];recommendations=[];extra_clips=[]
+    if batch_path.exists():
+        batch=json.loads(source('work/d2c/results.json').read_text());summaries=batch['maps'];recommendations=batch['recommendations']
+        extra_clips=json.loads(source(batch['trace_output']['path']).read_text())
+        for c in extra_clips:source(c['evidence']['raw_steps']);source(c['evidence']['result'])
+        for p in batch['points']:
+            verified.append(dict(id=p['id'],status=p['display_status'],map=p['map'],region=p['region'],
+                label=p['label'],position=p['anchor']if p['display_status']=='verified'else p['requested_anchor'],
+                anchor=p['anchor'],normal=p['normal'],start=p['source'],target=p['target'],
+                landing=p['landing'],arrival_pose=p['arrival_pose'],post_sword_position=p['post_sword_position'],combo='full-light',damage=105,frames=p['frames'],arrival_frames=p['arrival_to_ko_frames'],
+                attempts=p['attempts'],outcome=p['outcome'],sample_scope=p['sample_scope'],clip_id=p.get('clip_id'),
+                caveat=p['caveat']))
     maps = []
     for m in layers['maps']:
         candidates = {}
@@ -45,8 +71,10 @@ def compile_zipcaster(root, source):
                 item.update(start=m['starts'][best[1]], approach_range=best[2])
                 if len(chosen) == PER_REGION:
                     break
-        maps.append(dict(id=m['id'], total=len(m['anchors']), candidates=list(candidates.values())))
-    return dict(schema='showcase.zipcaster.v1', maps=maps, verified=[native], per_region=PER_REGION,
+        tested={p['id']for p in verified if p['map']==m['id']}
+        maps.append(dict(id=m['id'], total=len(m['anchors']), candidates=[p for p in candidates.values()if p['id']not in tested]))
+    return dict(schema='showcase.zipcaster.v2', maps=maps, verified=verified, per_region=PER_REGION,
+                summaries=summaries,recommendations=recommendations,
                 mechanisms=report['native'],
                 selection='每个命名目标区域最多8点；按现有几何连招条件、落点潜在视域、距离排序，3u内去重。非成功率排名。',
-                limits='候选为静态射线分析；挂面、枪口偏移、动态物体和实际命中待原生验证。炸弹组合只做伤害算术，大招内炸弹输入未验证。'), clip
+                limits='空心环是静态候选；蓝色为指定夹具两刀成功、红色为有效试验失败、灰色为前置或连招未完成。每点1–2次，不代表实战成功率；天花板、护甲倍率仍未定。'), [clip,high,*extra_clips]

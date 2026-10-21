@@ -2,12 +2,16 @@
 (() => {
   const host=$('scene'),traceSelect=$('trace-select'),timeline=$('trace-time');
   const THREE=window.THREE,reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
-  let app=null,clip=DATA.traces[0],frame=clip.start_frame,playing=false,previousTick=null,selectedZip=null;
+  let app=null,clip=DATA.traces.find(t=>t.id==='zipcaster-high')||DATA.traces[0],frame=clip.start_frame,playing=false,previousTick=null,selectedZip=null;
 
   const regionNames={center:'中路',central_high:'中央高台',west_lane:'西侧通路',east_lane:'东侧通路'};
+  const measured=p=>p.status!=='candidate';
+  const statusName=p=>({verified:'成功',failed:'失败',partial:'已绑 / 连招未定',incomplete:'前置未完成',candidate:'待验证候选'}[p.status]||'未定');
+  const pointColor=p=>cssToken(p.status==='failed'?'--zip-failed':p.status==='partial'||p.status==='incomplete'?'--muted':'--accent');
   function zipPoints(map=currentMap(),filtered=true){
     const region=$('zip-region').value,combo=$('zip-combo').value;
-    const native=DATA.zipcaster.verified.filter(p=>p.map===map.id&&(!filtered||((region==='all'||p.region===region)&&(combo==='all'||combo===p.combo))));
+    const rank={verified:0,partial:1,failed:2,incomplete:3};
+    const native=DATA.zipcaster.verified.filter(p=>p.map===map.id&&(!filtered||((region==='all'||p.region===region)&&(combo==='all'||combo===p.combo)))).sort((a,b)=>rank[a.status]-rank[b.status]||(a.frames??1e6)-(b.frames??1e6));
     const candidates=DATA.zipcaster.maps.find(m=>m.id===map.id).candidates.flatMap(p=>{
       const targets=p.targets.filter(t=>!filtered||((region==='all'||t.region===region)&&(combo==='all'||combo==='full-light'&&t.full_light||combo==='bomb-full'&&t.bomb_full_geometry)));
       return targets.length?[{...p,displayTarget:targets.find(t=>t.full_light)||targets[0]}]:[];
@@ -15,29 +19,30 @@
   }
   function zipDetail(point){
     const box=$('zip-detail');box.replaceChildren();if(!point){box.append(el('p','',$('zip-combo').value==='bomb-light'?'60＋35＝95，不足击倒100血。这个筛选没有满血击倒候选。':'当前筛选无匹配点；此图仍没有原生已验证挂点。'));return}
-    const native=point.status==='verified',target=point.displayTarget;
-    box.append(el('strong','',native?'已实测验证 · 中路夹具':'待验证候选 · '+point.id.split('-').at(-1)));
+    const native=measured(point),target=point.displayTarget;
+    box.append(el('strong','',native?`${statusName(point)} · ${point.label}`:'待验证候选 · '+point.id.split('-').at(-1)));
     const dl=el('dl');
-    const entries=native?[['连招','蓄斩70 → 轻斩收尾'],['观测耗时','150f · 含重瞄'],['样本','静止满血靶 · 1次'],['位置',point.position.map(x=>fmt(x,1)).join(' / ')]]:
+    const entries=native?[['试验结果',point.outcome||'满蓄70 → 轻斩击倒'],['蓄力→KO',point.frames===null||point.frames===undefined?'未通过':`${point.frames}f · 非最短`],...(point.arrival_frames!==null&&point.arrival_frames!==undefined?[['到达→KO',`${point.arrival_frames}f · 含等待`]]:[]),['样本',point.sample_scope||`静止满血靶 · ${point.attempts||1}次`],['标记位置',point.position.map(x=>fmt(x,1)).join(' / ')],...(point.anchor?[['原生锚点',point.anchor.map(x=>fmt(x,2)).join(' / ')]]:[])]:
       [['目标区域',regionNames[target.region]],['距估计落点',fmt(target.distance,1)+' u'],['落点潜在视域',point.view===null?'—':fmt(point.view,1)+'%'],['出钩参考距离',fmt(point.approach_range,1)+' u']];
     for(const[k,v]of entries){const row=el('div');row.append(el('dt','',k),el('dd','',v));dl.append(row)}box.append(dl);
     box.append(el('p','',native?point.caveat:($('zip-combo').value==='bomb-full'?'130只是条件伤害算术。大招内炸弹输入、投掷轨迹和命中未验证。':target.full_light?'满足估计落点19u内与中心射线条件；105伤害须两刀命中且目标未回血。':'只满足静态切入筛选，未证实能在落点接满血击倒连招。')));
     if(!native)box.append(el('p','','虚线为几何参考连线，非原生飞行轨迹；标记穿透显示，不代表对手可见性。'));
   }
   function updateZipUI(){
-    const visible=$('show-zip').checked,points=zipPoints(),native=points.filter(p=>p.status==='verified').length;
+    const visible=$('show-zip').checked,points=zipPoints(),native=points.filter(measured).length,success=points.filter(p=>p.status==='verified').length;
     $('zip-panel').hidden=!visible;
     selectedZip=points.find(p=>p.id===selectedZip?.id)||points[0]||null;
     document.querySelector('.inspector').classList.toggle('zip-active',visible);
-    $('zip-count').textContent=`${native} 处实测 / ${points.length-native} 处候选 · 原始${DATA.zipcaster.maps.find(m=>m.id===currentMap().id).total}处节选`;
-    const options=points.map(p=>{const o=el('option','',p.status==='verified'?'● 实测 · 中路夹具':`○ ${regionNames[p.displayTarget.region]} · ${p.id.split('-').at(-1)}`);o.value=p.id;return o});
+    const summary=DATA.zipcaster.summaries?.find(m=>m.id===currentMap().id);
+    $('zip-count').textContent=`${native} 处记录 / ${success} 处成功 / ${points.length-native} 处候选`+(summary?` · 批测${summary.points_bound}/${summary.selected}点绑定、${summary.points_combo}/${summary.selected}点两刀；有效绑定试验${summary.bind_success}/${summary.valid_bind_trials}，前置未成${summary.setup_failed}`:'');
+    const options=points.map(p=>{const o=el('option','',measured(p)?`${p.status==='verified'?'●':p.status==='incomplete'?'◇':'×'} ${statusName(p)} · ${p.label}`:`○ ${regionNames[p.displayTarget.region]} · ${p.id.split('-').at(-1)}`);o.value=p.id;return o});
     if(!options.length){const o=el('option','','无匹配点');o.value='';options.push(o)}
     $('zip-point').replaceChildren(...options);$('zip-point').value=selectedZip?.id||'';zipDetail(selectedZip);
-    $('zip-replay').hidden=!visible||currentMap().id!=='Yunohana';
+    $('zip-replay').hidden=!visible||!selectedZip?.clip_id;$('zip-replay').textContent='看这个点的原生回放 ↗';
     if(!visible)selectedZip=null;
   }
   window.clearZipFocus=()=>{$('show-zip').checked=false;updateZipUI()};
-  window.drawZip2D=(ctx,xy)=>{if(!$('show-zip').checked)return;for(const p of zipPoints()){const[x,y]=xy(p.position);ctx.beginPath();ctx.arc(x,y,p.status==='verified'?5:3,0,Math.PI*2);ctx.strokeStyle=cssToken('--accent');ctx.lineWidth=p.id===selectedZip?.id?2.5:1;ctx.stroke();if(p.status==='verified'){ctx.fillStyle=cssToken('--accent');ctx.fill()}}};
+  window.drawZip2D=(ctx,xy)=>{if(!$('show-zip').checked)return;for(const p of zipPoints()){const[x,y]=xy(p.position);ctx.beginPath();ctx.arc(x,y,measured(p)?5:3,0,Math.PI*2);ctx.strokeStyle=pointColor(p);ctx.lineWidth=p.id===selectedZip?.id?2.5:1;ctx.stroke();if(measured(p)){ctx.fillStyle=pointColor(p);ctx.fill()}}};
 
   const formName={human:'人形',squid:'乌贼',submerged:'潜墨'};
   function sample(player,f){
@@ -145,7 +150,7 @@
       this.ambushGroup=new THREE.Group();m.ambush.forEach((p,i)=>{const marker=new THREE.Mesh(new THREE.OctahedronGeometry(.9),new THREE.MeshStandardMaterial());marker.position.set(p.position[0],p.position[1]+1.3,p.position[2]);marker.userData.ambush=i;this.ambushGroup.add(marker)});this.root.add(this.ambushGroup);
       const prompt=el('option','',`选择伏击候选（${m.ambush.length}）`);prompt.value='';prompt.disabled=true;prompt.selected=true;
       $('ambush-select').replaceChildren(prompt,...m.ambush.map((p,i)=>{const o=el('option','',`${p.label} / 对 ${p.approach_side} 侧接近 / ${p.distance}u`);o.value=String(i);return o}));
-      this.zipGroup=new THREE.Group();zipPoints(m,false).forEach(p=>{const native=p.status==='verified';const marker=new THREE.Mesh(native?new THREE.OctahedronGeometry(1.4):new THREE.RingGeometry(.7,.95,24),new THREE.MeshBasicMaterial({transparent:true,opacity:native?1:.8,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));marker.position.set(p.position[0],p.position[1]+.5,p.position[2]);marker.renderOrder=12;marker.userData.zipId=p.id;marker.userData.candidate=!native;this.zipGroup.add(marker);if(native){const label=this.label('实测挂墙姿态',p.position,'zip');label.zipId=p.id;label.element.classList.add('zip-scene-label')}});this.root.add(this.zipGroup);
+      this.zipGroup=new THREE.Group();zipPoints(m,false).forEach(p=>{const native=measured(p);const marker=new THREE.Mesh(native?new THREE.OctahedronGeometry(1.4):new THREE.RingGeometry(.7,.95,24),new THREE.MeshBasicMaterial({transparent:true,opacity:native?1:.8,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));marker.position.set(p.position[0],p.position[1]+.5,p.position[2]);marker.renderOrder=12;marker.userData.zipId=p.id;marker.userData.candidate=!native;this.zipGroup.add(marker);if(native){const label=this.label(statusName(p)+' · '+p.label,p.position,'zip');label.zipId=p.id;label.element.classList.add('zip-scene-label')}});this.root.add(this.zipGroup);
       this.overlay=new THREE.Group();this.root.add(this.overlay);this.setClipPaths();
       const index=document.querySelector('.point-index');index.replaceChildren(...m.points.map((p,i)=>{const s=el('span');s.append(el('b','',String(i+1).padStart(2,'0')),document.createTextNode(p.label));return s}));
     }
@@ -160,9 +165,9 @@
       this.walls.material.color.set(cssToken('--wall'));this.edges.material.color.set(cssToken('--edge'));this.grid.material.color.set(cssToken('--scene-grid'));
       this.spawnGroup.children.forEach((o,i)=>o.material.color.set(i?colors.bravo:colors.alpha));this.regionGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));this.ambushGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));
       this.spawnGroup.visible=$('show-spawns').checked;this.regionGroup.visible=$('show-eta').checked;this.ambushGroup.visible=$('show-ambush').checked;$('ambush-select').hidden=!this.ambushGroup.visible;this.walls.visible=$('show-walls').checked;
-      const visibleIds=new Set(zipPoints().map(p=>p.id));this.zipGroup.visible=$('show-zip').checked;this.zipGroup.children.forEach(o=>{o.visible=visibleIds.has(o.userData.zipId);o.material.color.set(cssToken('--accent'));o.scale.setScalar(o.userData.zipId===selectedZip?.id?1.45:1)});
+      const visibleIds=new Set(zipPoints().map(p=>p.id));this.zipGroup.visible=$('show-zip').checked;this.zipGroup.children.forEach(o=>{o.visible=visibleIds.has(o.userData.zipId);o.material.color.set(pointColor(zipPoints(currentMap(),false).find(p=>p.id===o.userData.zipId)));o.scale.setScalar(o.userData.zipId===selectedZip?.id?1.45:1)});
       this.clearOverlay();if(selectedZip&&this.zipGroup.visible){
-        const p=selectedZip,end=p.landing?.every(v=>v!==null)?p.landing:p.position,target=p.status==='verified'?p.target:p.displayTarget.position;
+        const p=selectedZip,end=p.landing?.every(v=>v!==null)?p.landing:p.position,target=measured(p)?p.target:p.displayTarget.position;
         this.overlay.add(this.line([new THREE.Vector3(...p.start),new THREE.Vector3(...p.position)],cssToken('--accent'),1,true));
         this.overlay.add(this.line([new THREE.Vector3(...end).add(new THREE.Vector3(0,1,0)),new THREE.Vector3(...target).add(new THREE.Vector3(0,1,0))],cssToken('--accent'),1,true));
         const marker=new THREE.Mesh(new THREE.OctahedronGeometry(1.1),new THREE.MeshBasicMaterial({color:cssToken('--accent'),depthTest:false}));marker.position.set(target[0],target[1]+1,target[2]);marker.renderOrder=12;this.overlay.add(marker);
@@ -253,7 +258,7 @@
   }
   traceSelect.replaceChildren(...DATA.traces.map(c=>{const o=el('option','',c.label);o.value=c.id;return o}));
   $('quick-clip').replaceChildren(...DATA.traces.map(c=>{const o=el('option','',c.short_label||`${c.source_kind==='native_observation'?'原生':'模拟'} R${c.id.slice(-1)}`);o.value=c.id;return o}));
-  function chooseClip(id){clip=DATA.traces.find(t=>t.id===id);traceSelect.value=id;$('quick-clip').value=id;$('clip-description').textContent=clip.description||'';frame=clip.start_frame;playing=false;const i=DATA.maps.findIndex(m=>m.id===clip.map);if(i!==mapIndex)switchMap(i);app?.setClipPaths();paintEventTicks();updateHUD()}
+  function chooseClip(id){const point=DATA.zipcaster.verified.find(p=>p.clip_id===id);if(point){selectedZip=point;$('show-zip').checked=true;if($('zip-region').value!=='all')$('zip-region').value=point.region;if($('zip-combo').value!=='all')$('zip-combo').value='full-light'}clip=DATA.traces.find(t=>t.id===id);traceSelect.value=id;$('quick-clip').value=id;$('clip-description').textContent=clip.description||'';frame=clip.start_frame;playing=false;const i=DATA.maps.findIndex(m=>m.id===clip.map);if(i!==mapIndex)switchMap(i);app?.setClipPaths();paintEventTicks();updateHUD()}
   traceSelect.onchange=()=>{$('quick-clip').value=traceSelect.value;chooseClip(traceSelect.value)};
   $('quick-clip').onchange=()=>{traceSelect.value=$('quick-clip').value;chooseClip(traceSelect.value)};
   function seek(value){frame=clip.start_frame+Number(value);playing=false;updateHUD()}
@@ -271,8 +276,15 @@
   for(const id of ['show-spawns','show-eta','show-ambush','show-walls','show-zip'])$(id).onchange=()=>{updateZipUI();drawMap()};
   for(const id of ['zip-region','zip-combo'])$(id).onchange=()=>{selectedZip=null;updateZipUI();drawMap()};
   $('zip-point').onchange=()=>{selectedZip=zipPoints().find(p=>p.id===$('zip-point').value);drawMap()};
-  function showCombo(){$('show-zip').checked=true;$('zip-region').value='center';$('zip-combo').value='full-light';selectedZip=DATA.zipcaster.verified[0];chooseClip('zipcaster-mid');drawMap();app?.setPreset('follow');$('maps').scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});}
-  $('zip-replay').onclick=showCombo;$('zip-card-replay').onclick=showCombo;
+  function showCombo(pick=null){const chosen=pick?.clip_id?pick:selectedZip?.clip_id?selectedZip:DATA.zipcaster.verified.find(p=>p.id==='native-high-side');$('show-zip').checked=true;$('zip-region').value=chosen.region;$('zip-combo').value='full-light';selectedZip=chosen;chooseClip(chosen.clip_id);drawMap();app?.setPreset('follow');$('maps').scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});}
+  $('zip-replay').onclick=()=>showCombo();$('zip-card-replay').onclick=()=>showCombo(DATA.zipcaster.verified.find(p=>p.id==='native-high-side'));
+  const results=$('zip-results');
+  if(results&&DATA.zipcaster.summaries?.length){
+    const table=el('table'),caption=el('caption','','每图8个选点，每点1–2次。通过点数＝至少一次通过；两刀须出刀前满血、70命中后再轻斩击倒。帧数两列各取本图最小值，可能不同点；到达时间含观察等待和重瞄。不是实战成功概率。'),head=el('tr');
+    ['地图','绑定点','两刀击倒','蓄力 / 到达→KO'].forEach(t=>head.append(el('th','',t)));const thead=el('thead');thead.append(head);table.append(caption,thead);const body=el('tbody');
+    for(const m of DATA.zipcaster.summaries){const row=el('tr');[({Yunohana:'温泉峡谷',District00:'District00',Yagara:'Yagara'})[m.id],`${m.points_bound} / ${m.selected}`,`${m.points_combo} / ${m.selected}`,m.fastest_full_light_frames===null?'未通过':`${m.fastest_full_light_frames} / ${m.fastest_arrival_to_ko_frames} f`].forEach(t=>row.append(el('td','',t)));body.append(row)}table.append(body);results.append(table);
+    const practice=el('div','zip-practice');for(const r of DATA.zipcaster.recommendations||[]){const button=el('button');button.append(el('strong','',`${({Yunohana:'温泉峡谷',District00:'District00',Yagara:'Yagara'})[r.map]} · ${r.title}`),el('span','',r.description),el('small','mono',`蓄力→KO ${r.frames}f · 看点位与回放 ↗`));button.onclick=()=>showCombo(DATA.zipcaster.verified.find(p=>p.id===r.id));practice.append(button)}results.append(practice);
+  }
   updateZipUI();
   try{if(!THREE)throw new Error('three.js CDN 未加载');app=new AtlasScene();window.updateScene=()=>app.refresh();app.refresh()}catch(error){host.append(el('div','webgl-error',`3D 未能初始化：${error.message}。可以使用“2D”查看相同离线图层。`));$('reset-camera').disabled=true}
   let hudLast=0;
