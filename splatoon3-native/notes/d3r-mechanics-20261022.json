@@ -1,0 +1,1641 @@
+{
+  "schema": "inklab.d3r.mechanics.v1",
+  "date": "2026-10-22",
+  "full_d3r_passed": false,
+  "step3_scoped_controls_passed": true,
+  "rate_scope": "local direct-aim ideal-operation fixture, not player win rate",
+  "flat_scans": {
+    "full": {
+      "schema": "inklab.d3r.blade.pitch.control.v1",
+      "rate_scope": "static native pitch scan, ideal-operation fixture",
+      "driver_completed": true,
+      "errors": [],
+      "kind": "flat",
+      "shots": [
+        {
+          "index": 0,
+          "style": "full",
+          "native_pitch": -0.3,
+          "source": [
+            -0.401133269,
+            3.00001192,
+            8.41803551
+          ],
+          "target": [
+            -7.99961567,
+            3.00000429,
+            7.43377352
+          ],
+          "horizontal_distance": 7.661964921824263,
+          "height_difference": -7.629999999814174e-06,
+          "hold_frames": 21,
+          "damage": 11.4,
+          "release_frame": 5423,
+          "first_damage": [
+            5479,
+            0.898000002,
+            5146
+          ],
+          "physical_witness": {
+            "frame": 5429,
+            "kind": "setter_input",
+            "object": "0x716f798e50",
+            "vtable": "5c76df0",
+            "velocity": [
+              -1.29731488,
+              -0.422360897,
+              -0.167631388
+            ],
+            "position110": [
+              -1.19142449,
+              5.1992979,
+              8.31262684
+            ]
+          },
+          "emitted_elevation": -0.3123142757759202,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 5447,
+              "target_frame": 5114,
+              "drop_hp": 0.6
+            },
+            {
+              "attacker_frame": 5451,
+              "target_frame": 5118,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5455,
+              "target_frame": 5122,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5459,
+              "target_frame": 5126,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5463,
+              "target_frame": 5130,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5467,
+              "target_frame": 5134,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5471,
+              "target_frame": 5138,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5475,
+              "target_frame": 5142,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5479,
+              "target_frame": 5146,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 5483,
+              "target_frame": 5150,
+              "drop_hp": 1.2
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 11.4
+        },
+        {
+          "index": 1,
+          "style": "full",
+          "native_pitch": -0.2,
+          "source": [
+            -0.401133269,
+            3.00001574,
+            8.41803551
+          ],
+          "target": [
+            -7.99961567,
+            3.00000668,
+            7.43377352
+          ],
+          "horizontal_distance": 7.661964921824263,
+          "height_difference": -9.060000000005175e-06,
+          "hold_frames": 21,
+          "damage": 70.0,
+          "release_frame": 6348,
+          "first_damage": [
+            6367,
+            0.300000012,
+            6034
+          ],
+          "physical_witness": {
+            "frame": 6354,
+            "kind": "setter_input",
+            "object": "0x716f7a11a0",
+            "vtable": "5c76df0",
+            "velocity": [
+              -1.31833708,
+              -0.282615125,
+              -0.170347735
+            ],
+            "position110": [
+              -1.19142449,
+              5.1992979,
+              8.31262684
+            ]
+          },
+          "emitted_elevation": -0.2094857800367749,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 6367,
+              "target_frame": 6034,
+              "drop_hp": 70.0
+            }
+          ],
+          "direct_damage_hp": 70.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 2,
+          "style": "full",
+          "native_pitch": -0.1,
+          "source": [
+            -0.401133269,
+            3.00002003,
+            8.41803551
+          ],
+          "target": [
+            -8.72662449,
+            3.00000286,
+            7.33982944
+          ],
+          "horizontal_distance": 8.395018308516839,
+          "height_difference": -1.7170000000010788e-05,
+          "hold_frames": 21,
+          "damage": 70.0,
+          "release_frame": 7273,
+          "first_damage": [
+            7295,
+            0.300000012,
+            6962
+          ],
+          "physical_witness": {
+            "frame": 7279,
+            "kind": "setter_input",
+            "object": "0x716f7a94f0",
+            "vtable": "5c76df0",
+            "velocity": [
+              -1.33129394,
+              -0.141642004,
+              -0.172021985
+            ],
+            "position110": [
+              -1.19142449,
+              5.1992979,
+              8.31262684
+            ]
+          },
+          "emitted_elevation": -0.1051280050765909,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 7295,
+              "target_frame": 6962,
+              "drop_hp": 70.0
+            }
+          ],
+          "direct_damage_hp": 70.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 3,
+          "style": "full",
+          "native_pitch": 0.0,
+          "source": [
+            -0.401133269,
+            3.00002384,
+            8.41803551
+          ],
+          "target": [
+            -9.4667778,
+            3.00000191,
+            7.24419498
+          ],
+          "horizontal_distance": 9.141324430973931,
+          "height_difference": -2.1929999999947825e-05,
+          "hold_frames": 21,
+          "damage": 70.0,
+          "release_frame": 8198,
+          "first_damage": [
+            8219,
+            0.300000012,
+            7886
+          ],
+          "physical_witness": {
+            "frame": 8204,
+            "kind": "setter_input",
+            "object": "0x716f7b1840",
+            "vtable": "5c76df0",
+            "velocity": [
+              -1.33567119,
+              0.0,
+              -0.172587574
+            ],
+            "position110": [
+              -1.19142449,
+              5.1992979,
+              8.31262684
+            ]
+          },
+          "emitted_elevation": 0.0,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 8219,
+              "target_frame": 7886,
+              "drop_hp": 70.0
+            }
+          ],
+          "direct_damage_hp": 70.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 4,
+          "style": "full",
+          "native_pitch": 0.1,
+          "source": [
+            -0.401133269,
+            3.00002813,
+            8.41803551
+          ],
+          "target": [
+            -10.2110405,
+            3.00000668,
+            7.1480217
+          ],
+          "horizontal_distance": 9.891775116652054,
+          "height_difference": -2.1450000000200475e-05,
+          "hold_frames": 21,
+          "damage": 70.0,
+          "release_frame": 9123,
+          "first_damage": [
+            9147,
+            0.300000012,
+            8814
+          ],
+          "physical_witness": {
+            "frame": 9129,
+            "kind": "setter_input",
+            "object": "0x716f798e50",
+            "vtable": "5c76df0",
+            "velocity": [
+              -1.33116519,
+              0.143710598,
+              -0.172005355
+            ],
+            "position110": [
+              -1.19142449,
+              5.1992979,
+              8.31262684
+            ]
+          },
+          "emitted_elevation": 0.10666203843957339,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 9147,
+              "target_frame": 8814,
+              "drop_hp": 70.0
+            }
+          ],
+          "direct_damage_hp": 70.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 5,
+          "style": "full",
+          "native_pitch": 0.2,
+          "source": [
+            -0.401133269,
+            3.00003386,
+            8.41803551
+          ],
+          "target": [
+            -10.9510832,
+            3.00001383,
+            7.05240583
+          ],
+          "horizontal_distance": 10.63796916565863,
+          "height_difference": -2.00299999999487e-05,
+          "hold_frames": 21,
+          "damage": 3.9,
+          "release_frame": 10048,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 10054,
+            "kind": "setter_input",
+            "object": "0x716f7a11a0",
+            "vtable": "5c76df0",
+            "velocity": [
+              -1.31743908,
+              0.289895177,
+              -0.17023173
+            ],
+            "position110": [
+              -1.19142449,
+              5.1992979,
+              8.31262684
+            ]
+          },
+          "emitted_elevation": 0.2148615728367696,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 10095,
+              "target_frame": 9762,
+              "drop_hp": 0.3
+            },
+            {
+              "attacker_frame": 10099,
+              "target_frame": 9766,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 10103,
+              "target_frame": 9770,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 10107,
+              "target_frame": 9774,
+              "drop_hp": 1.2
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 3.9
+        },
+        {
+          "index": 6,
+          "style": "full",
+          "native_pitch": 0.3,
+          "source": [
+            -0.401133269,
+            3.00003815,
+            8.41803551
+          ],
+          "target": [
+            -10.9510832,
+            3.00002909,
+            7.05240583
+          ],
+          "horizontal_distance": 10.63796916565863,
+          "height_difference": -9.060000000005175e-06,
+          "hold_frames": 21,
+          "damage": 3.0,
+          "release_frame": 10973,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 10979,
+            "kind": "setter_input",
+            "object": "0x716f7a94f0",
+            "vtable": "5c76df0",
+            "velocity": [
+              -1.29484487,
+              0.435997456,
+              -0.16731225
+            ],
+            "position110": [
+              -1.19142449,
+              5.1992979,
+              8.31262684
+            ]
+          },
+          "emitted_elevation": 0.32229794392744215,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 11023,
+              "target_frame": 10690,
+              "drop_hp": 0.6
+            },
+            {
+              "attacker_frame": 11027,
+              "target_frame": 10694,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 11031,
+              "target_frame": 10698,
+              "drop_hp": 1.2
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 3.0
+        }
+      ],
+      "fits": {
+        "full": {
+          "linear_elevation_scale": 1.058686217276193,
+          "linear_elevation_bias": 0.0024133563306427248,
+          "native_pitch_hit_window": [
+            -0.2,
+            -0.1,
+            0.0,
+            0.1
+          ],
+          "n": 7
+        }
+      },
+      "full_d3r_passed": false,
+      "source": "work/a6/d3-r-blade-v2-flat-full-v2-20261022-000803-703596/result.json",
+      "source_sha256": "c94899211690e1c4f62d0f0e079f143250c5473ad3eb0503d1b545998564c5d1",
+      "host_log_sha256": "98b2cb9ef0f078e3dbcfef14a41cd28161a22767682e865a9c3b71ad69550500",
+      "limits": [
+        "Single flat layout only; high/low pose windows need separate live controls.",
+        "Damage readback is quantized/lagged own state; retain both native acknowledgement clocks.",
+        "Birth velocity direction is physical evidence. Magnitude alone is not certified u/present speed.",
+        "Coarse pitch grid; hit entries are observed windows, gaps do not prove a continuous boundary."
+      ]
+    },
+    "light": {
+      "schema": "inklab.d3r.blade.pitch.control.v1",
+      "rate_scope": "static native pitch scan, ideal-operation fixture",
+      "driver_completed": true,
+      "errors": [],
+      "kind": "flat",
+      "shots": [
+        {
+          "index": 0,
+          "style": "light",
+          "native_pitch": -0.3,
+          "source": [
+            -0.232403994,
+            3.0000596,
+            8.24908352
+          ],
+          "target": [
+            -7.99961853,
+            3.0000062,
+            7.4336853
+          ],
+          "horizontal_distance": 7.80989730440989,
+          "height_difference": -5.340000000009226e-05,
+          "hold_frames": 1,
+          "damage": 0,
+          "release_frame": 5415,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 5425,
+            "kind": "setter_input",
+            "object": "0x716f754d70",
+            "vtable": "5c75510",
+            "velocity": [
+              -4.26127625,
+              -1.38335335,
+              -0.444572628
+            ],
+            "position110": [
+              -1.82424664,
+              3.40630198,
+              8.07824802
+            ]
+          },
+          "emitted_elevation": -0.3123142726299294,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 1,
+          "style": "light",
+          "native_pitch": -0.2,
+          "source": [
+            -0.232403994,
+            3.00008774,
+            8.24908352
+          ],
+          "target": [
+            -7.99961853,
+            3.00001001,
+            7.4336853
+          ],
+          "horizontal_distance": 7.80989730440989,
+          "height_difference": -7.77300000001091e-05,
+          "hold_frames": 1,
+          "damage": 0,
+          "release_frame": 6320,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 6330,
+            "kind": "setter_input",
+            "object": "0x716f77e730",
+            "vtable": "5c75510",
+            "velocity": [
+              -4.29232025,
+              -0.917521417,
+              -0.447811306
+            ],
+            "position110": [
+              -1.78127718,
+              3.60552382,
+              8.08606052
+            ]
+          },
+          "emitted_elevation": -0.20948579082635002,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 2,
+          "style": "light",
+          "native_pitch": -0.1,
+          "source": [
+            -0.232403994,
+            3.00011539,
+            8.24908352
+          ],
+          "target": [
+            -7.99961853,
+            3.00001335,
+            7.4336853
+          ],
+          "horizontal_distance": 7.80989730440989,
+          "height_difference": -0.0001020399999998034,
+          "hold_frames": 1,
+          "damage": 11.1,
+          "release_frame": 7225,
+          "first_damage": [
+            7284,
+            0.888999999,
+            6951
+          ],
+          "physical_witness": {
+            "frame": 7235,
+            "kind": "setter_input",
+            "object": "0x716f7871a8",
+            "vtable": "5c75510",
+            "velocity": [
+              -4.27205706,
+              -0.453221262,
+              -0.445697308
+            ],
+            "position110": [
+              -1.71486998,
+              3.80474567,
+              8.08996677
+            ]
+          },
+          "emitted_elevation": -0.1051280021911872,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 7248,
+              "target_frame": 6915,
+              "drop_hp": 0.3
+            },
+            {
+              "attacker_frame": 7252,
+              "target_frame": 6919,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7256,
+              "target_frame": 6923,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7260,
+              "target_frame": 6927,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7264,
+              "target_frame": 6931,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7268,
+              "target_frame": 6935,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7272,
+              "target_frame": 6939,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7276,
+              "target_frame": 6943,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7280,
+              "target_frame": 6947,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 7284,
+              "target_frame": 6951,
+              "drop_hp": 1.2
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 11.1
+        },
+        {
+          "index": 3,
+          "style": "light",
+          "native_pitch": 0.0,
+          "source": [
+            -0.232403994,
+            3.00014353,
+            8.24908352
+          ],
+          "target": [
+            -7.99961853,
+            3.00001717,
+            7.4336853
+          ],
+          "horizontal_distance": 7.80989730440989,
+          "height_difference": -0.000126359999999881,
+          "hold_frames": 1,
+          "damage": 35.0,
+          "release_frame": 8130,
+          "first_damage": [
+            8148,
+            0.649999976,
+            7815
+          ],
+          "physical_witness": {
+            "frame": 8140,
+            "kind": "setter_input",
+            "object": "0x716f7de190",
+            "vtable": "5c75510",
+            "velocity": [
+              -4.19358873,
+              0.0,
+              -0.437510818
+            ],
+            "position110": [
+              -1.62111855,
+              4.00006104,
+              8.10168648
+            ]
+          },
+          "emitted_elevation": 0.0,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 8148,
+              "target_frame": 7815,
+              "drop_hp": 35.0
+            }
+          ],
+          "direct_damage_hp": 35.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 4,
+          "style": "light",
+          "native_pitch": 0.1,
+          "source": [
+            -0.232403994,
+            3.00017118,
+            8.24908352
+          ],
+          "target": [
+            -8.53483391,
+            3.00000525,
+            7.3778429
+          ],
+          "horizontal_distance": 8.348017892172352,
+          "height_difference": -0.00016593000000009184,
+          "hold_frames": 1,
+          "damage": 35.0,
+          "release_frame": 9035,
+          "first_damage": [
+            9056,
+            0.649999976,
+            8723
+          ],
+          "physical_witness": {
+            "frame": 9045,
+            "kind": "setter_input",
+            "object": "0x716f754d70",
+            "vtable": "5c75510",
+            "velocity": [
+              -4.06437731,
+              0.437528044,
+              -0.424030364
+            ],
+            "position110": [
+              -1.50783551,
+              4.14068842,
+              8.11340523
+            ]
+          },
+          "emitted_elevation": 0.10666201348987991,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 9056,
+              "target_frame": 8723,
+              "drop_hp": 35.0
+            }
+          ],
+          "direct_damage_hp": 35.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 5,
+          "style": "light",
+          "native_pitch": 0.2,
+          "source": [
+            -0.232403994,
+            3.00019884,
+            8.24908352
+          ],
+          "target": [
+            -9.06699562,
+            3.00000238,
+            7.32233143
+          ],
+          "horizontal_distance": 8.883066961050597,
+          "height_difference": -0.00019645999999973185,
+          "hold_frames": 1,
+          "damage": 4.3,
+          "release_frame": 9940,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 9950,
+            "kind": "setter_input",
+            "object": "0x716f77e730",
+            "vtable": "5c75510",
+            "velocity": [
+              -3.88709736,
+              0.852886021,
+              -0.405535072
+            ],
+            "position110": [
+              -1.37892735,
+              4.27350283,
+              8.12512398
+            ]
+          },
+          "emitted_elevation": 0.21486156969195172,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 9980,
+              "target_frame": 9647,
+              "drop_hp": 0.3
+            },
+            {
+              "attacker_frame": 9984,
+              "target_frame": 9651,
+              "drop_hp": 0.8
+            },
+            {
+              "attacker_frame": 9988,
+              "target_frame": 9655,
+              "drop_hp": 0.8
+            },
+            {
+              "attacker_frame": 9992,
+              "target_frame": 9659,
+              "drop_hp": 0.8
+            },
+            {
+              "attacker_frame": 9996,
+              "target_frame": 9663,
+              "drop_hp": 0.8
+            },
+            {
+              "attacker_frame": 10000,
+              "target_frame": 9667,
+              "drop_hp": 0.8
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 4.3
+        },
+        {
+          "index": 6,
+          "style": "light",
+          "native_pitch": 0.3,
+          "source": [
+            -0.232403994,
+            3.00022602,
+            8.24908352
+          ],
+          "target": [
+            -9.06699562,
+            3.00000477,
+            7.32233143
+          ],
+          "horizontal_distance": 8.883066961050597,
+          "height_difference": -0.00022125000000006168,
+          "hold_frames": 1,
+          "damage": 5.4,
+          "release_frame": 10845,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 10855,
+            "kind": "setter_input",
+            "object": "0x716f7871a8",
+            "vtable": "5c75510",
+            "velocity": [
+              -3.66258764,
+              1.22972894,
+              -0.382112294
+            ],
+            "position110": [
+              -1.23439384,
+              4.39069223,
+              8.14074898
+            ]
+          },
+          "emitted_elevation": 0.322297956262901,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 10888,
+              "target_frame": 10555,
+              "drop_hp": 0.6
+            },
+            {
+              "attacker_frame": 10892,
+              "target_frame": 10559,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 10896,
+              "target_frame": 10563,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 10900,
+              "target_frame": 10567,
+              "drop_hp": 1.2
+            },
+            {
+              "attacker_frame": 10904,
+              "target_frame": 10571,
+              "drop_hp": 1.2
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 5.3999999999999995
+        }
+      ],
+      "fits": {
+        "light": {
+          "linear_elevation_scale": 1.0586862226414868,
+          "linear_elevation_bias": 0.002413353399609402,
+          "native_pitch_hit_window": [
+            0.0,
+            0.1
+          ],
+          "n": 7
+        }
+      },
+      "full_d3r_passed": false,
+      "source": "work/a6/d3-r-blade-v2-flat-light-v2-20261022-000804-726727/result.json",
+      "source_sha256": "7120bfc162ca987a021a8f881ed5071bd932af6e305adfbbb7e657609510bb6e",
+      "host_log_sha256": "f0c13f6f40dbb705094930493c9e33a7736a7839b47da784fe80eea6acd6023d",
+      "limits": [
+        "Single flat layout only; high/low pose windows need separate live controls.",
+        "Damage readback is quantized/lagged own state; retain both native acknowledgement clocks.",
+        "Birth velocity direction is physical evidence. Magnitude alone is not certified u/present speed.",
+        "Coarse pitch grid; hit entries are observed windows, gaps do not prove a continuous boundary."
+      ]
+    },
+    "gun": {
+      "schema": "inklab.d3r.blade.pitch.control.v1",
+      "rate_scope": "static native pitch scan, ideal-operation fixture",
+      "driver_completed": true,
+      "errors": [],
+      "kind": "defender",
+      "shots": [
+        {
+          "index": 0,
+          "style": "gun",
+          "native_pitch": -0.22,
+          "source": [
+            -7.99645567,
+            3.00000381,
+            7.53314972
+          ],
+          "target": [
+            -0.358818024,
+            3.00002241,
+            8.38728428
+          ],
+          "horizontal_distance": 7.685249160449049,
+          "height_difference": 1.860000000020179e-05,
+          "hold_frames": 1,
+          "damage": 4.4,
+          "release_frame": 4293,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 4294,
+            "kind": "setter_input",
+            "object": "0x716f59e380",
+            "vtable": "5c79398",
+            "velocity": [
+              3.18631983,
+              -0.630448699,
+              0.357155681
+            ],
+            "position110": [
+              -7.82043171,
+              4.19147015,
+              7.79308748
+            ]
+          },
+          "emitted_elevation": -0.19415278591176718,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 4312,
+              "target_frame": 4587,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4316,
+              "target_frame": 4591,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4320,
+              "target_frame": 4595,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4324,
+              "target_frame": 4599,
+              "drop_hp": 0.39999
+            },
+            {
+              "attacker_frame": 4328,
+              "target_frame": 4603,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4332,
+              "target_frame": 4607,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4336,
+              "target_frame": 4611,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4340,
+              "target_frame": 4615,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4344,
+              "target_frame": 4619,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4348,
+              "target_frame": 4623,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 4352,
+              "target_frame": 4627,
+              "drop_hp": 0.4
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 4.39999
+        },
+        {
+          "index": 1,
+          "style": "gun",
+          "native_pitch": -0.16,
+          "source": [
+            -7.99645567,
+            3.0000062,
+            7.53314972
+          ],
+          "target": [
+            -0.358818024,
+            3.00003052,
+            8.38728428
+          ],
+          "horizontal_distance": 7.685249160449049,
+          "height_difference": 2.4320000000077613e-05,
+          "hold_frames": 1,
+          "damage": 52.0,
+          "release_frame": 4778,
+          "first_damage": [
+            4788,
+            0.479999989,
+            5063
+          ],
+          "physical_witness": {
+            "frame": 4779,
+            "kind": "setter_input",
+            "object": "0x716f5d2d50",
+            "vtable": "5c79398",
+            "velocity": [
+              3.21023822,
+              -0.383541882,
+              0.359836638
+            ],
+            "position110": [
+              -7.83215094,
+              4.1719389,
+              7.78918123
+            ]
+          },
+          "emitted_elevation": -0.1181777841563864,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 4788,
+              "target_frame": 5063,
+              "drop_hp": 52.0
+            }
+          ],
+          "direct_damage_hp": 52.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 2,
+          "style": "gun",
+          "native_pitch": -0.1,
+          "source": [
+            -7.99645567,
+            3.00000858,
+            7.53314972
+          ],
+          "target": [
+            0.274332732,
+            3.00001049,
+            8.458251
+          ],
+          "horizontal_distance": 8.322364638065034,
+          "height_difference": 1.910000000382439e-06,
+          "hold_frames": 1,
+          "damage": 52.0,
+          "release_frame": 5289,
+          "first_damage": [
+            5300,
+            0.479999989,
+            5575
+          ],
+          "physical_witness": {
+            "frame": 5290,
+            "kind": "setter_input",
+            "object": "0x716f61eca8",
+            "vtable": "5c79398",
+            "velocity": [
+              3.2305553,
+              -0.131883264,
+              0.259549379
+            ],
+            "position110": [
+              -7.83996344,
+              4.15240717,
+              7.78918123
+            ]
+          },
+          "emitted_elevation": -0.04067015412441638,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 5300,
+              "target_frame": 5575,
+              "drop_hp": 52.0
+            }
+          ],
+          "direct_damage_hp": 52.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 3,
+          "style": "gun",
+          "native_pitch": -0.04,
+          "source": [
+            -7.99645567,
+            3.00001097,
+            7.53314972
+          ],
+          "target": [
+            0.913335681,
+            3.00000572,
+            8.50958824
+          ],
+          "horizontal_distance": 8.96313639869963,
+          "height_difference": -5.2500000000677005e-06,
+          "hold_frames": 1,
+          "damage": 52.0,
+          "release_frame": 5774,
+          "first_damage": [
+            5784,
+            0.479999989,
+            6059
+          ],
+          "physical_witness": {
+            "frame": 5775,
+            "kind": "setter_input",
+            "object": "0x716f65f738",
+            "vtable": "5c79398",
+            "velocity": [
+              3.22113252,
+              0.114305884,
+              0.321074635
+            ],
+            "position110": [
+              -7.84386969,
+              4.12896919,
+              7.78918123
+            ]
+          },
+          "emitted_elevation": 0.03529658937213534,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 5784,
+              "target_frame": 6059,
+              "drop_hp": 52.0
+            }
+          ],
+          "direct_damage_hp": 52.0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 4,
+          "style": "gun",
+          "native_pitch": 0.02,
+          "source": [
+            -7.99645567,
+            3.00001335,
+            7.53314972
+          ],
+          "target": [
+            1.55137539,
+            3.00008821,
+            8.57318592
+          ],
+          "horizontal_distance": 9.604309097879511,
+          "height_difference": 7.485999999978787e-05,
+          "hold_frames": 1,
+          "damage": 0,
+          "release_frame": 6259,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 6260,
+            "kind": "setter_input",
+            "object": "0x716f6ce7d0",
+            "vtable": "5c79398",
+            "velocity": [
+              3.20068741,
+              0.364763647,
+              0.351308644
+            ],
+            "position110": [
+              -7.84386969,
+              4.11725044,
+              7.78918123
+            ]
+          },
+          "emitted_elevation": 0.11280291572224402,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 0
+        },
+        {
+          "index": 5,
+          "style": "gun",
+          "native_pitch": 0.08,
+          "source": [
+            -7.99645567,
+            3.00001574,
+            7.53314972
+          ],
+          "target": [
+            1.55137539,
+            3.0001936,
+            8.57318592
+          ],
+          "horizontal_distance": 9.604309097879511,
+          "height_difference": 0.00017785999999997415,
+          "hold_frames": 1,
+          "damage": 3.2,
+          "release_frame": 6744,
+          "first_damage": null,
+          "physical_witness": {
+            "frame": 6745,
+            "kind": "setter_input",
+            "object": "0x716f6d9228",
+            "vtable": "5c79398",
+            "velocity": [
+              3.16554475,
+              0.610939682,
+              0.347451299
+            ],
+            "position110": [
+              -7.84386969,
+              4.13287544,
+              7.78918123
+            ]
+          },
+          "emitted_elevation": 0.18954162380421896,
+          "full_health_start": true,
+          "alive_after": 1,
+          "damage_edges": [
+            {
+              "attacker_frame": 6776,
+              "target_frame": 7051,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 6780,
+              "target_frame": 7055,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 6784,
+              "target_frame": 7059,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 6788,
+              "target_frame": 7063,
+              "drop_hp": 0.39999
+            },
+            {
+              "attacker_frame": 6792,
+              "target_frame": 7067,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 6796,
+              "target_frame": 7071,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 6800,
+              "target_frame": 7075,
+              "drop_hp": 0.4
+            },
+            {
+              "attacker_frame": 6804,
+              "target_frame": 7079,
+              "drop_hp": 0.4
+            }
+          ],
+          "direct_damage_hp": 0,
+          "small_damage_hp": 3.19999
+        }
+      ],
+      "fits": {
+        "gun": {
+          "linear_elevation_scale": 1.2797051865297013,
+          "linear_elevation_bias": 0.08701943050808383,
+          "native_pitch_hit_window": [
+            -0.16,
+            -0.1,
+            -0.04
+          ],
+          "n": 6
+        }
+      },
+      "full_d3r_passed": false,
+      "source": "work/a6/d3-r-blade-v2-defender-gun-v2-20261022-001058-659504/result.json",
+      "source_sha256": "e422ef9aa64e88ff9b2f32c310f74e8718a5934d9b869b97cf10f66f69f97594",
+      "host_log_sha256": "3e8059e03bf239443ad4358718a79b0f7e487d01cf8fd0303366dc151ff9483a",
+      "limits": [
+        "Single flat layout only; high/low pose windows need separate live controls.",
+        "Damage readback is quantized/lagged own state; retain both native acknowledgement clocks.",
+        "Birth velocity direction is physical evidence. Magnitude alone is not certified u/present speed.",
+        "Coarse pitch grid; hit entries are observed windows, gaps do not prove a continuous boundary."
+      ]
+    }
+  },
+  "physical_birth_delay_frames": {
+    "full_after_charge_start": 27,
+    "full_after_release": 6,
+    "light_after_input": 11,
+    "gun_after_input": 2
+  },
+  "passive_combo_controls": [
+    {
+      "map": "District00",
+      "artifact": {
+        "path": "work/a6/d3-r-ideal3-District00-b0-c1-t0-20261022-003208-566638/result.json",
+        "sha256": "800b431c6a047d16296fff4bdd6a8168edcaab38ff404ed8eaa37fa88980876c"
+      },
+      "target_full_health_at_charge": true,
+      "kill": true,
+      "attacker_down": false,
+      "arrival_frame": 3957,
+      "release_frame": 3997,
+      "target_hp_before_light": 0.300000012,
+      "full_projectile": {
+        "frame": 4003,
+        "object": "0x716fb41e50",
+        "velocity": [
+          -1.17076778,
+          -0.247112453,
+          0.635820091
+        ],
+        "position": [
+          -2.10550094,
+          8.38684654,
+          1.61721218
+        ]
+      },
+      "full_muzzle_above_target": 2.3868451100000003
+    },
+    {
+      "map": "Yagara",
+      "artifact": {
+        "path": "work/a6/d3-r-ideal3-Yagara-b4-c5-t0-20261022-003208-566639/result.json",
+        "sha256": "84aeb016fb6797e915f8d0cad0451ffd36b89993b56eac88cff344aa668e7e25"
+      },
+      "target_full_health_at_charge": true,
+      "kill": true,
+      "attacker_down": false,
+      "arrival_frame": 4029,
+      "release_frame": 4069,
+      "target_hp_before_light": 0.300000012,
+      "full_projectile": {
+        "frame": 4075,
+        "object": "0x71700207f8",
+        "velocity": [
+          -0.168747455,
+          -0.547745645,
+          -1.27139878
+        ],
+        "position": [
+          -1.00001526,
+          10.3751583,
+          -2.89066911
+        ]
+      },
+      "full_muzzle_above_target": 4.37515735
+    },
+    {
+      "map": "Yunohana",
+      "artifact": {
+        "path": "work/a6/d3-r-ideal3-Yunohana-b4-c1-t0-20261022-003208-566638/result.json",
+        "sha256": "3ed0e5e62ed285838d307684080e3b86db6de1fe5310ad7669959b491a785ce7"
+      },
+      "target_full_health_at_charge": true,
+      "kill": true,
+      "attacker_down": false,
+      "arrival_frame": 4223,
+      "release_frame": 4263,
+      "target_hp_before_light": 0.300000012,
+      "full_projectile": {
+        "frame": 4269,
+        "object": "0x73645ccb60",
+        "velocity": [
+          -0.664930284,
+          -0.505894661,
+          -1.10903692
+        ],
+        "position": [
+          -1.59377432,
+          7.39464426,
+          -5.78524446
+        ]
+      },
+      "full_muzzle_above_target": 4.394643309999999
+    }
+  ],
+  "exact_reactive52_controls": [
+    {
+      "artifact": {
+        "path": "work/a6/d3-r-reactive-near6-r1-20261022-003709-910517/result.json",
+        "sha256": "ce29a36eb6ca2200f3b095a103a8f6d5d8916cef95f2a46cc0c2ff8f46b2aec1"
+      },
+      "distance": 5.415468949820978,
+      "reaction_frames": 18,
+      "first_visible_tick": 1,
+      "first_fired_tick": 19,
+      "damage_edges": [
+        {
+          "control_frame": 28,
+          "target_native_frame": 3889,
+          "damage_hp": 52.000001100000006
+        },
+        {
+          "control_frame": 35,
+          "target_native_frame": 3896,
+          "damage_hp": 47.9999989
+        }
+      ],
+      "first_down_control_frame": 35
+    },
+    {
+      "artifact": {
+        "path": "work/a6/d3-r-reactive-turn10-r1-20261022-003709-910525/result.json",
+        "sha256": "61a488e61d960b2e61b6afe4c4ba80220f0a0150316748432139a68e6770dc5e"
+      },
+      "distance": 9.361179870638974,
+      "reaction_frames": 18,
+      "first_visible_tick": 1,
+      "first_fired_tick": 34,
+      "damage_edges": [
+        {
+          "control_frame": 63,
+          "target_native_frame": 4039,
+          "damage_hp": 52.000001100000006
+        },
+        {
+          "control_frame": 70,
+          "target_native_frame": 4046,
+          "damage_hp": 47.9999989
+        }
+      ],
+      "first_down_control_frame": 70
+    }
+  ],
+  "twenty_full_probe": {
+    "artifact": {
+      "path": "work/a6/d3-r-precharge-Yunohana-b4-c1-t0-20261022-003710-984603/result.json",
+      "sha256": "eeea0bdd481fe33016be6f4c3d41d8a33826c50d8582c2bd543de7400c59dd5d"
+    },
+    "full_light20_supported": false,
+    "full_projectile": null,
+    "light_projectile": {
+      "frame": 4072,
+      "object": "0x716f7f5a90",
+      "velocity": [
+        -2.12703538,
+        -2.07931042,
+        -3.54768181
+      ],
+      "position": [
+        -2.05081248,
+        6.69932079,
+        -6.48838043
+      ]
+    },
+    "kill": false,
+    "meaning": "ZR held in Attack3 and through B/20f after arrival acknowledgement still emitted light, not full. Does not prove all precharge variants impossible."
+  },
+  "twenty_light3": {
+    "artifact": {
+      "path": "work/a6/d3-r-ideal4-Yunohana-b4-c1-t0-20261022-004329-384969/result.json",
+      "sha256": "d82bdfb0d2b8a54f06b65b2463560656dd56e3296a8966c26282296104649f76"
+    },
+    "style": "light3",
+    "first_attack_input_after_arrival_ack": 20,
+    "cadence": 30,
+    "damage_edges": [
+      {
+        "frame": 4552,
+        "damage_hp": 35.0000024
+      },
+      {
+        "frame": 4584,
+        "damage_hp": 34.99999640000001
+      },
+      {
+        "frame": 4610,
+        "damage_hp": 30.0000012
+      }
+    ],
+    "kill": true,
+    "nominal_damage": [
+      35,
+      35,
+      35
+    ],
+    "last_damage_hp_capped_by_remaining_health": true
+  },
+  "field_stop_checks": [
+    {
+      "map": "Yunohana",
+      "native_origin": [
+        -2.31253529,
+        4.00787354,
+        -5.85946465
+      ],
+      "native_velocity": [
+        -3.53175473,
+        0.0322786756,
+        -2.28489089
+      ],
+      "native_stop": [
+        -2.9998064,
+        4.01167822,
+        -6.00009155
+      ],
+      "predicted_contact": [
+        -3.0,
+        4.01168120752388,
+        -6.0
+      ],
+      "error_units": 0.000214175833834681,
+      "core_radius": 0.3,
+      "interpretation": "Native stop coincides with static field sphere contact; no native hit-callback interception."
+    },
+    {
+      "map": "Yagara",
+      "native_origin": [
+        -2.41019297,
+        6.73057127,
+        -2.7656672
+      ],
+      "native_velocity": [
+        -3.87375093,
+        -0.626149416,
+        -1.88935506
+      ],
+      "native_stop": [
+        -5.07397175,
+        6,
+        -4.06487942
+      ],
+      "predicted_contact": [
+        -5.0739754713858725,
+        6.0,
+        -4.064881072723835
+      ],
+      "error_units": 4.071880264211691e-06,
+      "core_radius": 0.3,
+      "interpretation": "Native stop coincides with static field sphere contact; no native hit-callback interception."
+    }
+  ],
+  "parameters": {
+    "schema": "inklab.d3r.aim.parameters.v1",
+    "gun_elevation_bias": 0.08701943050808383,
+    "gun_elevation_scale": 1.2797051865297013,
+    "blade_elevation_bias": 0.002413354865126063,
+    "blade_elevation_scale": 1.0586862199588398,
+    "blade_target_height": 1.1,
+    "blade_origin_height": 2.2,
+    "full_origin_height": 2.2,
+    "light_origin_height": 1.0,
+    "source_sha256": {
+      "work/d3r/blade-full-v2-analysis.json": "09a5b0bcf0425d353926149c0b02933950e47128d0ac99b3feab042dcd2c431c",
+      "work/d3r/blade-light-v2-analysis.json": "9c041f6a2e4e6176536ee58f128bad45edb24823a927d18eb54b48c396acbb2c",
+      "work/d3r/blade-gun-v2-analysis.json": "96934e01df5b533ea9c3fcff412916dc824f8a7412c676259395265dbfba6f2e"
+    },
+    "limits": [
+      "Linear native pitch inversion measured in one flat geometry; high/low active-special controls still required.",
+      "Sword muzzle heights from birth p110 observed at2.2/1.0 above foot. Target1.1u is an explicit aiming choice.",
+      "Gun6 singleton scatter samples: affine mean surrogate not exact stochastic direction model."
+    ]
+  },
+  "source_sha256": {
+    "tools/zipcaster_d3r/report_mechanics.py": "f2d58c8d04ef9d65934d7fd66696598aab201386d8b6eba2f7d715eafc3f66cc",
+    "tools/zipcaster_d3r/duel_v3.py": "c3327e52e7de7d5abbd744636305403e0312a55bea0f1876db68ccc6360e3579",
+    "tools/zipcaster_d3r/weapon_aim.py": "506dfc08f2adb28ce967e3436af8d8f50161107ac6f291c0e8ece5a45aeee870",
+    "tools/zipcaster_d3r/reactive_control.py": "1d7ffd83f04c0ee6c017ed04c7cd212dd9c8769923c37793d1833b74287481d5",
+    "tools/zipcaster_d3r/blade_field.py": "06ca75abf35875a30de8e3ecb6d33997e0b31d540d4d965072fe42b16e7d25ee",
+    "tools/zipcaster_d3r/native_kinematics.py": "2ec72a504c340b55202a0f995e8dd018c39f1f235dbfff0b584f15550947fc07"
+  },
+  "limits": [
+    "Seven native pitch bins each sword, six singleton gun shots: finite grid/one flat layout, no continuous all-pose boundary.",
+    "Full70 from elevated B trajectories and grounded35 proved in three separated controls. Dedicated stationary upward/downward elevation grid not completed; final native cohort will retain actual heights.",
+    "B6 rise now~3.11u in two low-wall profiles; old2.10u curve was a different context. Not universal wall-jump physics.",
+    "20f full-light is unsupported by this measured precharge plan;20f heatmap uses separately validated light3 only. Frame band is arrival acknowledgement to first firing action (full release or light press), not projectile birth; sampled arrival can lag native transition by up to4f.",
+    "Initial full-flight stage substring bug selected light muzzle before full spawn. Retired scripts/raw evidence kept; explicit style regression tests and three-map v3 controls pass.",
+    "Initial neutral healing failed over hostile ink. V2 uses ordinary floor painting/refill, never HP writes; instant35/70/52 edges separated from slow ink chip.",
+    "Initial District control target was outside bravo graph component; hub alone did not fix it. New geometry-only control target is reachable; cohort samples reachable nodes before outcomes.",
+    "Core radii .3/.5 selected from sparse local Saber params; two light stops agree within.001u. Side-sphere, dynamic collision, long curved trajectory not certified.",
+    "Native rank calibration and page remain pending. No policy/default host/save changes, no T1/S1."
+  ]
+}
