@@ -1,0 +1,884 @@
+{
+  "schema": "inklab.d3.native_blocker.v1",
+  "date": "2026-10-21",
+  "status": "stopped_after_two_controller_calibration_rounds",
+  "full_d3_passed": false,
+  "prototype_rooms": 7,
+  "owned_hosts": 14,
+  "all_hosts_exited": true,
+  "rounds": [
+    {
+      "round": 1,
+      "method": "direct_stick",
+      "rooms": 3,
+      "result": "90f budget, no stable6f aim window; macro completion is not evidence of a valid shot sequence."
+    },
+    {
+      "round": 2,
+      "method": "pulse",
+      "rooms": 2,
+      "result": "Both maps explicitly failed bounded own-feedback aim. Large yaw/pitch errors, not just a loose hit threshold."
+    }
+  ],
+  "prototypes": [
+    {
+      "point": "District00-hook-0585",
+      "trial": 0,
+      "method": "direct_stick",
+      "artifact": "work/a6/d3-duel-District00-hook-0585-0-20261021-174409-291145/result.json",
+      "sha256": "c6cfb23b576cd37c552204dba56273fc726e79324cb46e0a65083f8c5855c575",
+      "tested_driver_sha256": "813184fbf2921d8032b1d8986717b3bf6ef3c13f74bd840f49ad01cbbb6447fd",
+      "raw_sha256": {
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-duel-District00-hook-0585-0-20261021-174409-291145/steps.jsonl": "20c2b43c3314cc95e224f37a82f18e9e480d9f7fada3bd5a3cb47f4bf50ab75e",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174409-345203/player-0/host.log": "2057419e64cd07c21ee4b026ae6357bdc505a0754bffeddf98e27664dbf43399",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174409-345203/player-1/host.log": "326f860a11ea39ace652cf07cd48b7f16839b85f22e4b94f9399708c56d1cddc"
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174409-345203",
+      "owned_pids": [
+        74482,
+        76464
+      ],
+      "driver_passed": true,
+      "errors": [],
+      "native_bind_seen": true,
+      "arrival_frame_from_R": 52,
+      "charge_start_frame_from_R": 156,
+      "post_arrival_setup": 104,
+      "aim_frames": 90,
+      "last_errors": [
+        {
+          "frame": 4295,
+          "yaw_degrees": -5.876527151494207,
+          "pitch_degrees": -0.15477998240623847
+        },
+        {
+          "frame": 4296,
+          "yaw_degrees": -5.863714096321694,
+          "pitch_degrees": -0.154766346010712
+        },
+        {
+          "frame": 4297,
+          "yaw_degrees": -5.863714096321694,
+          "pitch_degrees": -0.154766346010712
+        },
+        {
+          "frame": 4298,
+          "yaw_degrees": -5.863714096321694,
+          "pitch_degrees": -0.154766346010712
+        },
+        {
+          "frame": 4299,
+          "yaw_degrees": -5.863714096321694,
+          "pitch_degrees": -0.154766346010712
+        },
+        {
+          "frame": 4300,
+          "yaw_degrees": -5.334510796173834,
+          "pitch_degrees": -0.1547697264617031
+        },
+        {
+          "frame": 4301,
+          "yaw_degrees": -5.334510796173834,
+          "pitch_degrees": -0.1547697264617031
+        },
+        {
+          "frame": 4302,
+          "yaw_degrees": -5.334510796173834,
+          "pitch_degrees": -0.1547697264617031
+        },
+        {
+          "frame": 4303,
+          "yaw_degrees": -5.334510796173834,
+          "pitch_degrees": -0.1547697264617031
+        },
+        {
+          "frame": 4304,
+          "yaw_degrees": -4.498365983765255,
+          "pitch_degrees": -0.15477644492518156
+        },
+        {
+          "frame": 4305,
+          "yaw_degrees": -4.498365983765255,
+          "pitch_degrees": -0.15477644492518156
+        },
+        {
+          "frame": 4306,
+          "yaw_degrees": -4.498365983765255,
+          "pitch_degrees": -0.15477644492518156
+        },
+        {
+          "frame": 4307,
+          "yaw_degrees": -4.498365983765255,
+          "pitch_degrees": -0.15477644492518156
+        },
+        {
+          "frame": 4308,
+          "yaw_degrees": -3.479790034288316,
+          "pitch_degrees": -0.1547696267274215
+        },
+        {
+          "frame": 4309,
+          "yaw_degrees": -3.479790034288316,
+          "pitch_degrees": -0.1547696267274215
+        },
+        {
+          "frame": 4310,
+          "yaw_degrees": -3.479790034288316,
+          "pitch_degrees": -0.1547696267274215
+        }
+      ],
+      "first_seen_controller_tick": null,
+      "visible_ticks": 0,
+      "firing_ticks": 0,
+      "visibility_gate_audited": true,
+      "raw_outcome": {
+        "kill": false,
+        "attacker_alive": true,
+        "target_hp": 0.737999976,
+        "attacker_hp": 1
+      },
+      "calibration_eligible": false,
+      "exclusion": "Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort."
+    },
+    {
+      "point": "District00-hook-0585",
+      "trial": 0,
+      "method": "pulse",
+      "artifact": "work/a6/d3-duel-District00-hook-0585-0-20261021-175655-056203/result.json",
+      "sha256": "9b31bde84f93913acab6ba63f9c0023af39ac598c84011d8d8097ad1ca600e57",
+      "tested_driver_sha256": "7625620fff85442dd7e104dc39624ae095d4b9956f7ad0fff6f7c1af3f7229d7",
+      "raw_sha256": {
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-duel-District00-hook-0585-0-20261021-175655-056203/steps.jsonl": "c9dfbf7b302abca10fe362081c4f8f7504f832adc4a1f331b8f709a0028fcf61",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-175655-111606/player-0/host.log": "1186d801a61acc064a3efc9edb251380cc39399a36d2949d7b76ec5d835dcfe2",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-175655-111606/player-1/host.log": "4d79080ef0207d69c50e52eb5fc45bc1094365b4fb87409a7bc26d0ce589b284"
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-175655-111606",
+      "owned_pids": [
+        18085,
+        18599
+      ],
+      "driver_passed": false,
+      "errors": [
+        "AssertionError('bounded own-feedback aim did not settle')"
+      ],
+      "native_bind_seen": true,
+      "arrival_frame_from_R": 52,
+      "charge_start_frame_from_R": null,
+      "post_arrival_setup": null,
+      "aim_frames": 90,
+      "last_errors": [
+        {
+          "frame": 4300,
+          "yaw_degrees": 144.77974370853988,
+          "pitch_degrees": 83.19539977227939
+        },
+        {
+          "frame": 4301,
+          "yaw_degrees": 144.77974370853988,
+          "pitch_degrees": 83.19539977227939
+        },
+        {
+          "frame": 4302,
+          "yaw_degrees": 118.83800924883055,
+          "pitch_degrees": 87.8707941505929
+        },
+        {
+          "frame": 4303,
+          "yaw_degrees": 118.83800924883055,
+          "pitch_degrees": 87.8707941505929
+        },
+        {
+          "frame": 4304,
+          "yaw_degrees": 118.83800924883055,
+          "pitch_degrees": 87.8707941505929
+        },
+        {
+          "frame": 4305,
+          "yaw_degrees": 118.83800924883055,
+          "pitch_degrees": 87.8707941505929
+        },
+        {
+          "frame": 4306,
+          "yaw_degrees": 142.2840472690155,
+          "pitch_degrees": 89.72027962521697
+        },
+        {
+          "frame": 4307,
+          "yaw_degrees": 142.2840472690155,
+          "pitch_degrees": 89.72027962521697
+        },
+        {
+          "frame": 4308,
+          "yaw_degrees": 142.2840472690155,
+          "pitch_degrees": 89.72027962521697
+        },
+        {
+          "frame": 4309,
+          "yaw_degrees": 142.2840472690155,
+          "pitch_degrees": 89.72027962521697
+        },
+        {
+          "frame": 4310,
+          "yaw_degrees": 165.70590016771015,
+          "pitch_degrees": 90.20635347004058
+        },
+        {
+          "frame": 4311,
+          "yaw_degrees": 165.70590016771015,
+          "pitch_degrees": 90.20635347004058
+        },
+        {
+          "frame": 4312,
+          "yaw_degrees": 165.70590016771015,
+          "pitch_degrees": 90.20635347004058
+        },
+        {
+          "frame": 4313,
+          "yaw_degrees": 165.70590016771015,
+          "pitch_degrees": 90.20635347004058
+        },
+        {
+          "frame": 4314,
+          "yaw_degrees": -170.5073994417696,
+          "pitch_degrees": 90.33410185891634
+        },
+        {
+          "frame": 4315,
+          "yaw_degrees": -170.5073994417696,
+          "pitch_degrees": 90.33410185891634
+        }
+      ],
+      "first_seen_controller_tick": null,
+      "visible_ticks": 0,
+      "firing_ticks": 0,
+      "visibility_gate_audited": true,
+      "raw_outcome": {
+        "kill": null,
+        "attacker_alive": null,
+        "target_hp": null,
+        "attacker_hp": null
+      },
+      "calibration_eligible": false,
+      "exclusion": "Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort."
+    },
+    {
+      "point": "District00-hook-0585",
+      "trial": 2,
+      "method": "direct_stick",
+      "artifact": "work/a6/d3-duel-District00-hook-0585-2-20261021-174415-439335/result.json",
+      "sha256": "fd35a501ba42586b577db444676753e245301c2e5674a4c3b77f7234381f9a9e",
+      "tested_driver_sha256": "813184fbf2921d8032b1d8986717b3bf6ef3c13f74bd840f49ad01cbbb6447fd",
+      "raw_sha256": {
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-duel-District00-hook-0585-2-20261021-174415-439335/steps.jsonl": "3df9975cea7a12bd4d1c2f4404ba6db4ad97cfc225fd84c7a9adafc0ca15a5d3",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174415-492455/player-0/host.log": "8819979a3c061bdca70b705a86fadd8a35dfcbe5960ab9169368f32d507eae9b",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174415-492455/player-1/host.log": "a74a301928305003309d21786941b9fb3505a61aad617e1e9313f8e3d8888cc6"
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174415-492455",
+      "owned_pids": [
+        76460,
+        77024
+      ],
+      "driver_passed": true,
+      "errors": [],
+      "native_bind_seen": true,
+      "arrival_frame_from_R": 54,
+      "charge_start_frame_from_R": 158,
+      "post_arrival_setup": 104,
+      "aim_frames": 90,
+      "last_errors": [
+        {
+          "frame": 4292,
+          "yaw_degrees": 6.34206391263265,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4293,
+          "yaw_degrees": 6.34206391263265,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4294,
+          "yaw_degrees": 6.34206391263265,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4295,
+          "yaw_degrees": 6.34206391263265,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4296,
+          "yaw_degrees": 1.0965810391067647,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4297,
+          "yaw_degrees": 1.0965810391067647,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4298,
+          "yaw_degrees": 1.0965810391067647,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4299,
+          "yaw_degrees": 1.0965810391067647,
+          "pitch_degrees": 0.052532290095449706
+        },
+        {
+          "frame": 4300,
+          "yaw_degrees": -2.4980792193121357,
+          "pitch_degrees": 0.05253553649186866
+        },
+        {
+          "frame": 4301,
+          "yaw_degrees": -2.4980792193121357,
+          "pitch_degrees": 0.05253553649186866
+        },
+        {
+          "frame": 4302,
+          "yaw_degrees": -2.4980792193121357,
+          "pitch_degrees": 0.05253553649186866
+        },
+        {
+          "frame": 4303,
+          "yaw_degrees": -2.4980792193121357,
+          "pitch_degrees": 0.05253553649186866
+        },
+        {
+          "frame": 4304,
+          "yaw_degrees": -4.7496068869483175,
+          "pitch_degrees": 0.05253553649186866
+        },
+        {
+          "frame": 4305,
+          "yaw_degrees": -4.7496068869483175,
+          "pitch_degrees": 0.05253553649186866
+        },
+        {
+          "frame": 4306,
+          "yaw_degrees": -4.7496068869483175,
+          "pitch_degrees": 0.05253553649186866
+        },
+        {
+          "frame": 4307,
+          "yaw_degrees": -4.7496068869483175,
+          "pitch_degrees": 0.05253553649186866
+        }
+      ],
+      "first_seen_controller_tick": 1,
+      "visible_ticks": 29,
+      "firing_ticks": 0,
+      "visibility_gate_audited": true,
+      "raw_outcome": {
+        "kill": false,
+        "attacker_alive": true,
+        "target_hp": 0.600000024,
+        "attacker_hp": 1
+      },
+      "calibration_eligible": false,
+      "exclusion": "Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort."
+    },
+    {
+      "point": "Yunohana-hook-0532",
+      "trial": 0,
+      "method": "calibrated_slow_gyro",
+      "artifact": "work/a6/d3-duel-Yunohana-hook-0532-0-20261021-172936-558078/result.json",
+      "sha256": "74ebf6a0c4a4efb52a22bb280ba8255a0910aa87b351d9291f684826dff544e4",
+      "tested_driver_sha256": "b669e4a425bdea6d128590650c9d4eccdacefc5cb670817c97865c9c375298a2",
+      "raw_sha256": {
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-duel-Yunohana-hook-0532-0-20261021-172936-558078/steps.jsonl": "76ea155e5f53e18df9ee307af31640d46a8420427bd3489be8a12e6f50a7c05d",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172936-638990/player-0/host.log": "44c8776333ef963e73100f59655b145df222d8f436e7e11a2b9ed0770b67ed67",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172936-638990/player-1/host.log": "7a835b5377079cfb72d3cb70fed1c6ba11d7274c7870ede2aaca9e53187614d3"
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172936-638990",
+      "owned_pids": [
+        15183,
+        15692
+      ],
+      "driver_passed": true,
+      "errors": [],
+      "native_bind_seen": true,
+      "arrival_frame_from_R": 64,
+      "charge_start_frame_from_R": 165,
+      "post_arrival_setup": 101,
+      "aim_frames": 87,
+      "last_errors": [
+        {
+          "frame": 4419,
+          "yaw_degrees": 1.849472264986041,
+          "pitch_degrees": 1.217967316976353
+        },
+        {
+          "frame": 4420,
+          "yaw_degrees": 1.849472264986041,
+          "pitch_degrees": 1.217967316976353
+        },
+        {
+          "frame": 4421,
+          "yaw_degrees": -2.190612656951629,
+          "pitch_degrees": 1.601114008668486
+        },
+        {
+          "frame": 4422,
+          "yaw_degrees": -2.190612656951629,
+          "pitch_degrees": 1.601114008668486
+        },
+        {
+          "frame": 4423,
+          "yaw_degrees": -2.190612656951629,
+          "pitch_degrees": 1.601114008668486
+        },
+        {
+          "frame": 4424,
+          "yaw_degrees": -2.190612656951629,
+          "pitch_degrees": 1.601114008668486
+        },
+        {
+          "frame": 4425,
+          "yaw_degrees": -1.7481941281166375,
+          "pitch_degrees": 1.5719115530620387
+        },
+        {
+          "frame": 4426,
+          "yaw_degrees": -1.7481941281166375,
+          "pitch_degrees": 1.5719115530620387
+        },
+        {
+          "frame": 4427,
+          "yaw_degrees": -1.7481941281166375,
+          "pitch_degrees": 1.5719115530620387
+        },
+        {
+          "frame": 4428,
+          "yaw_degrees": -1.7481941281166375,
+          "pitch_degrees": 1.5719115530620387
+        },
+        {
+          "frame": 4429,
+          "yaw_degrees": -0.2926401132525942,
+          "pitch_degrees": 1.1903003474749332
+        },
+        {
+          "frame": 4430,
+          "yaw_degrees": -0.2926401132525942,
+          "pitch_degrees": 1.1903003474749332
+        },
+        {
+          "frame": 4431,
+          "yaw_degrees": -0.2926401132525942,
+          "pitch_degrees": 1.1903003474749332
+        },
+        {
+          "frame": 4432,
+          "yaw_degrees": -0.2926401132525942,
+          "pitch_degrees": 1.1903003474749332
+        },
+        {
+          "frame": 4433,
+          "yaw_degrees": -0.330902807769222,
+          "pitch_degrees": 0.684373763328986
+        },
+        {
+          "frame": 4434,
+          "yaw_degrees": -0.330902807769222,
+          "pitch_degrees": 0.684373763328986
+        }
+      ],
+      "first_seen_controller_tick": 55,
+      "visible_ticks": 189,
+      "firing_ticks": 35,
+      "visibility_gate_audited": true,
+      "raw_outcome": {
+        "kill": true,
+        "attacker_alive": true,
+        "target_hp": 0,
+        "attacker_hp": 1
+      },
+      "calibration_eligible": false,
+      "exclusion": "Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort."
+    },
+    {
+      "point": "Yunohana-hook-0532",
+      "trial": 0,
+      "method": "calibrated_slow_gyro",
+      "artifact": "work/a6/d3-duel-Yunohana-hook-0532-0-20261021-174021-298655/result.json",
+      "sha256": "a13e65efc86d56c42d97fd7f853b1d94d2d9eac44d0f676c7cac49ed424aa0f1",
+      "tested_driver_sha256": "bd2550bb0787eed8ebaee88a4d69c36d0e694fb533b34451583cfec3efe87c24",
+      "raw_sha256": {
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-duel-Yunohana-hook-0532-0-20261021-174021-298655/steps.jsonl": "4c938d7052ac525a086233aa8d428f830a54f5c2bd4e8881093b63ea9eeada10",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174021-355171/player-0/host.log": "942e57ed3a5a58644f133872a2e34d11b357608f8156bfa501eaa942933d6c40",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174021-355171/player-1/host.log": "41414d684a8c737c15942575e2e42cdb4a695db420406be503fd812ab75216f8"
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174021-355171",
+      "owned_pids": [
+        56397,
+        56429
+      ],
+      "driver_passed": true,
+      "errors": [],
+      "native_bind_seen": true,
+      "arrival_frame_from_R": 66,
+      "charge_start_frame_from_R": 151,
+      "post_arrival_setup": 85,
+      "aim_frames": 71,
+      "last_errors": [
+        {
+          "frame": 4194,
+          "yaw_degrees": 1.708583547541817,
+          "pitch_degrees": -6.5636616839283555
+        },
+        {
+          "frame": 4195,
+          "yaw_degrees": 1.708583547541817,
+          "pitch_degrees": -6.5636616839283555
+        },
+        {
+          "frame": 4196,
+          "yaw_degrees": 1.9183800656381136,
+          "pitch_degrees": -4.11650448096457
+        },
+        {
+          "frame": 4197,
+          "yaw_degrees": 1.9183800656381136,
+          "pitch_degrees": -4.11650448096457
+        },
+        {
+          "frame": 4198,
+          "yaw_degrees": 1.9183800656381136,
+          "pitch_degrees": -4.11650448096457
+        },
+        {
+          "frame": 4199,
+          "yaw_degrees": 1.9183800656381136,
+          "pitch_degrees": -4.11650448096457
+        },
+        {
+          "frame": 4200,
+          "yaw_degrees": 2.057415150120152,
+          "pitch_degrees": -1.8854914525914825
+        },
+        {
+          "frame": 4201,
+          "yaw_degrees": 2.057415150120152,
+          "pitch_degrees": -1.8854914525914825
+        },
+        {
+          "frame": 4202,
+          "yaw_degrees": 2.057415150120152,
+          "pitch_degrees": -1.8854914525914825
+        },
+        {
+          "frame": 4203,
+          "yaw_degrees": 2.057415150120152,
+          "pitch_degrees": -1.8854914525914825
+        },
+        {
+          "frame": 4204,
+          "yaw_degrees": 1.6387245224549014,
+          "pitch_degrees": -0.22172738247009607
+        },
+        {
+          "frame": 4205,
+          "yaw_degrees": 1.6387245224549014,
+          "pitch_degrees": -0.22172738247009607
+        },
+        {
+          "frame": 4206,
+          "yaw_degrees": 1.6387245224549014,
+          "pitch_degrees": -0.22172738247009607
+        },
+        {
+          "frame": 4207,
+          "yaw_degrees": 1.6387245224549014,
+          "pitch_degrees": -0.22172738247009607
+        },
+        {
+          "frame": 4208,
+          "yaw_degrees": 0.17649039265744212,
+          "pitch_degrees": 0.7780500509317188
+        },
+        {
+          "frame": 4209,
+          "yaw_degrees": 0.17649039265744212,
+          "pitch_degrees": 0.7780500509317188
+        }
+      ],
+      "first_seen_controller_tick": 57,
+      "visible_ticks": 173,
+      "firing_ticks": 61,
+      "visibility_gate_audited": true,
+      "raw_outcome": {
+        "kill": true,
+        "attacker_alive": true,
+        "target_hp": 0,
+        "attacker_hp": 1
+      },
+      "calibration_eligible": false,
+      "exclusion": "Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort."
+    },
+    {
+      "point": "Yunohana-hook-0532",
+      "trial": 0,
+      "method": "pulse",
+      "artifact": "work/a6/d3-duel-Yunohana-hook-0532-0-20261021-175641-915193/result.json",
+      "sha256": "4a4ccfc0ac0ffd3216276509c6e022397983d97fe4ed9aa129eba1751899e14f",
+      "tested_driver_sha256": "7625620fff85442dd7e104dc39624ae095d4b9956f7ad0fff6f7c1af3f7229d7",
+      "raw_sha256": {
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-duel-Yunohana-hook-0532-0-20261021-175641-915193/steps.jsonl": "553900c1cf9b76950ae2c96cb051bad7126df0d4a5df5a35db9e6619d3c57a0b",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-175641-977868/player-0/host.log": "6b1e083ed783529a2ea40cd7a7ae823d1458a9c8e095d7b51509004759ffbea0",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-175641-977868/player-1/host.log": "648ac50f77b598d76871c226ac38d1b7c7b8a299a8d44ede411b966f05db1ac5"
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-175641-977868",
+      "owned_pids": [
+        16566,
+        17083
+      ],
+      "driver_passed": false,
+      "errors": [
+        "AssertionError('bounded own-feedback aim did not settle')"
+      ],
+      "native_bind_seen": true,
+      "arrival_frame_from_R": 64,
+      "charge_start_frame_from_R": null,
+      "post_arrival_setup": null,
+      "aim_frames": 90,
+      "last_errors": [
+        {
+          "frame": 4192,
+          "yaw_degrees": 43.39477639639632,
+          "pitch_degrees": -14.525242718987906
+        },
+        {
+          "frame": 4193,
+          "yaw_degrees": 43.39477639639632,
+          "pitch_degrees": -14.525242718987906
+        },
+        {
+          "frame": 4194,
+          "yaw_degrees": 22.11290424673918,
+          "pitch_degrees": -16.038472408888797
+        },
+        {
+          "frame": 4195,
+          "yaw_degrees": 22.11290424673918,
+          "pitch_degrees": -16.038472408888797
+        },
+        {
+          "frame": 4196,
+          "yaw_degrees": 22.11290424673918,
+          "pitch_degrees": -16.038472408888797
+        },
+        {
+          "frame": 4197,
+          "yaw_degrees": 22.11290424673918,
+          "pitch_degrees": -16.038472408888797
+        },
+        {
+          "frame": 4198,
+          "yaw_degrees": 0.8544014882698447,
+          "pitch_degrees": -15.964101572448165
+        },
+        {
+          "frame": 4199,
+          "yaw_degrees": 0.8544014882698447,
+          "pitch_degrees": -15.964101572448165
+        },
+        {
+          "frame": 4200,
+          "yaw_degrees": 0.8544014882698447,
+          "pitch_degrees": -15.964101572448165
+        },
+        {
+          "frame": 4201,
+          "yaw_degrees": 0.8544014882698447,
+          "pitch_degrees": -15.964101572448165
+        },
+        {
+          "frame": 4202,
+          "yaw_degrees": -23.125013256642685,
+          "pitch_degrees": -15.295776920508056
+        },
+        {
+          "frame": 4203,
+          "yaw_degrees": -23.125013256642685,
+          "pitch_degrees": -15.295776920508056
+        },
+        {
+          "frame": 4204,
+          "yaw_degrees": -23.125013256642685,
+          "pitch_degrees": -15.295776920508056
+        },
+        {
+          "frame": 4205,
+          "yaw_degrees": -23.125013256642685,
+          "pitch_degrees": -15.295776920508056
+        },
+        {
+          "frame": 4206,
+          "yaw_degrees": -47.11318394258042,
+          "pitch_degrees": -10.321598458103244
+        },
+        {
+          "frame": 4207,
+          "yaw_degrees": -47.11318394258042,
+          "pitch_degrees": -10.321598458103244
+        }
+      ],
+      "first_seen_controller_tick": 54,
+      "visible_ticks": 101,
+      "firing_ticks": 28,
+      "visibility_gate_audited": true,
+      "raw_outcome": {
+        "kill": null,
+        "attacker_alive": null,
+        "target_hp": null,
+        "attacker_hp": null
+      },
+      "calibration_eligible": false,
+      "exclusion": "Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort."
+    },
+    {
+      "point": "Yunohana-hook-0532",
+      "trial": 1,
+      "method": "direct_stick",
+      "artifact": "work/a6/d3-duel-Yunohana-hook-0532-1-20261021-174415-436755/result.json",
+      "sha256": "ecb68ba5145e1a5e625cd415ab792032314cb74697ccbdf39aeef9b7de8094cf",
+      "tested_driver_sha256": "813184fbf2921d8032b1d8986717b3bf6ef3c13f74bd840f49ad01cbbb6447fd",
+      "raw_sha256": {
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-duel-Yunohana-hook-0532-1-20261021-174415-436755/steps.jsonl": "bde09d3ee2bb2aaa006cd4a7be5be02ad4634d8661300761dc36b3b0b2839625",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174415-495484/player-0/host.log": "876cae97f41404c8289e09e19c991ff703bc80f8b2ab27aaa42b7e1f87824387",
+        "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174415-495484/player-1/host.log": "82c953bb4178652b79f48d80c9251980dcedacb22940148164215f3810db2ac5"
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-174415-495484",
+      "owned_pids": [
+        76461,
+        77025
+      ],
+      "driver_passed": true,
+      "errors": [],
+      "native_bind_seen": true,
+      "arrival_frame_from_R": 66,
+      "charge_start_frame_from_R": 170,
+      "post_arrival_setup": 104,
+      "aim_frames": 90,
+      "last_errors": [
+        {
+          "frame": 4004,
+          "yaw_degrees": 4.962495875355861,
+          "pitch_degrees": 0.3960598403906062
+        },
+        {
+          "frame": 4005,
+          "yaw_degrees": 4.962495875355861,
+          "pitch_degrees": 0.3960598403906062
+        },
+        {
+          "frame": 4006,
+          "yaw_degrees": 4.962495875355861,
+          "pitch_degrees": 0.3960598403906062
+        },
+        {
+          "frame": 4007,
+          "yaw_degrees": 4.288082724567822,
+          "pitch_degrees": 0.40630974445532736
+        },
+        {
+          "frame": 4008,
+          "yaw_degrees": 4.288082724567822,
+          "pitch_degrees": 0.40630974445532736
+        },
+        {
+          "frame": 4009,
+          "yaw_degrees": 4.288082724567822,
+          "pitch_degrees": 0.40630974445532736
+        },
+        {
+          "frame": 4010,
+          "yaw_degrees": 4.288082724567822,
+          "pitch_degrees": 0.40630974445532736
+        },
+        {
+          "frame": 4011,
+          "yaw_degrees": 3.3656384360988523,
+          "pitch_degrees": 0.41699597705825603
+        },
+        {
+          "frame": 4012,
+          "yaw_degrees": 3.3656384360988523,
+          "pitch_degrees": 0.41699597705825603
+        },
+        {
+          "frame": 4013,
+          "yaw_degrees": 3.3656384360988523,
+          "pitch_degrees": 0.41699597705825603
+        },
+        {
+          "frame": 4014,
+          "yaw_degrees": 3.3656384360988523,
+          "pitch_degrees": 0.41699597705825603
+        },
+        {
+          "frame": 4015,
+          "yaw_degrees": 2.2957577829978324,
+          "pitch_degrees": 0.4263033047524978
+        },
+        {
+          "frame": 4016,
+          "yaw_degrees": 2.2957577829978324,
+          "pitch_degrees": 0.4263033047524978
+        },
+        {
+          "frame": 4017,
+          "yaw_degrees": 2.2957577829978324,
+          "pitch_degrees": 0.4263033047524978
+        },
+        {
+          "frame": 4018,
+          "yaw_degrees": 2.2957577829978324,
+          "pitch_degrees": 0.4263033047524978
+        },
+        {
+          "frame": 4019,
+          "yaw_degrees": 1.1382592779498355,
+          "pitch_degrees": 0.43406029490345016
+        }
+      ],
+      "first_seen_controller_tick": 57,
+      "visible_ticks": 214,
+      "firing_ticks": 40,
+      "visibility_gate_audited": true,
+      "raw_outcome": {
+        "kill": false,
+        "attacker_alive": true,
+        "target_hp": 0.996999979,
+        "attacker_hp": 1
+      },
+      "calibration_eligible": false,
+      "exclusion": "Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort."
+    }
+  ],
+  "spearman": null,
+  "kendall_tau_b": null,
+  "calibration_error": null,
+  "metric_status": "No eligible matched-C model/native cohort; do not convert fixture failures into kill-rate samples.",
+  "diagnosis": {
+    "observed": "Native binding and filtered visibility work; rapid own-feedback target alignment fails. Slow gyro smoke works but needs85-101f preparation versus model14f.",
+    "not_proven": [
+      "Root cause of large pulse errors; gyro orientation coupling, gain and sampling latency remain hypotheses.",
+      "Which hook has the highest native kill probability.",
+      "Multi-hook native validation."
+    ]
+  },
+  "remaining_options": [
+    "Calibrate SuperHook-state gyro axes/gain against own_view sample age, or replay a known-good recorded aim trace.",
+    "Alternatively explicitly choose the slower C and rebuild/revalidate its timing model; that is a different conditional optimization task."
+  ],
+  "constraints": {
+    "no_policy_changes": true,
+    "no_T1_or_S1": true,
+    "no_inflight_rehook_RL_STALL_work": true,
+    "no_game_assets_committed": true
+  }
+}

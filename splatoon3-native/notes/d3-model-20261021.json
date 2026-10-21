@@ -1,0 +1,3608 @@
+{
+  "schema": "inklab.d3.model_report.v1",
+  "date": "2026-10-21",
+  "status": "offline_draft_stopped_before_native_calibration",
+  "full_d3_passed": false,
+  "calibrated": false,
+  "not_for_player_recommendation": true,
+  "config": {
+    "reaction_min": 12,
+    "reaction_max": 25,
+    "turn_radians_per_frame": 0.06422375315026134,
+    "turn_ramp_frames": 10,
+    "aim_sigma_degrees": 2.0,
+    "native_spread_degrees": 6.0,
+    "hook_range": 35.0,
+    "hook_tip_speed": 3.36,
+    "hook_body_speed": 1.0833333333333333,
+    "hook_initial_speed": 0.06,
+    "hook_acceleration": 0.1,
+    "bind_wait": 12,
+    "arrival_setup": 14,
+    "charge": 21,
+    "full_spawn_after_release": 6,
+    "full_speed": 0.8,
+    "light_input_after_charge": 57,
+    "light_spawn_after_input": 9,
+    "light_speed": 2.82,
+    "receive_delay": 4,
+    "duration": 540,
+    "gun_interval": 9,
+    "gun_max": 52.0,
+    "gun_min": 30.0,
+    "gun_full_range": 12.9352,
+    "gun_falloff_hp_per_unit": 5.9119,
+    "gun_max_range": 15.5,
+    "light_range": 19.0,
+    "full_range": 22.0,
+    "enemy_walk": 0.06,
+    "half_fov": 1.0471975511965976,
+    "armor_damage_scale": 1.0,
+    "seed": 520321
+  },
+  "definition": {
+    "expected": "Uniform reachable enemy node; uniform8 headings; half human/squid on potentially swimmable nodes, human only otherwise; equal3 finite behaviors; R uniform12..25f; omega uniform0.8..1.2 times measured220.785deg/s; declared aiming priors.",
+    "maxmin": "max over evaluated tactics of min over3 fixed behavior rules of expected KO. Also retain the stricter E_initial_state[min_behavior P(KO|state,behavior)].",
+    "success": "Target KO, including trades; no native kill guarantee.",
+    "mc_interval": "Weighted stratified Hoeffding, union bound across all evaluated tactic-behavior means, total delta0.05. Only MC error inside this fixed model, not model/native uncertainty. Statewise-min field has no claimed simultaneous interval."
+  },
+  "scale": {
+    "coarse_analytically_screened": 379716032,
+    "coarse_seconds": 1.2440165830776095,
+    "coarse_start_hook_pairs": 2890,
+    "fine_tactics": 27,
+    "fine_mc_episodes": 19539456,
+    "fine_vectorized_duel_frame_updates": 3452578560,
+    "fine_stage_wall_seconds": [
+      567.8124585831538,
+      404.2050254580099,
+      572.8532024589367
+    ],
+    "fine_points_summed_seconds": 1544.4878455845173,
+    "beam_nodes": [
+      48,
+      48,
+      48
+    ],
+    "beam_edges": [
+      558,
+      567,
+      746
+    ],
+    "beam_sequences": [
+      962,
+      827,
+      1038
+    ],
+    "beam_seconds": 1.7304030831437558
+  },
+  "maps": [
+    {
+      "id": "Yunohana",
+      "stage": 1,
+      "evaluated_tactics": 9,
+      "best_single_model_expected": {
+        "id": "Yunohana-hook-0718",
+        "start_region": "east_lane",
+        "sequence": [
+          "Yunohana-hook-0718"
+        ],
+        "value": 0.058532848066729024,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_multi_model_expected": {
+        "id": "Yunohana-hook-0775",
+        "start_region": "east_lane",
+        "sequence": [
+          "Yunohana-hook-0786",
+          "Yunohana-hook-0775"
+        ],
+        "value": 0.053767068781831406,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_model_maxmin": {
+        "id": "Yunohana-hook-0718",
+        "start_region": "east_lane",
+        "sequence": [
+          "Yunohana-hook-0718"
+        ],
+        "value": 0.05660469285937013,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_expected_separated_within_tested_set_mc_only": true,
+      "per_start": [
+        {
+          "start": "center",
+          "best_expected": {
+            "id": "Yunohana-hook-0410",
+            "start_region": "center",
+            "sequence": [
+              "Yunohana-hook-0410"
+            ],
+            "value": 0.0,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "Yunohana-hook-0410",
+            "start_region": "center",
+            "sequence": [
+              "Yunohana-hook-0410"
+            ],
+            "value": 0.0,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        },
+        {
+          "start": "central_high",
+          "best_expected": {
+            "id": "Yunohana-hook-0629",
+            "start_region": "central_high",
+            "sequence": [
+              "Yunohana-hook-0629"
+            ],
+            "value": 0.04407838322419707,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "Yunohana-hook-0629",
+            "start_region": "central_high",
+            "sequence": [
+              "Yunohana-hook-0629"
+            ],
+            "value": 0.037798175865294666,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        },
+        {
+          "start": "west_lane",
+          "best_expected": null,
+          "best_maxmin": null
+        },
+        {
+          "start": "east_lane",
+          "best_expected": {
+            "id": "Yunohana-hook-0718",
+            "start_region": "east_lane",
+            "sequence": [
+              "Yunohana-hook-0718"
+            ],
+            "value": 0.058532848066729024,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "Yunohana-hook-0718",
+            "start_region": "east_lane",
+            "sequence": [
+              "Yunohana-hook-0718"
+            ],
+            "value": 0.05660469285937013,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        }
+      ],
+      "points": [
+        {
+          "id": "Yunohana-hook-0652",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "high",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "anchor": [
+            0.0,
+            7.0,
+            15.0
+          ],
+          "attach": [
+            0.75,
+            6.25,
+            15.0
+          ],
+          "landing": [
+            0.75,
+            3.0,
+            15.0
+          ],
+          "expected_kill_probability": 0.026601152426982647,
+          "worst_behavior_kill_probability": 0.024860169161209856,
+          "statewise_worst_kill_probability": 0.013338741425007797,
+          "local_expected": 0.07549548303834809,
+          "local_worst": 0.07055448008849557,
+          "near_prior_mass": 0.3523542251325226,
+          "enemy_nodes_sampled": 2260,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.08455821349557523,
+              "kills": 24461,
+              "n": 289280,
+              "wilson95_conditional_iid_only": [
+                0.08354983380692035,
+                0.08557762706125693
+              ],
+              "trades": 951
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.07137375553097346,
+              "kills": 20647,
+              "n": 289280,
+              "wilson95_conditional_iid_only": [
+                0.0704412555504116,
+                0.07231763955961516
+              ],
+              "trades": 1217
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.07055448008849557,
+              "kills": 20410,
+              "n": 289280,
+              "wilson95_conditional_iid_only": [
+                0.06962697948982709,
+                0.07149338649469321
+              ],
+              "trades": 873
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 20,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 46,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 60,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 59.57715916703455,
+          "geometry_queries": 6810616,
+          "sequence": [
+            "Yunohana-hook-0652"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 35712,
+          "simulated_initial_scenarios": 36160,
+          "mc_episodes": 867840,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.001333261862584268,
+          "expected_mc_interval": [
+            0.02526789056439838,
+            0.027934414289566913
+          ],
+          "worst_behavior_mc_interval": [
+            0.02352690729862559,
+            0.026193431023794123
+          ],
+          "simulated_frames_per_episode": 167
+        },
+        {
+          "id": "Yunohana-hook-0718",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "high",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "anchor": [
+            6.5,
+            8.917,
+            -1.167
+          ],
+          "attach": [
+            7.25,
+            8.167,
+            -1.167
+          ],
+          "landing": [
+            7.25,
+            3.917,
+            -1.167
+          ],
+          "expected_kill_probability": 0.058532848066729024,
+          "worst_behavior_kill_probability": 0.05660469285937013,
+          "statewise_worst_kill_probability": 0.03228411482694106,
+          "local_expected": 0.16693183081369498,
+          "local_worst": 0.161432859048466,
+          "near_prior_mass": 0.35063922669161207,
+          "enemy_nodes_sampled": 2249,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.17180899844375278,
+              "kills": 49459,
+              "n": 287872,
+              "wilson95_conditional_iid_only": [
+                0.17043539503009814,
+                0.17319136104014798
+              ],
+              "trades": 2471
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.161432859048466,
+              "kills": 46472,
+              "n": 287872,
+              "wilson95_conditional_iid_only": [
+                0.16009331045856232,
+                0.162781443752838
+              ],
+              "trades": 1992
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.16755363494886616,
+              "kills": 48234,
+              "n": 287872,
+              "wilson95_conditional_iid_only": [
+                0.166193768387331,
+                0.16892237426574533
+              ],
+              "trades": 2012
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 16,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 32,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 46,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 71.2814965841826,
+          "geometry_queries": 6420897,
+          "sequence": [
+            "Yunohana-hook-0718"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 35880,
+          "simulated_initial_scenarios": 35984,
+          "mc_episodes": 863616,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.00131762698085522,
+          "expected_mc_interval": [
+            0.057215221085873805,
+            0.05985047504758424
+          ],
+          "worst_behavior_mc_interval": [
+            0.05528706587851491,
+            0.05792231984022535
+          ],
+          "simulated_frames_per_episode": 153
+        },
+        {
+          "id": "Yunohana-hook-0410",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "middle",
+          "start_region": "center",
+          "source": [
+            0.0,
+            3.0,
+            -5.0
+          ],
+          "anchor": [
+            12.0,
+            3.5,
+            -14.5
+          ],
+          "attach": [
+            12.0,
+            2.75,
+            -13.75
+          ],
+          "landing": [
+            12.0,
+            -5.0,
+            -13.75
+          ],
+          "expected_kill_probability": 0.0,
+          "worst_behavior_kill_probability": 0.0,
+          "statewise_worst_kill_probability": 0.0,
+          "local_expected": 0.0,
+          "local_worst": 0.0,
+          "near_prior_mass": 0.32912379170564393,
+          "enemy_nodes_sampled": 2111,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.0,
+              "kills": 0,
+              "n": 270208,
+              "wilson95_conditional_iid_only": [
+                0,
+                1.421699351609763e-05
+              ],
+              "trades": 0
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.0,
+              "kills": 0,
+              "n": 270208,
+              "wilson95_conditional_iid_only": [
+                0,
+                1.421699351609763e-05
+              ],
+              "trades": 0
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.0,
+              "kills": 0,
+              "n": 270208,
+              "wilson95_conditional_iid_only": [
+                0,
+                1.421699351609763e-05
+              ],
+              "trades": 0
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 17,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 36,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 50,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 57.787563250167295,
+          "geometry_queries": 7066435,
+          "sequence": [
+            "Yunohana-hook-0410"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 33200,
+          "simulated_initial_scenarios": 33776,
+          "mc_episodes": 810624,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0012944135389249137,
+          "expected_mc_interval": [
+            0,
+            0.0012944135389249137
+          ],
+          "worst_behavior_mc_interval": [
+            0,
+            0.0012944135389249137
+          ],
+          "simulated_frames_per_episode": 157
+        },
+        {
+          "id": "Yunohana-hook-0469",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "middle",
+          "start_region": "central_high",
+          "source": [
+            -5.0,
+            6.0015,
+            -3.0
+          ],
+          "anchor": [
+            -16.625,
+            8.0,
+            14.5
+          ],
+          "attach": [
+            -16.625,
+            7.25,
+            13.75
+          ],
+          "landing": [
+            -16.625,
+            3.0,
+            13.75
+          ],
+          "expected_kill_probability": 0.03544127104770814,
+          "worst_behavior_kill_probability": 0.03345586802307452,
+          "statewise_worst_kill_probability": 0.01757751598066729,
+          "local_expected": 0.10992278167311412,
+          "local_worst": 0.10376496010638298,
+          "near_prior_mass": 0.32241970689117555,
+          "enemy_nodes_sampled": 2068,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.12176997703094777,
+              "kills": 32233,
+              "n": 264704,
+              "wilson95_conditional_iid_only": [
+                0.12052965807585214,
+                0.12302127419090089
+              ],
+              "trades": 1698
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.10376496010638298,
+              "kills": 27467,
+              "n": 264704,
+              "wilson95_conditional_iid_only": [
+                0.10260895615246433,
+                0.1049324648645094
+              ],
+              "trades": 1876
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.1042334078820116,
+              "kills": 27591,
+              "n": 264704,
+              "wilson95_conditional_iid_only": [
+                0.10307508213767624,
+                0.10540322083376089
+              ],
+              "trades": 2726
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 19,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 43,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 57,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 60.52124425000511,
+          "geometry_queries": 6013491,
+          "sequence": [
+            "Yunohana-hook-0469"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 32504,
+          "simulated_initial_scenarios": 33088,
+          "mc_episodes": 794112,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0012819010775216657,
+          "expected_mc_interval": [
+            0.034159369970186475,
+            0.036723172125229804
+          ],
+          "worst_behavior_mc_interval": [
+            0.032173966945552857,
+            0.034737769100596186
+          ],
+          "simulated_frames_per_episode": 164
+        },
+        {
+          "id": "Yunohana-hook-0629",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "low",
+          "start_region": "central_high",
+          "source": [
+            -5.0,
+            6.0015,
+            -3.0
+          ],
+          "anchor": [
+            -22.502,
+            5.5,
+            -1.083
+          ],
+          "attach": [
+            -21.752,
+            4.75,
+            -1.082
+          ],
+          "landing": [
+            -21.752,
+            3.0,
+            -1.082
+          ],
+          "expected_kill_probability": 0.04407838322419707,
+          "worst_behavior_kill_probability": 0.037798175865294666,
+          "statewise_worst_kill_probability": 0.02049959073900842,
+          "local_expected": 0.18478349673202615,
+          "local_worst": 0.15845588235294117,
+          "near_prior_mass": 0.23854069223573432,
+          "enemy_nodes_sampled": 1530,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.21125408496732026,
+              "kills": 41372,
+              "n": 195840,
+              "wilson95_conditional_iid_only": [
+                0.2094518490771196,
+                0.2130676487226008
+              ],
+              "trades": 2152
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.184640522875817,
+              "kills": 36160,
+              "n": 195840,
+              "wilson95_conditional_iid_only": [
+                0.1829282386803716,
+                0.1863651790198253
+              ],
+              "trades": 2120
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.15845588235294117,
+              "kills": 31032,
+              "n": 195840,
+              "wilson95_conditional_iid_only": [
+                0.1568452563395086,
+                0.1600799075712875
+              ],
+              "trades": 2389
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 18,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 38,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 52,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 50.03018095786683,
+          "geometry_queries": 4092849,
+          "sequence": [
+            "Yunohana-hook-0629"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 24248,
+          "simulated_initial_scenarios": 24480,
+          "mc_episodes": 587520,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010938788780802064,
+          "expected_mc_interval": [
+            0.042984504346116864,
+            0.045172262102277275
+          ],
+          "worst_behavior_mc_interval": [
+            0.03670429698721446,
+            0.03889205474337487
+          ],
+          "simulated_frames_per_episode": 159
+        },
+        {
+          "id": "Yunohana-hook-0647",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "low",
+          "start_region": "center",
+          "source": [
+            0.0,
+            3.0,
+            -5.0
+          ],
+          "anchor": [
+            22.511,
+            3.5,
+            -6.583
+          ],
+          "attach": [
+            21.761,
+            2.75,
+            -6.584
+          ],
+          "landing": [
+            21.761,
+            -5.0,
+            -6.584
+          ],
+          "expected_kill_probability": 0.0,
+          "worst_behavior_kill_probability": 0.0,
+          "statewise_worst_kill_probability": 0.0,
+          "local_expected": 0.0,
+          "local_worst": 0.0,
+          "near_prior_mass": 0.23994387277829748,
+          "enemy_nodes_sampled": 1539,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.0,
+              "kills": 0,
+              "n": 196992,
+              "wilson95_conditional_iid_only": [
+                0,
+                1.9500919251891454e-05
+              ],
+              "trades": 0
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.0,
+              "kills": 0,
+              "n": 196992,
+              "wilson95_conditional_iid_only": [
+                0,
+                1.9500919251891454e-05
+              ],
+              "trades": 0
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.0,
+              "kills": 0,
+              "n": 196992,
+              "wilson95_conditional_iid_only": [
+                0,
+                1.9500919251891454e-05
+              ],
+              "trades": 0
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 19,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 44,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 58,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 48.044308583950624,
+          "geometry_queries": 5153059,
+          "sequence": [
+            "Yunohana-hook-0647"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 24224,
+          "simulated_initial_scenarios": 24624,
+          "mc_episodes": 590976,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0011043535397542786,
+          "expected_mc_interval": [
+            0,
+            0.0011043535397542786
+          ],
+          "worst_behavior_mc_interval": [
+            0,
+            0.0011043535397542786
+          ],
+          "simulated_frames_per_episode": 165
+        },
+        {
+          "id": "Yunohana-hook-0656",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "beam",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "anchor": [
+            -1.333,
+            4.833,
+            11.5
+          ],
+          "attach": [
+            -1.333,
+            4.083,
+            10.75
+          ],
+          "landing": [
+            -1.333,
+            3.0,
+            10.75
+          ],
+          "expected_kill_probability": 0.04847144267747637,
+          "worst_behavior_kill_probability": 0.04706014187714375,
+          "statewise_worst_kill_probability": 0.031041715388213285,
+          "local_expected": 0.1317355225988701,
+          "local_worst": 0.12789989406779662,
+          "near_prior_mass": 0.3679451200498909,
+          "enemy_nodes_sampled": 2360,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.1361427436440678,
+              "kills": 41126,
+              "n": 302080,
+              "wilson95_conditional_iid_only": [
+                0.13492440681311682,
+                0.1373703348199624
+              ],
+              "trades": 1652
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.12789989406779662,
+              "kills": 38636,
+              "n": 302080,
+              "wilson95_conditional_iid_only": [
+                0.126713619888945,
+                0.12909563224021628
+              ],
+              "trades": 1170
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.13116393008474575,
+              "kills": 39622,
+              "n": 302080,
+              "wilson95_conditional_iid_only": [
+                0.12996477230613354,
+                0.13237246883943857
+              ],
+              "trades": 1382
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 17,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 35,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 41,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 57,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 71,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 85,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 76.79298308398575,
+          "geometry_queries": 6947216,
+          "sequence": [
+            "Yunohana-hook-0775",
+            "Yunohana-hook-0656"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 37440,
+          "simulated_initial_scenarios": 37760,
+          "mc_episodes": 906240,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0013572248408511736,
+          "expected_mc_interval": [
+            0.0471142178366252,
+            0.04982866751832754
+          ],
+          "worst_behavior_mc_interval": [
+            0.04570291703629258,
+            0.048417366717994924
+          ],
+          "simulated_frames_per_episode": 192
+        },
+        {
+          "id": "Yunohana-hook-0659",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "beam",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "anchor": [
+            -1.0,
+            6.333,
+            11.5
+          ],
+          "attach": [
+            -1.0,
+            5.583,
+            10.75
+          ],
+          "landing": [
+            -1.0,
+            3.0,
+            10.75
+          ],
+          "expected_kill_probability": 0.04914014590479161,
+          "worst_behavior_kill_probability": 0.048347608746492056,
+          "statewise_worst_kill_probability": 0.03142296149048956,
+          "local_expected": 0.13434991297243537,
+          "local_worst": 0.13218310421994886,
+          "near_prior_mass": 0.36576239476145933,
+          "enemy_nodes_sampled": 2346,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.13724491155157714,
+              "kills": 41213,
+              "n": 300288,
+              "wilson95_conditional_iid_only": [
+                0.1360187754903429,
+                0.13848032898349638
+              ],
+              "trades": 1743
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.13218310421994886,
+              "kills": 39693,
+              "n": 300288,
+              "wilson95_conditional_iid_only": [
+                0.13097640398233243,
+                0.1333992153385223
+              ],
+              "trades": 1321
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.13362172314578005,
+              "kills": 40125,
+              "n": 300288,
+              "wilson95_conditional_iid_only": [
+                0.132409440281537,
+                0.13484338008279756
+              ],
+              "trades": 1511
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 17,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 35,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 41,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 56,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 69,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 83,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 72.15651929215528,
+          "geometry_queries": 6864459,
+          "sequence": [
+            "Yunohana-hook-0775",
+            "Yunohana-hook-0659"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 37256,
+          "simulated_initial_scenarios": 37536,
+          "mc_episodes": 900864,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0013518418174526033,
+          "expected_mc_interval": [
+            0.04778830408733901,
+            0.05049198772224422
+          ],
+          "worst_behavior_mc_interval": [
+            0.04699576692903945,
+            0.04969945056394466
+          ],
+          "simulated_frames_per_episode": 190
+        },
+        {
+          "id": "Yunohana-hook-0775",
+          "map": "Yunohana",
+          "stage": 1,
+          "band": "beam",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            3.0,
+            0.0
+          ],
+          "anchor": [
+            3.995,
+            7.501,
+            3.581
+          ],
+          "attach": [
+            4.735,
+            6.873,
+            3.581
+          ],
+          "landing": [
+            4.735,
+            6.002,
+            3.581
+          ],
+          "expected_kill_probability": 0.053767068781831406,
+          "worst_behavior_kill_probability": 0.047123479887745554,
+          "statewise_worst_kill_probability": 0.02494664990645463,
+          "local_expected": 0.1561874905646135,
+          "local_worst": 0.13688858695652173,
+          "near_prior_mass": 0.34424695977549113,
+          "enemy_nodes_sampled": 2208,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.1639846580615942,
+              "kills": 46346,
+              "n": 282624,
+              "wilson95_conditional_iid_only": [
+                0.16262414010855616,
+                0.16535431054667474
+              ],
+              "trades": 1873
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.16768922667572464,
+              "kills": 47393,
+              "n": 282624,
+              "wilson95_conditional_iid_only": [
+                0.1663163873670702,
+                0.16907109980822024
+              ],
+              "trades": 1192
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.13688858695652173,
+              "kills": 38688,
+              "n": 282624,
+              "wilson95_conditional_iid_only": [
+                0.1356262531363756,
+                0.13816079191177227
+              ],
+              "trades": 1701
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 17,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 35,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 41,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 55,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 63,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 77,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 71.48290087492205,
+          "geometry_queries": 6311942,
+          "sequence": [
+            "Yunohana-hook-0786",
+            "Yunohana-hook-0775"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 35240,
+          "simulated_initial_scenarios": 35328,
+          "mc_episodes": 847872,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.00130504302564378,
+          "expected_mc_interval": [
+            0.05246202575618763,
+            0.055072111807475184
+          ],
+          "worst_behavior_mc_interval": [
+            0.045818436862101776,
+            0.04842852291338933
+          ],
+          "simulated_frames_per_episode": 184
+        }
+      ]
+    },
+    {
+      "id": "District00",
+      "stage": 2,
+      "evaluated_tactics": 9,
+      "best_single_model_expected": {
+        "id": "District00-hook-1310",
+        "start_region": "east_lane",
+        "sequence": [
+          "District00-hook-1310"
+        ],
+        "value": 0.04448344054242003,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_multi_model_expected": {
+        "id": "District00-hook-1298",
+        "start_region": "east_lane",
+        "sequence": [
+          "District00-hook-0307",
+          "District00-hook-1298"
+        ],
+        "value": 0.03128911682892906,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_model_maxmin": {
+        "id": "District00-hook-1310",
+        "start_region": "east_lane",
+        "sequence": [
+          "District00-hook-1310"
+        ],
+        "value": 0.03757606050069541,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_expected_separated_within_tested_set_mc_only": true,
+      "per_start": [
+        {
+          "start": "center",
+          "best_expected": {
+            "id": "District00-hook-0398",
+            "start_region": "center",
+            "sequence": [
+              "District00-hook-0398"
+            ],
+            "value": 0.024293723922114048,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "District00-hook-0398",
+            "start_region": "center",
+            "sequence": [
+              "District00-hook-0398"
+            ],
+            "value": 0.022839881780250346,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        },
+        {
+          "start": "central_high",
+          "best_expected": {
+            "id": "District00-hook-0501",
+            "start_region": "central_high",
+            "sequence": [
+              "District00-hook-1298",
+              "District00-hook-0501"
+            ],
+            "value": 0.024921404149281408,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "District00-hook-0501",
+            "start_region": "central_high",
+            "sequence": [
+              "District00-hook-1298",
+              "District00-hook-0501"
+            ],
+            "value": 0.023688499652294855,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        },
+        {
+          "start": "west_lane",
+          "best_expected": {
+            "id": "District00-hook-1198",
+            "start_region": "west_lane",
+            "sequence": [
+              "District00-hook-1198"
+            ],
+            "value": 0.019030699466852107,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "District00-hook-1025",
+            "start_region": "west_lane",
+            "sequence": [
+              "District00-hook-1025"
+            ],
+            "value": 0.0161595966620306,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        },
+        {
+          "start": "east_lane",
+          "best_expected": {
+            "id": "District00-hook-1310",
+            "start_region": "east_lane",
+            "sequence": [
+              "District00-hook-1310"
+            ],
+            "value": 0.04448344054242003,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "District00-hook-1310",
+            "start_region": "east_lane",
+            "sequence": [
+              "District00-hook-1310"
+            ],
+            "value": 0.03757606050069541,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        }
+      ],
+      "points": [
+        {
+          "id": "District00-hook-0398",
+          "map": "District00",
+          "stage": 2,
+          "band": "high",
+          "start_region": "center",
+          "source": [
+            -1.0,
+            6.0,
+            1.0
+          ],
+          "anchor": [
+            4.244,
+            16.667,
+            17.113
+          ],
+          "attach": [
+            4.244,
+            15.954,
+            16.364
+          ],
+          "landing": [
+            4.244,
+            8.896,
+            16.364
+          ],
+          "expected_kill_probability": 0.024293723922114048,
+          "worst_behavior_kill_probability": 0.022839881780250346,
+          "statewise_worst_kill_probability": 0.007005172114047288,
+          "local_expected": 0.10050165420023016,
+          "local_worst": 0.09448719792865362,
+          "near_prior_mass": 0.24172461752433935,
+          "enemy_nodes_sampled": 1738,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.10820177646720368,
+              "kills": 24071,
+              "n": 222464,
+              "wilson95_conditional_iid_only": [
+                0.10691768276911685,
+                0.10949940139789203
+              ],
+              "trades": 1370
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.09448719792865362,
+              "kills": 21020,
+              "n": 222464,
+              "wilson95_conditional_iid_only": [
+                0.09327867664561425,
+                0.09570972409409968
+              ],
+              "trades": 1309
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.09881598820483314,
+              "kills": 21983,
+              "n": 222464,
+              "wilson95_conditional_iid_only": [
+                0.09758283625966337,
+                0.10006299553232363
+              ],
+              "trades": 1911
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 18,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 40,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 54,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 53.32352183316834,
+          "geometry_queries": 5019137,
+          "sequence": [
+            "District00-hook-0398"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 27808,
+          "simulated_initial_scenarios": 27808,
+          "mc_episodes": 667392,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010303176276448163,
+          "expected_mc_interval": [
+            0.02326340629446923,
+            0.025324041549758865
+          ],
+          "worst_behavior_mc_interval": [
+            0.02180956415260553,
+            0.023870199407895164
+          ],
+          "simulated_frames_per_episode": 161
+        },
+        {
+          "id": "District00-hook-1310",
+          "map": "District00",
+          "stage": 2,
+          "band": "high",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "anchor": [
+            -0.392,
+            8.636,
+            -15.836
+          ],
+          "attach": [
+            0.315,
+            8.052,
+            -16.024
+          ],
+          "landing": [
+            0.315,
+            6.0,
+            -16.024
+          ],
+          "expected_kill_probability": 0.04448344054242003,
+          "worst_behavior_kill_probability": 0.03757606050069541,
+          "statewise_worst_kill_probability": 0.021055719749652296,
+          "local_expected": 0.18224269943019944,
+          "local_worst": 0.15394408831908832,
+          "near_prior_mass": 0.24408901251738527,
+          "enemy_nodes_sampled": 1755,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.2013710826210826,
+              "kills": 45236,
+              "n": 224640,
+              "wilson95_conditional_iid_only": [
+                0.19971781749141132,
+                0.20303456136569953
+              ],
+              "trades": 2022
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.15394408831908832,
+              "kills": 34582,
+              "n": 224640,
+              "wilson95_conditional_iid_only": [
+                0.1524575785849647,
+                0.15544243375171893
+              ],
+              "trades": 1984
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.19141292735042736,
+              "kills": 42999,
+              "n": 224640,
+              "wilson95_conditional_iid_only": [
+                0.18979130719415319,
+                0.1930451017074297
+              ],
+              "trades": 2197
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 19,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 45,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 59,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 50.920379457995296,
+          "geometry_queries": 4848107,
+          "sequence": [
+            "District00-hook-1310"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 28080,
+          "simulated_initial_scenarios": 28080,
+          "mc_episodes": 673920,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010353443183160121,
+          "expected_mc_interval": [
+            0.04344809622410402,
+            0.045518784860736045
+          ],
+          "worst_behavior_mc_interval": [
+            0.0365407161823794,
+            0.03861140481901142
+          ],
+          "simulated_frames_per_episode": 166
+        },
+        {
+          "id": "District00-hook-0924",
+          "map": "District00",
+          "stage": 2,
+          "band": "middle",
+          "start_region": "central_high",
+          "source": [
+            -15.0,
+            9.0,
+            -14.0
+          ],
+          "anchor": [
+            -21.0,
+            29.246,
+            -26.882
+          ],
+          "attach": [
+            -20.25,
+            28.496,
+            -26.882
+          ],
+          "landing": [
+            -20.25,
+            9.0,
+            -26.882
+          ],
+          "expected_kill_probability": 0.022131794738062125,
+          "worst_behavior_kill_probability": 0.01233701321279555,
+          "statewise_worst_kill_probability": 0.0068867350486787205,
+          "local_expected": 0.1238347114137484,
+          "local_worst": 0.0690296692607004,
+          "near_prior_mass": 0.1787204450625869,
+          "enemy_nodes_sampled": 1285,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.1586636673151751,
+              "kills": 26097,
+              "n": 164480,
+              "wilson95_conditional_iid_only": [
+                0.15690591692114406,
+                0.16043736186083687
+              ],
+              "trades": 3183
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.0690296692607004,
+              "kills": 11354,
+              "n": 164480,
+              "wilson95_conditional_iid_only": [
+                0.06781456881361218,
+                0.07026490075052767
+              ],
+              "trades": 1555
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.14381079766536964,
+              "kills": 23654,
+              "n": 164480,
+              "wilson95_conditional_iid_only": [
+                0.1421232945105465,
+                0.14551493876379107
+              ],
+              "trades": 3631
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 20,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 47,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 61,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 37.29773929109797,
+          "geometry_queries": 3532735,
+          "sequence": [
+            "District00-hook-0924"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 20560,
+          "simulated_initial_scenarios": 20560,
+          "mc_episodes": 493440,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0008859267354246406,
+          "expected_mc_interval": [
+            0.021245868002637485,
+            0.023017721473486765
+          ],
+          "worst_behavior_mc_interval": [
+            0.01145108647737091,
+            0.01322293994822019
+          ],
+          "simulated_frames_per_episode": 168
+        },
+        {
+          "id": "District00-hook-1167",
+          "map": "District00",
+          "stage": 2,
+          "band": "middle",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "anchor": [
+            21.0,
+            23.173,
+            4.973
+          ],
+          "attach": [
+            20.25,
+            22.423,
+            4.973
+          ],
+          "landing": [
+            20.25,
+            6.0,
+            4.973
+          ],
+          "expected_kill_probability": 0.023849675475197035,
+          "worst_behavior_kill_probability": 0.022323756954102922,
+          "statewise_worst_kill_probability": 0.015680415507649512,
+          "local_expected": 0.15448573573573574,
+          "local_worst": 0.14460163288288289,
+          "near_prior_mass": 0.15438108484005564,
+          "enemy_nodes_sampled": 1110,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.15955095720720722,
+              "kills": 22669,
+              "n": 142080,
+              "wilson95_conditional_iid_only": [
+                0.15765604261573535,
+                0.161464281619642
+              ],
+              "trades": 1629
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.14460163288288289,
+              "kills": 20545,
+              "n": 142080,
+              "wilson95_conditional_iid_only": [
+                0.14278246592525284,
+                0.14644001804790008
+              ],
+              "trades": 1584
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.1593046171171171,
+              "kills": 22634,
+              "n": 142080,
+              "wilson95_conditional_iid_only": [
+                0.1574109008169105,
+                0.16121675655915518
+              ],
+              "trades": 1557
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 18,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 39,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 53,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 31.94167537498288,
+          "geometry_queries": 2817209,
+          "sequence": [
+            "District00-hook-1167"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 17760,
+          "simulated_initial_scenarios": 17760,
+          "mc_episodes": 426240,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.00082339406737857,
+          "expected_mc_interval": [
+            0.023026281407818466,
+            0.024673069542575605
+          ],
+          "worst_behavior_mc_interval": [
+            0.021500362886724352,
+            0.02314715102148149
+          ],
+          "simulated_frames_per_episode": 160
+        },
+        {
+          "id": "District00-hook-1025",
+          "map": "District00",
+          "stage": 2,
+          "band": "low",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            6.0,
+            -2.0
+          ],
+          "anchor": [
+            -21.0,
+            20.929,
+            -9.538
+          ],
+          "attach": [
+            -20.25,
+            20.179,
+            -9.538
+          ],
+          "landing": [
+            -20.25,
+            6.0,
+            -9.538
+          ],
+          "expected_kill_probability": 0.018720300185442743,
+          "worst_behavior_kill_probability": 0.0161595966620306,
+          "statewise_worst_kill_probability": 0.008312326147426982,
+          "local_expected": 0.11643508506343712,
+          "local_worst": 0.10050821799307959,
+          "near_prior_mass": 0.160778859527121,
+          "enemy_nodes_sampled": 1156,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.13127162629757785,
+              "kills": 19424,
+              "n": 147968,
+              "wilson95_conditional_iid_only": [
+                0.1295605168208432,
+                0.13300188140236038
+              ],
+              "trades": 1296
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.11752541089965397,
+              "kills": 17390,
+              "n": 147968,
+              "wilson95_conditional_iid_only": [
+                0.11589440521614482,
+                0.11917627596134754
+              ],
+              "trades": 1371
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.10050821799307959,
+              "kills": 14872,
+              "n": 147968,
+              "wilson95_conditional_iid_only": [
+                0.09898652913833478,
+                0.10205064981639417
+              ],
+              "trades": 1392
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 17,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 37,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 51,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 31.674925124971196,
+          "geometry_queries": 3091613,
+          "sequence": [
+            "District00-hook-1025"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 18496,
+          "simulated_initial_scenarios": 18496,
+          "mc_episodes": 443904,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0008402821949114219,
+          "expected_mc_interval": [
+            0.01788001799053132,
+            0.019560582380354165
+          ],
+          "worst_behavior_mc_interval": [
+            0.015319314467119177,
+            0.01699987885694202
+          ],
+          "simulated_frames_per_episode": 158
+        },
+        {
+          "id": "District00-hook-1198",
+          "map": "District00",
+          "stage": 2,
+          "band": "low",
+          "start_region": "west_lane",
+          "source": [
+            -18.0,
+            6.0,
+            -2.0
+          ],
+          "anchor": [
+            -21.0,
+            8.133,
+            -9.433
+          ],
+          "attach": [
+            -20.25,
+            7.383,
+            -9.433
+          ],
+          "landing": [
+            -20.25,
+            6.0,
+            -9.433
+          ],
+          "expected_kill_probability": 0.019030699466852107,
+          "worst_behavior_kill_probability": 0.015540246870653685,
+          "statewise_worst_kill_probability": 0.008944714881780249,
+          "local_expected": 0.11846816378066377,
+          "local_worst": 0.09673971861471861,
+          "near_prior_mass": 0.16063977746870653,
+          "enemy_nodes_sampled": 1155,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.13741883116883116,
+              "kills": 20316,
+              "n": 147840,
+              "wilson95_conditional_iid_only": [
+                0.13567322546373628,
+                0.13918327961777127
+              ],
+              "trades": 669
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.12124594155844155,
+              "kills": 17925,
+              "n": 147840,
+              "wilson95_conditional_iid_only": [
+                0.11959187510767326,
+                0.12291969123138753
+              ],
+              "trades": 670
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.09673971861471861,
+              "kills": 14302,
+              "n": 147840,
+              "wilson95_conditional_iid_only": [
+                0.09524333382666882,
+                0.09825706017283341
+              ],
+              "trades": 894
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 15,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 27,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 41,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 27.72908416693099,
+          "geometry_queries": 3411619,
+          "sequence": [
+            "District00-hook-1198"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 18480,
+          "simulated_initial_scenarios": 18480,
+          "mc_episodes": 443520,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0008399186724220268,
+          "expected_mc_interval": [
+            0.01819078079443008,
+            0.019870618139274134
+          ],
+          "worst_behavior_mc_interval": [
+            0.014700328198231659,
+            0.01638016554307571
+          ],
+          "simulated_frames_per_episode": 148
+        },
+        {
+          "id": "District00-hook-1298",
+          "map": "District00",
+          "stage": 2,
+          "band": "beam",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "anchor": [
+            -9.582,
+            10.781,
+            -29.682
+          ],
+          "attach": [
+            -8.932,
+            10.031,
+            -29.307
+          ],
+          "landing": [
+            -8.932,
+            9.0,
+            -29.307
+          ],
+          "expected_kill_probability": 0.03128911682892906,
+          "worst_behavior_kill_probability": 0.02945279902642559,
+          "statewise_worst_kill_probability": 0.019052068845618917,
+          "local_expected": 0.1277505678591709,
+          "local_worst": 0.12025305224304372,
+          "near_prior_mass": 0.24492350486787204,
+          "enemy_nodes_sampled": 1761,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.1323644236229415,
+              "kills": 29836,
+              "n": 225408,
+              "wilson95_conditional_iid_only": [
+                0.1309716611837078,
+                0.13376971698175943
+              ],
+              "trades": 919
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.13063422771152755,
+              "kills": 29446,
+              "n": 225408,
+              "wilson95_conditional_iid_only": [
+                0.1292492831144341,
+                0.13203176220221977
+              ],
+              "trades": 871
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.12025305224304372,
+              "kills": 27106,
+              "n": 225408,
+              "wilson95_conditional_iid_only": [
+                0.1189167601066109,
+                0.12160228811716262
+              ],
+              "trades": 902
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 22,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 55,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 61,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 76,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 88,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 102,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 60.44870779104531,
+          "geometry_queries": 6018918,
+          "sequence": [
+            "District00-hook-0307",
+            "District00-hook-1298"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 28176,
+          "simulated_initial_scenarios": 28176,
+          "mc_episodes": 676224,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.001037112627577694,
+          "expected_mc_interval": [
+            0.03025200420135137,
+            0.032326229456506754
+          ],
+          "worst_behavior_mc_interval": [
+            0.028415686398847895,
+            0.030489911654003284
+          ],
+          "simulated_frames_per_episode": 209
+        },
+        {
+          "id": "District00-hook-1297",
+          "map": "District00",
+          "stage": 2,
+          "band": "beam",
+          "start_region": "east_lane",
+          "source": [
+            18.0,
+            6.0,
+            -2.0
+          ],
+          "anchor": [
+            -9.766,
+            9.891,
+            -29.363
+          ],
+          "attach": [
+            -9.116,
+            9.141,
+            -28.989
+          ],
+          "landing": [
+            -9.116,
+            9.0,
+            -28.989
+          ],
+          "expected_kill_probability": 0.031181907742234585,
+          "worst_behavior_kill_probability": 0.030241655076495132,
+          "statewise_worst_kill_probability": 0.019417159248956886,
+          "local_expected": 0.12855385129969418,
+          "local_worst": 0.12467746559633028,
+          "near_prior_mass": 0.24255910987482615,
+          "enemy_nodes_sampled": 1744,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.13279906106651376,
+              "kills": 29645,
+              "n": 223232,
+              "wilson95_conditional_iid_only": [
+                0.13139759666589762,
+                0.1342131635732413
+              ],
+              "trades": 993
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.12818502723623854,
+              "kills": 28615,
+              "n": 223232,
+              "wilson95_conditional_iid_only": [
+                0.12680463938732875,
+                0.1295782119943644
+              ],
+              "trades": 1070
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.12467746559633028,
+              "kills": 27832,
+              "n": 223232,
+              "wilson95_conditional_iid_only": [
+                0.12331349405529565,
+                0.12605435476777613
+              ],
+              "trades": 987
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 22,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 55,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 61,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 76,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 88,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 102,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 57.93688070890494,
+          "geometry_queries": 5321300,
+          "sequence": [
+            "District00-hook-0499",
+            "District00-hook-1297"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 27904,
+          "simulated_initial_scenarios": 27904,
+          "mc_episodes": 669696,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010320945492771013,
+          "expected_mc_interval": [
+            0.030149813192957484,
+            0.03221400229151169
+          ],
+          "worst_behavior_mc_interval": [
+            0.029209560527218032,
+            0.031273749625772236
+          ],
+          "simulated_frames_per_episode": 209
+        },
+        {
+          "id": "District00-hook-0501",
+          "map": "District00",
+          "stage": 2,
+          "band": "beam",
+          "start_region": "central_high",
+          "source": [
+            -15.0,
+            9.0,
+            -14.0
+          ],
+          "anchor": [
+            -12.5,
+            14.5,
+            -37.5
+          ],
+          "attach": [
+            -12.5,
+            13.75,
+            -36.75
+          ],
+          "landing": [
+            -12.5,
+            9.0,
+            -36.75
+          ],
+          "expected_kill_probability": 0.024921404149281408,
+          "worst_behavior_kill_probability": 0.023688499652294855,
+          "statewise_worst_kill_probability": 0.014012517385257304,
+          "local_expected": 0.1015787391345427,
+          "local_worst": 0.09655346513605442,
+          "near_prior_mass": 0.24534075104311545,
+          "enemy_nodes_sampled": 1764,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.10466269841269842,
+              "kills": 23632,
+              "n": 225792,
+              "wilson95_conditional_iid_only": [
+                0.10340674375340116,
+                0.10593210529296677
+              ],
+              "trades": 926
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.09655346513605442,
+              "kills": 21801,
+              "n": 225792,
+              "wilson95_conditional_iid_only": [
+                0.09534206873472242,
+                0.09777858969285069
+              ],
+              "trades": 899
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.10352005385487528,
+              "kills": 23374,
+              "n": 225792,
+              "wilson95_conditional_iid_only": [
+                0.10227022880791495,
+                0.10478337000380028
+              ],
+              "trades": 1120
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 17,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 37,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 43,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 58,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 71,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 85,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 52.81825170922093,
+          "geometry_queries": 5716460,
+          "sequence": [
+            "District00-hook-1298",
+            "District00-hook-0501"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 28224,
+          "simulated_initial_scenarios": 28224,
+          "mc_episodes": 677376,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.001037995652537639,
+          "expected_mc_interval": [
+            0.02388340849674377,
+            0.025959399801819046
+          ],
+          "worst_behavior_mc_interval": [
+            0.022650503999757217,
+            0.024726495304832494
+          ],
+          "simulated_frames_per_episode": 192
+        }
+      ]
+    },
+    {
+      "id": "Yagara",
+      "stage": 3,
+      "evaluated_tactics": 9,
+      "best_single_model_expected": {
+        "id": "Yagara-hook-0013",
+        "start_region": "west_lane",
+        "sequence": [
+          "Yagara-hook-0013"
+        ],
+        "value": 0.03910137265679241,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_multi_model_expected": {
+        "id": "Yagara-hook-0563",
+        "start_region": "center",
+        "sequence": [
+          "Yagara-hook-0920",
+          "Yagara-hook-0563"
+        ],
+        "value": 0.04251222228650775,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_model_maxmin": {
+        "id": "Yagara-hook-0563",
+        "start_region": "center",
+        "sequence": [
+          "Yagara-hook-0920",
+          "Yagara-hook-0563"
+        ],
+        "value": 0.04110828656560982,
+        "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+      },
+      "best_expected_separated_within_tested_set_mc_only": false,
+      "per_start": [
+        {
+          "start": "center",
+          "best_expected": {
+            "id": "Yagara-hook-0563",
+            "start_region": "center",
+            "sequence": [
+              "Yagara-hook-0920",
+              "Yagara-hook-0563"
+            ],
+            "value": 0.04251222228650775,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "Yagara-hook-0563",
+            "start_region": "center",
+            "sequence": [
+              "Yagara-hook-0920",
+              "Yagara-hook-0563"
+            ],
+            "value": 0.04110828656560982,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        },
+        {
+          "start": "central_high",
+          "best_expected": null,
+          "best_maxmin": null
+        },
+        {
+          "start": "west_lane",
+          "best_expected": {
+            "id": "Yagara-hook-0361",
+            "start_region": "west_lane",
+            "sequence": [
+              "Yagara-hook-1017",
+              "Yagara-hook-0361"
+            ],
+            "value": 0.04108417949163002,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "Yagara-hook-0361",
+            "start_region": "west_lane",
+            "sequence": [
+              "Yagara-hook-1017",
+              "Yagara-hook-0361"
+            ],
+            "value": 0.04026212826891923,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        },
+        {
+          "start": "east_lane",
+          "best_expected": {
+            "id": "Yagara-hook-0230",
+            "start_region": "east_lane",
+            "sequence": [
+              "Yagara-hook-0230"
+            ],
+            "value": 0.030692222575792634,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          },
+          "best_maxmin": {
+            "id": "Yagara-hook-0071",
+            "start_region": "east_lane",
+            "sequence": [
+              "Yagara-hook-0071"
+            ],
+            "value": 0.026889934332330476,
+            "scope": "Finite uncalibrated model candidates only; not a native recommendation."
+          }
+        }
+      ],
+      "points": [
+        {
+          "id": "Yagara-hook-0013",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "high",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "anchor": [
+            4.615,
+            8.167,
+            18.027
+          ],
+          "attach": [
+            4.615,
+            7.417,
+            17.277
+          ],
+          "landing": [
+            4.615,
+            4.5,
+            17.277
+          ],
+          "expected_kill_probability": 0.03910137265679241,
+          "worst_behavior_kill_probability": 0.036216659916685955,
+          "statewise_worst_kill_probability": 0.022666374971071514,
+          "local_expected": 0.13658612065481002,
+          "local_worst": 0.126509448261924,
+          "near_prior_mass": 0.28627632492478594,
+          "enemy_nodes_sampled": 2474,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.15285532033144705,
+              "kills": 48403,
+              "n": 316672,
+              "wilson95_conditional_iid_only": [
+                0.1515998936155049,
+                0.15410653827039356
+              ],
+              "trades": 1699
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.13039359337105902,
+              "kills": 41292,
+              "n": 316672,
+              "wilson95_conditional_iid_only": [
+                0.1292252303181156,
+                0.1315709238271648
+              ],
+              "trades": 1319
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.126509448261924,
+              "kills": 40065,
+              "n": 316672,
+              "wilson95_conditional_iid_only": [
+                0.1253655915040277,
+                0.1276813134797088
+              ],
+              "trades": 1425
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 20,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 47,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 61,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 74.98592733312398,
+          "geometry_queries": 7494405,
+          "sequence": [
+            "Yagara-hook-0013"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 38592,
+          "simulated_initial_scenarios": 39584,
+          "mc_episodes": 950016,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010480462441087978,
+          "expected_mc_interval": [
+            0.03805332641268361,
+            0.04014941890090121
+          ],
+          "worst_behavior_mc_interval": [
+            0.035168613672577155,
+            0.037264706160794754
+          ],
+          "simulated_frames_per_episode": 168
+        },
+        {
+          "id": "Yagara-hook-0230",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "high",
+          "start_region": "east_lane",
+          "source": [
+            16.0,
+            6.0,
+            -6.0
+          ],
+          "anchor": [
+            9.0,
+            9.167,
+            27.667
+          ],
+          "attach": [
+            9.75,
+            8.417,
+            27.667
+          ],
+          "landing": [
+            9.75,
+            7.5,
+            27.667
+          ],
+          "expected_kill_probability": 0.030692222575792634,
+          "worst_behavior_kill_probability": 0.015849195788012034,
+          "statewise_worst_kill_probability": 0.010583306815551955,
+          "local_expected": 0.11070208159432385,
+          "local_worst": 0.05716558848080133,
+          "near_prior_mass": 0.27725063642675307,
+          "enemy_nodes_sampled": 2396,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.14204990087646077,
+              "kills": 43569,
+              "n": 306688,
+              "wilson95_conditional_iid_only": [
+                0.14083183252659487,
+                0.14330302135600026
+              ],
+              "trades": 2196
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.05716558848080133,
+              "kills": 17526,
+              "n": 306688,
+              "wilson95_conditional_iid_only": [
+                0.05633002917760546,
+                0.05797311438537611
+              ],
+              "trades": 650
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.13289075542570952,
+              "kills": 40756,
+              "n": 306688,
+              "wilson95_conditional_iid_only": [
+                0.1316939405132612,
+                0.1340967671062662
+              ],
+              "trades": 1612
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 23,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 60,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 74,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 69.30738737503998,
+          "geometry_queries": 7016212,
+          "sequence": [
+            "Yagara-hook-0230"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 36624,
+          "simulated_initial_scenarios": 38336,
+          "mc_episodes": 920064,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010504638857160903,
+          "expected_mc_interval": [
+            0.029641758690076545,
+            0.031742686461508726
+          ],
+          "worst_behavior_mc_interval": [
+            0.014798731902295944,
+            0.016899659673728123
+          ],
+          "simulated_frames_per_episode": 181
+        },
+        {
+          "id": "Yagara-hook-0800",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "middle",
+          "start_region": "east_lane",
+          "source": [
+            16.0,
+            6.0,
+            -6.0
+          ],
+          "anchor": [
+            13.713,
+            10.744,
+            -0.938
+          ],
+          "attach": [
+            13.891,
+            9.994,
+            -1.667
+          ],
+          "landing": [
+            13.891,
+            1.5,
+            -1.667
+          ],
+          "expected_kill_probability": 0.027172891113168243,
+          "worst_behavior_kill_probability": 0.026745291888451747,
+          "statewise_worst_kill_probability": 0.01591247685720898,
+          "local_expected": 0.11981026785714284,
+          "local_worst": 0.11792490433673469,
+          "near_prior_mass": 0.22679935200185142,
+          "enemy_nodes_sampled": 1960,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.12276387117346939,
+              "kills": 30804,
+              "n": 250880,
+              "wilson95_conditional_iid_only": [
+                0.12150533177944288,
+                0.12407382233057614
+              ],
+              "trades": 1423
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.11874202806122448,
+              "kills": 29795,
+              "n": 250880,
+              "wilson95_conditional_iid_only": [
+                0.11750186568867478,
+                0.12003372536391378
+              ],
+              "trades": 944
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.11792490433673469,
+              "kills": 29580,
+              "n": 250880,
+              "wilson95_conditional_iid_only": [
+                0.1166488578069217,
+                0.11917279265364748
+              ],
+              "trades": 1826
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 14,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 25,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 39,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 52.42809299984947,
+          "geometry_queries": 5882545,
+          "sequence": [
+            "Yagara-hook-0800"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 31016,
+          "simulated_initial_scenarios": 31360,
+          "mc_episodes": 752640,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0009202405094407318,
+          "expected_mc_interval": [
+            0.02625265060372751,
+            0.028093131622608975
+          ],
+          "worst_behavior_mc_interval": [
+            0.025825051379011015,
+            0.02766553239789248
+          ],
+          "simulated_frames_per_episode": 146
+        },
+        {
+          "id": "Yagara-hook-0338",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "middle",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "anchor": [
+            -18.09,
+            8.833,
+            27.0
+          ],
+          "attach": [
+            -18.09,
+            8.083,
+            26.25
+          ],
+          "landing": [
+            -18.09,
+            1.5,
+            26.25
+          ],
+          "expected_kill_probability": 0.021130754358558972,
+          "worst_behavior_kill_probability": 0.01714645770654941,
+          "statewise_worst_kill_probability": 0.010731565320527655,
+          "local_expected": 0.10941400788895546,
+          "local_worst": 0.08878351557819053,
+          "near_prior_mass": 0.19312659106688265,
+          "enemy_nodes_sampled": 1669,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.1259549131216297,
+              "kills": 26908,
+              "n": 213632,
+              "wilson95_conditional_iid_only": [
+                0.12455462509947146,
+                0.12736865330233021
+              ],
+              "trades": 1133
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.11350359496704614,
+              "kills": 24248,
+              "n": 213632,
+              "wilson95_conditional_iid_only": [
+                0.11216540302316406,
+                0.11485568686871113
+              ],
+              "trades": 1238
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.08878351557819053,
+              "kills": 18970,
+              "n": 213632,
+              "wilson95_conditional_iid_only": [
+                0.08759870878118807,
+                0.09001119654099084
+              ],
+              "trades": 1323
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 19,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 43,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 57,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 48.14685399993323,
+          "geometry_queries": 4742553,
+          "sequence": [
+            "Yagara-hook-0338"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 25728,
+          "simulated_initial_scenarios": 26704,
+          "mc_episodes": 640896,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0008701791346763343,
+          "expected_mc_interval": [
+            0.020260575223882638,
+            0.022000933493235307
+          ],
+          "worst_behavior_mc_interval": [
+            0.016276278571873075,
+            0.018016636841225744
+          ],
+          "simulated_frames_per_episode": 164
+        },
+        {
+          "id": "Yagara-hook-0514",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "low",
+          "start_region": "east_lane",
+          "source": [
+            16.0,
+            6.0,
+            -6.0
+          ],
+          "anchor": [
+            30.103,
+            6.482,
+            10.546
+          ],
+          "attach": [
+            30.103,
+            5.802,
+            9.799
+          ],
+          "landing": [
+            30.103,
+            -0.051,
+            9.799
+          ],
+          "expected_kill_probability": 0.0035901459924400215,
+          "worst_behavior_kill_probability": 0.002631588463318676,
+          "statewise_worst_kill_probability": 0.0005758577296922009,
+          "local_expected": 0.025855034722222222,
+          "local_worst": 0.018951822916666666,
+          "near_prior_mass": 0.1388567461235825,
+          "enemy_nodes_sampled": 1200,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.018951822916666666,
+              "kills": 2911,
+              "n": 153600,
+              "wilson95_conditional_iid_only": [
+                0.01828183985055951,
+                0.01964586781166865
+              ],
+              "trades": 80
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.02611328125,
+              "kills": 4011,
+              "n": 153600,
+              "wilson95_conditional_iid_only": [
+                0.025327527947002215,
+                0.026922738168737956
+              ],
+              "trades": 258
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.0325,
+              "kills": 4992,
+              "n": 153600,
+              "wilson95_conditional_iid_only": [
+                0.03162482211761991,
+                0.03339856203711597
+              ],
+              "trades": 219
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 19,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 43,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 57,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 35.35812637489289,
+          "geometry_queries": 3454182,
+          "sequence": [
+            "Yagara-hook-0514"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 18792,
+          "simulated_initial_scenarios": 19200,
+          "mc_episodes": 460800,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0007272597082765691,
+          "expected_mc_interval": [
+            0.0028628862841634526,
+            0.0043174057007165905
+          ],
+          "worst_behavior_mc_interval": [
+            0.0019043287550421072,
+            0.003358848171595245
+          ],
+          "simulated_frames_per_episode": 164
+        },
+        {
+          "id": "Yagara-hook-0071",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "low",
+          "start_region": "east_lane",
+          "source": [
+            16.0,
+            6.0,
+            -6.0
+          ],
+          "anchor": [
+            25.164,
+            10.833,
+            -27.276
+          ],
+          "attach": [
+            24.414,
+            10.083,
+            -27.276
+          ],
+          "landing": [
+            24.414,
+            9.0,
+            -27.276
+          ],
+          "expected_kill_probability": 0.03051051550566998,
+          "worst_behavior_kill_probability": 0.026889934332330476,
+          "statewise_worst_kill_probability": 0.017021703598704002,
+          "local_expected": 0.1944482853982301,
+          "local_worst": 0.17137375553097345,
+          "near_prior_mass": 0.15690812311964822,
+          "enemy_nodes_sampled": 1356,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.23368362831858408,
+              "kills": 40560,
+              "n": 173568,
+              "wilson95_conditional_iid_only": [
+                0.23169868178827716,
+                0.23568036340818746
+              ],
+              "trades": 2398
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.17828747234513273,
+              "kills": 30945,
+              "n": 173568,
+              "wilson95_conditional_iid_only": [
+                0.17649389751972883,
+                0.18009528785421947
+              ],
+              "trades": 1748
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.17137375553097345,
+              "kills": 29745,
+              "n": 173568,
+              "wilson95_conditional_iid_only": [
+                0.16960818053199644,
+                0.17315387725099818
+              ],
+              "trades": 2016
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 19,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 45,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 59,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 39.14280379097909,
+          "geometry_queries": 3409379,
+          "sequence": [
+            "Yagara-hook-0071"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 20760,
+          "simulated_initial_scenarios": 21696,
+          "mc_episodes": 520704,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0007891548791216642,
+          "expected_mc_interval": [
+            0.029721360626548315,
+            0.031299670384791645
+          ],
+          "worst_behavior_mc_interval": [
+            0.026100779453208812,
+            0.02767908921145214
+          ],
+          "simulated_frames_per_episode": 166
+        },
+        {
+          "id": "Yagara-hook-0361",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "beam",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "anchor": [
+            4.5,
+            10.333,
+            27.333
+          ],
+          "attach": [
+            3.75,
+            9.583,
+            27.333
+          ],
+          "landing": [
+            3.75,
+            9.0,
+            27.333
+          ],
+          "expected_kill_probability": 0.04108417949163002,
+          "worst_behavior_kill_probability": 0.04026212826891923,
+          "statewise_worst_kill_probability": 0.01604807914834529,
+          "local_expected": 0.13972824839302111,
+          "local_worst": 0.13693243309720582,
+          "near_prior_mass": 0.29402915991668593,
+          "enemy_nodes_sampled": 2541,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.1420393053915781,
+              "kills": 46209,
+              "n": 325248,
+              "wilson95_conditional_iid_only": [
+                0.14087749488863618,
+                0.1432772116469286
+              ],
+              "trades": 1839
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.13693243309720582,
+              "kills": 44528,
+              "n": 325248,
+              "wilson95_conditional_iid_only": [
+                0.1357276757182349,
+                0.13809042523975218
+              ],
+              "trades": 2323
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.14021300669027942,
+              "kills": 45645,
+              "n": 325248,
+              "wilson95_conditional_iid_only": [
+                0.13914959413324277,
+                0.14153703057855413
+              ],
+              "trades": 2213
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 22,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 56,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 62,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 76,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 86,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 100,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 81.71393291698769,
+          "geometry_queries": 8135097,
+          "sequence": [
+            "Yagara-hook-1017",
+            "Yagara-hook-0361"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 39224,
+          "simulated_initial_scenarios": 40656,
+          "mc_episodes": 975744,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010723716510875876,
+          "expected_mc_interval": [
+            0.04001180784054243,
+            0.04215655114271761
+          ],
+          "worst_behavior_mc_interval": [
+            0.03918975661783164,
+            0.04133449992000682
+          ],
+          "simulated_frames_per_episode": 207
+        },
+        {
+          "id": "Yagara-hook-0563",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "beam",
+          "start_region": "center",
+          "source": [
+            0.0,
+            6.0,
+            -2.0
+          ],
+          "anchor": [
+            4.5,
+            10.0,
+            26.46
+          ],
+          "attach": [
+            3.75,
+            9.25,
+            26.46
+          ],
+          "landing": [
+            3.75,
+            9.0,
+            26.46
+          ],
+          "expected_kill_probability": 0.04251222228650775,
+          "worst_behavior_kill_probability": 0.04110828656560982,
+          "statewise_worst_kill_probability": 0.02021920562369822,
+          "local_expected": 0.14509898301737756,
+          "local_worst": 0.14030719293048974,
+          "near_prior_mass": 0.2929877343207591,
+          "enemy_nodes_sampled": 2532,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.14748716429699843,
+              "kills": 47800,
+              "n": 324096,
+              "wilson95_conditional_iid_only": [
+                0.14627053632376372,
+                0.14871214903648736
+              ],
+              "trades": 2659
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.14030719293048974,
+              "kills": 45476,
+              "n": 324096,
+              "wilson95_conditional_iid_only": [
+                0.13912495557142282,
+                0.141516470079925
+              ],
+              "trades": 3194
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.14750259182464456,
+              "kills": 47805,
+              "n": 324096,
+              "wilson95_conditional_iid_only": [
+                0.14628591086856405,
+                0.14872762918125007
+              ],
+              "trades": 2580
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 14,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 24,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 30,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 52,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 86,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 100,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 87.47690716595389,
+          "geometry_queries": 7829528,
+          "sequence": [
+            "Yagara-hook-0920",
+            "Yagara-hook-0563"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 39152,
+          "simulated_initial_scenarios": 40512,
+          "mc_episodes": 972288,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010688174727012721,
+          "expected_mc_interval": [
+            0.04144340481380648,
+            0.043581039759209024
+          ],
+          "worst_behavior_mc_interval": [
+            0.04003946909290854,
+            0.04217710403831109
+          ],
+          "simulated_frames_per_episode": 207
+        },
+        {
+          "id": "Yagara-hook-1017",
+          "map": "Yagara",
+          "stage": 3,
+          "band": "beam",
+          "start_region": "west_lane",
+          "source": [
+            -16.0,
+            6.0,
+            6.0
+          ],
+          "anchor": [
+            1.181,
+            8.5,
+            33.0
+          ],
+          "attach": [
+            1.181,
+            7.75,
+            32.25
+          ],
+          "landing": [
+            1.181,
+            4.5,
+            32.25
+          ],
+          "expected_kill_probability": 0.019276920369513225,
+          "worst_behavior_kill_probability": 0.017758476047211293,
+          "statewise_worst_kill_probability": 0.0081090170099514,
+          "local_expected": 0.06365729684116672,
+          "local_worst": 0.058643007260221626,
+          "near_prior_mass": 0.30282342050451283,
+          "enemy_nodes_sampled": 2617,
+          "mc_per_scenario": 8,
+          "behavior_results": [
+            {
+              "behavior": "stand",
+              "p_local": 0.06437476117692013,
+              "kills": 21564,
+              "n": 334976,
+              "wilson95_conditional_iid_only": [
+                0.0635486377068262,
+                0.06521087628059696
+              ],
+              "trades": 704
+            },
+            {
+              "behavior": "strafe",
+              "p_local": 0.058643007260221626,
+              "kills": 19644,
+              "n": 334976,
+              "wilson95_conditional_iid_only": [
+                0.05785238446145557,
+                0.059443753157829744
+              ],
+              "trades": 430
+            },
+            {
+              "behavior": "retreat",
+              "p_local": 0.06795412208635843,
+              "kills": 22777,
+              "n": 334976,
+              "wilson95_conditional_iid_only": [
+                0.06714835077800343,
+                0.06885339005033184
+              ],
+              "trades": 596
+            }
+          ],
+          "events": [
+            {
+              "frame": 0,
+              "event": "出钩",
+              "hook": 0
+            },
+            {
+              "frame": 22,
+              "event": "挂住",
+              "hook": 0
+            },
+            {
+              "frame": 54,
+              "event": "到达",
+              "hook": 0
+            },
+            {
+              "frame": 60,
+              "event": "出钩",
+              "hook": 1
+            },
+            {
+              "frame": 73,
+              "event": "挂住",
+              "hook": 1
+            },
+            {
+              "frame": 80,
+              "event": "到达",
+              "hook": 1
+            },
+            {
+              "frame": 94,
+              "event": "开始蓄力"
+            }
+          ],
+          "seconds": 84.16229212516919,
+          "geometry_queries": 9263705,
+          "sequence": [
+            "Yagara-hook-0516",
+            "Yagara-hook-1017"
+          ],
+          "enemy_nodes_all_within30": true,
+          "valid_initial_scenarios": 40256,
+          "simulated_initial_scenarios": 41872,
+          "mc_episodes": 1004928,
+          "mc_uniform_family_delta": 0.05,
+          "mc_hoeffding_halfwidth": 0.0010917128205863633,
+          "expected_mc_interval": [
+            0.01818520754892686,
+            0.02036863319009959
+          ],
+          "worst_behavior_mc_interval": [
+            0.016666763226624928,
+            0.018850188867797657
+          ],
+          "simulated_frames_per_episode": 201
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No native .52 ranking cohort: Spearman/Kendall/calibration error are undefined, not zero.",
+    "Only six single-hook quantile candidates plus three beam sequences per map finely evaluated; coarse screening does not certify excluded hooks.",
+    "Beam nodes capped48/map, width12, maximum3 hooks; not an exhaustive continuous-surface optimum.",
+    "Candidate binding assumes static material geometry; native feasibility remains unverified for most points.",
+    "14f final setup is not matched by native aim prototypes; slow working smoke needed85-101f and fast attempts failed.",
+    "Initial squid is currently a low-eye approximation throughout the duel; emergence/ink and eye-height transition on shooting are incomplete.",
+    "Attacker linear lead uses target state supplied by finite scenario; target acquisition is idealized and is not a policy implementation.",
+    "Gun flight and distance falloff are phenomenological fits; sparse native evidence does not identify all ballistic defaults/PDF.",
+    "No armor benefit assumed; native armor/contact/phase timing remain uncertain.",
+    "Flight contact blast is not included; scores concern the final target two-sword tactic within30u with <=6u opponent movement.",
+    "Ray geometry matches CollisionMesh, but that alone does not validate weapons, callbacks or native timing."
+  ],
+  "provenance": {
+    "numpy_version": "2.5.4",
+    "python_version": "3.13.8",
+    "geometry_sha256": {
+      "work/arena/maps/Yunohana/navigation.json": "15da29e0e3713100e551f6fbd879f256af5e7e3389c3a200de4ba91daae50329",
+      "work/arena/maps/Yunohana/sight.npz": "02151e94e562ae2744229c851b8db0c80248340f0cfe888a176a2e4a22623691",
+      "work/arena/maps/District00/navigation.json": "15d8f347a7e44496e428e053a12d033dab7548be4ee585ac2f64f03cd3351b5b",
+      "work/arena/maps/District00/sight.npz": "41276870ed4b0579eda724c2743131ff0008429ef9815c7156e50b6e3ffa261f",
+      "work/arena/maps/Yagara/navigation.json": "81b2ddd93666fe5ef45d3d6386fad5a220b222f7ad9d5d396f9c55e4c61b0c36",
+      "work/arena/maps/Yagara/sight.npz": "3c7dad69da85c483aea552e0cfce016aa8ee920c7896f536e117adcee7691fbf"
+    },
+    "geometry_hash_scope": "Collected at closeout; initial immutable input snapshot was not captured. No map writers used in this run.",
+    "source_sha256": {
+      "tools/zipcaster_d3/model.py": "a4c274d99267e468ab29d890507e2befb92875e5900d68b551f4b496a808302b",
+      "tools/zipcaster_d3/search.py": "950fadf0071d779721b68d1cda4e20015cdcbd39310860f16c48f381162933ab",
+      "tools/zipcaster_d3/geometry.py": "7c3266499ba4927e85f60df8984b8125d5154ca1a18be1020e2d54c6efb21aa1",
+      "tools/zipcaster_d3/batch_geometry.py": "6fcd5415d4497ebcba345d37bd79899fbdf30ec52efdbf2b3e39658c4b719c8f"
+    },
+    "inputs": {
+      "work/d3/coarse-v1.json": "5e8db4e6fa4b4d5ba210ea939a54ccfcd78a1952f5d9967f881912eb926f52ab",
+      "work/d3/beam-v1.json": "28adf71eeb0f494ada478194b7a5965b37a94c189d52d46c79bfe3bb5980e4df",
+      "work/d3/fine-v1-stage1.json": "491ef21c13a50b1ce49eeab1e5b0db27f29bac92e1cbff7ec18694e5a079d287",
+      "work/d3/fine-v1-stage2/result.json": "776f53b28e3f8c7efcaa3b20639ca2881e97d661e44a0aee63313c7d713e5092",
+      "work/d3/fine-v1-stage3/result.json": "9dc0431ffee5e95254929575389c85612cf1e8710c9e3895d12d7252ac199781"
+    },
+    "detail_outputs": [
+      "work/d3/fine-v1-stage1.json",
+      "work/d3/fine-v1-stage2/result.json",
+      "work/d3/fine-v1-stage3/result.json"
+    ],
+    "phase1_report_sha256": "1075c2559b6a76566cbbe6c8b43ad73608dfd62705b754ee139a4b590d1368d0"
+  }
+}

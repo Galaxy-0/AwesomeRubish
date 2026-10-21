@@ -1,0 +1,24 @@
+"""Frozen native prototype audit: distinguish controller failures from duel loss."""
+import datetime,glob,json,math,re,subprocess,sys
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from native import ROOT,sha
+rows=[];owned=[]
+for p in sorted((ROOT/'work/a6').glob('d3-duel-*/result.json')):
+    d=json.loads(p.read_text());tested=p.parent/'tested-validate.py';code=tested.read_text();method='pulse'if'from aim import PulseAim'in code else'direct_stick'if'fast_turn(lab.obs(0),target)'in code else'calibrated_slow_gyro'
+    steps=[json.loads(x)for x in p.with_name('steps.jsonl').read_text().splitlines()];s=next(i for i,x in enumerate(steps)if x['label']=='duel-R');base=steps[s-1]['infos']['player_0']['frame'];aim=[x for x in steps if x['label']=='duel-target-aim'];charge=next((i for i,x in enumerate(steps)if x['label']=='duel-charge'),None)
+    arrival=next((e['frame']-base for e in d.get('hook_events',[])if e['event']=='native-arrival'),None);charge_start=steps[charge-1]['infos']['player_0']['frame']-base if charge is not None else None
+    errors=[];target=d['d3_point']['target']
+    for x in aim[-16:]:
+        a=x['infos']['player_0'];p0=a['position'];v=a['own_view'];bearing=math.atan2(target[0]-p0[0],target[2]-p0[2]);pitch=max(-.9,min(.9,math.atan2(target[1]-p0[1],max(math.hypot(target[0]-p0[0],target[2]-p0[2]),.05))))
+        errors.append(dict(frame=a['frame'],yaw_degrees=math.degrees(math.atan2(math.sin(bearing-v['yaw']),math.cos(bearing-v['yaw']))),pitch_degrees=math.degrees(v['pitch']-pitch)))
+    history=d.get('reactive_history',[]);first=next((x['t']for x in history if x['visible']),None)
+    assert all(x['visible']and first is not None and x['t']-first>=18 for x in history if x['fired'])
+    for source,digest in d.get('raw_sha256',{}).items():assert sha(source)==digest,source
+    outcome=d.get('duel_outcome')or{};owned.extend(d['owned_pids'])
+    rows.append(dict(point=d['d3_point']['id'],trial=d['trial'],method=method,artifact=str(p.relative_to(ROOT)),sha256=sha(p),tested_driver_sha256=sha(tested),raw_sha256=d['raw_sha256'],session=d['session'],owned_pids=d['owned_pids'],driver_passed=d['passed'],errors=d['errors'],native_bind_seen=any(e.get('state')in(2,3)for e in d.get('hook_events',[])),arrival_frame_from_R=arrival,charge_start_frame_from_R=charge_start,post_arrival_setup=charge_start-arrival if charge_start is not None and arrival is not None else None,aim_frames=len(aim),last_errors=errors,first_seen_controller_tick=first,visible_ticks=sum(x['visible']for x in history),firing_ticks=sum(x['fired']for x in history),visibility_gate_audited=True,raw_outcome={k:outcome.get(k)for k in ['kill','attacker_alive','target_hp','attacker_hp']},calibration_eligible=False,exclusion='Slow gyro has a different preparation-time C; direct stick did not settle by90f; pulse aborts at90f. No matched model/native cohort.'))
+for pid in owned:
+    cmd=subprocess.run(['ps','-p',str(pid),'-o','comm='],text=True,capture_output=True).stdout;assert'dmhost'not in cmd
+rounds=[dict(round=1,method='direct_stick',rooms=sum(r['method']=='direct_stick'for r in rows),result='90f budget, no stable6f aim window; macro completion is not evidence of a valid shot sequence.'),dict(round=2,method='pulse',rooms=sum(r['method']=='pulse'for r in rows),result='Both maps explicitly failed bounded own-feedback aim. Large yaw/pitch errors, not just a loose hit threshold.')]
+out=dict(schema='inklab.d3.native_blocker.v1',date='2026-10-21',status='stopped_after_two_controller_calibration_rounds',full_d3_passed=False,prototype_rooms=len(rows),owned_hosts=len(owned),all_hosts_exited=True,rounds=rounds,prototypes=rows,spearman=None,kendall_tau_b=None,calibration_error=None,metric_status='No eligible matched-C model/native cohort; do not convert fixture failures into kill-rate samples.',diagnosis=dict(observed='Native binding and filtered visibility work; rapid own-feedback target alignment fails. Slow gyro smoke works but needs85-101f preparation versus model14f.',not_proven=['Root cause of large pulse errors; gyro orientation coupling, gain and sampling latency remain hypotheses.','Which hook has the highest native kill probability.','Multi-hook native validation.']),remaining_options=['Calibrate SuperHook-state gyro axes/gain against own_view sample age, or replay a known-good recorded aim trace.','Alternatively explicitly choose the slower C and rebuild/revalidate its timing model; that is a different conditional optimization task.'],constraints=dict(no_policy_changes=True,no_T1_or_S1=True,no_inflight_rehook_RL_STALL_work=True,no_game_assets_committed=True))
+(ROOT/'notes/d3-blocker-20261021.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n');print(json.dumps(dict(prototypes=len(rows),rounds=rounds,closed=True),ensure_ascii=False,indent=2))
