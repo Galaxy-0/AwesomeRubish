@@ -36,10 +36,11 @@ class DuelLab(Lab):
             if p.is_file():self.result['raw_sha256'][str(p)]=sha(p)
         self.save()
 @contextmanager
-def owned_options(special=False,sensors=False,bullets=False,capture=None):
+def owned_options(special=False,sensors=False,bullets=False,capture=None,meter='infinite'):
+    if meter not in ('full','infinite'):raise ValueError('invalid fixture meter')
     original=NativeSession.host_options;original_env=session_module.host_environment
     def options(self,player):
-        return original(self,player)|{'DM_RL_STALL_SECONDS':'120'}|({'DM_D2B_SENSOR':'1'}if sensors and player==0 else{})|({'DM_TEST_SPECIAL':'infinite'}if special and player==0 else{})|({'DM_D3_BULLET':'1'}if bullets and player==1 else{})|({'DM_D3_BULLET_CAPTURE':str(capture)}if capture and player==1 else{})
+        return original(self,player)|{'DM_RL_STALL_SECONDS':'120'}|({'DM_D2B_SENSOR':'1'}if sensors and player==0 else{})|({'DM_TEST_SPECIAL':meter}if special and player==0 else{})|({'DM_D3_BULLET':'1'}if bullets and player==1 else{})|({'DM_D3_BULLET_CAPTURE':str(capture)}if capture and player==1 else{})
     def environment(*a,**kw):
         result=original_env(*a,**kw);result.pop('DM_WATCH',None);result.pop('DM_WATCH_STALL',None);return result
     with patch.object(NativeSession,'host_options',options),patch.object(session_module,'host_environment',environment):yield

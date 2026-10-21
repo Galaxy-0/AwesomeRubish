@@ -61,3 +61,9 @@ OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 .venv/bin/python tools/zipcaster
 ```
 
 其它两图用`--stage 2|3`与各自输出目录；同目录的partial文件会覆盖，必须各用独立目录。完整每敌人格结果只放work，不提交派生网格；提交的notes只保留27个tactic摘要／源SHA。当前全部原生已关闭，按两轮上限停止，不恢复T1/S1，不再启动原型。
+
+## 新机制恢复（2026-10-21，进行中）
+
+按玩家B跳离与槽预算提示重置卡点计数。`hint_probe.py` / `report_hint_summary.py`为独立新cohort，旧停止原件不动。机制检查点见`notes/d3-hint-20261021.md/.json`：B6两图静止靶KO、到达后预瞄/B/续钩见证、XOR剩余计数与动作成本。
+
+`budget.py`有限随机资源DP、`model_v2.py`跳离/落地模板与预算、`search_v2.py`/`hooks_v2.py`另路径重跑；当前仍未完成原生排名校准与多目标条件转移。`validate_hint.py`是新B6/有界普通瞄准对练原型，只把通过前置条件的窗口标可统计，结果仍需与同条件模型匹配。不得把`calibration_eligible`等同已校准。运行命令、原件SHA及未定项见检查点；不覆盖任何旧输出。
