@@ -1,0 +1,12 @@
+# Generated deliverables and all derived map/trace data stay private.
+/index.html
+/data/
+/meshes/
+/traces/
+/*.json
+/*.npz
+/*.npy
+/*.bin
+/*.glb
+/*.gltf
+__pycache__/
