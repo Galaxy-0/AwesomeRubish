@@ -21,3 +21,18 @@
 `control.py`只供可信测量驱动：显式`new_lab(host)`→`fixture(lab)`→`set_native(player,yaw,native_pitch)`。测试标志注入该自建host的options，永不设置全局环境以绕过正式入口；读写文件是fixture私有的单调序号/有限角命令，不是策略API。普通导航/回墨准备必须先`off()`；写入每帧在游戏正常相机计算上下文消费，native pitch不等于世界仰角。默认宏不进生产宿主，源/build/module哈希与实际原件绑定。
 
 `hook_mapping.py plan|room|batch`是下一步的预定120方向夹具。每房8次独立自然回程，不战斗、不到飞行中再R；三房上限由批处理父进程约束。plan输出新路径且事前固定train/held-out；记录实际输入、tip/锚点/法线、到达姿态和失败，不把请求锚点当实际挂点。第2步尚未完成，不应直接把计划当预测准确率。
+
+## 第2步：120方向闭合映射
+
+`notes/d3r-mapping-20261022.md/.json`：每图40，实际锚点/法线/到达姿态和失败均留存。最终未参与拟合48次中墙面候选35/36正确，完整方向41/48；近地面/边界不外推。代理半径不是原生半径。测量只签绑定/位置，不签击杀率或最高挂点。
+
+```sh
+# fresh output paths; parameter files immutable, evaluation never refits.
+.venv/bin/python tools/zipcaster_d3r/ray_model.py freeze \
+  --snapshot work/d3r/mapping-partial-closed5.json --out work/d3r/new-ray.json
+.venv/bin/python tools/zipcaster_d3r/sweep_fit.py evaluate \
+  --parameters work/d3r/sweep-v1-frozen.json --out work/d3r/new-evaluation.json
+.venv/bin/python -m unittest tools.zipcaster_d3r.test_ray_model tools.zipcaster_d3r.test_sphere_cast
+```
+
+历史冻结链：R1线性竖直分量；R2正切方向只用批0/1训练，批2–4确认；R3扫掠/材料只用批0–2事前train，批3/4确认。早期开发held-out不冒称最终盲测。70种离散候选设置和冻结时刻记录到JSON；不按最终确认结果反复改参数。
