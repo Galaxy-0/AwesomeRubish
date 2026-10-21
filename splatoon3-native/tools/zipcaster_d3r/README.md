@@ -46,3 +46,18 @@
 `ideal_search_v2.py`枚举18个实测墙面起点/挂点、四操作档与合法程序，共126份有限估计；全可达格粗筛，近30u每点12敌位×8向×有效形态、三行为、MC16精算。不是全地图连续挂点最优证明，也不是把未精算格插值成真实概率。`native_kinematics.py`是两份低墙B6的数值派生，`blade_field.py`用参数core radius.3/.5和场地扫掠；两个轻斩原生停止点复现<.001u。侧球、动态物体、晚期曲线与高墙地面外推仍有界限。`ideal_search.py`/v1结果是修正前快照，20满蓄项已被实测否定，不用于推荐。
 
 `calibration_plan_v2.py`事前固定54案：六点/图、按40f full-light新模型分高/中/低，每点三个人形站位/朝向，试次0/1训练、2留出。站位从bravo可达格5..20u、距源>=9u中均匀抽，不按原生胜负挑选；和全图先验分开报告。`batch_duel_v4.py`固定<=3房，源/参数/计划SHA冻结，setup void与战术绑定失败分开；不自动重抽战斗失败。
+
+## 第4步：固定原生组与有限搜索
+
+最终证据`notes/d3r-calibration-20261022.md/.json`：54有效/4前置void，7击倒，54绑定到达；全图排名未证实。`duel_v5.py`只修开局atlas投影，R后与v4相同。`setup_navigation.py`只读构造可达导航图，普通输入摆位，不写游戏位置。`retry_voids.py`只能选原组setup void，不重抽战斗输例。
+
+`sequence_search_v2.py`对测量墙面用方向/体积/材料校验图边，深度3/束宽6、选择9条预测序列；`sequence_fine.py`预算含多次出钩与出刀。和18单钩一起189合法程序，1,741,824 MC回合；12敌格/点、空白不代表零，全图最优未证明。连钩未做原生战斗校准。
+
+`conditional.py`只读before-R初态预测同54例；`motion_calibration.py`只用训练0/1的自身无大受击轨迹标定40f两刀运动；`conditional_v2.py`读取该冻结标定后评估，不能读当前duel未来轨迹。`report_calibration.py`再用训练结果拟合标量ρ、固定试次2留出，输出常数/全零基线。不会把特定40f初态修正冒充其它速度/全图校准。留出日志可见，非盲测。最高挂点未证实，不无限依留出调参。
+
+```sh
+.venv/bin/python tools/zipcaster_d3r/report_calibration.py
+.venv/bin/python -m unittest tools.zipcaster_d3r.test_motion_calibration tools.zipcaster_d3r.test_setup_navigation
+```
+
+所有work输入保留，报告校验源/计划/原件/保护宿主/模块/原存档SHA；不提交游戏资源/派生网格，页面另用showcase构建。
