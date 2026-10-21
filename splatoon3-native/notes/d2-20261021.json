@@ -1,0 +1,781 @@
+{
+  "schema": "inklab.d2.report.v1",
+  "date": "2026-10-21",
+  "status": "partial_blocked",
+  "full_d2_passed": false,
+  "fixture": {
+    "map": "Yunohana",
+    "weapon": 8000,
+    "max_concurrent_rooms": 3,
+    "players_per_room": 2,
+    "pixels": true,
+    "clock": "fixed60",
+    "loadout": [
+      {
+        "head": {
+          "main": "quick_super_jump",
+          "subs": [
+            "quick_super_jump",
+            "quick_super_jump",
+            "quick_super_jump"
+          ]
+        },
+        "clothes": {
+          "main": "quick_super_jump",
+          "subs": [
+            "quick_super_jump",
+            "quick_super_jump",
+            "quick_super_jump"
+          ]
+        },
+        "shoes": {
+          "main": "quick_super_jump",
+          "subs": [
+            "quick_super_jump",
+            "quick_super_jump",
+            "quick_super_jump"
+          ]
+        }
+      },
+      {
+        "head": {
+          "main": "quick_super_jump",
+          "subs": [
+            "quick_super_jump",
+            "quick_super_jump",
+            "quick_super_jump"
+          ]
+        },
+        "clothes": {
+          "main": "quick_super_jump",
+          "subs": [
+            "quick_super_jump",
+            "quick_super_jump",
+            "quick_super_jump"
+          ]
+        },
+        "shoes": {
+          "main": "quick_super_jump",
+          "subs": [
+            "quick_super_jump",
+            "quick_super_jump",
+            "quick_super_jump"
+          ]
+        }
+      }
+    ],
+    "special_meter": "Only actor0, test_only derivative; infinite except defense-full-v3 and death-long full.",
+    "production_and_policy_changes": false
+  },
+  "parameters": {
+    "schema": "inklab.d2.parameters.v1",
+    "build": "11.3.0",
+    "special_id": 3,
+    "weapon_id": 8000,
+    "parameter_values": {
+      "duration_counter_frames": 540,
+      "hook_max_length": 35.0,
+      "hook_min_length_floor": 3.0,
+      "hook_min_length_wall": 0.0,
+      "shot_to_attack_wait_frames": 12,
+      "failed_shot_interval_frames": 20,
+      "ink_capacity_ratio": 1.5,
+      "ink_per_hook": {
+        "High": 0.014999999664723873,
+        "Low": 0.03999999910593033,
+        "Mid": 0.02500000037252903
+      },
+      "ink_per_second": {
+        "High": 0.11999999731779099,
+        "Low": 0.15000000596046448,
+        "Mid": 0.13050000369548798
+      },
+      "attack_initial_speed": 0.05999999865889549,
+      "attack_acceleration": 0.10000000149011612,
+      "hook_projectile_speed": {
+        "High": 3.359999895095825,
+        "Low": 3.359999895095825,
+        "Mid": 3.359999895095825
+      },
+      "hook_field_collision_radius": 0.5,
+      "hook_travel_player_radius": 1.2000000476837158,
+      "hook_blast_distance_damage": [
+        {
+          "Damage": 450,
+          "Distance": 5.25
+        },
+        {
+          "Damage": 350,
+          "Distance": 6.0
+        }
+      ]
+    },
+    "provenance": {
+      "path": "work/data/v720896/RomFS/Pack/Params.pack.zs",
+      "sha256": "98fd2f33d5857655aa62ac9e56b4b35de59fdff0f4e0c468ff73d5637dc7455f",
+      "entry": "Component/GameParameterTable/WeaponSpSuperHook.game__GameParameterTable.bgyml",
+      "entry_sha256": "a312c30a7f15ba830427ae3f82b4fc9a99046a8f3d7e60cce861a2890e35ed74"
+    },
+    "caveats": [
+      "Sparse parameter overrides; omitted values are unknown until native/default-code verification.",
+      "Internal counters are not measured input-to-action or return animation durations.",
+      "Raw damage units are not yet divided or presented as native damage evidence.",
+      "No assumption that paintability or swim material implies hook bind eligibility."
+    ]
+  },
+  "native": {
+    "discovery": [
+      {
+        "case": "R-tap",
+        "rs_before_frame": 4414,
+        "R_release_first_input_frame": 4447,
+        "first_special_below_full_ack_delta": 16,
+        "first_refill_observed_ack_delta": 596,
+        "hold_frames": 1,
+        "hold_displacement": 0.0,
+        "release_displacement": 4.140289946370162,
+        "first_motion_sample": 4469,
+        "peak_segment_speed": 32.39999557726968
+      },
+      {
+        "case": "R-hold30",
+        "rs_before_frame": 5334,
+        "R_release_first_input_frame": 5396,
+        "first_special_below_full_ack_delta": 16,
+        "first_refill_observed_ack_delta": 601,
+        "hold_frames": 30,
+        "hold_displacement": 1.4300000001910007e-06,
+        "release_displacement": 4.137626701646062,
+        "first_motion_sample": 5417,
+        "peak_segment_speed": 32.40000727571189
+      },
+      {
+        "case": "R-hold60",
+        "rs_before_frame": 6259,
+        "R_release_first_input_frame": 6351,
+        "first_special_below_full_ack_delta": 15,
+        "first_refill_observed_ack_delta": 595,
+        "hold_frames": 60,
+        "hold_displacement": 1.0969999999943525e-05,
+        "release_displacement": 4.134982943417062,
+        "first_motion_sample": 6369,
+        "peak_segment_speed": 32.399999545982666
+      }
+    ],
+    "range_trials": [
+      {
+        "case": "range10",
+        "eye_to_intended_surface": 9.84331102888854,
+        "displacement": 9.282325148325489,
+        "peak_segment_speed": 36.06431748528874
+      },
+      {
+        "case": "range24",
+        "eye_to_intended_surface": 23.509763777479595,
+        "displacement": 22.933440632682483,
+        "peak_segment_speed": 64.80000874094381
+      },
+      {
+        "case": "range34",
+        "eye_to_intended_surface": 33.88247698747823,
+        "displacement": 33.26056710772796,
+        "peak_segment_speed": 64.80002931678378
+      },
+      {
+        "case": "range35",
+        "eye_to_intended_surface": 34.95518491955221,
+        "displacement": 34.32699737397591,
+        "peak_segment_speed": 64.80002038916392
+      },
+      {
+        "case": "range36",
+        "eye_to_intended_surface": 35.76090620696986,
+        "displacement": 35.12188915750587,
+        "peak_segment_speed": 64.79999733040299
+      },
+      {
+        "case": "range37",
+        "eye_to_intended_surface": 37.39806436073232,
+        "displacement": 36.76129163833661,
+        "peak_segment_speed": 64.80000589734604
+      },
+      {
+        "case": "range38",
+        "eye_to_intended_surface": 38.250620112261636,
+        "displacement": 8.999999998593466e-07,
+        "peak_segment_speed": 0
+      }
+    ],
+    "lifecycles": [
+      {
+        "run": "high-target",
+        "case": "ha",
+        "rs_before_frame": 5579,
+        "first_refill_ack_delta": 551,
+        "return_first_Y_over_origin_plus_half": 551,
+        "return_first_within_point_one_of_origin": 647,
+        "observed_air_window": 96,
+        "final_distance_to_origin": 0.006224674199995321,
+        "caveat": "Observed position thresholds, not exact animation boundaries or control unlock; QS57AP."
+      },
+      {
+        "run": "armor",
+        "case": "idle",
+        "rs_before_frame": 9373,
+        "first_refill_ack_delta": 614,
+        "return_first_Y_over_origin_plus_half": 614,
+        "return_first_within_point_one_of_origin": 710,
+        "observed_air_window": 96,
+        "final_distance_to_origin": 0.012028700594323658,
+        "caveat": "Observed position thresholds, not exact animation boundaries or control unlock; QS57AP."
+      }
+    ],
+    "main_weapon": {
+      "grounded_special_charge_frames": {
+        "20": 35,
+        "21": 70
+      },
+      "wall_start_charge36_damage": 70,
+      "mid_combo": [
+        {
+          "label": "mc-full-release",
+          "actor0_ack": 8688,
+          "target_ack": 8370,
+          "target_sample": 8369,
+          "relative_to_RS": 251,
+          "hp_before": 1,
+          "hp_after": 0.300000012,
+          "alive": true
+        },
+        {
+          "label": "mc-light-release",
+          "actor0_ack": 8783,
+          "target_ack": 8465,
+          "target_sample": 8464,
+          "relative_to_RS": 346,
+          "hp_before": 0.300000012,
+          "hp_after": 0,
+          "alive": false
+        }
+      ],
+      "mid_combo_charge_start_to_down_first_ack": 150,
+      "mid_combo_RS_to_down_first_ack": 346,
+      "mid_combo_full_to_light_damage_observation_gap": 95,
+      "tested_successes": 1,
+      "high_target_attempts": 2,
+      "high_target_hits": 0
+    },
+    "incoming_damage": {
+      "normal_full": 70,
+      "startup_full": 70,
+      "attached_late_full": 70,
+      "attached_early_HP_loss": 0,
+      "early_contact_verified": false,
+      "conclusion": "Late attachment and startup can take full70. Early no-HP-loss is unresolved, not invincibility proof."
+    },
+    "death": {
+      "first_dead_frame": 4482,
+      "special_at_death": 0.469999999,
+      "special_after_respawn": 0.230000004,
+      "return_to_special_origin": false,
+      "respawn_position": [
+        -23.9,
+        10.5,
+        71.43
+      ],
+      "caveat": "N=1, full meter fixture; dead coordinates stale, no exact internal meter-loss rule inferred."
+    },
+    "wall_jump": {
+      "attach_y": 5.27,
+      "peak_y": 7.99073124,
+      "observed": true
+    },
+    "flight_input": {
+      "R_release_25_then_ZR1": "No extra main-weapon ink cost or detach; input not demonstrated accepted.",
+      "R_release_25_then_ZR21": "No extra main-weapon ink cost; no full hit demonstrated.",
+      "R_release_70_then_ZR1": "Approx .04 additional ink cost and fall from wall; main attack accepted after arrival.",
+      "limitations": "Timing-specific; flight phase inferred from body motion, no native action enum."
+    },
+    "rehook": "Second wall-origin launch moved body; intended surface not confirmed. During-flight retry room later RL_STALL."
+  },
+  "combos": [
+    {
+      "id": "full-light",
+      "damage": 105,
+      "can_KO_100": true,
+      "native_verified": "One stationary mid target only",
+      "observed_charge_start_to_down": 150,
+      "earliest_claim": false
+    },
+    {
+      "id": "bomb-light",
+      "damage": 95,
+      "can_KO_100": false,
+      "native_verified": false,
+      "caveat": "A6 bomb60 + isolated light35; no hook/contact damage included."
+    },
+    {
+      "id": "bomb-full",
+      "damage": 130,
+      "can_KO_100": true,
+      "native_verified": false,
+      "frames": null,
+      "caveat": "Arithmetic only. R becomes hook during special; no alternate bomb input demonstrated."
+    },
+    {
+      "id": "airborne-high",
+      "damage": null,
+      "can_KO_100": null,
+      "native_verified": false,
+      "frames": null,
+      "caveat": "Two high-target attempts missed; do not assign a successful combo duration."
+    }
+  ],
+  "maps": [
+    {
+      "id": "Yunohana",
+      "wall_samples": 3960,
+      "candidates": 818,
+      "shortlist": [
+        "Yunohana-hook-0817",
+        "Yunohana-hook-0316",
+        "Yunohana-hook-0315",
+        "Yunohana-hook-0814",
+        "Yunohana-hook-0553"
+      ],
+      "native_verified_count": 0,
+      "sources": {
+        "work/arena/maps/Yunohana/manifest.json": "5b21fb44e389dfa22a3385e1b0958e3759a40fa1e7b03f96bae555de2c3fba27",
+        "work/arena/maps/Yunohana/sight.npz": "02151e94e562ae2744229c851b8db0c80248340f0cfe888a176a2e4a22623691",
+        "work/arena/maps/Yunohana/navigation.json": "15da29e0e3713100e551f6fbd879f256af5e7e3389c3a200de4ba91daae50329"
+      }
+    },
+    {
+      "id": "District00",
+      "wall_samples": 11408,
+      "candidates": 1327,
+      "shortlist": [
+        "District00-hook-0606",
+        "District00-hook-0607",
+        "District00-hook-0605",
+        "District00-hook-0604",
+        "District00-hook-0494"
+      ],
+      "native_verified_count": 0,
+      "sources": {
+        "work/arena/maps/District00/manifest.json": "4d0983d40a2a1fcf426b17a897eca2b433462c0d06218d3ae68c543d9a2e755d",
+        "work/arena/maps/District00/sight.npz": "41276870ed4b0579eda724c2743131ff0008429ef9815c7156e50b6e3ffa261f",
+        "work/arena/maps/District00/navigation.json": "15d8f347a7e44496e428e053a12d033dab7548be4ee585ac2f64f03cd3351b5b"
+      }
+    },
+    {
+      "id": "Yagara",
+      "wall_samples": 4358,
+      "candidates": 1035,
+      "shortlist": [
+        "Yagara-hook-0821",
+        "Yagara-hook-0624",
+        "Yagara-hook-0626",
+        "Yagara-hook-0933",
+        "Yagara-hook-0782"
+      ],
+      "native_verified_count": 0,
+      "sources": {
+        "work/arena/maps/Yagara/manifest.json": "9fb3e7e688c659aea2329247be801feec8d52bb307298497faa3390996f0147c",
+        "work/arena/maps/Yagara/sight.npz": "3c7dad69da85c483aea552e0cfce016aa8ee920c7896f536e117adcee7691fbf",
+        "work/arena/maps/Yagara/navigation.json": "81b2ddd93666fe5ef45d3d6386fad5a220b222f7ad9d5d396f9c55e4c61b0c36"
+      }
+    }
+  ],
+  "blockers": [
+    {
+      "id": "native-hook-query-observability",
+      "evidence": [
+        "Ceiling-solid setup blocked, invalid dependent trial.",
+        "Fence ceiling, high ceiling, and rehook actual endpoints differ from intended surfaces.",
+        "Two high-target shots miss despite full ink cost; mid fixture succeeds."
+      ],
+      "required": "Read-only native hook hitpoint/action/armor state, then repeat ceiling/range and high-target control shots."
+    },
+    {
+      "id": "paired-native-flight-retry-stall",
+      "evidence": [
+        "surfaces-v3 player1 RL_STALL frame10784, active wait about120s, game remaining about23.9s.",
+        "Driver cleanup completed; protection unchanged."
+      ],
+      "required": "Isolated recorded flight-R2 replay with phase/PIA/frame-barrier instrumentation; no weakening watchdog."
+    }
+  ],
+  "unresolved": [
+    "Exact hook muzzle-to-hit max distance and angular cutoff; wall positive/negative bracket only.",
+    "Floor/ceiling bind legality and material flag rule in native query.",
+    "Early travel/arrival armor HP, damage reduction or invulnerability windows.",
+    "Earliest wall-start full charge / attack-ready and control-unlock frames.",
+    "Bomb use during special and airborne high-target successful combos.",
+    "Native validation of three-map top static candidates; native fixture is not a ranked static point."
+  ],
+  "raw_runs": [
+    {
+      "name": "armor",
+      "artifacts": "work/a6/d2-armor-20261021-125736-635333",
+      "driver_completed": true,
+      "errors": [],
+      "fixture_failures": [],
+      "sha256": {
+        "work/tests/m6-2p-20261021-125736-690366/player-1/host.log": "bfb22ca4ed589f29ea6bbd23de7895f2ed9f03977be00209db7fdfd5e3ab7880",
+        "work/a6/d2-armor-20261021-125736-635333/steps.jsonl": "495241aa14095ce9e0156b46ef91b146e8aee60f646506a6ca6e3542ad2020aa",
+        "work/tests/m6-2p-20261021-125736-690366/player-0/host.log": "b1e4e569f76f578ea03eb6fd43e288829f5d1470e99f550c7dc8f9dcd1933c0a",
+        "work/d2/armor.commands.jsonl": "6f88c4f1b345ecb4e44fbb70aa110e969ed2b1582364c19185e7faaf0265b7d4",
+        "work/d2/armor.commands.results.jsonl": "141b89d17d01eec7683a54c6f880c3053bee7a0baa8a507b46dba05ba7cb5d62",
+        "work/a6/d2-armor-20261021-125736-635333/result.json": "cc58e16867c023da90544179a66b12cb22983a47f603f7c4194fc7482c1105fc",
+        "work/a6/d2-armor-20261021-125736-635333/tested-serve.py": "245eedb4d7d8698737e8df157dd9e5eaea0f4e704d19298f65c70148e80e5c83"
+      }
+    },
+    {
+      "name": "combat-fast",
+      "artifacts": "work/a6/d2-combat-fast-20261021-122150-336112",
+      "driver_completed": false,
+      "errors": [
+        "BrokenPipeError(32, 'Broken pipe')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit 142; player-1: unclean exit 142')"
+      ],
+      "fixture_failures": [],
+      "sha256": {
+        "work/d2/combat-fast.commands.jsonl": "3a29156e9ea1e5f84ffa6eea081efbf04ced48c8b27a73e2c87bcc94302053a8",
+        "work/a6/d2-combat-fast-20261021-122150-336112/result.json": "ad63fa4f3d97f089ad7e691fb2eadff6693c3be5abb238b7931774b6449403f6",
+        "work/d2/combat-fast.commands.results.jsonl": "aa4b9d4c88a0ac397343ec57172dfa060831bb58b046592e675f113e88341bf4",
+        "work/tests/m6-2p-20261021-122150-392026/player-1/host.log": "ddfcb747565ad483e7dd5e5ecf03b45286c23772a3af269fd5caa787743ff1e5",
+        "work/a6/d2-combat-fast-20261021-122150-336112/tested-serve.py": "4599a5e8c3bec2efb518aa7376ff2d25ca6ae29bee1ed0cf28ca7a5009ef41c6",
+        "work/tests/m6-2p-20261021-122150-392026/player-0/host.log": "8269c356a2563c19dafce07229eb224db44cd7d146364331d8c39f79a8a88e97",
+        "work/a6/d2-combat-fast-20261021-122150-336112/steps.jsonl": "435f6d50c66fdfeda29689c96bf01e60a4240b8f53f0ea397db272e73401ed20"
+      }
+    },
+    {
+      "name": "combat",
+      "artifacts": "work/a6/d2-combat-20261021-121529-504427",
+      "driver_completed": false,
+      "errors": [
+        "RuntimeError('special lifecycle did not return within 900 presents')"
+      ],
+      "fixture_failures": [],
+      "sha256": {
+        "work/a6/d2-combat-20261021-121529-504427/steps.jsonl": "45356803d1da0223bf325012bc3f62248cd015ed936d9bfe34157ce5aacb2ce5",
+        "work/d2/combat.commands.jsonl": "d675af67c8c70df5d82500142ffcecd41fe4b2e8ec4a1bf7150dab6c429ac195",
+        "work/a6/d2-combat-20261021-121529-504427/tested-serve.py": "6534083b460e4c9bb9abee88bb4d13e86c3d3f9414465d5b7152bee1bd02e2e7",
+        "work/d2/combat.commands.results.jsonl": "9681d6baf43917d6fe29de57949e09189cf68effde3b14ee148b38a11bc9efb1",
+        "work/a6/d2-combat-20261021-121529-504427/result.json": "4676727d475984895f03eb60707e0e0e1399ecc2125d923e17f93c56986d8007",
+        "work/tests/m6-2p-20261021-121529-561631/player-1/host.log": "d15b5a79adcadfe7a8b19dccd7eab3261fafff0eba9e218f7f2df484abc46d0e",
+        "work/tests/m6-2p-20261021-121529-561631/player-0/host.log": "fb4745a24d73c1f664c410742f81c010552728b789cfe8c9dbdea57babd0bd89"
+      }
+    },
+    {
+      "name": "combat-v2",
+      "artifacts": "work/a6/d2-combat-v2-20261021-123801-352237",
+      "driver_completed": false,
+      "errors": [
+        "BrokenPipeError(32, 'Broken pipe')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit 142; player-1: unclean exit 142')"
+      ],
+      "fixture_failures": [],
+      "sha256": {
+        "work/a6/d2-combat-v2-20261021-123801-352237/result.json": "075fabfe1299f001d17458be73c8b78a0fc3d12f03d98dadb3c6cca902f38e48",
+        "work/d2/combat-v2.commands.results.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "work/a6/d2-combat-v2-20261021-123801-352237/tested-serve.py": "f56125a1753057ed4e4ac057d69fbc09a065c44bb1715c22a5766ced5d6ebc66",
+        "work/a6/d2-combat-v2-20261021-123801-352237/steps.jsonl": "33477357e1634b89586f0f8055aa2ab91d40808649b4dfdfe16092b2e5efa464",
+        "work/tests/m6-2p-20261021-123801-407059/player-1/host.log": "838d413a1889bb2525514cdca7fbfe82ff1d0f92bbcb2223a18f11e47530e0ae",
+        "work/tests/m6-2p-20261021-123801-407059/player-0/host.log": "02d463259cdc5ed22131fbaabe7c14f64d35714e098b038519b43bf00ab780e0",
+        "work/d2/combat-v2.commands.jsonl": "e66a3e7f92c6128e33b41313c054f4e00a918bd41c85e347f734e59a2c28caff"
+      }
+    },
+    {
+      "name": "combat-v3",
+      "artifacts": "work/a6/d2-combat-v3-20261021-124208-446378",
+      "driver_completed": true,
+      "errors": [],
+      "fixture_failures": [],
+      "sha256": {
+        "work/tests/m6-2p-20261021-124208-501840/player-0/host.log": "d6e36699c4f454eeaa23fb8352b395098b0acad2bd1172767458712d40da5936",
+        "work/a6/d2-combat-v3-20261021-124208-446378/result.json": "22d3de405fdb9003411c1009978ff7d44a48e7b8f2d3bee710bf1bae0bc9201b",
+        "work/a6/d2-combat-v3-20261021-124208-446378/steps.jsonl": "948e88dd26b7d450b343b560fb0ad885d1a21d0dd76dd9efb9b5c29a2b556141",
+        "work/d2/combat-v3.commands.jsonl": "b68d27adec7a296df12ac051347eb17becc1851ecebdd321acb4479da94b7cb8",
+        "work/tests/m6-2p-20261021-124208-501840/player-1/host.log": "27d606d354677e181bda4e5f4a8a6e64762a0690b06e483351f493f14074bf96",
+        "work/d2/combat-v3.commands.results.jsonl": "9dbdf126e39012086f5afba76c31ef70aa16f108316770cc759b33636ca8c7c2",
+        "work/a6/d2-combat-v3-20261021-124208-446378/tested-serve.py": "245eedb4d7d8698737e8df157dd9e5eaea0f4e704d19298f65c70148e80e5c83"
+      }
+    },
+    {
+      "name": "death-long",
+      "artifacts": "work/a6/d2-death-long-20261021-130615-095063",
+      "driver_completed": true,
+      "errors": [],
+      "fixture_failures": [],
+      "sha256": {
+        "work/d2/death-long.commands.jsonl": "28da58a8e39d34d3e0e398ffeab36aba9a9a8ed690df16468c1caa103c9c5c7d",
+        "work/a6/d2-death-long-20261021-130615-095063/steps.jsonl": "0f4096336668a7318d29775a46f5a6c34cf29c9c4ab8fe4b1f70e7f6ba012251",
+        "work/a6/d2-death-long-20261021-130615-095063/tested-serve.py": "245eedb4d7d8698737e8df157dd9e5eaea0f4e704d19298f65c70148e80e5c83",
+        "work/tests/m6-2p-20261021-130615-156867/player-0/host.log": "84c65f69e024e726022e9f4a4ba0baf5318498a787425c5cd257acfa20c3b037",
+        "work/a6/d2-death-long-20261021-130615-095063/result.json": "4921c1e80a203feba9422cb935cea96b8d209f3754a244406192e82349f5673f",
+        "work/tests/m6-2p-20261021-130615-156867/player-1/host.log": "f0b9da9fba0ad0688e078e98bf3f2e367ba25b734d8b9f4ec66e5fecd081dcf6",
+        "work/d2/death-long.commands.results.jsonl": "96e8fce21ce3c308c1682892a22d8c21f9fff5bdea70672d5c576ae460797aaa"
+      }
+    },
+    {
+      "name": "defense-full",
+      "artifacts": "work/a6/d2-defense-full-20261021-123802-323225",
+      "driver_completed": false,
+      "errors": [
+        "BrokenPipeError(32, 'Broken pipe')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit 142; player-1: unclean exit 142')"
+      ],
+      "fixture_failures": [],
+      "sha256": {
+        "work/a6/d2-defense-full-20261021-123802-323225/tested-serve.py": "f56125a1753057ed4e4ac057d69fbc09a065c44bb1715c22a5766ced5d6ebc66",
+        "work/tests/m6-2p-20261021-123802-380643/player-1/host.log": "55303c7bba2b3580e7307c397d3370457f2c2d9e225eb17cc1e52225f228a6a3",
+        "work/d2/defense-full.commands.jsonl": "3404287d82db0dd3ed41a91f01211106969ff2ddf3b1ec9b88ae26d57da49778",
+        "work/d2/defense-full.commands.results.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "work/tests/m6-2p-20261021-123802-380643/player-0/host.log": "5ffbd376d360ba740dfa2d58d18415397b963838510a65d8d8d8bcddfab10f47",
+        "work/a6/d2-defense-full-20261021-123802-323225/steps.jsonl": "f104705bf9841ac9bec481060cb95563bc94bd8cf580a8559db7fe20f2aecd06",
+        "work/a6/d2-defense-full-20261021-123802-323225/result.json": "1d44dc5d2f944dd593e928a0e0830482e95eab4aed28eb61a209ba1f2741a6ca"
+      }
+    },
+    {
+      "name": "defense-full-v3",
+      "artifacts": "work/a6/d2-defense-full-v3-20261021-124219-868955",
+      "driver_completed": true,
+      "errors": [],
+      "fixture_failures": [],
+      "sha256": {
+        "work/d2/defense-full-v3.commands.jsonl": "3404287d82db0dd3ed41a91f01211106969ff2ddf3b1ec9b88ae26d57da49778",
+        "work/a6/d2-defense-full-v3-20261021-124219-868955/result.json": "56e0b8eda3dda9f749d0b1d09e6e64bed15ff0037c5b74555c2fcf82ed0cd13c",
+        "work/a6/d2-defense-full-v3-20261021-124219-868955/steps.jsonl": "4d10cb2df770418e8dcd47b9024c8c13b77c47f203d0a529b645db3e0e1e3d8f",
+        "work/d2/defense-full-v3.commands.results.jsonl": "2e685d65326784cc11e46d284f7641321a833b49652c0cfd97a82904ad380db9",
+        "work/tests/m6-2p-20261021-124219-932005/player-0/host.log": "a3f586ea9d69e575ad144a7bae03c65e99dd4a78ef931e0b8e565ea722248015",
+        "work/a6/d2-defense-full-v3-20261021-124219-868955/tested-serve.py": "245eedb4d7d8698737e8df157dd9e5eaea0f4e704d19298f65c70148e80e5c83",
+        "work/tests/m6-2p-20261021-124219-932005/player-1/host.log": "b29214880cd8daf6342a8a4d5048d85602311deb74aedbdf3eae93bda19a1a69"
+      }
+    },
+    {
+      "name": "defense",
+      "artifacts": "work/a6/d2-defense-20261021-122931-269277",
+      "driver_completed": true,
+      "errors": [
+        "cleanup: NativeProcessExitError('player-0: unclean exit 142; player-1: unclean exit 142')"
+      ],
+      "fixture_failures": [],
+      "sha256": {
+        "work/tests/m6-2p-20261021-122931-322224/player-0/host.log": "8660858f4b2ba21380995f0964d21c57dd2190268f57f9832f75f906ef4d2c09",
+        "work/a6/d2-defense-20261021-122931-269277/tested-serve.py": "13a2f63df5e7ee25fe4a74ca8832752bcab857183a586931323796c9aab07248",
+        "work/tests/m6-2p-20261021-122931-322224/player-1/host.log": "cd2226d709a2daeb739087c4005aa4c681258a6dbc3124b3133a488420146dba",
+        "work/a6/d2-defense-20261021-122931-269277/steps.jsonl": "301a07fe6f196e10ddbda29619f7aa9ceafd7625cd0ce98caf37c0b23eb0889b",
+        "work/d2/defense.commands.results.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "work/a6/d2-defense-20261021-122931-269277/result.json": "000fe969b909cb145db52bf5fc04346c94d15152ec42b8e06bf824d4f44f89f3",
+        "work/d2/defense.commands.jsonl": "78d99faad7a8e0b6c046774d3eb591454aa8c08a6b295c8839877f4b3f2eac8c"
+      }
+    },
+    {
+      "name": "discovery",
+      "artifacts": "work/a6/d2-discovery-20261021-120840-467469",
+      "driver_completed": true,
+      "errors": [],
+      "fixture_failures": [],
+      "sha256": {
+        "work/a6/d2-discovery-20261021-120840-467469/result.json": "9ac53d99d1600d782ef85eac3c3a01d1fb83b96eaedd88dae0385f395a9f25db",
+        "work/tests/m6-2p-20261021-120840-527441/player-0/host.log": "3cbba091f80899fadc65b768882b5a1c7d8e9bc3bc0403ef4af0e39ac76fa113",
+        "work/a6/d2-discovery-20261021-120840-467469/steps.jsonl": "3e22c8634277b9e631a4c75646a5468713741d9b477ed88d3fac43476aca9fdc",
+        "work/tests/m6-2p-20261021-120840-527441/player-1/host.log": "254586d0020de452fe49f943e91479c10b246319a5a3f12f6960cd3d4c8daf64"
+      }
+    },
+    {
+      "name": "high-target",
+      "artifacts": "work/a6/d2-high-target-20261021-125737-899712",
+      "driver_completed": true,
+      "errors": [],
+      "fixture_failures": [],
+      "sha256": {
+        "work/a6/d2-high-target-20261021-125737-899712/tested-serve.py": "245eedb4d7d8698737e8df157dd9e5eaea0f4e704d19298f65c70148e80e5c83",
+        "work/a6/d2-high-target-20261021-125737-899712/result.json": "322e6f2f35ad853a7e123a9e99a07eca21cb5a3a67373d38a537e051f28c0495",
+        "work/tests/m6-2p-20261021-125737-954954/player-0/host.log": "cddbf91ba11d45f0cd7810af474ea8832adc2576628de095f28676c25c962690",
+        "work/tests/m6-2p-20261021-125737-954954/player-1/host.log": "844600309553c96047fda5eb15b74c72f899a5f65b9be7353e574693b05323ad",
+        "work/d2/high-target.commands.results.jsonl": "626010ee932b09618c4edcfdbbea741271037e9d64043258250d68e8c6df0d6e",
+        "work/d2/high-target.commands.jsonl": "a869e8eabf86d469f46e9b4a3b1c05d6708f2cd602bdd90a56df4b8b0f275302",
+        "work/a6/d2-high-target-20261021-125737-899712/steps.jsonl": "cff3b8add64686508fc1de69dcaf5a33f628d2f2cb6ad56490257edd9ecb140f"
+      }
+    },
+    {
+      "name": "hooks",
+      "artifacts": "work/a6/d2-hooks-20261021-121516-788228",
+      "driver_completed": true,
+      "errors": [],
+      "fixture_failures": [
+        {
+          "command": {
+            "op": "align",
+            "label": "range10-aim",
+            "target": [
+              -25.5,
+              9.5,
+              70.5
+            ]
+          },
+          "error": "AssertionError('A6 setup aim failed')"
+        }
+      ],
+      "sha256": {
+        "work/a6/d2-hooks-20261021-121516-788228/tested-serve.py": "6534083b460e4c9bb9abee88bb4d13e86c3d3f9414465d5b7152bee1bd02e2e7",
+        "work/tests/m6-2p-20261021-121516-840370/player-1/host.log": "899ec9d8a9d42d7fc978f3de290405ef6cc2a32c24442b3e284e9c97085bd712",
+        "work/tests/m6-2p-20261021-121516-840370/player-0/host.log": "1dc2fb0eed73902cac15e90908dadea3b74c40fd1bb59b141a16e3e7eb524b0d",
+        "work/a6/d2-hooks-20261021-121516-788228/result.json": "ea002ee2c65019cde5b129e09ec226e60dde3872d01c3e005c9238f984fd4381",
+        "work/d2/hooks.commands.results.jsonl": "90702a7c350fc60484f0f361d21121d4a79a95c18c962dcd0ee7d54955de52e1",
+        "work/d2/hooks.commands.jsonl": "3773487649605bc6f3e0660e1107bb6843a1f00de94b9a912e42017e01188331",
+        "work/a6/d2-hooks-20261021-121516-788228/steps.jsonl": "b90547cf3509e41d90553ae223e52ea5238e2a612afc7cf0a8915b9f02cc745f"
+      }
+    },
+    {
+      "name": "surfaces",
+      "artifacts": "work/a6/d2-surfaces-20261021-122808-923843",
+      "driver_completed": false,
+      "errors": [
+        "BrokenPipeError(32, 'Broken pipe')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit 142; player-1: unclean exit 142')"
+      ],
+      "fixture_failures": [],
+      "sha256": {
+        "work/a6/d2-surfaces-20261021-122808-923843/result.json": "0dce3ce1719a1ca5f39cd8275a56e471fe5e8e069eb769d4066d6a6149a5df88",
+        "work/a6/d2-surfaces-20261021-122808-923843/steps.jsonl": "12af8583d3cc427cc2c26c6af961e9ea9f18f548e96b41019a850f0825db0037",
+        "work/d2/surfaces.commands.results.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "work/tests/m6-2p-20261021-122808-982403/player-0/host.log": "4f85054695fc0910dbf74651e20e6ed250545af8851fc31ca5580edbef80ef77",
+        "work/tests/m6-2p-20261021-122808-982403/player-1/host.log": "f0e10cb395dc21a7712f0b1f4216bdae2735a3f25c5d3913daf1aaae1118c7d3",
+        "work/a6/d2-surfaces-20261021-122808-923843/tested-serve.py": "13a2f63df5e7ee25fe4a74ca8832752bcab857183a586931323796c9aab07248",
+        "work/d2/surfaces.commands.jsonl": "c75cd7e09be9bac8ee6a2fee67a50ebf9b77520d715479462054b4cb5a91b673"
+      }
+    },
+    {
+      "name": "surfaces-v2",
+      "artifacts": "work/a6/d2-surfaces-v2-20261021-123749-313235",
+      "driver_completed": false,
+      "errors": [
+        "BrokenPipeError(32, 'Broken pipe')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit 142; player-1: unclean exit 142')"
+      ],
+      "fixture_failures": [],
+      "sha256": {
+        "work/a6/d2-surfaces-v2-20261021-123749-313235/steps.jsonl": "4bfdc8f2b92328763f4f3204a83ff098fbce65634346b0a41643b3b74e162b59",
+        "work/a6/d2-surfaces-v2-20261021-123749-313235/result.json": "fb407fced223b44316b183745a31813c1e1311431c1b7994887a0eeb32997503",
+        "work/tests/m6-2p-20261021-123749-364996/player-1/host.log": "45f88d1dec265b49700678dedbe7f7f27fe7b839240c4e54b5ff94b60339b162",
+        "work/tests/m6-2p-20261021-123749-364996/player-0/host.log": "6e0e67d895622285eb8137fbc503b9b829de8bf0e52183866757e5ab818cb76c",
+        "work/d2/surfaces-v2.commands.jsonl": "50a731c3234675a2dc2ec8fa4d767874ab54cfde24cccfc90a7743112c383554",
+        "work/a6/d2-surfaces-v2-20261021-123749-313235/tested-serve.py": "f56125a1753057ed4e4ac057d69fbc09a065c44bb1715c22a5766ced5d6ebc66",
+        "work/d2/surfaces-v2.commands.results.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "surfaces-v3",
+      "artifacts": "work/a6/d2-surfaces-v3-20261021-124149-081790",
+      "driver_completed": false,
+      "errors": [
+        "RuntimeError('native RL connection closed or invalid observation header')",
+        "cleanup: NativeProcessExitError('player-1: unclean exit -6')"
+      ],
+      "fixture_failures": [
+        {
+          "command": {
+            "op": "navigate",
+            "label": "ceiling-solid-setup",
+            "goals": {
+              "0": [
+                2,
+                3,
+                3
+              ]
+            }
+          },
+          "error": "AssertionError('ceiling-solid-setup blocked: [-0.297783852, 3.03017759, 8.31161022]')"
+        }
+      ],
+      "sha256": {
+        "work/tests/m6-2p-20261021-124149-133174/player-1/host.log": "cd0a79946db9feab69248404b9ae1cdc17458c7118a4ce69d07a610f6f1bef5d",
+        "work/tests/m6-2p-20261021-124149-133174/player-0/host.log": "c0fa9fae80d148505f621d86070f4a170381506c94a161ebdff883dfa19308ee",
+        "work/d2/surfaces-v3.commands.results.jsonl": "56e2e9542ba631ff024f83679a83e8f22a189e3c2389b24f2cd1bf6d4bdd2328",
+        "work/a6/d2-surfaces-v3-20261021-124149-081790/tested-serve.py": "245eedb4d7d8698737e8df157dd9e5eaea0f4e704d19298f65c70148e80e5c83",
+        "work/d2/surfaces-v3.commands.jsonl": "d132cf3a58a6607e4682b3cfd92273be390c200d7b49a5de0da083aea8eb4d6a",
+        "work/a6/d2-surfaces-v3-20261021-124149-081790/steps.jsonl": "c8431f09596df4b4ecad4d6d7b1e44b63f6068127eb941da0404723e2d54c0a4",
+        "work/a6/d2-surfaces-v3-20261021-124149-081790/result.json": "b15edf5e36365e6ec443404a3d51645d17ca8d717832d2958c6e8c161931aa65"
+      }
+    }
+  ],
+  "outputs": {
+    "work/d2/measurements.json": {
+      "bytes": 184584,
+      "sha256": "63d3897bbbd9d5690e48955092c34888ece4b9d80b5eed118e35c367d00f6cde"
+    },
+    "work/d2/map-analysis-full.json": {
+      "bytes": 30000498,
+      "sha256": "267353229e7044cc044cd6078133ed3535c2c6f93e20c27a900fc538aa8e16d1"
+    },
+    "showcase/data/zipcaster-layer.json": {
+      "bytes": 3885354,
+      "sha256": "286488269faae60acd25688de2f17fc45926cea8b5b7c014de5a399326f5cee4"
+    },
+    "showcase/data/zipcaster-traces.json": {
+      "bytes": 76030,
+      "sha256": "46f7925dea59ceb230d7c1ddc6653a986a4b84e01e1efc2a1a0080ff5d93cbaa"
+    }
+  },
+  "source_provenance": {
+    "work/arena/maps/Yunohana/sources/DObj_BunkerWall02/Obj_Bunker01.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/Yunohana/sources/DObj_BunkerWall02/Obj_Bunker01.Nin_NX_NVN.obj": "31bc8f9c5855180e475399a11acb88519d32a2b36138cba676eead98a6fc6b50",
+    "work/arena/maps/Yunohana/sources/DObj_BunkerWall02/Obj_Bunker02_Wall.Nin_NX_NVN.json": "613db82547b7aff812bb214f45ed7ccc9a16e03a64a0dee55cde4af0a35b97d9",
+    "work/arena/maps/Yunohana/sources/DObj_BunkerWall02/Obj_Bunker02_Wall.Nin_NX_NVN.obj": "afa71fb842e291e0d0b3cc95927fd09c14df5f0fa6ed1c9f4a3c19377f942058",
+    "work/arena/maps/Yunohana/sources/Fld_Yunohana/Fld_Yunohana.Nin_NX_NVN.json": "eb83d4f428b0ef9964938488e85de7d3165070eaa85bfd09e2a27f99b65d34e9",
+    "work/arena/maps/Yunohana/sources/Fld_Yunohana/Fld_Yunohana.Nin_NX_NVN.obj": "791c3c0e14556a79cc8fba766ecf958a765e968ad04f0ddc34e24747ff160318",
+    "work/arena/maps/Yunohana/sources/Mpt_FldObj_Yunohana_PackPnt/FldObj_Yunohana_PackPnt.Nin_NX_NVN.json": "ced8c169d51fd74d2f33de4cae703f427a9348663917845b42c8ee3dfb95f07b",
+    "work/arena/maps/Yunohana/sources/Mpt_FldObj_Yunohana_PackPnt/FldObj_Yunohana_PackPnt.Nin_NX_NVN.obj": "a19211f8f701b73d64bdfc7988c284944c4ccf35a32c496be7b458806eb43a5e",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube15x15x15NP/Obj_GeneralBoxNoPaint_15x15x15_Blitz.Nin_NX_NVN.json": "9215b43d7e17dd65d58606f9c330355ec74a71c47ae608f6d9d0509f76ccf191",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube15x15x15NP/Obj_GeneralBoxNoPaint_15x15x15_Blitz.Nin_NX_NVN.obj": "376ece128563bd66eb30d177138bca44b7dcd2d8ca0be0cbd6b590c0df9ffa80",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube30x15x15NP/Obj_GeneralBoxNoPaint_30x15x15_Blitz.Nin_NX_NVN.json": "9215b43d7e17dd65d58606f9c330355ec74a71c47ae608f6d9d0509f76ccf191",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube30x15x15NP/Obj_GeneralBoxNoPaint_30x15x15_Blitz.Nin_NX_NVN.obj": "22e7bd44a435285a5ccbfa4717fbe737fde79960827e8366969b41cbb0e1446d",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube30x15x30AP/Obj_GeneralBox_30x15x30_Blitz.Nin_NX_NVN.json": "7888bc51d57a00335bb4e7888039affd99571fb393f11d368e31959d2c266c82",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube30x15x30AP/Obj_GeneralBox_30x15x30_Blitz.Nin_NX_NVN.obj": "62c4ad0ff1f415da22f8066e482d9b710095808abd8cc80a4e17a6b6bde65677",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube30x30x15NP/Obj_GeneralBoxNoPaint_30x30x15_Blitz.Nin_NX_NVN.json": "9215b43d7e17dd65d58606f9c330355ec74a71c47ae608f6d9d0509f76ccf191",
+    "work/arena/maps/Yunohana/sources/Mpt_GeneralCube30x30x15NP/Obj_GeneralBoxNoPaint_30x30x15_Blitz.Nin_NX_NVN.obj": "00eed3665c9e0b3fc8a79a37f06b4360308b4474d962d4d8c442d0519af4f089",
+    "work/arena/maps/District00/sources/DObj_Bunker01/Obj_Bunker01.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/District00/sources/DObj_Bunker01/Obj_Bunker01.Nin_NX_NVN.obj": "31bc8f9c5855180e475399a11acb88519d32a2b36138cba676eead98a6fc6b50",
+    "work/arena/maps/District00/sources/DObj_Bunker02/Obj_Bunker01.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/District00/sources/DObj_Bunker02/Obj_Bunker01.Nin_NX_NVN.obj": "31bc8f9c5855180e475399a11acb88519d32a2b36138cba676eead98a6fc6b50",
+    "work/arena/maps/District00/sources/DObj_Bunker02/Obj_Bunker02.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/District00/sources/DObj_Bunker02/Obj_Bunker02.Nin_NX_NVN.obj": "f674b29dc1a28dd1577240b7e50abb21ccdf0de26c5493565731e0e856169969",
+    "work/arena/maps/District00/sources/DObj_BunkerWall01/Obj_Bunker01.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/District00/sources/DObj_BunkerWall01/Obj_Bunker01.Nin_NX_NVN.obj": "31bc8f9c5855180e475399a11acb88519d32a2b36138cba676eead98a6fc6b50",
+    "work/arena/maps/District00/sources/DObj_BunkerWall01/Obj_Bunker01_Wall.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/District00/sources/DObj_BunkerWall01/Obj_Bunker01_Wall.Nin_NX_NVN.obj": "1de7089f871c9a2bd6eff71be560890689a539e8d9a225c299af767c44dccd64",
+    "work/arena/maps/District00/sources/DObj_BunkerWall02/Obj_Bunker01.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/District00/sources/DObj_BunkerWall02/Obj_Bunker01.Nin_NX_NVN.obj": "31bc8f9c5855180e475399a11acb88519d32a2b36138cba676eead98a6fc6b50",
+    "work/arena/maps/District00/sources/DObj_BunkerWall02/Obj_Bunker02_Wall.Nin_NX_NVN.json": "613db82547b7aff812bb214f45ed7ccc9a16e03a64a0dee55cde4af0a35b97d9",
+    "work/arena/maps/District00/sources/DObj_BunkerWall02/Obj_Bunker02_Wall.Nin_NX_NVN.obj": "afa71fb842e291e0d0b3cc95927fd09c14df5f0fa6ed1c9f4a3c19377f942058",
+    "work/arena/maps/District00/sources/Fld_District00/Fld_District00.Nin_NX_NVN.json": "7235cd9f71342286e11e22735364858a8c22e91d7695db648beb98def2eb62be",
+    "work/arena/maps/District00/sources/Fld_District00/Fld_District00.Nin_NX_NVN.obj": "74fb4af78c5607901170895eee340b27fcf71a112c35f576ba43d2b9c8e84d25",
+    "work/arena/maps/District00/sources/Mpt_FldObj_District00_PackPnt/FldObj_District00_PackPnt.Nin_NX_NVN.json": "add6e62807d74215894914dc4a69520122a6885321dc04ebcb393b5f3ccebb3b",
+    "work/arena/maps/District00/sources/Mpt_FldObj_District00_PackPnt/FldObj_District00_PackPnt.Nin_NX_NVN.obj": "33de841756b57c2065e4894c26bd7f67ed5a860b4f73cefa06c3fa2993431091",
+    "work/arena/maps/Yagara/sources/DObj_Bunker01/Obj_Bunker01.Nin_NX_NVN.json": "ecccd357569e20b0407096ab800bdcc46a52a7b336fd1c8024c4e13affd4b60d",
+    "work/arena/maps/Yagara/sources/DObj_Bunker01/Obj_Bunker01.Nin_NX_NVN.obj": "31bc8f9c5855180e475399a11acb88519d32a2b36138cba676eead98a6fc6b50",
+    "work/arena/maps/Yagara/sources/Fld_Yagara/Fld_Yagara.Nin_NX_NVN.json": "af8ffea30e32c559c5865db812f1c48c3027db054be92aa35c02a80d0ba6775a",
+    "work/arena/maps/Yagara/sources/Fld_Yagara/Fld_Yagara.Nin_NX_NVN.obj": "be35eba6567fa46e4509d91d5d210d670ac58f738836e89b5b31179036e39952",
+    "work/arena/maps/Yagara/sources/Mpt_FldObj_Yagara_PackPnt/FldObj_Yagara_PackPnt.Nin_NX_NVN.json": "e33fecde6d6c76960b70e2edc40fe7e5ba0c5eb3cbb64fb6d2077348d732022b",
+    "work/arena/maps/Yagara/sources/Mpt_FldObj_Yagara_PackPnt/FldObj_Yagara_PackPnt.Nin_NX_NVN.obj": "13f19f22a82b95aeef816010c52ec3b0e35b8c9d2236d8382cf77ffbf51c2339"
+  },
+  "limits": [
+    "All frame counts are controlled presents unless explicitly native sample frames.",
+    "Native position updates are normally4 presents apart; do not turn first RPC observation into exact engine-transition time.",
+    "Default fixture loadout is57AP quick_super_jump, not gearless. No special_power_up.",
+    "Script completion is not scientific acceptance. Failed placement invalidates its dependent case.",
+    "No hitpoint/armor state is exposed: an HP-unchanged shot cannot establish invincibility.",
+    "No game resources or screenshots in this numerical report.",
+    "Static Cmn/Pnt collision only, no moving objects or native hook-specific volume sweep.",
+    "World triangle winding is not treated as an outward-facing normal guarantee; normals orient toward each source.",
+    "Only near-vertical faces are sampled (abs(normal.y)<.35), with incidence>.15 as a selection heuristic, not a measured native validity cutoff.",
+    "Potential vision uses GeometricVision 360 degree turning, native visibility/sandbox unchanged.",
+    "Named regions and D1 ambush candidates are opponent proxies, not measured enemy camping density.",
+    "Attach offset .75 normal and -.75 vertical and release landing below are geometry estimates, not a native pose solver.",
+    "105 damage is conditional arithmetic; future native tests must validate timing, aim, healing and target response."
+  ]
+}

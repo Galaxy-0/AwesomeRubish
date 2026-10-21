@@ -1,0 +1,69 @@
+{"op": "navigate", "label": "ar-setup", "goals": {"0": [0, 3, 8], "1": [-6, 3, 8]}}
+{"op": "restore", "label": "early-restore", "player": 0, "target": [0, 3, 8]}
+{"op": "paint_floor", "label": "early-paint", "player": 0}
+{"op": "refill", "label": "early-heal", "player": 0, "frames": 180}
+{"op": "align", "label": "early-hook-aim", "target": [0, 6, 4], "fast": true}
+{"op": "align", "label": "early-enemy-aim", "player": 1, "target": [0.15, 6.3, 5.0], "fast": true}
+{"op": "assert", "label": "early-health", "healthy": [0, 1]}
+{"op": "status", "label": "early-before"}
+{"op": "step", "label": "early-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}, "require_active": false}
+{"op": "step", "label": "early-activate", "frames": 30, "actions": {}, "require_active": false}
+{"op": "step", "label": "early-enemy-precharge", "frames": 21, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "early-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}, "player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "early-flight-held-enemy", "frames": 20, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "early-enemy-release", "frames": 45, "actions": {}, "require_active": true}
+{"op": "status", "label": "early-after"}
+{"op": "finish_special", "label": "early-end"}
+{"op": "restore", "label": "late-restore", "player": 0, "target": [0, 3, 8]}
+{"op": "paint_floor", "label": "late-paint", "player": 0}
+{"op": "refill", "label": "late-heal", "player": 0, "frames": 180}
+{"op": "align", "label": "late-hook-aim", "target": [0, 6, 4], "fast": true}
+{"op": "align", "label": "late-enemy-aim", "player": 1, "target": [0.15, 6.3, 5.0], "fast": true}
+{"op": "assert", "label": "late-health", "healthy": [0, 1]}
+{"op": "status", "label": "late-before"}
+{"op": "step", "label": "late-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}, "require_active": false}
+{"op": "step", "label": "late-activate", "frames": 30, "actions": {}, "require_active": false}
+{"op": "step", "label": "late-enemy-precharge", "frames": 21, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "late-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}, "player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "late-flight-held-enemy", "frames": 70, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "late-enemy-release", "frames": 45, "actions": {}, "require_active": true}
+{"op": "status", "label": "late-after"}
+{"op": "finish_special", "label": "late-end"}
+{"op": "restore", "label": "flight-light-restore", "target": [0, 3, 8], "radius": 0.15}
+{"op": "align", "label": "flight-light-aim", "target": [0, 6, 4], "fast": true}
+{"op": "step", "label": "flight-light-activate", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "flight-light-startup", "frames": 30}
+{"op": "step", "label": "flight-light-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "flight-light-release-R", "frames": 25}
+{"op": "status", "label": "flight-light-before-ZR"}
+{"op": "step", "label": "flight-light-ZR", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "flight-light-release-ZR", "frames": 60}
+{"op": "status", "label": "flight-light-after-ZR"}
+{"op": "finish_special", "label": "flight-light-end"}
+{"op": "restore", "label": "flight-charge-restore", "target": [0, 3, 8], "radius": 0.15}
+{"op": "align", "label": "flight-charge-aim", "target": [0, 6, 4], "fast": true}
+{"op": "step", "label": "flight-charge-activate", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "flight-charge-startup", "frames": 30}
+{"op": "step", "label": "flight-charge-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "flight-charge-release-R", "frames": 25}
+{"op": "status", "label": "flight-charge-before-ZR"}
+{"op": "step", "label": "flight-charge-ZR", "frames": 21, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "flight-charge-release-ZR", "frames": 60}
+{"op": "status", "label": "flight-charge-after-ZR"}
+{"op": "finish_special", "label": "flight-charge-end"}
+{"op": "restore", "label": "arrival-light-restore", "target": [0, 3, 8], "radius": 0.15}
+{"op": "align", "label": "arrival-light-aim", "target": [0, 6, 4], "fast": true}
+{"op": "step", "label": "arrival-light-activate", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "arrival-light-startup", "frames": 30}
+{"op": "step", "label": "arrival-light-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "arrival-light-release-R", "frames": 70}
+{"op": "status", "label": "arrival-light-before-ZR"}
+{"op": "step", "label": "arrival-light-ZR", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "arrival-light-release-ZR", "frames": 60}
+{"op": "status", "label": "arrival-light-after-ZR"}
+{"op": "finish_special", "label": "arrival-light-end"}
+{"op": "restore", "label": "idle-restore", "target": [0, 3, 8], "radius": 0.15}
+{"op": "step", "label": "idle-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "idle-lifecycle", "frames": 750}
+{"op": "status", "label": "idle-returned"}
+{"op": "close", "label": "done"}

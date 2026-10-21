@@ -1,0 +1,36 @@
+{"op": "navigate", "label": "db-setup", "goals": {"0": [0, 3, 8], "1": [-6, 3, 8]}}
+{"op": "restore", "label": "db-restore", "player": 0, "target": [0, 3, 8]}
+{"op": "paint_floor", "label": "db-paint", "player": 0}
+{"op": "refill", "label": "db-heal", "player": 0, "frames": 180}
+{"op": "align", "label": "db-aim", "player": 1, "target_player": 0, "fast": true}
+{"op": "assert", "label": "db-health", "healthy": [0, 1]}
+{"op": "status", "label": "db-before"}
+{"op": "step", "label": "db-charge", "frames": 21, "require_active": false, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "db-release", "frames": 45, "require_active": false}
+{"op": "status", "label": "db-after"}
+{"op": "restore", "label": "ds-restore", "player": 0, "target": [0, 3, 8]}
+{"op": "paint_floor", "label": "ds-paint", "player": 0}
+{"op": "refill", "label": "ds-heal", "player": 0, "frames": 180}
+{"op": "align", "label": "ds-wall-aim", "target": [0, 6, 4], "fast": true}
+{"op": "align", "label": "ds-enemy-aim", "player": 1, "target_player": 0, "fast": true}
+{"op": "assert", "label": "ds-health", "healthy": [0, 1]}
+{"op": "status", "label": "ds-before"}
+{"op": "step", "label": "ds-precharge", "frames": 21, "require_active": false, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "ds-RS-and-release", "frames": 1, "require_active": false, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "ds-startup-observe", "frames": 40, "require_active": false}
+{"op": "status", "label": "ds-after"}
+{"op": "step", "label": "ds-R", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "ds-hook-flight", "frames": 70, "require_active": true}
+{"op": "status", "label": "ds-wall"}
+{"op": "align", "label": "dw-enemy-aim", "player": 1, "target_player": 0, "fast": true, "require_active": true}
+{"op": "status", "label": "dw-before"}
+{"op": "step", "label": "dw-charge", "frames": 21, "require_active": true, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "dw-release", "frames": 36, "require_active": true}
+{"op": "status", "label": "dw-after"}
+{"op": "step", "label": "dd-charge", "frames": 21, "require_active": false, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "dd-release", "frames": 45, "require_active": false}
+{"op": "status", "label": "dd-after"}
+{"op": "step", "label": "dd-ending", "frames": 180, "require_active": false}
+{"op": "status", "label": "dd-final"}
+{"op": "capture", "label": "dd-final"}
+{"op": "close", "label": "defense-close"}

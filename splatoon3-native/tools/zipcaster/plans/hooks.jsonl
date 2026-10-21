@@ -1,0 +1,72 @@
+{"op": "navigate", "label": "range10-setup", "goals": {"0": [-25.5, 7.5, 60.5]}}
+{"op": "align", "label": "range10-aim", "target": [-25.5, 9.5, 70.5]}
+{"op": "status", "label": "range10-before"}
+{"op": "step", "label": "range10-RS", "frames": 1, "sample_every": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "range10-activate", "frames": 30, "sample_every": 1}
+{"op": "step", "label": "range10-R", "frames": 1, "sample_every": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "range10-released", "frames": 150, "sample_every": 1}
+{"op": "capture", "label": "range10-attached"}
+{"op": "status", "label": "range10-after"}
+{"op": "finish_special", "label": "range10-end"}
+{"op": "status", "label": "range10-returned"}
+{"op": "navigate", "label": "range24-setup", "goals": {"0": [-25.5, 8.399853375, 46.5]}}
+{"op": "align", "label": "range24-aim", "target": [-25.5, 9.5, 70.5]}
+{"op": "status", "label": "range24-before"}
+{"op": "step", "label": "range24-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "range24-activate", "frames": 30}
+{"op": "step", "label": "range24-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "range24-released", "frames": 180}
+{"op": "status", "label": "range24-after"}
+{"op": "finish_special", "label": "range24-end"}
+{"op": "status", "label": "range24-returned"}
+{"op": "navigate", "label": "range34-setup", "goals": {"0": [-25.5, 9.7495114319, 36.5]}}
+{"op": "align", "label": "range34-aim", "target": [-25.5, 9.5, 70.5]}
+{"op": "status", "label": "range34-before"}
+{"op": "step", "label": "range34-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "range34-activate", "frames": 30}
+{"op": "step", "label": "range34-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "range34-released", "frames": 180}
+{"op": "status", "label": "range34-after"}
+{"op": "finish_special", "label": "range34-end"}
+{"op": "status", "label": "range34-returned"}
+{"op": "navigate", "label": "range36-setup", "goals": {"0": [-25.5, 10.5, 34.5]}}
+{"op": "align", "label": "range36-aim", "target": [-25.5, 9.5, 70.5]}
+{"op": "status", "label": "range36-before"}
+{"op": "step", "label": "range36-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "range36-activate", "frames": 30}
+{"op": "step", "label": "range36-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "range36-released", "frames": 180}
+{"op": "status", "label": "range36-after"}
+{"op": "finish_special", "label": "range36-end"}
+{"op": "status", "label": "range36-returned"}
+{"op": "navigate", "label": "range35-setup", "goals": {"0": [-25.5, 10.19990225, 35.5]}}
+{"op": "align", "label": "range35-aim", "target": [-25.5, 9.5, 70.5]}
+{"op": "status", "label": "range35-before"}
+{"op": "step", "label": "range35-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "range35-activate", "frames": 30}
+{"op": "step", "label": "range35-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "range35-released", "frames": 180}
+{"op": "status", "label": "range35-after"}
+{"op": "finish_special", "label": "range35-end"}
+{"op": "status", "label": "range35-returned"}
+{"op": "navigate", "label": "range38-setup", "goals": {"0": [-25.5, 10.5, 32.5]}}
+{"op": "align", "label": "range38-aim", "target": [-25.5, 9.5, 70.5]}
+{"op": "status", "label": "range38-before"}
+{"op": "step", "label": "range38-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "range38-activate", "frames": 30}
+{"op": "step", "label": "range38-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "range38-released", "frames": 150}
+{"op": "status", "label": "range38-after"}
+{"op": "finish_special", "label": "range38-end"}
+{"op": "status", "label": "range38-returned"}
+{"op": "navigate", "label": "range37-setup", "goals": {"0": [-25.5, 10.500000000000002, 33.5]}}
+{"op": "align", "label": "range37-aim", "target": [-25.5, 9.5, 70.5]}
+{"op": "status", "label": "range37-before"}
+{"op": "step", "label": "range37-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "range37-activate", "frames": 30}
+{"op": "step", "label": "range37-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "range37-released", "frames": 150}
+{"op": "status", "label": "range37-after"}
+{"op": "finish_special", "label": "range37-end"}
+{"op": "status", "label": "range37-returned"}
+{"op": "close", "label": "hooks-close"}

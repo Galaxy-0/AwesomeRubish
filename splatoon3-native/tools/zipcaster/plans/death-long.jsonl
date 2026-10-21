@@ -1,0 +1,25 @@
+{"op": "navigate", "label": "dl-setup", "goals": {"0": [0, 3, 8], "1": [-6, 3, 8]}}
+{"op": "align", "label": "dl-hook-aim", "target": [0, 6, 4], "fast": true}
+{"op": "status", "label": "dl-before"}
+{"op": "step", "label": "dl-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "dl-activate", "frames": 30}
+{"op": "step", "label": "dl-R", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "dl-hook-flight", "frames": 70, "require_active": true}
+{"op": "align", "label": "dl-enemy-aim", "player": 1, "target_player": 0, "offset": [0, 1.1, 0], "fast": true, "require_active": true}
+{"op": "status", "label": "dl-hanging"}
+{"op": "step", "label": "dl-enemy-charge-0", "frames": 21, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "dl-enemy-release-0", "frames": 45}
+{"op": "status", "label": "dl-hit-0"}
+{"op": "step", "label": "dl-enemy-charge-1", "frames": 21, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "dl-enemy-release-1", "frames": 45}
+{"op": "status", "label": "dl-hit-1"}
+{"op": "step", "label": "dl-enemy-charge-2", "frames": 21, "actions": {"player_1": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "dl-enemy-release-2", "frames": 45}
+{"op": "status", "label": "dl-hit-2"}
+{"op": "step", "label": "dl-respawn-wait", "frames": 600, "sample_every": 3}
+{"op": "status", "label": "dl-launcher"}
+{"op": "step", "label": "dl-launch", "frames": 1, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "dl-land", "frames": 240, "sample_every": 3}
+{"op": "status", "label": "dl-respawned"}
+{"op": "capture", "label": "dl-respawned"}
+{"op": "close", "label": "death-seal"}

@@ -1,0 +1,39 @@
+{"op": "navigate", "label": "ht-setup", "goals": {"0": [0, 3, 8], "1": [-5, 6, -3]}}
+{"op": "paint_floor", "label": "ht-target-paint", "player": 1}
+{"op": "refill", "label": "ht-target-heal", "player": 1, "frames": 180}
+{"op": "align", "label": "ht-hook-aim", "target": [0, 6, 4], "fast": true}
+{"op": "assert", "label": "ht-health", "healthy": [0, 1]}
+{"op": "status", "label": "ht-before"}
+{"op": "step", "label": "ht-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}, "require_active": false}
+{"op": "step", "label": "ht-activate", "frames": 30, "actions": {}, "require_active": false}
+{"op": "step", "label": "ht-R1", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "ht-hook-flight", "frames": 70, "actions": {}, "require_active": true}
+{"op": "align", "label": "ht-target-aim", "target_player": 1, "offset": [0, 1.1, 0], "fast": true, "require_active": true}
+{"op": "status", "label": "ht-before-B"}
+{"op": "step", "label": "ht-B", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 0, 1, 0]}}, "require_active": true}
+{"op": "track_step", "label": "ht-jump-charge", "frames": 30, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "buttons": [1, 0, 0, 0, 0, 0], "require_active": true}
+{"op": "track_step", "label": "ht-full-release", "frames": 36, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "require_active": true}
+{"op": "status", "label": "ht-full-after"}
+{"op": "capture", "label": "ht-full-after"}
+{"op": "track_step", "label": "ht-light", "frames": 1, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "buttons": [1, 0, 0, 0, 0, 0], "require_active": true}
+{"op": "track_step", "label": "ht-light-release", "frames": 36, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "require_active": true}
+{"op": "status", "label": "ht-light-after"}
+{"op": "finish_special", "label": "ht-end"}
+{"op": "status", "label": "ht-returned"}
+{"op": "align", "label": "ha-hook-aim", "target": [0, 6, 4], "fast": true}
+{"op": "status", "label": "ha-before"}
+{"op": "step", "label": "ha-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "ha-activate", "frames": 30}
+{"op": "step", "label": "ha-R", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "ha-hook-flight", "frames": 70, "require_active": true}
+{"op": "align", "label": "ha-target-aim", "target_player": 1, "offset": [0, 1.1, 0], "fast": true, "require_active": true}
+{"op": "status", "label": "ha-before-B"}
+{"op": "step", "label": "ha-B", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [0, 0, 0, 0, 1, 0]}}}
+{"op": "step", "label": "ha-charge-tilt", "frames": 12, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0], "gyro": [0.15, 0, 0]}}}
+{"op": "step", "label": "ha-charge-hold", "frames": 18, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "status", "label": "ha-held30"}
+{"op": "step", "label": "ha-full-release", "frames": 36, "require_active": true}
+{"op": "status", "label": "ha-after-full"}
+{"op": "step", "label": "ha-return-full-observation", "frames": 720}
+{"op": "status", "label": "ha-returned"}
+{"op": "close", "label": "done"}

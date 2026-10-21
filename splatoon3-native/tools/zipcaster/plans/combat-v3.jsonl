@@ -1,0 +1,73 @@
+{"op": "navigate", "label": "ws-setup", "goals": {"0": [0, 3, 8], "1": [-12, 3, 8]}}
+{"op": "paint_floor", "label": "ws-target-paint", "player": 1}
+{"op": "refill", "label": "ws-target-heal", "player": 1, "frames": 180}
+{"op": "align", "label": "ws-hook-aim", "target": [0, 6, 4], "fast": true}
+{"op": "status", "label": "ws-before"}
+{"op": "step", "label": "ws-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "ws-activate", "frames": 30}
+{"op": "step", "label": "ws-R", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "ws-flight", "frames": 70, "require_active": true}
+{"op": "align", "label": "ws-target-aim", "target_player": 1, "fast": true, "require_active": true}
+{"op": "status", "label": "ws-before-charge"}
+{"op": "step", "label": "ws-charge-tilt", "frames": 8, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0], "gyro": [-0.1, 0, 0]}}}
+{"op": "step", "label": "ws-charge-hold", "frames": 28, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "status", "label": "ws-held36"}
+{"op": "step", "label": "ws-full-release", "frames": 36, "require_active": true}
+{"op": "status", "label": "ws-full-after"}
+{"op": "step", "label": "ws-light", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "ws-light-release", "frames": 36, "require_active": true}
+{"op": "status", "label": "ws-combo-after"}
+{"op": "capture", "label": "ws-combo"}
+{"op": "finish_special", "label": "ws-end"}
+{"op": "status", "label": "ws-returned"}
+{"op": "navigate", "label": "gc20-setup", "goals": {"0": [0, 3, 8], "1": [-6, 3, 8]}}
+{"op": "paint_floor", "label": "gc20-paint", "player": 1}
+{"op": "refill", "label": "gc20-heal", "player": 1, "frames": 180}
+{"op": "align", "label": "gc20-aim", "target_player": 1, "offset": [0, 1.1, 0], "fast": true}
+{"op": "step", "label": "gc20-face", "frames": 6, "require_active": false, "actions": {"player_0": {"sticks": [0, 0.85, 0, 0]}}}
+{"op": "step", "label": "gc20-settle", "frames": 8, "require_active": false}
+{"op": "status", "label": "gc20-before"}
+{"op": "step", "label": "gc20-RS", "frames": 1, "require_active": false, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "gc20-activate", "frames": 30, "require_active": false}
+{"op": "step", "label": "gc20-charge", "frames": 20, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "gc20-release", "frames": 45, "require_active": true}
+{"op": "status", "label": "gc20-after"}
+{"op": "finish_special", "label": "gc20-end"}
+{"op": "navigate", "label": "gc21-setup", "goals": {"0": [0, 3, 8], "1": [-6, 3, 8]}}
+{"op": "paint_floor", "label": "gc21-paint", "player": 1}
+{"op": "refill", "label": "gc21-heal", "player": 1, "frames": 180}
+{"op": "align", "label": "gc21-aim", "target_player": 1, "offset": [0, 1.1, 0], "fast": true}
+{"op": "step", "label": "gc21-face", "frames": 6, "require_active": false, "actions": {"player_0": {"sticks": [0, 0.85, 0, 0]}}}
+{"op": "step", "label": "gc21-settle", "frames": 8, "require_active": false}
+{"op": "status", "label": "gc21-before"}
+{"op": "step", "label": "gc21-RS", "frames": 1, "require_active": false, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "gc21-activate", "frames": 30, "require_active": false}
+{"op": "step", "label": "gc21-charge", "frames": 21, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "gc21-release", "frames": 45, "require_active": true}
+{"op": "status", "label": "gc21-after"}
+{"op": "finish_special", "label": "gc21-end"}
+{"op": "navigate", "label": "mc-setup", "goals": {"0": [0, 3, 8], "1": [-6, 3, 8]}}
+{"op": "paint_floor", "label": "mc-paint", "player": 1}
+{"op": "refill", "label": "mc-heal", "player": 1, "frames": 180}
+{"op": "align", "label": "mc-hook-aim", "target": [0, 6, 4], "fast": true}
+{"op": "status", "label": "mc-before"}
+{"op": "step", "label": "mc-RS", "frames": 1, "require_active": false, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "mc-activate", "frames": 30, "require_active": false}
+{"op": "step", "label": "mc-R", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "mc-flight", "frames": 70, "require_active": true}
+{"op": "align", "label": "mc-target-aim", "target_player": 1, "offset": [0, 1.1, 0], "fast": true, "require_active": true}
+{"op": "status", "label": "mc-before-charge"}
+{"op": "step", "label": "mc-charge-tilt", "frames": 8, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0], "gyro": [-0.1, 0, 0]}}}
+{"op": "step", "label": "mc-charge-hold", "frames": 28, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "mc-full-release", "frames": 36, "require_active": true}
+{"op": "status", "label": "mc-full-after"}
+{"op": "align", "label": "mc-followup-aim", "target_player": 1, "offset": [0, 1.1, 0], "fast": true, "require_active": true}
+{"op": "step", "label": "mc-face-followup", "frames": 6, "require_active": true, "actions": {"player_0": {"sticks": [0, 0.85, 0, 0]}}}
+{"op": "step", "label": "mc-followup-settle", "frames": 8, "require_active": true}
+{"op": "step", "label": "mc-light", "frames": 1, "require_active": true, "actions": {"player_0": {"buttons": [1, 0, 0, 0, 0, 0]}}}
+{"op": "step", "label": "mc-light-release", "frames": 36, "require_active": true}
+{"op": "status", "label": "mc-combo-after"}
+{"op": "capture", "label": "mc-combo"}
+{"op": "finish_special", "label": "mc-end"}
+{"op": "status", "label": "mc-returned"}
+{"op":"close","label":"combat-seal"}
