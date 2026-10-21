@@ -1,0 +1,19 @@
+{"op": "navigate", "label": "wood-ceiling-setup", "goals": {"0": [-16, 3, 21]}}
+{"op": "align", "label": "wood-ceiling-aim", "target": [-16.5, 5, 26.67], "fast": true}
+{"op": "status", "label": "wood-ceiling-before"}
+{"op": "step", "label": "wood-ceiling-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "wood-ceiling-startup", "frames": 30}
+{"op": "step", "label": "wood-ceiling-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "wood-ceiling-release", "frames": 100}
+{"op": "status", "label": "wood-ceiling-after"}
+{"op": "finish_special", "label": "wood-ceiling-invalid-end"}
+{"op": "navigate", "label": "wood-reset-center", "goals": {"0": [0, 3, 8], "1": [-6, 3, 8]}}
+{"op": "navigate", "label": "wood-second-setup", "goals": {"0": [-16, 3, 21]}}
+{"op": "align", "label": "wood-second-aim", "target": [-16.5, 4.65, 26.67], "fast": true, "desired_hook_hit": [-16.5, 5, 26.67]}
+{"op": "status", "label": "wood-second-before"}
+{"op": "step", "label": "wood-second-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "wood-second-startup", "frames": 30}
+{"op": "step", "label": "wood-second-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "wood-second-release", "frames": 100}
+{"op": "status", "label": "wood-second-after"}
+{"op": "close", "label": "ceiling-fixture-blocked-stop"}

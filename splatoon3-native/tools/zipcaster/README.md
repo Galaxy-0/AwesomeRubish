@@ -1,6 +1,6 @@
 # D2 Zipcaster 测量工具
 
-独立的协调方夹具和离线分析，不是策略实现，不接入正式擂台。当前 **D2 部分完成、遇到观测卡点；没有全项签收**。数值与边界见 [研究报告](../../notes/d2-20261021.md) 和 [机器可读索引](../../notes/d2-20261021.json)。
+独立的协调方夹具和离线分析，不是策略实现，不接入正式擂台。当前 **D2B只读传感与侧角高台70+35已通过；实体天花板摆位和护甲倍率仍未定，没有D2全项签收**。最新见 [B报告](../../notes/d2b-20261021.md) 和 [B机器索引](../../notes/d2b-20261021.json)；首轮历史见 [研究报告](../../notes/d2-20261021.md) 和 [机器索引](../../notes/d2-20261021.json)。
 
 ## 文件
 
@@ -56,4 +56,41 @@ cat tools/zipcaster/plans/combat-v3.jsonl >> work/d2/replay-combat.commands.json
 
 三图输出818 / 1327 / 1035个定向静态候选；“常驻点”是D1命名区域/伏击候选代理，不是敌人行为统计。垂直面带宽、入射角和附着偏移都是采样假设。参数35作为保守眼点半径；原生大墙眼点成功约37.40、失败38.25的结果说明不能直接把相机射线当飞索枪口射程。
 
-继续前应先增加只读原生观测：实际hook命中点/面、special action/attack-ready状态、armor字段。两次高台满蓄有墨耗但无伤害，不能从动画/瞄准推断命中。天花板实际终点不符，不能宣称可挂或不可挂。飞行R2房间曾在剩约23.9秒触发RL_STALL，保留保护和失败原件，先最小重放诊断。不要把静态Top5写成已验证攻略，不自动转D3或恢复T1/S1。
+首轮曾缺少实际hook命中点/面、special action和armor观测；B已补充，详见下节。两次旧高台满蓄有墨耗无伤害，不能从动画/瞄准推断命中；新侧角落格栅方案实际70+35通过。天花板仍不能宣称普遍可挂或不可挂。飞行R2房间曾触发RL_STALL，保留保护和失败原件；按本轮用户指示不追此支。不要把静态Top5写成已验证攻略，不自动转D3或恢复T1/S1。
+
+## D2B：只读原生证据工具
+
+- `build_sensors.py`：从版本绑定special测量宿主派生独立host/modules，全部输出要求新建在`work/`，禁止覆盖默认宿主。原父源码／宿主／模块前后SHA校验；新增观察门46/47仅在私有重写模块。46定位原生更新入口；47候选入口未产生live样本，实际对象发现采用受保护的vtable+owner只读扫描。
+- `sensor.h`：读取受控own Player对应SuperHook、actor矩阵、PlayerArmor和PlayerCollision；native帧4间隔私有快照。首次有界VM扫描≤64MiB，缓存须再次校验vtable与owner。只读；既有meter测试写入保持独立。`hook_bullet`是早期诊断名称，未证明是实际弹体，不能使用其位置作锚点。
+- `sensor_lab.py`：复用原D2夹具，只给本次进程设置传感开关，不改变正式host选项或policy协议。
+- `inspect_native.py`：本机NSO解压、Build ID／类型／观察门原指令验证，私有image只能输出到`work/`；不要提交image、静态指令输出或内存快照。
+- `decode_sensors.py`：解码原生快照与RTTI；字段名保留candidate语义。必须给本地image才能验证关联组件类型并导出armor字段。
+- `sensor_evidence.py`：同process/native frame归并；Shot仅为tip，PreAttack/Attack+matrix才为bind witness；Wait残留点无效。3×4矩阵变换位置，法线不加平移，actor ID不当静态face index。armor／collision输出原始值，不冒充减伤倍率。
+- `report_sensors.py` / `check_sensors.py`：从本轮关闭后的原件归约数值JSON、来源SHA和失败前置，审计真实HP、armor、矩阵、stale字段、运行时保护及D1 trace。没有启动游戏的副作用。
+
+重建私有传感宿主（需要用户授权运行时才执行；当前任务已结束）：
+
+```sh
+.venv/bin/python tools/zipcaster/build_sensors.py --out work/d2b/rebuild-new
+.venv/bin/python tools/zipcaster/sensor_lab.py --name sensors-replay \
+  --commands work/d2/sensors-replay.commands.jsonl \
+  --host work/d2b/rebuild-new/dmhost-sensors --patched work/d2b/rebuild-new/modules
+```
+
+另一个终端等`D2_READY`后，将`plans/sensor-b2-world.jsonl`追加到新空队列即可复现侧角高台方案。`sensor-b1-survey`与`sensor-b2-ceiling`包括失败站位，是证据重放，不是保证合法的夹具。不得同时超过3房；本轮峰值2房，现已全部关闭。
+
+离线验证／归约（不启动游戏）：
+
+```sh
+.venv/bin/python tools/zipcaster/inspect_native.py --image work/d2b/reconstructed-main.bin
+.venv/bin/python tools/zipcaster/decode_sensors.py \
+  --session work/tests/m6-2p-20261021-143014-022434 \
+  --out work/d2b/b2-armor-final --image work/d2b/reconstructed-main.bin
+.venv/bin/python tools/zipcaster/sensor_evidence.py \
+  --source work/d2b/b2-armor-final/sensors.jsonl --out work/d2b/b2-armor-final/evidence.jsonl
+.venv/bin/python tools/zipcaster/report_sensors.py
+.venv/bin/python tools/zipcaster/check_sensors.py
+.venv/bin/python tools/zipcaster/check.py
+```
+
+`report_sensors.py`使用报告中指定的五个历史关闭run和四份decode目录，不能在仍运行的日志上生成最终哈希。其它decode目录以JSON所列session同法生成。新高台D1通用trace保存在`work/d2b/traces/high-side.json`，未修改旧`showcase/data/zipcaster-traces.json`或已发布页面。

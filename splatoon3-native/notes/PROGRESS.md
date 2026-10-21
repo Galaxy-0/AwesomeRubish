@@ -2980,3 +2980,14 @@ D1私有预览已交付，本轮只启动用户指定D2，不恢复T1/S1、不�
 - 移除下载JSON按钮及下载API。沿用设计规范的冷蓝token/单强调色/队伍色与窄屏布局。页面`showcase/index.html` **637,436 bytes**（SHA `654feb25f0a92965609de655c9dc0f6000968c5b95750eaf61162f0002e874ab`），低于10MB，生成页/派生数据/截图均ignored。未操作私有预览远端发布。
 - `showcase/check.py`6705项通过，103份输入SHA；JS源码/内联脚本与Python编译通过；旧地图、武器、故事、校准和四段trace逐值未变。Chrome三图/区域/连招筛选、图层开关、播放推进/拖动到倒下、跟随、2D键盘站位/旧模拟回放均验证，控制台无error，DOM无下载控件。400/320px无横向溢出，手机为视口模拟，临时覆盖已恢复。
 - 已目视截图：`work/showcase/d2-a-{light,dark,mobile-light,mobile-dark}.jpg`、`d2-a-mechanisms-light.jpg`、`d2-a-mechanisms-mobile-{light,dark}.jpg`、`d2-a-combo-light.jpg`。证据在`work/showcase/{check.json,d2-a-browser-check.json,d2-a-data-invariance.json}`；交付摘要`last.md`。只提交showcase源码/说明与文档，不提交资源或截图。
+
+
+### D2B 原生只读传感与有界重测（2026-10-21）
+
+- 按`work/codex/d2b.txt` B执行；A页面已由Claude更新发布，本轮不改showcase、不重新发布。源码在`tools/zipcaster/`新增独立sensor构建/运行/解码/归约/检查，运行时全部在`work/d2b/`。默认dmhost、special父宿主和原15个patched模块前后SHA一致，upstream/arena/rl无改动；测试meter只作用actor0，native日志只读，不向policy开放。原生完整像素、fixed60，峰值2房，全部按队列close正常退出。
+- 第一轮：最初误取清理入口，只有damage无hook输出，保留失败；改到实际更新入口并用vtable+owner只读查找，读到SuperHook阶段与坐标。第二轮：矩阵/RTTI/关联组件定位，得到PlayerArmor与PlayerCollision，补高台及早/晚受击对照。不是两轮毫无进展，未扩大到RL_STALL。
+- 定位11.3.0：SuperHook size0x3b18、phase+40（0Wait/1Shot/2PreAttack/3Attack）、tip/bind position+98、local normal+a4、bound actor+88/ID+3948、actor+d8的3×4世界变换。新归约把Shot当实际尖端，只在本次PreAttack/Attack+matrix时输出world anchor；Wait残留字段不作当前锚点。Actor ID不当静态face/material索引，非单位变换只有静态代码与合成回归，未伪造移动面原生样本。
+- 高台通过：侧角锚点(-3.40674,9.10192,2.50686)，法线(-.68699,.23682,.68699)，落格栅Y9后21帧满蓄70、再轻斩击倒满血靶；敌靶armor0。开始蓄力至首次KO观测75帧（含控制间隔，非最短）；完整回程返回发动起点。D1通用新trace `work/d2b/traces/high-side.json` 21,817bytes，旧页面/trace不动。
+- 护甲：原生`PlayerArmor` flags+30／rawHP+90，特殊突进1/300、初始重生8/300；collision+21d突进2、到达0。早受击无body/armor扣减，与无受击控制的护甲结束时机接近，不能推定无敌或伤害倍率；晚受击护甲0、HP1→.3，确认稳定挂墙可受70。
+- 天花板分支停止：实际tip射线与camera存在偏差；格栅一个样本未穿过预定静态碰撞面，另一个过边缘无绑定，不能提升为材质通则；原“实体天花板”读到的却是x=-19.5侧墙。新Wood01下表面夹具直接出生导航／回中路再导航两次均失败，依赖射击全部排除，按两次无摆位进展停止。剩余卡点是可达且朝向校准的实体下表面夹具与确认命中的护甲同步伤害对照，不做通用导航重写或游戏状态传送。
+- 数值JSON及原件/SHA索引`notes/d2b-20261021.json`，完整报告`notes/d2b-20261021.md`。217项新离线审计通过（源/运行时/原件SHA、stale字段、矩阵、真实HP/armor、输入计划、trace），首轮83,749项离线审计仍通过；7份Python编译检查通过。检查数不是原生样本数。`full_d2_passed=false`，未签收通用天花板/减伤倍率；不追飞行再R、不恢复T1/S1、不转D3。

@@ -1,0 +1,38 @@
+{"op": "navigate", "label": "survey-setup", "goals": {"0": [0, 3, 8], "1": [-5, 6, -3]}}
+{"op": "paint_floor", "label": "survey-target-paint", "player": 1}
+{"op": "refill", "label": "survey-target-heal", "player": 1, "frames": 180}
+{"op": "align", "label": "survey-wall-aim", "target": [0, 6, 4], "fast": true}
+{"op": "status", "label": "survey-before"}
+{"op": "step", "label": "survey-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "survey-startup", "frames": 30}
+{"op": "step", "label": "survey-R-held", "frames": 30, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "survey-R-released", "frames": 100}
+{"op": "status", "label": "survey-attached"}
+{"op": "finish_special", "label": "survey-wall-end"}
+{"op": "restore", "label": "ceiling-corner-restore", "target": [-6, 3, 10], "radius": 0.2}
+{"op": "align", "label": "ceiling-corner-aim", "target": [-4, 9.5, 4.2], "fast": true}
+{"op": "status", "label": "ceiling-corner-before"}
+{"op": "step", "label": "ceiling-corner-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "ceiling-corner-startup", "frames": 30}
+{"op": "step", "label": "ceiling-corner-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "ceiling-corner-release", "frames": 100}
+{"op": "status", "label": "ceiling-corner-after"}
+{"op": "finish_special", "label": "ceiling-corner-end"}
+{"op": "restore", "label": "fence-exact-restore", "target": [-10, 3, 8], "radius": 0.2}
+{"op": "align", "label": "fence-exact-aim", "target": [-7, 8.5, 1.75], "fast": true}
+{"op": "status", "label": "fence-exact-before"}
+{"op": "step", "label": "fence-exact-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "fence-exact-startup", "frames": 30}
+{"op": "step", "label": "fence-exact-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "fence-exact-release", "frames": 100}
+{"op": "status", "label": "fence-exact-after"}
+{"op": "finish_special", "label": "fence-exact-end"}
+{"op": "restore", "label": "solid-ceiling-restore", "target": [-20, 3, 9], "radius": 0.25}
+{"op": "align", "label": "solid-ceiling-aim", "target": [-26.8, 6, 12.17], "fast": true}
+{"op": "status", "label": "solid-ceiling-before"}
+{"op": "step", "label": "solid-ceiling-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "solid-ceiling-startup", "frames": 30}
+{"op": "step", "label": "solid-ceiling-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "solid-ceiling-release", "frames": 100}
+{"op": "status", "label": "solid-ceiling-after"}
+{"op": "close", "label": "round1-complete"}

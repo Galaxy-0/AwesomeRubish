@@ -1,0 +1,1565 @@
+{
+  "schema": "inklab.d2b.report.v1",
+  "date": "2026-10-21",
+  "build_id": "28c4287aee36f7499da60f3e68b54c70",
+  "status": "sensors_and_high_combo_verified_ceiling_fixture_blocked",
+  "full_d2_passed": false,
+  "readonly_sensors": true,
+  "native_rooms_max_concurrent": 2,
+  "game_rendering": "full pixels",
+  "fixed60": true,
+  "special_fixture_only": "actor0 infinite, actor1 natural; both QS57AP",
+  "fields": {
+    "SuperHook": {
+      "type_name": "spl::PlayerSubActionSpSuperHook",
+      "vtable": 97772936,
+      "type_getter": 44927584,
+      "size_getter": 44927596,
+      "size": 15128,
+      "owner": 15088,
+      "phase": 64,
+      "position": 152,
+      "normal_local": 164,
+      "normal_world_cached": 15004,
+      "actor_pointer": 136,
+      "actor_id": 14664,
+      "actor_world_matrix": 216
+    },
+    "WeaponSpSuperHook": {
+      "type_name": "spl::WeaponSpSuperHook",
+      "vtable": 98066976,
+      "type_getter": 51976768,
+      "size": 1472,
+      "hook_link": 128
+    },
+    "PlayerArmor": {
+      "type_name": "spl::PlayerArmor",
+      "vtable": 97713248,
+      "type_getter": 42069868,
+      "size": 3904,
+      "hook_link": 15080,
+      "flags": 48,
+      "hp": 144
+    },
+    "PlayerCollision": {
+      "type_name": "spl:PlayerCollision",
+      "vtable": 97720864,
+      "type_getter": 43035832,
+      "storage_link": 72896,
+      "mask": 541
+    }
+  },
+  "limitations": [
+    "4-present native stride; phase boundaries are intervals, not single-frame guarantees.",
+    "Native actor ID and world plane recovered, not a material/triangle index or eligibility enum.",
+    "Armor flags 1 and raw HP300 are measured; raw damage multiplier and invulnerability not proved.",
+    "Ceiling source placement failed twice; no universal ceiling bind/no-bind claim.",
+    "Native hook tip ray and camera ray differ; no global aim correction inferred.",
+    "No moving actor/rotated actor native fixture; matrix transformation statically verified plus synthetic regression.",
+    "No RL_STALL flight re-fire exploration, no policy/protocol changes, no page re-publish."
+  ],
+  "native_anchors": [
+    {
+      "native_frame": 4978,
+      "anchor_world": [
+        0.31654655933380127,
+        5.777596473693848,
+        4.282210826873779
+      ],
+      "hit_normal_world": [
+        -0.0018826104933395982,
+        0.1724918633699417,
+        0.9850091338157654
+      ],
+      "bound_actor_id": 18,
+      "surface_matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "native_frame": 6890,
+      "anchor_world": [
+        -3.406741142272949,
+        9.101917266845703,
+        2.5068559646606445
+      ],
+      "hit_normal_world": [
+        -0.6869913935661316,
+        0.2368241846561432,
+        0.6869913935661316
+      ],
+      "bound_actor_id": 18,
+      "surface_matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "high_combo": {
+    "before": {
+      "player_0": {
+        "version": 1,
+        "request": 1153,
+        "frame": 7056,
+        "advanced": 1,
+        "phase": 1,
+        "width": 128,
+        "height": 72,
+        "channels": 3,
+        "bytes": 27648,
+        "source_width": 1280,
+        "source_height": 720,
+        "pixels_valid": 1,
+        "position": [
+          -3.98873925,
+          9.00000191,
+          3.1666491
+        ],
+        "position_valid": 1,
+        "position_sample_frame": 7052,
+        "ink": 0.645000339,
+        "ink_valid": 1,
+        "heading": 3.01272702,
+        "heading_valid": 1,
+        "hp": 1,
+        "hp_valid": 1,
+        "special": 0.639999986,
+        "special_valid": 1,
+        "remaining_time": 100.133331,
+        "time_valid": 1,
+        "time_sample_frame": 7055,
+        "score": [
+          0,
+          0
+        ],
+        "score_valid": 0,
+        "score_units": 0,
+        "turf_ratio": [
+          0,
+          0
+        ],
+        "turf_valid": 0,
+        "score_sample_frame": 0,
+        "frames_without_input": 0,
+        "action_ignored": 0,
+        "input_repeats": 2,
+        "guest_time_ns": 1758954053610957,
+        "own_view": {
+          "yaw": -2.9407289,
+          "pitch": -0.472429335,
+          "valid": 1
+        },
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 4
+        },
+        "self_slot": 0,
+        "self_slot_valid": 1,
+        "alive": 1,
+        "alive_valid": 1,
+        "hud_status": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "hud_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_special_ready": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_sample_frame": [
+          7055,
+          7055,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_downs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_counter_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "clock_mode": "fixed60",
+        "hud_slot_agents": {
+          "0": "player_0",
+          "1": "player_1"
+        }
+      },
+      "player_1": {
+        "version": 1,
+        "request": 1153,
+        "frame": 5735,
+        "advanced": 1,
+        "phase": 1,
+        "width": 128,
+        "height": 72,
+        "channels": 3,
+        "bytes": 27648,
+        "source_width": 1280,
+        "source_height": 720,
+        "pixels_valid": 1,
+        "position": [
+          -5.34719133,
+          5.84696674,
+          -2.5522759
+        ],
+        "position_valid": 1,
+        "position_sample_frame": 5734,
+        "ink": 1,
+        "ink_valid": 1,
+        "heading": 2.42277765,
+        "heading_valid": 1,
+        "hp": 1,
+        "hp_valid": 1,
+        "special": 0,
+        "special_valid": 1,
+        "remaining_time": 100.133331,
+        "time_valid": 1,
+        "time_sample_frame": 5734,
+        "score": [
+          0,
+          0
+        ],
+        "score_valid": 0,
+        "score_units": 0,
+        "turf_ratio": [
+          0,
+          0
+        ],
+        "turf_valid": 0,
+        "score_sample_frame": 0,
+        "frames_without_input": 0,
+        "action_ignored": 0,
+        "input_repeats": 2,
+        "guest_time_ns": 1758954040000331,
+        "own_view": {
+          "yaw": 0.660209954,
+          "pitch": -0.0127113825,
+          "valid": 1
+        },
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 4
+        },
+        "self_slot": 1,
+        "self_slot_valid": 1,
+        "alive": 1,
+        "alive_valid": 1,
+        "hud_status": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "hud_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_special_ready": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_sample_frame": [
+          5734,
+          5734,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_downs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_counter_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "clock_mode": "fixed60",
+        "hud_slot_agents": {
+          "0": "player_0",
+          "1": "player_1"
+        }
+      }
+    },
+    "full_after": {
+      "player_0": {
+        "version": 1,
+        "request": 1210,
+        "frame": 7113,
+        "advanced": 1,
+        "phase": 1,
+        "width": 128,
+        "height": 72,
+        "channels": 3,
+        "bytes": 27648,
+        "source_width": 1280,
+        "source_height": 720,
+        "pixels_valid": 1,
+        "position": [
+          -3.99118471,
+          9.00000095,
+          3.15467024
+        ],
+        "position_valid": 1,
+        "position_sample_frame": 7111,
+        "ink": 0.46866709,
+        "ink_valid": 1,
+        "heading": -2.94089317,
+        "heading_valid": 1,
+        "hp": 1,
+        "hp_valid": 1,
+        "special": 0.469999999,
+        "special_valid": 1,
+        "remaining_time": 99.1833344,
+        "time_valid": 1,
+        "time_sample_frame": 7112,
+        "score": [
+          0,
+          0
+        ],
+        "score_valid": 0,
+        "score_units": 0,
+        "turf_ratio": [
+          0,
+          0
+        ],
+        "turf_valid": 0,
+        "score_sample_frame": 0,
+        "frames_without_input": 0,
+        "action_ignored": 0,
+        "input_repeats": 2,
+        "guest_time_ns": 1758955003610957,
+        "own_view": {
+          "yaw": -2.94051981,
+          "pitch": -0.482094318,
+          "valid": 1
+        },
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 4
+        },
+        "self_slot": 0,
+        "self_slot_valid": 1,
+        "alive": 1,
+        "alive_valid": 1,
+        "hud_status": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "hud_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_special_ready": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_sample_frame": [
+          7112,
+          7112,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_downs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_counter_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "clock_mode": "fixed60",
+        "hud_slot_agents": {
+          "0": "player_0",
+          "1": "player_1"
+        }
+      },
+      "player_1": {
+        "version": 1,
+        "request": 1210,
+        "frame": 5792,
+        "advanced": 1,
+        "phase": 1,
+        "width": 128,
+        "height": 72,
+        "channels": 3,
+        "bytes": 27648,
+        "source_width": 1280,
+        "source_height": 720,
+        "pixels_valid": 1,
+        "position": [
+          -5.42879725,
+          5.97690678,
+          -2.89540339
+        ],
+        "position_valid": 1,
+        "position_sample_frame": 5790,
+        "ink": 1,
+        "ink_valid": 1,
+        "heading": 2.42277765,
+        "heading_valid": 1,
+        "hp": 0.300000012,
+        "hp_valid": 1,
+        "special": 0,
+        "special_valid": 1,
+        "remaining_time": 99.1833344,
+        "time_valid": 1,
+        "time_sample_frame": 5791,
+        "score": [
+          0,
+          0
+        ],
+        "score_valid": 0,
+        "score_units": 0,
+        "turf_ratio": [
+          0,
+          0
+        ],
+        "turf_valid": 0,
+        "score_sample_frame": 0,
+        "frames_without_input": 0,
+        "action_ignored": 0,
+        "input_repeats": 2,
+        "guest_time_ns": 1758954990000331,
+        "own_view": {
+          "yaw": 0.660209954,
+          "pitch": -0.0127113825,
+          "valid": 1
+        },
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 4
+        },
+        "self_slot": 1,
+        "self_slot_valid": 1,
+        "alive": 1,
+        "alive_valid": 1,
+        "hud_status": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "hud_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_special_ready": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_sample_frame": [
+          5791,
+          5791,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_downs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_counter_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "clock_mode": "fixed60",
+        "hud_slot_agents": {
+          "0": "player_0",
+          "1": "player_1"
+        }
+      }
+    },
+    "after": {
+      "player_0": {
+        "version": 1,
+        "request": 1247,
+        "frame": 7150,
+        "advanced": 1,
+        "phase": 1,
+        "width": 128,
+        "height": 72,
+        "channels": 3,
+        "bytes": 27648,
+        "source_width": 1280,
+        "source_height": 720,
+        "pixels_valid": 1,
+        "position": [
+          -3.99118471,
+          9.00000191,
+          3.15467024
+        ],
+        "position_valid": 1,
+        "position_sample_frame": 7146,
+        "ink": 0.375667155,
+        "ink_valid": 1,
+        "heading": -2.94201851,
+        "heading_valid": 1,
+        "hp": 1,
+        "hp_valid": 1,
+        "special": 0.370000005,
+        "special_valid": 1,
+        "remaining_time": 98.5666656,
+        "time_valid": 1,
+        "time_sample_frame": 7149,
+        "score": [
+          0,
+          0
+        ],
+        "score_valid": 0,
+        "score_units": 0,
+        "turf_ratio": [
+          0,
+          0
+        ],
+        "turf_valid": 0,
+        "score_sample_frame": 0,
+        "frames_without_input": 0,
+        "action_ignored": 0,
+        "input_repeats": 2,
+        "guest_time_ns": 1758955620277624,
+        "own_view": {
+          "yaw": -2.94215608,
+          "pitch": -0.44109118,
+          "valid": 1
+        },
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": 4
+        },
+        "self_slot": 0,
+        "self_slot_valid": 1,
+        "alive": 1,
+        "alive_valid": 1,
+        "hud_status": [
+          0,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "hud_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_special_ready": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_sample_frame": [
+          7149,
+          7149,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_downs": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_counter_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "clock_mode": "fixed60",
+        "hud_slot_agents": {
+          "0": "player_0",
+          "1": "player_1"
+        }
+      },
+      "player_1": {
+        "version": 1,
+        "request": 1247,
+        "frame": 5829,
+        "advanced": 1,
+        "phase": 1,
+        "width": 128,
+        "height": 72,
+        "channels": 3,
+        "bytes": 27648,
+        "source_width": 1280,
+        "source_height": 720,
+        "pixels_valid": 1,
+        "position": [
+          -5.46615839,
+          6.00121975,
+          -3.07712269
+        ],
+        "position_valid": 1,
+        "position_sample_frame": 5825,
+        "ink": 1,
+        "ink_valid": 1,
+        "heading": 2.42277765,
+        "heading_valid": 1,
+        "hp": 0,
+        "hp_valid": 1,
+        "special": 0,
+        "special_valid": 1,
+        "remaining_time": 98.5666656,
+        "time_valid": 1,
+        "time_sample_frame": 5828,
+        "score": [
+          0,
+          0
+        ],
+        "score_valid": 0,
+        "score_units": 0,
+        "turf_ratio": [
+          0,
+          0
+        ],
+        "turf_valid": 0,
+        "score_sample_frame": 0,
+        "frames_without_input": 0,
+        "action_ignored": 0,
+        "input_repeats": 2,
+        "guest_time_ns": 1758955606666998,
+        "own_view": {
+          "yaw": 0.660209954,
+          "pitch": -0.0127113825,
+          "valid": 1
+        },
+        "referee_motion": {
+          "form_squid": 0,
+          "ground_contact": -1
+        },
+        "self_slot": 1,
+        "self_slot_valid": 1,
+        "alive": 0,
+        "alive_valid": 1,
+        "hud_status": [
+          0,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "hud_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_special_ready": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_sample_frame": [
+          5828,
+          5828,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_downs": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hud_counter_valid": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "clock_mode": "fixed60",
+        "hud_slot_agents": {
+          "0": "player_0",
+          "1": "player_1"
+        }
+      }
+    },
+    "returned": [
+      -9.77698421,
+      3.03013515,
+      6.04931974
+    ],
+    "charge_input_frames": 21,
+    "charge_start_ack": 7056,
+    "hp_decreases": [
+      {
+        "label": "high-side-full-release",
+        "actor0_ack": 7096,
+        "target_ack": 5775,
+        "target_position_sample_frame": 5774,
+        "hp_before": 1,
+        "hp_after": 0.300000012
+      },
+      {
+        "label": "high-side-light-release",
+        "actor0_ack": 7131,
+        "target_ack": 5810,
+        "target_position_sample_frame": 5809,
+        "hp_before": 0.300000012,
+        "hp_after": 0
+      }
+    ],
+    "charge_start_to_observed_ko_frames": 75,
+    "target_native_armor_during_combo": [
+      {
+        "native_frame": 5701,
+        "armor_flags_native": 0,
+        "armor_hp_native": 0
+      }
+    ],
+    "interpretation": "Side-corner hook lands on grate near Y9; grounded full70 then light35 kills full-health high target. Not a hanging-air combo or minimum-time claim."
+  },
+  "pure_wall_control": [
+    {
+      "native_frame": 4942,
+      "state_native": 0,
+      "armor_flags_native": 0,
+      "armor_hp_native": 0,
+      "collision_mask_21d_native": 0
+    },
+    {
+      "native_frame": 4978,
+      "state_native": 2,
+      "armor_flags_native": 0,
+      "armor_hp_native": 0,
+      "collision_mask_21d_native": 0
+    },
+    {
+      "native_frame": 4994,
+      "state_native": 3,
+      "armor_flags_native": 1,
+      "armor_hp_native": 300,
+      "collision_mask_21d_native": 2
+    },
+    {
+      "native_frame": 5002,
+      "state_native": 0,
+      "armor_flags_native": 1,
+      "armor_hp_native": 300,
+      "collision_mask_21d_native": 0
+    },
+    {
+      "native_frame": 5022,
+      "state_native": 0,
+      "armor_flags_native": 0,
+      "armor_hp_native": 0,
+      "collision_mask_21d_native": 0
+    }
+  ],
+  "damage_controls": {
+    "early": {
+      "before": 1,
+      "after": 1,
+      "native_changes": [
+        {
+          "native_frame": 4961,
+          "body_hp_native": 1000,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 0
+        },
+        {
+          "native_frame": 5021,
+          "body_hp_native": 1000,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 2
+        },
+        {
+          "native_frame": 5037,
+          "body_hp_native": 1000,
+          "armor_hp_native": 300,
+          "armor_flags_native": 1,
+          "collision_mask_21d_native": 2,
+          "state_native": 3
+        },
+        {
+          "native_frame": 5045,
+          "body_hp_native": 1000,
+          "armor_hp_native": 300,
+          "armor_flags_native": 1,
+          "collision_mask_21d_native": 0,
+          "state_native": 0
+        },
+        {
+          "native_frame": 5065,
+          "body_hp_native": 1000,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 0
+        }
+      ]
+    },
+    "late": {
+      "before": 1,
+      "after": 0.300000012,
+      "native_changes": [
+        {
+          "native_frame": 6421,
+          "body_hp_native": 1000,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 0
+        },
+        {
+          "native_frame": 6477,
+          "body_hp_native": 1000,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 1
+        },
+        {
+          "native_frame": 6481,
+          "body_hp_native": 1000,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 2
+        },
+        {
+          "native_frame": 6493,
+          "body_hp_native": 1000,
+          "armor_hp_native": 300,
+          "armor_flags_native": 1,
+          "collision_mask_21d_native": 2,
+          "state_native": 3
+        },
+        {
+          "native_frame": 6505,
+          "body_hp_native": 1000,
+          "armor_hp_native": 300,
+          "armor_flags_native": 1,
+          "collision_mask_21d_native": 0,
+          "state_native": 0
+        },
+        {
+          "native_frame": 6521,
+          "body_hp_native": 1000,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 0
+        },
+        {
+          "native_frame": 6561,
+          "body_hp_native": 300,
+          "armor_hp_native": 0,
+          "armor_flags_native": 0,
+          "collision_mask_21d_native": 0,
+          "state_native": 0
+        }
+      ]
+    }
+  },
+  "ceiling_ray_recheck": [
+    {
+      "case": "ceiling-corner",
+      "tip_samples": [
+        {
+          "frame": 7165,
+          "position": [
+            -3.1516032218933105,
+            11.30494213104248,
+            3.1423168182373047
+          ]
+        },
+        {
+          "frame": 7169,
+          "position": [
+            0.03973734378814697,
+            20.743000030517578,
+            -5.878324508666992
+          ]
+        },
+        {
+          "frame": 7173,
+          "position": [
+            3.2310779094696045,
+            30.18105697631836,
+            -14.898965835571289
+          ]
+        }
+      ],
+      "actual_segment_start": [
+        -5.587852541601512,
+        4.099988080000001,
+        10.028617682623288
+      ],
+      "actual_segment_end": [
+        3.2310779094696045,
+        30.18105697631836,
+        -14.898965835571289
+      ],
+      "speed_per_frame": 3.3599996416356026,
+      "view_pitch_before": 0.726951957,
+      "actual_tip_pitch": 0.7785340858959073,
+      "static_first_intersection": {
+        "face_index": 8139,
+        "point": [
+          -3.9839694050006567,
+          8.843305517348591,
+          5.495082571663687
+        ],
+        "normal": [
+          0.0019544352736564456,
+          0.0,
+          0.9999980900895566
+        ],
+        "actor": "Mpt_FldObj_Yunohana_PackPnt",
+        "material": "Fence00",
+        "mat_flags": [
+          "Fence"
+        ],
+        "col_disable_flags": [
+          "NoHit",
+          "SplCamera",
+          "SplInkBullet",
+          "SplInkBullet_FriendThrough",
+          "SplRollerBody",
+          "SplInkShield",
+          "SplBlowerInhale",
+          "SplInkTornado",
+          "SplGreatBarrier",
+          "SplSaberBombGuard",
+          "SplPaintSplash",
+          "Unspecified",
+          "Ground",
+          "SplPlayerSquid_NoThroughFence",
+          "SplPlayerChariot",
+          "Sight",
+          "EnemyLarge",
+          "Shield",
+          "SplBall"
+        ]
+      },
+      "warning": "Near-origin trim at source body Y+1.1; actual native tip line, static thin ray, not native sweep or bind eligibility."
+    },
+    {
+      "case": "fence-exact",
+      "tip_samples": [
+        {
+          "frame": 8477,
+          "position": [
+            -5.931666374206543,
+            10.00877571105957,
+            0.6480598449707031
+          ]
+        },
+        {
+          "frame": 8481,
+          "position": [
+            -1.1172399520874023,
+            17.748926162719727,
+            -9.22842788696289
+          ]
+        },
+        {
+          "frame": 8485,
+          "position": [
+            3.6971864700317383,
+            25.489076614379883,
+            -19.104915618896484
+          ]
+        }
+      ],
+      "actual_segment_start": [
+        -9.606964906507649,
+        4.10000048,
+        8.187699603238702
+      ],
+      "actual_segment_end": [
+        3.6971864700317383,
+        25.489076614379883,
+        -19.104915618896484
+      ],
+      "speed_per_frame": 3.3600003786027375,
+      "view_pitch_before": 0.577002287,
+      "actual_tip_pitch": 0.6137094884480078,
+      "static_first_intersection": null,
+      "warning": "Near-origin trim at source body Y+1.1; actual native tip line, static thin ray, not native sweep or bind eligibility."
+    }
+  ],
+  "raw_runs": {
+    "b1-state": {
+      "artifacts": "work/a6/d2-b1-state-20261021-135229-456778",
+      "session": "work/tests/m6-2p-20261021-135229-518656",
+      "driver_completed": true,
+      "scientific_pass_not_implied": true,
+      "failed_setup_commands": [],
+      "sources": [
+        {
+          "path": "work/a6/d2-b1-state-20261021-135229-456778/result.json",
+          "sha256": "c811d591678dc32809474027b8b418b10f63e4c2cca918820f364bb4ae8015b4"
+        },
+        {
+          "path": "work/a6/d2-b1-state-20261021-135229-456778/steps.jsonl",
+          "sha256": "7246dc6a6f4bce1f98573719a5ddff30c69e6b1f13a5e096abde1e1144189345"
+        },
+        {
+          "path": "work/d2/b1-state.commands.jsonl",
+          "sha256": "163adb59cd6251b43fcb67096499ca6d435410af433da44bd2fe0827ff43fd89"
+        },
+        {
+          "path": "work/d2/b1-state.commands.results.jsonl",
+          "sha256": "08b8d76766569b01e16a0e123087c0ca5d36077ebfb98895ac5194237cbc2687"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-135229-518656/player-0/host.log",
+          "sha256": "8802f5cb0c42ae58021486677fefa6a6ff296f00aafd4614e8fa2605dba95bb2"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-135229-518656/player-1/host.log",
+          "sha256": "5e524b1dc183d641cb0c4f37b8b2fb74ff3bf7e5ecd53f9768bdb3012dbdb423"
+        }
+      ]
+    },
+    "b1-survey": {
+      "artifacts": "work/a6/d2-b1-survey-20261021-140052-127937",
+      "session": "work/tests/m6-2p-20261021-140052-181502",
+      "driver_completed": true,
+      "scientific_pass_not_implied": true,
+      "failed_setup_commands": [
+        {
+          "label": "solid-ceiling-restore",
+          "error": "AssertionError('A6 pose restore exhausted')"
+        }
+      ],
+      "sources": [
+        {
+          "path": "work/a6/d2-b1-survey-20261021-140052-127937/result.json",
+          "sha256": "5f6c6b9acf611b5234837f0b2abe6b646d24ff970788a117662be8b52c165109"
+        },
+        {
+          "path": "work/a6/d2-b1-survey-20261021-140052-127937/steps.jsonl",
+          "sha256": "844c9c6009af822b47af9b58cad67f98d488b073c5022c8631b317613470fb87"
+        },
+        {
+          "path": "work/d2/b1-survey.commands.jsonl",
+          "sha256": "6289b453236d21a0a451f484fb3f685523c278d1734725c725c30c2b6194cf41"
+        },
+        {
+          "path": "work/d2/b1-survey.commands.results.jsonl",
+          "sha256": "11551f1a371f0fee39ea3060ed7fc2829b3fe875d779719a8e72f14b267badf5"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-140052-181502/player-0/host.log",
+          "sha256": "e6e9c78e5fca281e0ccb25b1eaa2dacbc4fd05850d45c6af2262457e10117e7c"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-140052-181502/player-1/host.log",
+          "sha256": "f334813529fd40d093ca04cc6e5ce5f60767e932fcb3d627ec87c75aa1b2c41b"
+        }
+      ],
+      "decoded": [
+        {
+          "path": "work/d2b/b1-survey-final/sensors.jsonl",
+          "sha256": "fecd70385d24201862c5046bf81b5ebc327a96462eae1c4c4294b171eae4e96f"
+        },
+        {
+          "path": "work/d2b/b1-survey-final/summary.json",
+          "sha256": "2f1c91d26acdf74bdcd1381e52069211294060d9a75f72da7d2d1f07d2829b40"
+        }
+      ],
+      "counts": {
+        "0:damage": 2185,
+        "0:superhook": 2185,
+        "0:player": 2185,
+        "0:storage": 2185,
+        "1:damage": 2185,
+        "1:superhook": 2185,
+        "1:player": 2185,
+        "1:storage": 2185
+      }
+    },
+    "b2-world": {
+      "artifacts": "work/a6/d2-b2-world-20261021-141406-112958",
+      "session": "work/tests/m6-2p-20261021-141406-177533",
+      "driver_completed": true,
+      "scientific_pass_not_implied": true,
+      "failed_setup_commands": [],
+      "sources": [
+        {
+          "path": "work/a6/d2-b2-world-20261021-141406-112958/result.json",
+          "sha256": "5bac7884e407ced800c96d69e044053cf186473cb9f26f4b27966b6482ac1db6"
+        },
+        {
+          "path": "work/a6/d2-b2-world-20261021-141406-112958/steps.jsonl",
+          "sha256": "a4af3ec00f7e5a324538391a542b3039c8da193bad34b05be3bf97af57e0b38e"
+        },
+        {
+          "path": "work/d2/b2-world.commands.jsonl",
+          "sha256": "25a85c95f5e6189f8002e481e31fc17caa8ed9d5c5e2ccbe9612d24bd3928317"
+        },
+        {
+          "path": "work/d2/b2-world.commands.results.jsonl",
+          "sha256": "d1ac750c2dc05a00930b304e4fdbffd90896bca494d4d65d8e076a48d4fbfda4"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-141406-177533/player-0/host.log",
+          "sha256": "7f983aa3e2be19888c419495b6321d97c366e8f95313110a0691afce79082cb6"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-141406-177533/player-1/host.log",
+          "sha256": "5de38c1702563978cc630c2631c56df3f9c1e75d134dab596b84da069db980b7"
+        }
+      ],
+      "decoded": [
+        {
+          "path": "work/d2b/b2-world-final/sensors.jsonl",
+          "sha256": "fbcbca7715307acf8e0b1eb8ad2aec119e3c3fe3adcc9021c09d222a76d636bc"
+        },
+        {
+          "path": "work/d2b/b2-world-final/summary.json",
+          "sha256": "1bfad88182fe9e40dcd81d31eca5adf66842c06b82039c2c7e3eb825cacae11e"
+        }
+      ],
+      "counts": {
+        "0:damage": 1401,
+        "0:superhook": 1401,
+        "0:hook_weapon": 1401,
+        "0:hook_bullet": 1401,
+        "0:component_3ac0": 1401,
+        "0:component_3ac8": 1401,
+        "0:component_3ad0": 1401,
+        "0:component_3ad8": 1401,
+        "0:component_3ae0": 1401,
+        "0:component_3ae8": 1401,
+        "0:player": 1401,
+        "0:storage": 1401,
+        "0:component_11cc0": 1401,
+        "0:surface_matrix": 723,
+        "1:damage": 1401,
+        "1:superhook": 1401,
+        "1:hook_weapon": 1401,
+        "1:hook_bullet": 1401,
+        "1:component_3ac0": 1401,
+        "1:component_3ac8": 1401,
+        "1:component_3ad0": 1401,
+        "1:component_3ad8": 1401,
+        "1:component_3ae0": 1401,
+        "1:component_3ae8": 1401,
+        "1:player": 1401,
+        "1:storage": 1401,
+        "1:component_11cc0": 1401
+      }
+    },
+    "b2-ceiling": {
+      "artifacts": "work/a6/d2-b2-ceiling-20261021-142152-732002",
+      "session": "work/tests/m6-2p-20261021-142152-794630",
+      "driver_completed": true,
+      "scientific_pass_not_implied": true,
+      "failed_setup_commands": [
+        {
+          "label": "wood-ceiling-setup",
+          "error": "AssertionError('wood-ceiling-setup blocked: [-23.8999977, 10.5000515, 71.4331589]')"
+        },
+        {
+          "label": "wood-second-setup",
+          "error": "AssertionError('wood-second-setup blocked: [-0.362162143, 3.0000062, 8.38589859]')"
+        }
+      ],
+      "sources": [
+        {
+          "path": "work/a6/d2-b2-ceiling-20261021-142152-732002/result.json",
+          "sha256": "2e71a6b5f21be979ecc09424722756faef1379fbc90c65b9e9db06da4a4eb91a"
+        },
+        {
+          "path": "work/a6/d2-b2-ceiling-20261021-142152-732002/steps.jsonl",
+          "sha256": "88346049fb50965c3c3e1efac3e09178eab249e19c0fc3aff7f8d7691f1bca1a"
+        },
+        {
+          "path": "work/d2/b2-ceiling.commands.jsonl",
+          "sha256": "88ce18ed13e0f710c9a5993109ebbca8cd6929f8cc66db037011f1c7cd6eca0a"
+        },
+        {
+          "path": "work/d2/b2-ceiling.commands.results.jsonl",
+          "sha256": "892c70e3b30369762a2cb4359cea47a41168a87e2aab17dd550517855093e7c0"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-142152-794630/player-0/host.log",
+          "sha256": "54b8f43e8ebc9ed289b451adffcccb1019e9bc07f04eafb9b933f5f709f9cb6c"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-142152-794630/player-1/host.log",
+          "sha256": "e78a9cdf1ad477a2c7031630d0817c440804d645e2d7311175d4e13e540b8679"
+        }
+      ],
+      "decoded": [
+        {
+          "path": "work/d2b/b2-ceiling-final/sensors.jsonl",
+          "sha256": "a71796af51b85b7816105bd8c4d7a8108645dccb63d4214b5c2c28cda48519fb"
+        },
+        {
+          "path": "work/d2b/b2-ceiling-final/summary.json",
+          "sha256": "c11dd2eb1a69807fc336e93e8737364955dc7150471e7e039e353906ce64061b"
+        }
+      ],
+      "counts": {
+        "0:damage": 893,
+        "0:superhook": 893,
+        "0:hook_weapon": 893,
+        "0:hook_bullet": 893,
+        "0:component_3ac0": 893,
+        "0:component_3ac8": 893,
+        "0:component_3ad0": 893,
+        "0:component_3ad8": 893,
+        "0:component_3ae0": 893,
+        "0:component_3ae8": 893,
+        "0:player": 893,
+        "0:storage": 893,
+        "0:component_11cc0": 893,
+        "0:surface_matrix": 747,
+        "1:damage": 893,
+        "1:superhook": 893,
+        "1:hook_weapon": 893,
+        "1:hook_bullet": 893,
+        "1:component_3ac0": 893,
+        "1:component_3ac8": 893,
+        "1:component_3ad0": 893,
+        "1:component_3ad8": 893,
+        "1:component_3ae0": 893,
+        "1:component_3ae8": 893,
+        "1:player": 893,
+        "1:storage": 893,
+        "1:component_11cc0": 893
+      }
+    },
+    "b2-armor": {
+      "artifacts": "work/a6/d2-b2-armor-20261021-143013-962291",
+      "session": "work/tests/m6-2p-20261021-143014-022434",
+      "driver_completed": true,
+      "scientific_pass_not_implied": true,
+      "failed_setup_commands": [],
+      "sources": [
+        {
+          "path": "work/a6/d2-b2-armor-20261021-143013-962291/result.json",
+          "sha256": "f4dd04f0d2043c14354e6e874e1225cd45722d942c0a809023020c46469f6b99"
+        },
+        {
+          "path": "work/a6/d2-b2-armor-20261021-143013-962291/steps.jsonl",
+          "sha256": "2f98122177bfe2de0cb2033725852f3e83bb45f734d7245d85feb77607b8f518"
+        },
+        {
+          "path": "work/d2/b2-armor.commands.jsonl",
+          "sha256": "cc60e7e844d4f274e4b4e5eaabffd805c9f71ec8b4174cd765e57327c11a1d7a"
+        },
+        {
+          "path": "work/d2/b2-armor.commands.results.jsonl",
+          "sha256": "2c673e389939e1c52a8635cb3806501bac75037a61164db0e6578f10f373159a"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-143014-022434/player-0/host.log",
+          "sha256": "5713f0560bc0f21fb9ef6cda4ab7129878a3b9424fcf753f24d204f174c0573b"
+        },
+        {
+          "path": "work/tests/m6-2p-20261021-143014-022434/player-1/host.log",
+          "sha256": "51ddc9d33e4c454635f6bab6939e604d755f146d8e05d1986319d07e9dc1f3e8"
+        }
+      ],
+      "decoded": [
+        {
+          "path": "work/d2b/b2-armor-final/sensors.jsonl",
+          "sha256": "b70d934bbeb6075fa8d4e9fb3f506db5d44ecc8a372dcc47c6614868d507947a"
+        },
+        {
+          "path": "work/d2b/b2-armor-final/summary.json",
+          "sha256": "292e64efa2fcc314714ffa6e2cfb1e3a49b9b80a65e5eb4b066361e2bb333d06"
+        }
+      ],
+      "counts": {
+        "0:damage": 1416,
+        "0:superhook": 1416,
+        "0:hook_weapon": 1416,
+        "0:hook_bullet": 1416,
+        "0:component_3ac0": 1416,
+        "0:component_3ac8": 1416,
+        "0:component_3ad0": 1416,
+        "0:component_3ad8": 1416,
+        "0:component_3ae0": 1416,
+        "0:component_3ae8": 1416,
+        "0:player": 1416,
+        "0:storage": 1416,
+        "0:component_11cc0": 1416,
+        "0:surface_matrix": 530,
+        "1:damage": 1416,
+        "1:superhook": 1416,
+        "1:hook_weapon": 1416,
+        "1:hook_bullet": 1416,
+        "1:component_3ac0": 1416,
+        "1:component_3ac8": 1416,
+        "1:component_3ad0": 1416,
+        "1:component_3ad8": 1416,
+        "1:component_3ae0": 1416,
+        "1:component_3ae8": 1416,
+        "1:player": 1416,
+        "1:storage": 1416,
+        "1:component_11cc0": 1416
+      }
+    }
+  },
+  "outputs": [
+    {
+      "path": "work/d2b/traces/high-side.json",
+      "sha256": "cc94a4a0abe8ebdbdc281abb573da9aae85be89abf60c077fb0b10fac0fd3fb2"
+    }
+  ],
+  "runtime": {
+    "host": {
+      "path": "work/d2b/round2-world-build/dmhost-sensors",
+      "sha256": "a9567f5f57f6d23a5e7e95c17d59019afa4efb9e32dd96744867cfa39cca09f6"
+    },
+    "build_manifest": {
+      "path": "work/d2b/round2-world-build/dmhost-sensors.build.json",
+      "sha256": "b59a56d065e0229a523b5f51454088f10e58ae1c548accfa854effd09be8fbb4"
+    },
+    "provenance": {
+      "path": "work/d2b/round2-world-build/provenance.json",
+      "sha256": "3a42cf120096f772c227e2d79240b2dfde29f32c1b4b4d6ffb512bcc8076136a"
+    }
+  },
+  "source_provenance": [
+    {
+      "path": "tools/zipcaster/build_sensors.py",
+      "sha256": "48c0c608eef1133c766476bd09039e5f7e46feeabce87233c43d6dade61a6ecf"
+    },
+    {
+      "path": "tools/zipcaster/check_sensors.py",
+      "sha256": "5633b53974319fc8acbcb561cb90c79b791d64ea163c054ae75af607e2ed72d9"
+    },
+    {
+      "path": "tools/zipcaster/decode_sensors.py",
+      "sha256": "83fdfb08e7528ef633caf6b05d4ff3f0e59e1aa016864b1665605027c32ff6a4"
+    },
+    {
+      "path": "tools/zipcaster/report_sensors.py",
+      "sha256": "43ce47663786be0d25ea503cd14c6109bb9e2da7a006de5aa61993d89cede31c"
+    },
+    {
+      "path": "tools/zipcaster/sensor.h",
+      "sha256": "4ec3d689d89857d0fba5c0aa293a2e3b576439cfb4f88708b0118e41f30971e4"
+    },
+    {
+      "path": "tools/zipcaster/sensor_evidence.py",
+      "sha256": "834479205c81dbb4ce1ea491ac0edad9aaae320003a08e67a31afb593d35f452"
+    },
+    {
+      "path": "tools/zipcaster/sensor_lab.py",
+      "sha256": "999ff5b21786d091bb2dac2eabe55fde70ad28485c7772b132c6044104d3b1df"
+    },
+    {
+      "path": "tools/zipcaster/inspect_native.py",
+      "sha256": "df1a0a3f3bce0f927b270747c28e08fbc5842b7422d3d01955c843524939fcfa"
+    }
+  ],
+  "stopped_remaining_branch": "Ceiling setup: direct spawn route and center-reset route both bounded fixture failures. Preserve dependent shots as invalid, stop route exploration."
+}

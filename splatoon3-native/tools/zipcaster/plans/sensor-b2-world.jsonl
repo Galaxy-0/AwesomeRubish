@@ -1,0 +1,32 @@
+{"op": "navigate", "label": "world-setup", "goals": {"0": [0, 3, 8], "1": [-5, 6, -3]}}
+{"op": "align", "label": "world-wall-aim", "target": [0, 6, 4], "fast": true}
+{"op": "assert", "label": "world-health", "healthy": [0, 1]}
+{"op": "status", "label": "world-before"}
+{"op": "step", "label": "world-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "world-startup", "frames": 30}
+{"op": "step", "label": "world-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "world-release", "frames": 80}
+{"op": "status", "label": "world-attached"}
+{"op": "finish_special", "label": "world-wall-end"}
+{"op": "restore", "label": "high-side-restore", "target": [-10, 3, 6], "radius": 0.25}
+{"op": "align", "label": "high-side-aim", "target": [-3.6, 9, 2.5], "fast": true}
+{"op": "assert", "label": "high-side-target-health", "healthy": [1]}
+{"op": "status", "label": "high-side-before"}
+{"op": "step", "label": "high-side-RS", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 0, 1, 0, 0]}}}
+{"op": "step", "label": "high-side-startup", "frames": 30}
+{"op": "step", "label": "high-side-R", "frames": 1, "actions": {"player_0": {"buttons": [0, 0, 1, 0, 0, 0]}}}
+{"op": "step", "label": "high-side-release", "frames": 80}
+{"op": "status", "label": "high-side-attached"}
+{"op": "align", "label": "high-side-target-aim", "target_player": 1, "offset": [0, 1.1, 0], "fast": true, "require_active": true}
+{"op": "step", "label": "high-side-face", "frames": 6, "actions": {"player_0": {"sticks": [0, 0.85, 0, 0]}}, "require_active": true}
+{"op": "step", "label": "high-side-settle", "frames": 8}
+{"op": "status", "label": "high-side-charge-before"}
+{"op": "track_step", "label": "high-side-charge21", "frames": 21, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "buttons": [1, 0, 0, 0, 0, 0], "require_active": true}
+{"op": "track_step", "label": "high-side-full-release", "frames": 36, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "buttons": [0, 0, 0, 0, 0, 0], "require_active": true}
+{"op": "status", "label": "high-side-full-after"}
+{"op": "track_step", "label": "high-side-light", "frames": 1, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "buttons": [1, 0, 0, 0, 0, 0], "require_active": true}
+{"op": "track_step", "label": "high-side-light-release", "frames": 36, "player": 0, "target_player": 1, "offset": [0, 1.1, 0], "buttons": [0, 0, 0, 0, 0, 0], "require_active": true}
+{"op": "status", "label": "high-side-combo-after"}
+{"op": "step", "label": "high-side-return-observe", "frames": 720}
+{"op": "status", "label": "high-side-returned"}
+{"op": "close", "label": "world-and-high-complete"}
