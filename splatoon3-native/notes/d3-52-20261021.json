@@ -1,0 +1,4173 @@
+{
+  "schema": "inklab.d3.stage1.v1",
+  "date": "2026-10-21",
+  "status": "measurement_checkpoint_with_explicit_limits",
+  "native_rooms": 12,
+  "shot_trials": 59,
+  "turn_trials": 2,
+  "runtime": "11.3.0 fixed60 / full pixels / test-only derivative; no special enabled for .52 measurement",
+  "measurements": {
+    "weapon_id": 50,
+    "native_kits": [
+      {
+        "process": 0,
+        "main": 8000,
+        "sub": 2,
+        "special": 3,
+        "samples": 5
+      },
+      {
+        "process": 1,
+        "main": 50,
+        "sub": 4,
+        "special": 9,
+        "samples": 5
+      }
+    ],
+    "damage_max_observed_hp": 52,
+    "damage_min_observed_hp": 49.1999984,
+    "falloff_samples": [
+      {
+        "room": "edge-angle",
+        "distance": 13.408844327098443,
+        "event": {
+          "receive_elapsed": 21,
+          "victim_present": 7778,
+          "shooter_present": 6037,
+          "hp_before": 100,
+          "hp_after": 50.8000016,
+          "delta_hp": 49.1999984,
+          "alive": 1
+        }
+      }
+    ],
+    "two_hit_observed_present_gaps": [
+      4,
+      9
+    ],
+    "two_hit_interpretation": "4 is first unprimed notification sample; cause not isolated; stationary control gap9 agrees with RepeatFrame9, not a universal latency bound.",
+    "repeat_parameter_frames": 9,
+    "initial_velocity_native_units_per_frame": 3.0599430466597037,
+    "initial_velocity_native_units_per_second": 183.59658279958222,
+    "farthest_hit_center_distance": 13.408844327098443,
+    "stationary_first_shot_hits": 5,
+    "stationary_first_shot_trials": 8,
+    "stationary_distances": [
+      11.011596854689689,
+      11.642149117422555,
+      12.27329949764352,
+      11.981887004833073,
+      11.981887007768824,
+      12.05408911592193,
+      12.05408911634448,
+      12.054089117120954
+    ],
+    "camera_to_bullet_residuals": [
+      {
+        "index": 0,
+        "native_frame": 4600,
+        "speed": 1.0695490981031586,
+        "camera_residual_degrees": 2.112670061128741
+      },
+      {
+        "index": 1,
+        "native_frame": 5180,
+        "speed": 3.05994281524581,
+        "camera_residual_degrees": -0.041157603485562
+      },
+      {
+        "index": 2,
+        "native_frame": 5724,
+        "speed": 1.0695490246770214,
+        "camera_residual_degrees": -0.04115771658674803
+      },
+      {
+        "index": 3,
+        "native_frame": 6296,
+        "speed": 3.059422435058595,
+        "camera_residual_degrees": -2.458743775524601
+      },
+      {
+        "index": 4,
+        "native_frame": 6840,
+        "speed": 1.0695490246770214,
+        "camera_residual_degrees": -0.04115771658674803
+      },
+      {
+        "index": 5,
+        "native_frame": 7404,
+        "speed": 3.241806013504428,
+        "camera_residual_degrees": -5.0521669847956225
+      },
+      {
+        "index": 6,
+        "native_frame": 7948,
+        "speed": 3.0594225336058267,
+        "camera_residual_degrees": -0.7444775698997497
+      },
+      {
+        "index": 7,
+        "native_frame": 8492,
+        "speed": 3.059421943824475,
+        "camera_residual_degrees": 1.7170824749437028
+      }
+    ],
+    "camera_turn": [
+      {
+        "room": "initial-turn",
+        "firing": false,
+        "present_frames": 75,
+        "stable_window": 40,
+        "stable_degrees_per_second": -220.78640270116202,
+        "first15_degrees": -33.92919011833098,
+        "view_sample_frames": [
+          2584,
+          2584,
+          2588,
+          2588,
+          2588,
+          2588,
+          2592,
+          2592,
+          2592,
+          2592,
+          2596,
+          2596,
+          2596,
+          2596,
+          2600,
+          2600,
+          2600,
+          2600,
+          2604,
+          2604,
+          2604,
+          2604,
+          2608,
+          2608,
+          2608,
+          2608,
+          2612,
+          2612,
+          2612,
+          2612,
+          2616,
+          2616,
+          2616,
+          2616,
+          2620,
+          2620,
+          2620,
+          2620,
+          2624,
+          2624,
+          2624,
+          2624,
+          2628,
+          2628,
+          2628,
+          2628,
+          2632,
+          2632,
+          2632,
+          2632,
+          2636,
+          2636,
+          2636,
+          2636,
+          2640,
+          2640,
+          2640,
+          2640,
+          2644,
+          2644,
+          2644,
+          2644,
+          2648,
+          2648,
+          2648,
+          2648,
+          2652,
+          2652,
+          2652,
+          2652,
+          2656,
+          2656,
+          2656,
+          2656,
+          2660
+        ]
+      },
+      {
+        "room": "initial-turn",
+        "firing": true,
+        "present_frames": 75,
+        "stable_window": 40,
+        "stable_degrees_per_second": -220.78373026733178,
+        "first15_degrees": -31.949849540584655,
+        "view_sample_frames": [
+          2688,
+          2692,
+          2692,
+          2692,
+          2692,
+          2696,
+          2696,
+          2696,
+          2696,
+          2700,
+          2700,
+          2700,
+          2700,
+          2704,
+          2704,
+          2704,
+          2704,
+          2708,
+          2708,
+          2708,
+          2708,
+          2712,
+          2712,
+          2712,
+          2712,
+          2716,
+          2716,
+          2716,
+          2716,
+          2720,
+          2720,
+          2720,
+          2720,
+          2724,
+          2724,
+          2724,
+          2724,
+          2728,
+          2728,
+          2728,
+          2728,
+          2732,
+          2732,
+          2732,
+          2732,
+          2736,
+          2736,
+          2736,
+          2736,
+          2740,
+          2740,
+          2740,
+          2740,
+          2744,
+          2744,
+          2744,
+          2744,
+          2748,
+          2748,
+          2748,
+          2748,
+          2752,
+          2752,
+          2752,
+          2752,
+          2756,
+          2756,
+          2756,
+          2756,
+          2760,
+          2760,
+          2760,
+          2760,
+          2764,
+          2764
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "Native confirmed52 and49.2;30HP minimum is RomFS only, not a native hit result.",
+    "A farthest observed hit and nearest miss do not prove deterministic effective range; angle/body/parallax and dispersion vary.",
+    "Scatter evidence is camera-to-native-vector residual; pure intrinsic spread distribution is not isolated.",
+    "3.24u/f high samples persist in a rest fixture; player motion inheritance is a supported hypothesis, not an isolated cause.",
+    "Bullet velocity getter is statically verified;110/11c position and1238 phase meanings remain candidate fields.",
+    "Initial samples can miss birth/early phases at4f stride; network receive gap is not bullet age.",
+    "Two rooms reached normal180s match end while planning additional trials; completed trials retained, missing trials not counted."
+  ],
+  "records": {
+    "schema": "inklab.d3.measurements.v1",
+    "cohort": [
+      "initial-range",
+      "initial-turn",
+      "initial-cadence",
+      "control-range",
+      "control-dispersion",
+      "control-cadence",
+      "ballistic-control",
+      "stationary-spread",
+      "edge-angle",
+      "edge-angle-low"
+    ],
+    "rooms": [
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": null,
+        "name": "initial-range",
+        "path": "work/a6/d3-initial-range-20261021-164302-718109/result.json",
+        "sha256": "2675647e783cf2578985ac728141c32256a306cff0873032473f1774e266ae50",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164302-766855",
+        "owned_pids": [
+          2633,
+          2659
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "4e6dd3c12e643b22a94d2eadbd28cb1a46e3f8fab30393cb6c72e6ccda6087ab",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-initial-range-20261021-164302-718109/steps.jsonl": "e03849dce1e4d13d6d0b2b073c0c47a69e3354b7d8849927ac6b9855b9e15550",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164302-766855/player-0/host.log": "cc7fdc36ea4b888dc2b6df2c2ecd4747248745234853f8c9abb986e34808b4b8",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164302-766855/player-1/host.log": "e770620cba7c6bfc3a9aefb02c1de8bb8f91d417cb07794b16e34909af0b6814"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": null,
+        "name": "initial-turn",
+        "path": "work/a6/d3-initial-turn-20261021-164311-807951/result.json",
+        "sha256": "44f1110c63986fc2845f75368a71a42b9de793fd973f9a5b05599d28b40036c4",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164311-866371",
+        "owned_pids": [
+          5138,
+          5743
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "4e6dd3c12e643b22a94d2eadbd28cb1a46e3f8fab30393cb6c72e6ccda6087ab",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-initial-turn-20261021-164311-807951/steps.jsonl": "978aa4fcaa2ca3a9e250b6ef85c010c9c151f9aaeaef4eed6f6d25acff85bcbb",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164311-866371/player-0/host.log": "45f0aa1287ee232492d06adc8105077cad74c4f97ab31bbff3be20b96c6c3bbf",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164311-866371/player-1/host.log": "ca1a219b70784787ccef373ea2b55ce43d75246a59b95647feec6a1aa5bb884f"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": null,
+        "name": "initial-cadence",
+        "path": "work/a6/d3-initial-cadence-20261021-164311-807951/result.json",
+        "sha256": "9890cacd1e2a5422ce7f7bce804d5d8b4bfcca63fac836c54c0ffc68a54e149e",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164311-866388",
+        "owned_pids": [
+          5137,
+          5789
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "4e6dd3c12e643b22a94d2eadbd28cb1a46e3f8fab30393cb6c72e6ccda6087ab",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-initial-cadence-20261021-164311-807951/steps.jsonl": "67e66fc113b5facd0b3d83838b8fe6579b71ae9edc97e0214082610d66f8b8e4",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164311-866388/player-0/host.log": "a7c12217a0dbb4d7c62dfd47728a6b7f07ba390872eaa37dc2027138d2b408e1",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164311-866388/player-1/host.log": "17189d2ddbdba76f2b95b2bc7a5dbe1744f234aa9752031712aff568e52cd043"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": null,
+        "name": "control-range",
+        "path": "work/a6/d3-control-range-20261021-164812-940353/result.json",
+        "sha256": "f019257ad1cb155edeb3591451f9a8dbbbdb09551b2368058baab3f8af09b6f0",
+        "passed": false,
+        "errors": [
+          "RuntimeError('A6 normal match duration exhausted')"
+        ],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164812-991993",
+        "owned_pids": [
+          30984,
+          31997
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "140d22cf3be8e9c7fcfd3c26c621c239a742e285e9a09a4d02acfc2d368f76c2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-control-range-20261021-164812-940353/steps.jsonl": "6e9d2881255624df4f52539b1413bc4de50f9766f820b9cf5b7e30c0cd5c822d",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164812-991993/player-0/host.log": "b6ad668db5e9307798866ac6126e53ad17b4e122392d0047675b45afbba9190d",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164812-991993/player-1/host.log": "e73283ebb1c0d37117bcc0b08edce5829c316e9c6921dc863d25dfee7bb502a0"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": null,
+        "name": "control-dispersion",
+        "path": "work/a6/d3-control-dispersion-20261021-164819-995578/result.json",
+        "sha256": "f55934a91c98adc8a03018628972e1b1befa7840d8baca23a188c3ce07972bf8",
+        "passed": false,
+        "errors": [
+          "RuntimeError('A6 normal match duration exhausted')"
+        ],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164820-049942",
+        "owned_pids": [
+          32010,
+          32537
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "140d22cf3be8e9c7fcfd3c26c621c239a742e285e9a09a4d02acfc2d368f76c2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-control-dispersion-20261021-164819-995578/steps.jsonl": "19e4f8b6522367791bbe92a8f471ca2f38eff931c44ed150aa6b05cab51ad02d",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164820-049942/player-0/host.log": "d7491b40a1c1336911ac40dc05e3b910cfaa8efd3477405b50aa9e526b434b05",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164820-049942/player-1/host.log": "e231173c2985c9b1fbfeb183e000980a2d7231d134855f72740d7c6e69145c65"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": null,
+        "name": "control-cadence",
+        "path": "work/a6/d3-control-cadence-20261021-164845-076373/result.json",
+        "sha256": "f644a02735dcf05c3bc9319945a5a6f4cfee7ac74e6b4bdab6b5eda4e80e5697",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164845-136543",
+        "owned_pids": [
+          35071,
+          35132
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "140d22cf3be8e9c7fcfd3c26c621c239a742e285e9a09a4d02acfc2d368f76c2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-control-cadence-20261021-164845-076373/steps.jsonl": "9796333787f9b8fa4212c5779581d685bc459612c093c5de55aa0b40380311e6",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164845-136543/player-0/host.log": "1b0eea45f06231e22cc7369ad7b620eae8509220959e080ba2abbe9daec665b9",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-164845-136543/player-1/host.log": "a2db70a03eafaf6eecc636aa994a4c4e1806f741615949bcbe3e5aed65312416"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": null,
+        "name": "ballistic-control",
+        "path": "work/a6/d3-ballistic-control-20261021-171417-180246/result.json",
+        "sha256": "71bac2af094e254fb0330903a933cc5d6a42b7d4ca30df1ea5cec3ad165b7bab",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-171417-236215",
+        "owned_pids": [
+          44320,
+          44349
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "491e4cbaf1520c451dcbac0e5aad533d4e8be3e56e486c8dff19209d8b8600a9",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-ballistic-control-20261021-171417-180246/steps.jsonl": "9b7e8c7fd7e7d9a8f268037aacd5dafcdbbfc8ef282e88192ee9946cf12fd7cc",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-171417-236215/player-0/host.log": "9521cc6d9fa9c7ec87b26c6e2657ad48c3b1087d9bea458b1ac1ffd9ee8b2167",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-171417-236215/player-1/host.log": "c7474a73db176491dfce65b2054fd5beaa612724acc66b9e31444adc9961a5c5"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": {
+          "name": "stationary-spread",
+          "mode": "range",
+          "distances": [
+            12.0
+          ],
+          "fire_frames": 1,
+          "repeats": 8,
+          "face": false,
+          "host": "work/d3/bullet-build-r2/dmhost-bullets",
+          "bullets": true,
+          "aim_pitch_offset": -0.08,
+          "pitch_offsets": null,
+          "rest_frames": 60
+        },
+        "name": "stationary-spread",
+        "path": "work/a6/d3-stationary-spread-20261021-172104-477429/result.json",
+        "sha256": "36ed4c8b65d640d1e30c15951257defe183262c2fa81f8a3eecd695d0fbbaea4",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172104-525988",
+        "owned_pids": [
+          72059,
+          75957
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "8ba3eed816b8c19ae07a59c27573e2a6aa99f04a8287825892a2f4d7963923c1",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-stationary-spread-20261021-172104-477429/steps.jsonl": "55230a8125e9e93baad7a4faa26578e8aa3ba21f9182535bb2e8f8031913734e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172104-525988/player-0/host.log": "20a35654926446cc3711a3af3e6fac357031f7587457e5f142c52264c736ac47",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172104-525988/player-1/host.log": "1e2ea60cb7c5ab4958f82b53949e0440a30c107af6ea491cec9d2b28df57d17f"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": {
+          "name": "edge-angle",
+          "mode": "range",
+          "distances": [
+            13.0,
+            14.0
+          ],
+          "fire_frames": 1,
+          "repeats": 2,
+          "face": false,
+          "host": "work/d3/bullet-build-r2/dmhost-bullets",
+          "bullets": true,
+          "aim_pitch_offset": 0.0,
+          "pitch_offsets": [
+            -0.02
+          ],
+          "rest_frames": 0
+        },
+        "name": "edge-angle",
+        "path": "work/a6/d3-edge-angle-20261021-172110-841450/result.json",
+        "sha256": "63033eff53a0948b4b830154cd3f7c96e01dea5e6901135f9ce5157b1e71a82b",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172110-896509",
+        "owned_pids": [
+          75602,
+          76024
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "8ba3eed816b8c19ae07a59c27573e2a6aa99f04a8287825892a2f4d7963923c1",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-edge-angle-20261021-172110-841450/steps.jsonl": "1ba68553738d81177d88d3f7ef8f6cb9bb51c41fd22d785a9734115111aed18a",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172110-896509/player-0/host.log": "060eadfae7739c0eef6dba83ec3bc498b806040aac908dc3974cae5c134521ac",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172110-896509/player-1/host.log": "c7f8315f62910497d855ec4adf3ddb26ab51b5bb9f91661f501310a107824885"
+        }
+      },
+      {
+        "native_kits": [
+          {
+            "process": 0,
+            "main": 8000,
+            "sub": 2,
+            "special": 3,
+            "samples": 5
+          },
+          {
+            "process": 1,
+            "main": 50,
+            "sub": 4,
+            "special": 9,
+            "samples": 5
+          }
+        ],
+        "measurement_config": {
+          "name": "edge-angle-low",
+          "mode": "range",
+          "distances": [
+            13.0,
+            14.0
+          ],
+          "fire_frames": 1,
+          "repeats": 2,
+          "face": false,
+          "host": "work/d3/bullet-build-r2/dmhost-bullets",
+          "bullets": true,
+          "aim_pitch_offset": -0.04,
+          "pitch_offsets": null,
+          "rest_frames": 60
+        },
+        "name": "edge-angle-low",
+        "path": "work/a6/d3-edge-angle-low-20261021-172126-599631/result.json",
+        "sha256": "d56bcf21f032080c30a6d7427fd632ac5feed08b04edf993adfea94318003b73",
+        "passed": true,
+        "errors": [],
+        "weapons": [
+          8000,
+          50
+        ],
+        "weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ],
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ],
+        "loadouts": [
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "0": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "1": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "2": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ],
+        "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172126-666645",
+        "owned_pids": [
+          77112,
+          78268
+        ],
+        "code_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tests/a6_lab.py": "5c29a7845cb40f8b0698228a3e024424c49993f22925eb567680b16f748be298",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d3/measure.py": "8ba3eed816b8c19ae07a59c27573e2a6aa99f04a8287825892a2f4d7963923c1",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper_data.py": "50139007d709c001398f21378066c4fa4866577cf06cbc152dafc2031ef88392",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/skills.py": "c58bd59fb318b6c024207ef01414ff0271ed45cb0bdafe7bca26966d28956a41",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/stamper.py": "9c86480e92ec12d2e255659b601f93af3e5bfbff8037ebae4895be0459bda5de",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/arena/lib/atlas.py": "c6eb5ac33b37b4e7cf0a484488beed631998bda69bb152abd830386383ecb340"
+        },
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-edge-angle-low-20261021-172126-599631/steps.jsonl": "0597ca063c728c68e175470020318ec907b2a8b1d4231ca56d04ef99166a61a6",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172126-666645/player-0/host.log": "6e2132c54eb2c54a3d9f513d0585a399147607b79ee9b8ea027c0774d2da7f51",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261021-172126-666645/player-1/host.log": "3f0621e1062e9f34828f593c900596a275f1db16f3eb75b833aa4db31fd3d8e7"
+        }
+      }
+    ],
+    "shots": [
+      {
+        "room": "initial-range",
+        "trial": 0,
+        "requested_distance": 4.0,
+        "actual_distance": 3.7798825930205484,
+        "shooter_position": [
+          -3.99977493,
+          3.00000334,
+          7.54456949
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00001192,
+          8.33336926
+        ],
+        "height_difference": 8.579999999813737e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 78.03166382765204,
+        "view_yaw": 1.34556556,
+        "view_pitch": -0.00483751483,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 4529,
+            "view_sample_frame": 3571,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "initial-range",
+        "trial": 1,
+        "requested_distance": 8.0,
+        "actual_distance": 7.15353425687562,
+        "shooter_position": [
+          -7.44888926,
+          3.00000191,
+          8.00029564
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00001574,
+          8.33336926
+        ],
+        "height_difference": 1.3829999999881437e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 177.28205985365173,
+        "view_yaw": 1.52737284,
+        "view_pitch": -0.00519293034,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5225,
+            "view_sample_frame": 4267,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 9,
+            "victim_present": 5604,
+            "shooter_present": 5232,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "initial-range",
+        "trial": 2,
+        "requested_distance": 12.0,
+        "actual_distance": 11.781766950777532,
+        "shooter_position": [
+          -11.4405479,
+          3.00000238,
+          8.00000763
+        ],
+        "target_position": [
+          0.335426629,
+          3.00000334,
+          8.36940765
+        ],
+        "height_difference": 9.599999999387876e-07,
+        "center_ray_clear": true,
+        "body_error_degrees": 178.20434172457274,
+        "view_yaw": 1.52737284,
+        "view_pitch": -0.00519293034,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5908,
+            "view_sample_frame": 4950,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 16,
+            "victim_present": 6292,
+            "shooter_present": 5920,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "initial-range",
+        "trial": 3,
+        "requested_distance": 15.0,
+        "actual_distance": 14.99387547443081,
+        "shooter_position": [
+          -14.4209166,
+          3.00000191,
+          8.00001526
+        ],
+        "target_position": [
+          0.57133168,
+          3.00000191,
+          8.22090721
+        ],
+        "height_difference": 0.0,
+        "center_ray_clear": true,
+        "body_error_degrees": 179.1568797181769,
+        "view_yaw": 1.52737284,
+        "view_pitch": -0.00519293034,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6566,
+            "view_sample_frame": 5608,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "initial-range",
+        "trial": 4,
+        "requested_distance": 18.0,
+        "actual_distance": 18.058839410159834,
+        "shooter_position": [
+          -17.4861565,
+          3.00000286,
+          7.99999666
+        ],
+        "target_position": [
+          0.57133168,
+          3.00000381,
+          8.22090721
+        ],
+        "height_difference": 9.499999999995623e-07,
+        "center_ray_clear": true,
+        "body_error_degrees": 179.29958070126534,
+        "view_yaw": 1.52737284,
+        "view_pitch": -0.00519293034,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7202,
+            "view_sample_frame": 6244,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "initial-cadence",
+        "trial": 0,
+        "requested_distance": 4.0,
+        "actual_distance": 3.713108649117299,
+        "shooter_position": [
+          -3.96312594,
+          3.00000286,
+          7.70768309
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00001287,
+          8.33336926
+        ],
+        "height_difference": 1.0010000000004737e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": -24.091546666468794,
+        "view_yaw": 1.38640356,
+        "view_pitch": -0.00405149953,
+        "pitch_offset": null,
+        "fire_frames": 28,
+        "launches": [
+          {
+            "shooter_present": 4611,
+            "view_sample_frame": 3668,
+            "ink_delta": 0.014999985999999965
+          },
+          {
+            "shooter_present": 4622,
+            "view_sample_frame": 3679,
+            "ink_delta": 0.014999984999999993
+          },
+          {
+            "shooter_present": 4630,
+            "view_sample_frame": 3687,
+            "ink_delta": 0.014999986000000076
+          }
+        ],
+        "launch_present_intervals": [
+          11,
+          8
+        ],
+        "launch_sample_intervals": [
+          11,
+          8
+        ],
+        "damage_events": [
+          {
+            "receive_elapsed": 20,
+            "victim_present": 4947,
+            "shooter_present": 4629,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          },
+          {
+            "receive_elapsed": 24,
+            "victim_present": 4951,
+            "shooter_present": 4633,
+            "hp_before": 47.9999989,
+            "hp_after": 0,
+            "delta_hp": 47.9999989,
+            "alive": 0
+          }
+        ],
+        "hit": true,
+        "target_dead": true
+      },
+      {
+        "room": "control-range",
+        "trial": 0,
+        "requested_distance": 4.0,
+        "actual_distance": 3.6630775553452204,
+        "shooter_position": [
+          -3.99861431,
+          3.00000048,
+          7.8256135
+        ],
+        "target_position": [
+          -0.378283024,
+          3.00001955,
+          8.3835907
+        ],
+        "height_difference": 1.9070000000009912e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 77.33111242887752,
+        "view_yaw": 1.43152452,
+        "view_pitch": -0.00586293684,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 4632,
+            "view_sample_frame": 3574,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 9,
+            "victim_present": 4984,
+            "shooter_present": 4638,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 1,
+        "requested_distance": 8.0,
+        "actual_distance": 7.667891679880094,
+        "shooter_position": [
+          -7.3986969,
+          3.00000048,
+          8.00008774
+        ],
+        "target_position": [
+          0.254275173,
+          3.00000572,
+          8.47818947
+        ],
+        "height_difference": 5.239999999684386e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 167.79532401030258,
+        "view_yaw": 1.48375356,
+        "view_pitch": -0.00581301469,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5240,
+            "view_sample_frame": 4182,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 2,
+        "requested_distance": 12.0,
+        "actual_distance": 11.687502348617588,
+        "shooter_position": [
+          -11.4234428,
+          3.00000048,
+          8.00005341
+        ],
+        "target_position": [
+          0.254275173,
+          3.0000124,
+          8.47818947
+        ],
+        "height_difference": 1.1919999999943087e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 168.89188125661053,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5844,
+            "view_sample_frame": 4786,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 13,
+            "victim_present": 6200,
+            "shooter_present": 5854,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 3,
+        "requested_distance": 14.0,
+        "actual_distance": 13.939077055750099,
+        "shooter_position": [
+          -13.3827324,
+          3.00000048,
+          8.00004005
+        ],
+        "target_position": [
+          0.553481579,
+          3.00000668,
+          8.28254509
+        ],
+        "height_difference": 6.199999999623174e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.06352807222902,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6397,
+            "view_sample_frame": 5339,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 4,
+        "requested_distance": 16.0,
+        "actual_distance": 16.00116134343803,
+        "shooter_position": [
+          -15.4451857,
+          3.00000048,
+          8.0000391
+        ],
+        "target_position": [
+          0.553481579,
+          3.00001478,
+          8.28254509
+        ],
+        "height_difference": 1.4299999999689561e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.21945533563004,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6953,
+            "view_sample_frame": 5895,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 5,
+        "requested_distance": 18.0,
+        "actual_distance": 17.970441687103847,
+        "shooter_position": [
+          -17.4147396,
+          3.00000095,
+          8.00005245
+        ],
+        "target_position": [
+          0.553481579,
+          3.00002289,
+          8.28254509
+        ],
+        "height_difference": 2.193999999988705e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.33014809818013,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7517,
+            "view_sample_frame": 6459,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 6,
+        "requested_distance": 20.0,
+        "actual_distance": 20.0032274493656,
+        "shooter_position": [
+          -19.4456367,
+          3,
+          7.87711143
+        ],
+        "target_position": [
+          0.553481579,
+          3.00003099,
+          8.28254509
+        ],
+        "height_difference": 3.0989999999953e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 166.68805001911323,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 8089,
+            "view_sample_frame": 7031,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 7,
+        "requested_distance": 4.0,
+        "actual_distance": 5.069706642742448,
+        "shooter_position": [
+          -4.50834894,
+          3,
+          8.00006104
+        ],
+        "target_position": [
+          0.553481579,
+          3.00004339,
+          8.28254509
+        ],
+        "height_difference": 4.3390000000087525e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": -3.078084846807487,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 8897,
+            "view_sample_frame": 7839,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 11,
+            "victim_present": 9252,
+            "shooter_present": 8906,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 8,
+        "requested_distance": 8.0,
+        "actual_distance": 8.03928866571091,
+        "shooter_position": [
+          -7.38301802,
+          3.00000048,
+          8.00005722
+        ],
+        "target_position": [
+          0.65477246,
+          3.00000286,
+          8.15525532
+        ],
+        "height_difference": 2.379999999746474e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.13117323499245,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 9479,
+            "view_sample_frame": 8421,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 9,
+        "requested_distance": 12.0,
+        "actual_distance": 12.125538987762646,
+        "shooter_position": [
+          -11.4697733,
+          3.00000048,
+          8.00005913
+        ],
+        "target_position": [
+          0.65477246,
+          3.00000572,
+          8.15525532
+        ],
+        "height_difference": 5.239999999684386e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.50383514150965,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 10087,
+            "view_sample_frame": 9029,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 10,
+        "requested_distance": 14.0,
+        "actual_distance": 14.08451010219403,
+        "shooter_position": [
+          -13.4288826,
+          3.00000048,
+          8.00006199
+        ],
+        "target_position": [
+          0.65477246,
+          3.00000858,
+          8.15525532
+        ],
+        "height_difference": 8.099999999622298e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.59302457552576,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 10639,
+            "view_sample_frame": 9581,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 11,
+        "requested_distance": 16.0,
+        "actual_distance": 16.043494937036613,
+        "shooter_position": [
+          -15.3879719,
+          3.00000095,
+          8.00006771
+        ],
+        "target_position": [
+          0.65477246,
+          3.00001144,
+          8.15525532
+        ],
+        "height_difference": 1.0490000000196176e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.67011637696882,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 11191,
+            "view_sample_frame": 10133,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-range",
+        "trial": 12,
+        "requested_distance": 18.0,
+        "actual_distance": 18.00252162212447,
+        "shooter_position": [
+          -17.3470802,
+          3.00000048,
+          8.00006008
+        ],
+        "target_position": [
+          0.65477246,
+          3.00001431,
+          8.15525532
+        ],
+        "height_difference": 1.3829999999881437e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 170.73052070329936,
+        "view_yaw": 1.52987397,
+        "view_pitch": -0.00586570706,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 11743,
+            "view_sample_frame": 10685,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 0,
+        "requested_distance": 12.0,
+        "actual_distance": 11.160298338874995,
+        "shooter_position": [
+          -11.4557848,
+          3.00000048,
+          7.92084408
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00001287,
+          8.33336926
+        ],
+        "height_difference": 1.2389999999751211e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": -169.07038389521244,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 4632,
+            "view_sample_frame": 3638,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 1,
+        "requested_distance": 12.0,
+        "actual_distance": 11.159100000948388,
+        "shooter_position": [
+          -11.4545879,
+          3.00000048,
+          7.92090511
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00001574,
+          8.33336926
+        ],
+        "height_difference": 1.525999999962835e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": -20.561457288782933,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5136,
+            "view_sample_frame": 4142,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 2,
+        "requested_distance": 12.0,
+        "actual_distance": 11.157901762609708,
+        "shooter_position": [
+          -11.4533911,
+          3.00000048,
+          7.92096615
+        ],
+        "target_position": [
+          -0.303113282,
+          3.0000186,
+          8.33336926
+        ],
+        "height_difference": 1.812000000001035e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": -1.6537748628254143,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5640,
+            "view_sample_frame": 4646,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 3,
+        "requested_distance": 12.0,
+        "actual_distance": 11.156480953366115,
+        "shooter_position": [
+          -11.451972,
+          3.00000048,
+          7.92103863
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00002193,
+          8.33336926
+        ],
+        "height_difference": 2.1449999999756386e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.5196185419927857,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6144,
+            "view_sample_frame": 5150,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 4,
+        "requested_distance": 12.0,
+        "actual_distance": 11.155060144158295,
+        "shooter_position": [
+          -11.4505529,
+          3.00000048,
+          7.92111111
+        ],
+        "target_position": [
+          -0.303113282,
+          3.0000248,
+          8.33336926
+        ],
+        "height_difference": 2.4319999999633524e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.7695628608897443,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6648,
+            "view_sample_frame": 5654,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 5,
+        "requested_distance": 12.0,
+        "actual_distance": 11.153639434919866,
+        "shooter_position": [
+          -11.4491339,
+          3,
+          7.92118359
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00002766,
+          8.33336926
+        ],
+        "height_difference": 2.7660000000206963e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.798393071495239,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7152,
+            "view_sample_frame": 6158,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 6,
+        "requested_distance": 12.0,
+        "actual_distance": 11.152218625785219,
+        "shooter_position": [
+          -11.4477148,
+          3.00000048,
+          7.92125607
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00003099,
+          8.33336926
+        ],
+        "height_difference": 3.050999999976156e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.801801724864567,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7656,
+            "view_sample_frame": 6662,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 7,
+        "requested_distance": 12.0,
+        "actual_distance": 11.15079781705671,
+        "shooter_position": [
+          -11.4462957,
+          3.00000048,
+          7.92132854
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00003386,
+          8.33336926
+        ],
+        "height_difference": 3.33799999996387e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.8022802468902608,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 8160,
+            "view_sample_frame": 7166,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 8,
+        "requested_distance": 12.0,
+        "actual_distance": 11.149377107930059,
+        "shooter_position": [
+          -11.4448767,
+          3,
+          7.92140102
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00003719,
+          8.33336926
+        ],
+        "height_difference": 3.719000000002026e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.8024236851133497,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 8664,
+            "view_sample_frame": 7670,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 9,
+        "requested_distance": 12.0,
+        "actual_distance": 11.147956298903699,
+        "shooter_position": [
+          -11.4434576,
+          3.00000048,
+          7.9214735
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00004005,
+          8.33336926
+        ],
+        "height_difference": 3.9569999999766736e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.8025264505345037,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 9168,
+            "view_sample_frame": 8174,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 15,
+            "victim_present": 9520,
+            "shooter_present": 9180,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 10,
+        "requested_distance": 12.0,
+        "actual_distance": 11.76692256613734,
+        "shooter_position": [
+          -11.4420385,
+          3.00000048,
+          7.92154598
+        ],
+        "target_position": [
+          0.318223894,
+          3.00003195,
+          8.3173933
+        ],
+        "height_difference": 3.146999999970035e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.992145446879902,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 9718,
+            "view_sample_frame": 8724,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 15,
+            "victim_present": 10068,
+            "shooter_present": 9728,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 11,
+        "requested_distance": 12.0,
+        "actual_distance": 12.337311429575747,
+        "shooter_position": [
+          -11.4406195,
+          3.00000048,
+          7.92161846
+        ],
+        "target_position": [
+          0.889371514,
+          3.00002384,
+          8.34655952
+        ],
+        "height_difference": 2.3359999999694736e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.9461167228924499,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 10222,
+            "view_sample_frame": 9228,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 15,
+            "victim_present": 10572,
+            "shooter_present": 10232,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 12,
+        "requested_distance": 12.0,
+        "actual_distance": 12.097537218842604,
+        "shooter_position": [
+          -11.4392004,
+          3.00000048,
+          7.92169094
+        ],
+        "target_position": [
+          0.656199157,
+          3.00000143,
+          8.14910316
+        ],
+        "height_difference": 9.499999999995623e-07,
+        "center_ray_clear": true,
+        "body_error_degrees": 1.8428560109701995,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 10748,
+            "view_sample_frame": 9754,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 13,
+        "requested_distance": 12.0,
+        "actual_distance": 12.096117007192152,
+        "shooter_position": [
+          -11.4377813,
+          3.00000048,
+          7.92176342
+        ],
+        "target_position": [
+          0.656199157,
+          3.00000191,
+          8.14910316
+        ],
+        "height_difference": 1.4299999997469115e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 1.8430729078446504,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 11252,
+            "view_sample_frame": 10258,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-dispersion",
+        "trial": 14,
+        "requested_distance": 12.0,
+        "actual_distance": 12.094696895697533,
+        "shooter_position": [
+          -11.4363623,
+          3.00000048,
+          7.9218359
+        ],
+        "target_position": [
+          0.656199157,
+          3.00000286,
+          8.14910316
+        ],
+        "height_difference": 2.379999999746474e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 1.8432898645586553,
+        "view_yaw": 1.51983297,
+        "view_pitch": -0.00551707903,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 11756,
+            "view_sample_frame": 10762,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "control-cadence",
+        "trial": 0,
+        "requested_distance": 4.0,
+        "actual_distance": 3.6468943081529273,
+        "shooter_position": [
+          -3.96143198,
+          3.00000048,
+          7.70824957
+        ],
+        "target_position": [
+          -0.380295038,
+          3.00003529,
+          8.39766693
+        ],
+        "height_difference": 3.48099999998297e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": -24.032845507660006,
+        "view_yaw": 1.38041532,
+        "view_pitch": -0.00338133005,
+        "pitch_offset": null,
+        "fire_frames": 65,
+        "launches": [
+          {
+            "shooter_present": 4449,
+            "view_sample_frame": 3555,
+            "ink_delta": 0.014999985999999965
+          },
+          {
+            "shooter_present": 4457,
+            "view_sample_frame": 3563,
+            "ink_delta": 0.014999984999999993
+          },
+          {
+            "shooter_present": 4467,
+            "view_sample_frame": 3573,
+            "ink_delta": 0.014999986000000076
+          },
+          {
+            "shooter_present": 4475,
+            "view_sample_frame": 3581,
+            "ink_delta": 0.014999985999999965
+          },
+          {
+            "shooter_present": 4487,
+            "view_sample_frame": 3593,
+            "ink_delta": 0.014999984999999993
+          },
+          {
+            "shooter_present": 4495,
+            "view_sample_frame": 3601,
+            "ink_delta": 0.014999985999999965
+          },
+          {
+            "shooter_present": 4503,
+            "view_sample_frame": 3609,
+            "ink_delta": 0.014999986000000076
+          },
+          {
+            "shooter_present": 4511,
+            "view_sample_frame": 3617,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [
+          8,
+          10,
+          8,
+          12,
+          8,
+          8,
+          8
+        ],
+        "launch_sample_intervals": [
+          8,
+          10,
+          8,
+          12,
+          8,
+          8,
+          8
+        ],
+        "damage_events": [
+          {
+            "receive_elapsed": 7,
+            "victim_present": 4717,
+            "shooter_present": 4453,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          },
+          {
+            "receive_elapsed": 16,
+            "victim_present": 4726,
+            "shooter_present": 4462,
+            "hp_before": 47.9999989,
+            "hp_after": 0,
+            "delta_hp": 47.9999989,
+            "alive": 0
+          }
+        ],
+        "hit": true,
+        "target_dead": true
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 0,
+        "requested_distance": 8.0,
+        "actual_distance": 6.985877395009889,
+        "shooter_position": [
+          -7.25773525,
+          3,
+          7.67328119
+        ],
+        "target_position": [
+          -0.303113282,
+          3.00001287,
+          8.33336926
+        ],
+        "height_difference": 1.286999999994265e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 23.782464990759458,
+        "view_yaw": 1.47633326,
+        "view_pitch": -0.0856198296,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 4793,
+            "view_sample_frame": 3638,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 11,
+            "victim_present": 5166,
+            "shooter_present": 4801,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 1,
+        "requested_distance": 12.0,
+        "actual_distance": 11.314049317533383,
+        "shooter_position": [
+          -10.9717817,
+          3.00000048,
+          8.0012064
+        ],
+        "target_position": [
+          0.335445166,
+          3.00000763,
+          8.39405823
+        ],
+        "height_difference": 7.149999999622736e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 37.47001013895336,
+        "view_yaw": 1.56785488,
+        "view_pitch": -0.0849060342,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5399,
+            "view_sample_frame": 4244,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 13,
+            "victim_present": 5774,
+            "shooter_present": 5409,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 2,
+        "requested_distance": 14.0,
+        "actual_distance": 13.639629047995141,
+        "shooter_position": [
+          -13.0119553,
+          3.00000048,
+          8.0012598
+        ],
+        "target_position": [
+          0.625798106,
+          3.0000186,
+          8.22745132
+        ],
+        "height_difference": 1.812000000001035e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 38.506352931503656,
+        "view_yaw": 1.56785488,
+        "view_pitch": -0.0849060342,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5971,
+            "view_sample_frame": 4816,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 3,
+        "requested_distance": 16.0,
+        "actual_distance": 15.666448666481944,
+        "shooter_position": [
+          -15.0390177,
+          3.00000048,
+          8.00126648
+        ],
+        "target_position": [
+          0.625798106,
+          3.00004244,
+          8.22745132
+        ],
+        "height_difference": 4.1959999999896525e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 38.62863441395878,
+        "view_yaw": 1.56785488,
+        "view_pitch": -0.0849060342,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6527,
+            "view_sample_frame": 5372,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 4,
+        "requested_distance": 8.0,
+        "actual_distance": 8.74530507252603,
+        "shooter_position": [
+          -8.11658096,
+          3.00000048,
+          8.0012455
+        ],
+        "target_position": [
+          0.625798106,
+          3.00007057,
+          8.22745132
+        ],
+        "height_difference": 7.008999999991161e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": -1.3411693383767416,
+        "view_yaw": 1.56785488,
+        "view_pitch": -0.0849060342,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7195,
+            "view_sample_frame": 6040,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 11,
+            "victim_present": 7566,
+            "shooter_present": 7201,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 5,
+        "requested_distance": 12.0,
+        "actual_distance": 11.623999625799545,
+        "shooter_position": [
+          -10.9369326,
+          3.00000048,
+          8.00130844
+        ],
+        "target_position": [
+          0.686536968,
+          3.0000782,
+          8.11231518
+        ],
+        "height_difference": 7.771999999972579e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 38.910245455524525,
+        "view_yaw": 1.56785488,
+        "view_pitch": -0.0849060342,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7775,
+            "view_sample_frame": 6620,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 6,
+        "requested_distance": 14.0,
+        "actual_distance": 13.634612299305305,
+        "shooter_position": [
+          -12.9476233,
+          3,
+          8.00129128
+        ],
+        "target_position": [
+          0.686536968,
+          3.00018024,
+          8.11231518
+        ],
+        "height_difference": 0.0001802400000001647,
+        "center_ray_clear": true,
+        "body_error_degrees": 38.989377653038474,
+        "view_yaw": 1.56785488,
+        "view_pitch": -0.0849060342,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 8335,
+            "view_sample_frame": 7180,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "ballistic-control",
+        "trial": 7,
+        "requested_distance": 16.0,
+        "actual_distance": 15.661625092439689,
+        "shooter_position": [
+          -14.9746943,
+          3.00000048,
+          8.00124931
+        ],
+        "target_position": [
+          0.686536968,
+          3.00028133,
+          8.11231518
+        ],
+        "height_difference": 0.0002808499999997771,
+        "center_ray_clear": true,
+        "body_error_degrees": 39.04969785095066,
+        "view_yaw": 1.56785488,
+        "view_pitch": -0.0849060342,
+        "pitch_offset": null,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 8891,
+            "view_sample_frame": 7736,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 0,
+        "requested_distance": 12.0,
+        "actual_distance": 11.011596854689689,
+        "shooter_position": [
+          -11.3811989,
+          3.00000381,
+          7.95191145
+        ],
+        "target_position": [
+          -0.378533661,
+          3.0000267,
+          8.39533329
+        ],
+        "height_difference": 2.2889999999886612e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 178.5132885092896,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 4599,
+            "view_sample_frame": 3826,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 11,
+            "victim_present": 6304,
+            "shooter_present": 4606,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 1,
+        "requested_distance": 12.0,
+        "actual_distance": 11.642149117422555,
+        "shooter_position": [
+          -11.3811989,
+          3.00000572,
+          7.95191145
+        ],
+        "target_position": [
+          0.252622128,
+          3.00012112,
+          8.39218903
+        ],
+        "height_difference": 0.0001154000000003208,
+        "center_ray_clear": true,
+        "body_error_degrees": 23.74315357660792,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5178,
+            "view_sample_frame": 4405,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 14,
+            "victim_present": 6888,
+            "shooter_present": 5190,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 2,
+        "requested_distance": 12.0,
+        "actual_distance": 12.27329949764352,
+        "shooter_position": [
+          -11.3811989,
+          3.00000763,
+          7.95191145
+        ],
+        "target_position": [
+          0.883445024,
+          3.00001001,
+          8.41276932
+        ],
+        "height_difference": 2.380000000190563e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 2.586916818893888,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5723,
+            "view_sample_frame": 4950,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 15,
+            "victim_present": 7432,
+            "shooter_present": 5734,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 3,
+        "requested_distance": 12.0,
+        "actual_distance": 11.981887004833073,
+        "shooter_position": [
+          -11.3811989,
+          3.00000954,
+          7.95191145
+        ],
+        "target_position": [
+          0.598998308,
+          3.00013685,
+          8.1531353
+        ],
+        "height_difference": 0.00012730999999988057,
+        "center_ray_clear": true,
+        "body_error_degrees": 1.2168164794709653,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6296,
+            "view_sample_frame": 5523,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 4,
+        "requested_distance": 12.0,
+        "actual_distance": 11.981887007768824,
+        "shooter_position": [
+          -11.3811989,
+          3.00001144,
+          7.95191145
+        ],
+        "target_position": [
+          0.598998308,
+          3.00030565,
+          8.1531353
+        ],
+        "height_difference": 0.0002942099999998504,
+        "center_ray_clear": true,
+        "body_error_degrees": 0.9072794683983018,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6840,
+            "view_sample_frame": 6067,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 15,
+            "victim_present": 8548,
+            "shooter_present": 6850,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 5,
+        "requested_distance": 12.0,
+        "actual_distance": 12.05408911592193,
+        "shooter_position": [
+          -11.3811989,
+          3.00001335,
+          7.95191145
+        ],
+        "target_position": [
+          0.672096074,
+          3.00005865,
+          8.09027576
+        ],
+        "height_difference": 4.5300000000025875e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 1.1744227947998855,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7404,
+            "view_sample_frame": 6631,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 6,
+        "requested_distance": 12.0,
+        "actual_distance": 12.05408911634448,
+        "shooter_position": [
+          -11.3811989,
+          3.00001526,
+          7.95191145
+        ],
+        "target_position": [
+          0.672096074,
+          3.00012589,
+          8.09027576
+        ],
+        "height_difference": 0.00011063000000000045,
+        "center_ray_clear": true,
+        "body_error_degrees": 1.1698947093449676,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 7949,
+            "view_sample_frame": 7176,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "stationary-spread",
+        "trial": 7,
+        "requested_distance": 12.0,
+        "actual_distance": 12.054089117120954,
+        "shooter_position": [
+          -11.3811989,
+          3.00001717,
+          7.95191145
+        ],
+        "target_position": [
+          0.672096074,
+          3.00019312,
+          8.09027576
+        ],
+        "height_difference": 0.0001759500000000358,
+        "center_ray_clear": true,
+        "body_error_degrees": 1.1693481076084145,
+        "view_yaw": 1.53890979,
+        "view_pitch": -0.0720593706,
+        "pitch_offset": -0.08,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 8493,
+            "view_sample_frame": 7720,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 14,
+            "victim_present": 10200,
+            "shooter_present": 8502,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle",
+        "trial": 0,
+        "requested_distance": 13.0,
+        "actual_distance": 11.97814819597626,
+        "shooter_position": [
+          -12.4031467,
+          3.00000381,
+          7.97732735
+        ],
+        "target_position": [
+          -0.434521705,
+          3.00001001,
+          8.45487309
+        ],
+        "height_difference": 6.200000000067263e-06,
+        "center_ray_clear": true,
+        "body_error_degrees": 177.87786727108883,
+        "view_yaw": 1.51697409,
+        "view_pitch": -0.0127113825,
+        "pitch_offset": -0.02,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 4509,
+            "view_sample_frame": 3721,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle",
+        "trial": 1,
+        "requested_distance": 14.0,
+        "actual_distance": 12.9352126498883,
+        "shooter_position": [
+          -13.3616943,
+          3.00000191,
+          7.99887419
+        ],
+        "target_position": [
+          -0.434521705,
+          3.0000124,
+          8.45487309
+        ],
+        "height_difference": 1.0490000000196176e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 175.98145468206954,
+        "view_yaw": 1.51697409,
+        "view_pitch": -0.0127113825,
+        "pitch_offset": -0.02,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5017,
+            "view_sample_frame": 4229,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 17,
+            "victim_present": 6770,
+            "shooter_present": 5029,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle",
+        "trial": 2,
+        "requested_distance": 13.0,
+        "actual_distance": 13.408844326123718,
+        "shooter_position": [
+          -13.3616943,
+          3.00000334,
+          7.99887419
+        ],
+        "target_position": [
+          0.038484931,
+          3.00007153,
+          8.48085213
+        ],
+        "height_difference": 6.818999999991249e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 24.380599418514638,
+        "view_yaw": 1.51697409,
+        "view_pitch": -0.0127113825,
+        "pitch_offset": -0.02,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5537,
+            "view_sample_frame": 4749,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle",
+        "trial": 3,
+        "requested_distance": 14.0,
+        "actual_distance": 13.408844327098443,
+        "shooter_position": [
+          -13.3616943,
+          3.00000477,
+          7.99887419
+        ],
+        "target_position": [
+          0.038484931,
+          3.00018024,
+          8.48085213
+        ],
+        "height_difference": 0.00017547000000028845,
+        "center_ray_clear": true,
+        "body_error_degrees": 3.847889639513902,
+        "view_yaw": 1.51697409,
+        "view_pitch": -0.0127113825,
+        "pitch_offset": -0.02,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6021,
+            "view_sample_frame": 5233,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 21,
+            "victim_present": 7778,
+            "shooter_present": 6037,
+            "hp_before": 100,
+            "hp_after": 50.8000016,
+            "delta_hp": 49.1999984,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle-low",
+        "trial": 0,
+        "requested_distance": 13.0,
+        "actual_distance": 12.053469864392747,
+        "shooter_position": [
+          -12.4085894,
+          3.00001478,
+          7.97782803
+        ],
+        "target_position": [
+          -0.362094969,
+          3.0000782,
+          8.38783741
+        ],
+        "height_difference": 6.342000000003623e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 178.20036422043242,
+        "view_yaw": 1.54526269,
+        "view_pitch": -0.0351316705,
+        "pitch_offset": -0.04,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 4449,
+            "view_sample_frame": 3633,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [
+          {
+            "receive_elapsed": 15,
+            "victim_present": 5619,
+            "shooter_present": 4460,
+            "hp_before": 100,
+            "hp_after": 47.9999989,
+            "delta_hp": 52.000001100000006,
+            "alive": 1
+          }
+        ],
+        "hit": true,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle-low",
+        "trial": 1,
+        "requested_distance": 14.0,
+        "actual_distance": 13.6207045598824,
+        "shooter_position": [
+          -13.3612719,
+          3.00000238,
+          7.99891996
+        ],
+        "target_position": [
+          0.25341773,
+          3.0000453,
+          8.40366554
+        ],
+        "height_difference": 4.291999999983531e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 176.25565792867604,
+        "view_yaw": 1.54526269,
+        "view_pitch": -0.0351316705,
+        "pitch_offset": -0.04,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5017,
+            "view_sample_frame": 4201,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle-low",
+        "trial": 2,
+        "requested_distance": 13.0,
+        "actual_distance": 13.620704560155346,
+        "shooter_position": [
+          -13.3612719,
+          3.00000429,
+          7.99891996
+        ],
+        "target_position": [
+          0.25341773,
+          3.00010061,
+          8.40366554
+        ],
+        "height_difference": 9.631999999992757e-05,
+        "center_ray_clear": true,
+        "body_error_degrees": 23.396912396766087,
+        "view_yaw": 1.54526269,
+        "view_pitch": -0.0351316705,
+        "pitch_offset": -0.04,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 5557,
+            "view_sample_frame": 4741,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      },
+      {
+        "room": "edge-angle-low",
+        "trial": 3,
+        "requested_distance": 14.0,
+        "actual_distance": 13.620704560642931,
+        "shooter_position": [
+          -13.3612719,
+          3.0000062,
+          7.99891996
+        ],
+        "target_position": [
+          0.25341773,
+          3.0001564,
+          8.40366554
+        ],
+        "height_difference": 0.00015019999999976719,
+        "center_ray_clear": true,
+        "body_error_degrees": 2.6180152582691347,
+        "view_yaw": 1.54526269,
+        "view_pitch": -0.0351316705,
+        "pitch_offset": -0.04,
+        "fire_frames": 1,
+        "launches": [
+          {
+            "shooter_present": 6101,
+            "view_sample_frame": 5285,
+            "ink_delta": 0.014999985999999965
+          }
+        ],
+        "launch_present_intervals": [],
+        "launch_sample_intervals": [],
+        "damage_events": [],
+        "hit": false,
+        "target_dead": false
+      }
+    ],
+    "turn": [
+      {
+        "room": "initial-turn",
+        "firing": false,
+        "present_frames": 75,
+        "stable_window": 40,
+        "stable_degrees_per_second": -220.78640270116202,
+        "first15_degrees": -33.92919011833098,
+        "view_sample_frames": [
+          2584,
+          2584,
+          2588,
+          2588,
+          2588,
+          2588,
+          2592,
+          2592,
+          2592,
+          2592,
+          2596,
+          2596,
+          2596,
+          2596,
+          2600,
+          2600,
+          2600,
+          2600,
+          2604,
+          2604,
+          2604,
+          2604,
+          2608,
+          2608,
+          2608,
+          2608,
+          2612,
+          2612,
+          2612,
+          2612,
+          2616,
+          2616,
+          2616,
+          2616,
+          2620,
+          2620,
+          2620,
+          2620,
+          2624,
+          2624,
+          2624,
+          2624,
+          2628,
+          2628,
+          2628,
+          2628,
+          2632,
+          2632,
+          2632,
+          2632,
+          2636,
+          2636,
+          2636,
+          2636,
+          2640,
+          2640,
+          2640,
+          2640,
+          2644,
+          2644,
+          2644,
+          2644,
+          2648,
+          2648,
+          2648,
+          2648,
+          2652,
+          2652,
+          2652,
+          2652,
+          2656,
+          2656,
+          2656,
+          2656,
+          2660
+        ]
+      },
+      {
+        "room": "initial-turn",
+        "firing": true,
+        "present_frames": 75,
+        "stable_window": 40,
+        "stable_degrees_per_second": -220.78373026733178,
+        "first15_degrees": -31.949849540584655,
+        "view_sample_frames": [
+          2688,
+          2692,
+          2692,
+          2692,
+          2692,
+          2696,
+          2696,
+          2696,
+          2696,
+          2700,
+          2700,
+          2700,
+          2700,
+          2704,
+          2704,
+          2704,
+          2704,
+          2708,
+          2708,
+          2708,
+          2708,
+          2712,
+          2712,
+          2712,
+          2712,
+          2716,
+          2716,
+          2716,
+          2716,
+          2720,
+          2720,
+          2720,
+          2720,
+          2724,
+          2724,
+          2724,
+          2724,
+          2728,
+          2728,
+          2728,
+          2728,
+          2732,
+          2732,
+          2732,
+          2732,
+          2736,
+          2736,
+          2736,
+          2736,
+          2740,
+          2740,
+          2740,
+          2740,
+          2744,
+          2744,
+          2744,
+          2744,
+          2748,
+          2748,
+          2748,
+          2748,
+          2752,
+          2752,
+          2752,
+          2752,
+          2756,
+          2756,
+          2756,
+          2756,
+          2760,
+          2760,
+          2760,
+          2760,
+          2764,
+          2764
+        ]
+      }
+    ],
+    "parameters": {
+      "schema": "inklab.d3.parameters.v1",
+      "version": "11.3.0",
+      "weapon_id": 50,
+      "catalog": "Shooter_Gravity_00",
+      "parameter_values": {
+        "damage_max_raw": 520,
+        "damage_min_raw": 300,
+        "damage_max_hp": 52.0,
+        "damage_min_hp": 30.0,
+        "falloff_start_age_frames": 11,
+        "falloff_end_age_frames": 27,
+        "repeat_frames": 9,
+        "nominal_catalog_range": 13.300000190734863,
+        "spawn_speed_units_per_frame": 3.059999942779541,
+        "straight_to_brake_frames": 3,
+        "straight_end_max_speed": 1.6670000553131104,
+        "free_air_resist": 0.019999999552965164,
+        "free_gravity": 0.01600000075995922,
+        "standing_swerve_degrees": 6.0,
+        "standing_bias_min": 0.019999999552965164,
+        "standing_bias_decrease": 0.014999999664723873,
+        "jump_swerve_degrees": 12.0,
+        "ink_per_shot": 0.014999999664723873,
+        "shot_move_speed": 0.05999999865889549
+      },
+      "provenance": {
+        "pack": "work/data/v720896/RomFS/Pack/Params.pack.zs",
+        "pack_sha256": "98fd2f33d5857655aa62ac9e56b4b35de59fdff0f4e0c468ff73d5637dc7455f",
+        "entry": "Component/GameParameterTable/WeaponShooterGravity.game__GameParameterTable.bgyml",
+        "entry_sha256": "29cba7489a793562f642fe9f9d030f4ad107dfda2dab9a768ac8082196680dfb",
+        "catalog_sha256": "fdfddc6bce0ac83460eba37cbafcbf0e4afd2548faf5664dc8f3a47c65ac7681"
+      },
+      "limits": [
+        "Sparse overrides, not all native defaults.",
+        "Range is catalog annotation, not measured guaranteed hit range.",
+        "Swerve parameters do not specify a uniform/Gaussian distribution.",
+        "SpawnSpeed differs from effective flight speed."
+      ]
+    },
+    "limits": [
+      "Native .52 setup uses two verified kit accessor overrides, not a persistent save write; 52HP hit provides independent behavioral evidence.",
+      "Position/camera/ink are periodically sampled; receive present is not native bullet creation or impact time.",
+      "Network delivery can coalesce victim HP decrements; observed two-hit gap is not firing cadence.",
+      "Center ray excludes ordinary static occlusion only; muzzle ray/swept body collision and spread remain possible miss causes.",
+      "A hit/miss fraction is target-hit dispersion, not a recovered angular spread distribution.",
+      "No direct native bullet coordinate sensor yet; SpawnSpeed is a parameter, not a measured effective speed."
+    ]
+  },
+  "bullet_evidence": [
+    {
+      "name": "bullet-r2",
+      "source": "work/d3/bullet-r2-evidence.json",
+      "sha256": "cd6147d01ef743e3f897a1fbc9c80ad197fb9f92d57a1844258c586688ba1aa5",
+      "moving_objects": 12,
+      "initial_speed": {
+        "all": [
+          3.0599430466597037,
+          3.0599430466597037,
+          3.2394709587129285,
+          1.0633760709921223,
+          3.0594219500577724,
+          3.059422400713376,
+          3.240203371962622,
+          1.0420365017149098,
+          3.059942757511659,
+          3.0594220260176574,
+          3.2386384427007093,
+          1.0633760732037172
+        ],
+        "full_initial_samples": [
+          3.0599430466597037,
+          3.0599430466597037,
+          3.2394709587129285,
+          3.0594219500577724,
+          3.059422400713376,
+          3.240203371962622,
+          3.059942757511659,
+          3.0594220260176574,
+          3.2386384427007093
+        ],
+        "median": 3.0599430466597037
+      },
+      "velocity_getter": {
+        "vtable": "0x5c79398",
+        "virtual_slot": "0x1a0",
+        "function": "0x1a40710",
+        "offsets": [
+          "0x1130",
+          "0x1134",
+          "0x1138"
+        ],
+        "image_sha256": "dfe220f83a982c8ea27968a2da01978832714728c0c40c8ec59a1e8f70051d8d",
+        "verified": true
+      },
+      "limits": [
+        "Pool object position110/11c semantics are candidate previous/current segment coordinates, not independently established impact coordinates.",
+        "Speed is a direct native vector; first 4f sample can miss an early flight phase.",
+        "Initial velocity can include player-motion addition; >=2.8 threshold selects early samples, not all bullets.",
+        "Yaw/elevation changes include native spread, camera-to-muzzle parallax and body turn. Do not label their combined range as intrinsic spread.",
+        "Snapshots alone do not identify bullet age at every first sample or recover the RNG distribution."
+      ]
+    },
+    {
+      "name": "ballistic-control",
+      "source": "work/d3/ballistic-control-evidence.json",
+      "sha256": "ef631b207f6b10ebb87fdd96713bc71e87e61c352206c01025f7ce8b344309aa",
+      "moving_objects": 8,
+      "initial_speed": {
+        "all": [
+          3.059943225486024,
+          3.2427176824344977,
+          3.059942949345595,
+          3.2440046848978663,
+          3.059942949508884,
+          3.243401874375691,
+          3.0594224538670285,
+          3.2421827177223626
+        ],
+        "full_initial_samples": [
+          3.059943225486024,
+          3.2427176824344977,
+          3.059942949345595,
+          3.2440046848978663,
+          3.059942949508884,
+          3.243401874375691,
+          3.0594224538670285,
+          3.2421827177223626
+        ],
+        "median": 3.151062971604193
+      },
+      "velocity_getter": {
+        "vtable": "0x5c79398",
+        "virtual_slot": "0x1a0",
+        "function": "0x1a40710",
+        "offsets": [
+          "0x1130",
+          "0x1134",
+          "0x1138"
+        ],
+        "image_sha256": "dfe220f83a982c8ea27968a2da01978832714728c0c40c8ec59a1e8f70051d8d",
+        "verified": true
+      },
+      "limits": [
+        "Pool object position110/11c semantics are candidate previous/current segment coordinates, not independently established impact coordinates.",
+        "Speed is a direct native vector; first 4f sample can miss an early flight phase.",
+        "Initial velocity can include player-motion addition; >=2.8 threshold selects early samples, not all bullets.",
+        "Yaw/elevation changes include native spread, camera-to-muzzle parallax and body turn. Do not label their combined range as intrinsic spread.",
+        "Snapshots alone do not identify bullet age at every first sample or recover the RNG distribution."
+      ]
+    },
+    {
+      "name": "stationary-spread",
+      "source": "work/d3/stationary-spread-evidence.json",
+      "sha256": "ed2324d4fc0124b87ca46eeee0badc60980f0aea8a588860ef1d8fd26a8c7f6b",
+      "moving_objects": 8,
+      "initial_speed": {
+        "all": [
+          1.0695490981031586,
+          3.05994281524581,
+          1.0695490246770214,
+          3.059422435058595,
+          1.0695490246770214,
+          3.241806013504428,
+          3.0594225336058267,
+          3.059421943824475
+        ],
+        "full_initial_samples": [
+          3.05994281524581,
+          3.059422435058595,
+          3.241806013504428,
+          3.0594225336058267,
+          3.059421943824475
+        ],
+        "median": 3.0594225336058267
+      },
+      "velocity_getter": {
+        "vtable": "0x5c79398",
+        "virtual_slot": "0x1a0",
+        "function": "0x1a40710",
+        "offsets": [
+          "0x1130",
+          "0x1134",
+          "0x1138"
+        ],
+        "image_sha256": "dfe220f83a982c8ea27968a2da01978832714728c0c40c8ec59a1e8f70051d8d",
+        "verified": true
+      },
+      "limits": [
+        "Pool object position110/11c semantics are candidate previous/current segment coordinates, not independently established impact coordinates.",
+        "Speed is a direct native vector; first 4f sample can miss an early flight phase.",
+        "Initial velocity can include player-motion addition; >=2.8 threshold selects early samples, not all bullets.",
+        "Yaw/elevation changes include native spread, camera-to-muzzle parallax and body turn. Do not label their combined range as intrinsic spread.",
+        "Snapshots alone do not identify bullet age at every first sample or recover the RNG distribution."
+      ]
+    },
+    {
+      "name": "edge-angle",
+      "source": "work/d3/edge-angle-evidence.json",
+      "sha256": "06ee8253a77b0cd9d778b2ac2aae7a900de8f5e26d4fd6e7bb332e81990e3997",
+      "moving_objects": 4,
+      "initial_speed": {
+        "all": [
+          3.2419416623068025,
+          3.0599429352071286,
+          3.0594228747229977,
+          3.0599434011928195
+        ],
+        "full_initial_samples": [
+          3.2419416623068025,
+          3.0599429352071286,
+          3.0594228747229977,
+          3.0599434011928195
+        ],
+        "median": 3.059943168199974
+      },
+      "velocity_getter": {
+        "vtable": "0x5c79398",
+        "virtual_slot": "0x1a0",
+        "function": "0x1a40710",
+        "offsets": [
+          "0x1130",
+          "0x1134",
+          "0x1138"
+        ],
+        "image_sha256": "dfe220f83a982c8ea27968a2da01978832714728c0c40c8ec59a1e8f70051d8d",
+        "verified": true
+      },
+      "limits": [
+        "Pool object position110/11c semantics are candidate previous/current segment coordinates, not independently established impact coordinates.",
+        "Speed is a direct native vector; first 4f sample can miss an early flight phase.",
+        "Initial velocity can include player-motion addition; >=2.8 threshold selects early samples, not all bullets.",
+        "Yaw/elevation changes include native spread, camera-to-muzzle parallax and body turn. Do not label their combined range as intrinsic spread.",
+        "Snapshots alone do not identify bullet age at every first sample or recover the RNG distribution."
+      ]
+    },
+    {
+      "name": "edge-angle-low",
+      "source": "work/d3/edge-angle-low-evidence.json",
+      "sha256": "743dd998dc2b1fe6e506b5edc1551ab05872c73fd2a4e2f281caa8b9d531a34b",
+      "moving_objects": 4,
+      "initial_speed": {
+        "all": [
+          3.2402228022333133,
+          3.059422487192455,
+          3.0594222365297012,
+          1.066276407164931
+        ],
+        "full_initial_samples": [
+          3.2402228022333133,
+          3.059422487192455,
+          3.0594222365297012
+        ],
+        "median": 3.059422487192455
+      },
+      "velocity_getter": {
+        "vtable": "0x5c79398",
+        "virtual_slot": "0x1a0",
+        "function": "0x1a40710",
+        "offsets": [
+          "0x1130",
+          "0x1134",
+          "0x1138"
+        ],
+        "image_sha256": "dfe220f83a982c8ea27968a2da01978832714728c0c40c8ec59a1e8f70051d8d",
+        "verified": true
+      },
+      "limits": [
+        "Pool object position110/11c semantics are candidate previous/current segment coordinates, not independently established impact coordinates.",
+        "Speed is a direct native vector; first 4f sample can miss an early flight phase.",
+        "Initial velocity can include player-motion addition; >=2.8 threshold selects early samples, not all bullets.",
+        "Yaw/elevation changes include native spread, camera-to-muzzle parallax and body turn. Do not label their combined range as intrinsic spread.",
+        "Snapshots alone do not identify bullet age at every first sample or recover the RNG distribution."
+      ]
+    }
+  ]
+}
