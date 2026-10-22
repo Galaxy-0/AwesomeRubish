@@ -36,5 +36,42 @@ class D4World{
  prepare(enemyIndex,headingQuadrant,speed,minHooks=0){const key=[enemyIndex,headingQuadrant,speed,minHooks].join(':');if(this.prepared?.key===key)return this.prepared;const enemy=this.ground[enemyIndex],heading=headingQuadrant*Math.PI/2,terms=[];for(let node=0;node<this.h;node++){if(norm(sub(this.attach[node],enemy))>27)continue;for(const program of['full-light','light3','light-full','full2']){const t=this.terminal(node,enemy,speed,program);if(t)terms.push(t)}}if(!minHooks)for(let node=0;node<this.g;node++){if(norm(sub(this.ground[node],enemy))>23)continue;for(const program of['full-light','light3','light-full','full2']){const t=this.terminal(node,enemy,speed,program,true);if(t)terms.push(t)}}const kept=terms.filter(t=>{for(let phase=0;phase<9;phase++)if(this.simulate(t.post,0,t,enemy,heading,phase).kill)return true;return false}),n=this.g+this.h,byTerminal=Array.from({length:n},()=>[]),base=new Float64Array(n).fill(Infinity),groundTerms=new Map();kept.forEach((t,i)=>{const node=t.ground?t.node:this.g+t.node;byTerminal[node].push(i);base[node]=Math.min(base[node],t.cost);if(t.ground){if(!groundTerms.has(t.node))groundTerms.set(t.node,[]);groundTerms.get(t.node).push(t)}});const cost=new Float64Array(this.dest.length);for(let src=0;src<n;src++)for(let e=this.ptr[src];e<this.ptr[src+1];e++)cost[e]=(this.edgeFrames[e]+(src<this.g?this.cfg.activation_frames-this.cfg.activation_drain_grace:6))*this.cfg.drain+this.cfg.hook_cost;const lower=[base];for(let depth=1;depth<=3;depth++){const value=base.slice();for(let src=0;src<n;src++)for(let e=this.ptr[src];e<this.ptr[src+1];e++)value[src]=Math.min(value[src],cost[e]+lower.at(-1)[this.g+this.dest[e]]);lower.push(value)}return this.prepared={key,enemy,heading,speed,minHooks,terms:kept,byTerminal,groundTerms,lower,cost}}
  query(start,p,maxCandidates=0){const position=this.ground[start],delta=sub(position,p.enemy);if(Math.hypot(delta[0],delta[2])<.7&&Math.abs(delta[1])<1.7)return {start,status:'occupied',probability:null,complete:true};const lower=p.lower[3][start];if(!(lower<1-1e-10))return {start,status:'unreachable-in-declared-graph',probability:0,complete:true};const death=this.initialDeath(start,p.enemy,p.heading,p.groundTerms.get(start)||[]);if(death!==null)return {start,status:'dies-before-any-declared-route-can-move-or-kill',probability:0,complete:true,attacker_down:death};const heap=new D4Heap();heap.push([lower,0,start,3,0,[],-1]);let tried=0;while(heap.length){const[bound,kind,node,left,spent,edges,index]=heap.pop();if(bound>=1-1e-10)continue;if(kind===1){const term=p.terms[index],candidate={edges,terminal:index,cost:spent,remaining:1-spent},route=this.route(candidate,term),outcome=this.simulate(route.path,route.arrival,term,p.enemy,p.heading);tried++;if(outcome.kill)return {...candidate,start,probability:1,complete:true,status:'predicted-kill',program:term.program,inputs:term.inputs,hooks:edges.map(e=>this.dest[e]),...route,...outcome,route_events:route.events,damage_events:outcome.events,events:[...route.events,...(outcome.events.length?outcome.events:term.damage_events.map(e=>({frame:route.arrival+e.due,event:'命中'+e.damage}))),{frame:outcome.enemy_down,event:'击倒 / 槽归零前'}].sort((a,b)=>a.frame-b.frame),program_native_verified:term.program_native_verified,candidates:tried};if(maxCandidates&&tried>=maxCandidates)return {start,status:'unresolved',probability:null,complete:false,candidates:tried};continue}for(const ti of p.byTerminal[node]){const value=spent+p.terms[ti].cost;if(value<1-1e-10)heap.push([value,1,node,left,value,edges,ti])}if(!left)continue;for(let e=this.ptr[node];e<this.ptr[node+1];e++){const next=this.g+this.dest[e],value=spent+p.cost[e],estimate=value+p.lower[left-1][next];if(estimate<1-1e-10)heap.push([estimate,0,next,left-1,value,[...edges,e],-1])}}return {start,status:'no-winning-route-in-declared-model',probability:0,complete:true,candidates:tried}}
 }
-globalThis.D4Engine={D4World,D4Geometry,D4Math,d4Schedule,d4Capsule};
-if(typeof self!=='undefined'&&typeof document==='undefined'){let runtime=null,world=null;self.onmessage=async event=>{const m=event.data;try{if(m.type==='init'){runtime=m.runtime;self.postMessage({type:'ready',id:m.id});return}if(!world||world.map.id!==m.map)world=await D4World.create(runtime,runtime.maps.find(x=>x.id===m.map));const p=world.prepare(m.enemy,m.heading,m.speed,m.min_hooks||0);if(m.type==='route'){const result=world.query(m.start,p,10000);self.postMessage({type:'route',id:m.id,result})}else if(m.type==='heat'){const rows=[];for(let i=0;i<world.g;i++){const r=world.query(i,p,2000);rows.push({start:i,probability:r.probability,complete:r.complete,remaining:r.remaining,stealth:r.stealth,status:r.status});if(i%100===0)self.postMessage({type:'progress',id:m.id,done:i,total:world.g})}self.postMessage({type:'heat',id:m.id,rows})}}catch(e){self.postMessage({type:'error',id:m.id,error:String(e),stack:e.stack})}}}
+globalThis.D4Engine={D4World,D4Geometry,D4Math,d4Schedule,d4Capsule,D4Heap};
+/* __D4_SAFE_WORKER__ */
+if(typeof self!=='undefined'&&typeof document==='undefined'){
+ let runtime=null,world=null,epoch=0;
+ const yieldTask=()=>new Promise(resolve=>setTimeout(resolve,0));
+ self.onmessage=async event=>{
+  const m=event.data,job=++epoch;
+  try{
+   if(m.type==='cancel')return;
+   if(m.type==='init'){runtime=m.runtime;self.postMessage({type:'ready',id:m.id});return}
+   if(!world||world.map.id!==m.map)world=await (runtime.safe_model?D4Engine.D4SafeWorld:D4World).create(runtime,runtime.maps.find(x=>x.id===m.map));
+   if(job!==epoch){self.postMessage({type:'cancelled',id:m.id});return}
+   const w=world,p=w.prepare(m.enemy,m.heading,m.speed,m.min_hooks||0);
+   if(m.type==='route'){
+    // Bounded slices retain the exact heap. Unknown is never painted zero.
+    let result,expansions=0;
+    do{result=w.query(m.start,p,100,runtime.safe_model?1000:0);expansions+=1000;if(result.complete||!runtime.safe_model)break;self.postMessage({type:'progress',id:m.id,done:expansions,total:null});await yieldTask()}while(job===epoch&&expansions<50000);
+    self.postMessage(job===epoch?{type:'route',id:m.id,result}:{type:'cancelled',id:m.id});
+   }else if(m.type==='inverse'){
+    const rows=[];
+    for(let enemy=0;enemy<w.g;enemy++){
+     const state=w.prepare(enemy,m.heading,m.speed,m.min_hooks||0),r=w.query(m.start,state,100,runtime.safe_model?1000:0);
+     rows.push({enemy,start:m.start,probability:r.probability,complete:r.complete,remaining:r.remaining,stealth:r.stealth,status:r.status});
+     // One-enemy slices keep cancellation and navigation responsive.
+     self.postMessage({type:'progress',id:m.id,done:enemy+1,total:w.g});await yieldTask();
+     if(job!==epoch){self.postMessage({type:'cancelled',id:m.id});return}
+    }
+    self.postMessage({type:'inverse',id:m.id,rows});
+   }else if(m.type==='heat'){
+    const rows=[];
+    for(let i=0;i<w.g;i++){
+     const r=w.query(i,p,100,runtime.safe_model?1000:0);rows.push({start:i,probability:r.probability,complete:r.complete,remaining:r.remaining,stealth:r.stealth,status:r.status});
+     if(i%10===0){self.postMessage({type:'progress',id:m.id,done:i,total:w.g});await yieldTask();if(job!==epoch){self.postMessage({type:'cancelled',id:m.id});return}}
+    }
+    self.postMessage({type:'heat',id:m.id,rows});
+   }
+  }catch(e){self.postMessage({type:'error',id:m.id,error:String(e),stack:e.stack})}
+ };
+}

@@ -7,6 +7,7 @@ import math
 from pathlib import Path
 import re
 import sys
+import base64,zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'showcase'),str(ROOT)]
@@ -139,6 +140,34 @@ for m in zipdata['maps']:
     for region in ('center','central_high','west_lane','east_lane'):
         check('bounded per-region selection',sum(any(t['region']==region for t in p['targets'])for p in m['candidates'])<=zipdata['per_region'])
     check('all static points remain candidates',all(p['status']=='candidate'for p in m['candidates']))
+if data.get('d4',{}).get('schema')=='showcase.d4.v2':
+    from showcase.d4 import code as d4_code
+    d4=data['d4'];runtime=data['d4_runtime']
+    check('D4 limited scope is not full acceptance',d4['full_d4_passed'] is False)
+    check('D4 safe numerical runtime selected',runtime['safe_model']['schema']=='showcase.d4.safe-model.v1')
+    check('D4 independent browser model embedded','class D4SafeWorld' in text and 'Contact-disjoint' in text)
+    check('D4 no unexpanded worker marker','/* __D4_SAFE_WORKER__ */'not in text)
+    batch=json.loads((ROOT/'work/d4/restart-v4/blade-common-full-v1/batch.json').read_text())
+    paths=[Path(x['artifact'])for x in batch['results']]+[ROOT/f'work/d4/restart-v4/blade-setup-center-{name}-v1/result.json'for name in ['Yunohana','Yagara']]
+    complete=0;start_rows=0
+    for m in d4['maps']:
+        packed=zlib.decompress(base64.b64decode(m['codes']))
+        check('D4 packed matrix exact size',len(packed)==math.ceil(m['g']*16*m['g']/2))
+        for p in paths:
+            p=p if p.is_absolute()else ROOT/p;q=json.loads(p.read_text())
+            if q['map']!=m['id']:continue
+            check('D4 heat source bound',str(p.relative_to(ROOT))in data['sources'])
+            complete+=q['search_complete'];start_rows+=len(q['rows'])
+            for r in q['rows']:
+                i=(q['enemy_index']*16+q['heading_quadrant']*4+d4['speeds'].index(q['speed']))*m['g']+r['start']
+                value=(packed[i//2]>>(4*(i%2)))&15
+                check('D4 exact limited query grade',value==d4_code(r))
+                if r['status']=='no-contact-excluded-route; unrestricted-kill-unknown':
+                    check('D4 outside-scope miss stays unknown',r['probability'] is None and value==13)
+    check('D4 full heat queries separate from prefix certificates',d4['counts']['complete']==complete==9 and d4['counts']['unresolved']==2)
+    check('D4 computed start rows disclosed',d4['counts']['start_rows']==start_rows)
+    check('D4 historical core bank not bound',not any('/all-full-v' in p or '/common-full-v3/'in p for p in data['sources']))
+
 for t in data['traces']:
     if t['id'].startswith('d4-'):
         from showcase.d3 import native_trace
