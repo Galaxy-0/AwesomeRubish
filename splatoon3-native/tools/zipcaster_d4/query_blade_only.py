@@ -1,0 +1,76 @@
+"""Enemy-conditioned all-start query; no uniform enemy-position average.
+
+Top-only can certify the first two winners against global cost lower bounds
+without pretending the rest of the heatmap has been completed. A candidate cap
+is debug-only and explicitly yields unresolved probability intervals.
+"""
+import argparse,json,math,sys,time,heapq
+from pathlib import Path
+import numpy as np
+ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
+from tools.zipcaster_d4.model_blade_only import World
+from tools.zipcaster_d4.model_v3 import Config,PROGRAMS
+from tools.zipcaster_d4.calibration_plan_v4 import lower_bound
+from tools.zipcaster_d4.reverse_lazy import LazyReverse
+from tools.zipcaster_d4.optimistic_blade_only import terminal_bound,envelopes
+from tools.zipcaster_d3r.analyze_direction import sha
+
+def clean(x):
+ if isinstance(x,np.ndarray):return x.tolist()
+ if isinstance(x,np.generic):return x.item()
+ if isinstance(x,dict):return{k:clean(v)for k,v in x.items()}
+ if isinstance(x,(tuple,list)):return[clean(v)for v in x]
+ return x
+
+def query(a):
+ if a.out.exists():raise ValueError('fresh query output directory')
+ a.out.mkdir(parents=True);source_bytes=Path(__file__).read_bytes();(a.out/'tested-query.py').write_bytes(source_bytes);began=time.monotonic();world=World(a.graph);z=world.graph;enemy=z['ground'][a.enemy_index];heading=a.heading*math.pi/2;terms=[];counts={};t0=time.monotonic()
+ bounds=envelopes(world.shots.parameters)
+ activation=(world.cfg.activation_frames-world.cfg.activation_drain_grace)*world.cfg.drain
+ for ground,count in [(False,world.h),(True,world.g if a.min_hooks==0 else 0)]:
+  for node in range(count):
+   position=z['ground'][node]if ground else z['attach'][node]
+   if np.linalg.norm((position-enemy)[[0,2]])>27:continue
+   for program in a.programs:
+    bound=terminal_bound(world,node,enemy,a.speed,program,ground,bounds)
+    if bound is not None:terms.append(dict(node=node,ground=ground,program=program,cost=bound))
+ def resolve(index):
+  t=terms[index];term=world.terminal(t['node'],enemy,a.speed,t['program'],t['ground'])
+  if term is not None and a.prune_terminal and not any(world.simulate(term['post'],0,term,enemy,heading,phase)['kill']for phase in range(9)):
+   counts['terminal_optimistically_impossible']=counts.get('terminal_optimistically_impossible',0)+1;return None
+  return term
+ print('D4_OPTIMISTIC_TERMINALS '+json.dumps(dict(map=world.meta['map'],count=len(terms))),flush=True)
+ prefix_cache={}
+ def prefix_check(edges):
+  if edges not in prefix_cache:
+   node=int(z['edge_destination'][edges[-1]]);dummy=dict(node=node,post=z['attach'][node][None,:],damage_events=[],kill_frame=0);path,arrival,_=world.route_path(dict(edges=edges),dummy);outcome=world.simulate(path,arrival,dummy,enemy,heading);prefix_cache[edges]=outcome['attacker_down'] is None
+  return prefix_cache[edges]
+ cfg=world.cfg;edge_frames=z['edge_frames'].astype(float)+np.where(z['edge_source']<world.g,cfg.activation_frames-cfg.activation_drain_grace,6);cost=edge_frames*cfg.drain+cfg.hook_cost;reverse=LazyReverse(z['edge_source'],z['edge_destination'],cost,world.g,world.h,terms,prefix_check=prefix_check,resolver=resolve);rows=[];best=[];order=np.lexsort((np.arange(world.g),np.linalg.norm(z['ground']-enemy,axis=1),reverse.lower[3][:world.g]));processed=set();all_candidates=0;top_certified=False
+ ground_terms={}
+ for term in terms:
+  if term.get('ground'):ground_terms.setdefault(term['node'],[]).append(term)
+ for start in order:
+  start=int(start);lower=float(reverse.lower[3][start]);position=z['ground'][start];row=dict(start=start,position=position.tolist(),probability=None,probability_interval=[0,1],complete=False,status='unresolved',cost_lower_bound=lower if math.isfinite(lower)else None,candidates=0)
+  if np.linalg.norm(position[[0,2]]-enemy[[0,2]])<.7 and abs(position[1]-enemy[1])<1.7:row.update(status='occupied',probability_interval=None,complete=True)
+  elif not lower<1-1e-10:row.update(probability=0,probability_interval=[0,0],complete=True,status='unreachable-in-declared-graph')
+  elif (down:=world.initial_stationary_death(start,enemy,heading,ground_terms.get(start,[]))) is not None:row.update(probability=0,probability_interval=[0,0],complete=True,status='dies-before-any-declared-route-can-move-or-kill',attacker_down=down)
+  else:
+   for candidate in reverse.candidates(start):
+    row['candidates']+=1;all_candidates+=1;term=reverse.actual(candidate['terminal']);path,arrival,events=world.route_path(candidate,term);outcome=world.simulate(path,arrival,term,enemy,heading)
+    if outcome['kill']:
+     row.update(probability=1,probability_interval=[1,1],complete=True,status='predicted-kill',remaining=candidate['remaining'],grade=candidate['grade'],cost=candidate['cost'],edges=list(candidate['edges']),hooks=[int(z['edge_destination'][e])for e in candidate['edges']],program=term['program'],exposure_frames=outcome['exposure_frames'],danger_frames=outcome['danger_frames'],stealth=bool(outcome['stealth']),kill_frame=outcome['enemy_down'],arrival_frame=arrival,route_events=events,terminal_inputs=term['inputs'],program_native_verified=term['program_native_verified'],attack_uncertainties=term.get('uncertainties',[]));break
+    if a.max_candidates and row['candidates']>=a.max_candidates:break
+   else:row.update(probability=None,probability_interval=[0,1],complete=True,status='no-contact-excluded-route; unrestricted-kill-unknown')
+  rows.append(row);processed.add(start)
+  if row.get('probability')==1:best.append(row);best.sort(key=lambda r:(r['cost'],r['exposure_frames'],r['start']))
+  if a.top_only and len(best)>=2 and best[1]['exposure_frames']==0:
+   unqueried=np.array([i for i in range(world.g)if i not in processed]);bound=float(np.min(reverse.lower[3][unqueried]))if len(unqueried)else np.inf
+   if bound>=best[1]['cost']-1e-10 and all(r['complete']or r['cost_lower_bound']>=best[1]['cost']for r in rows):top_certified=True;break
+  if len(rows)%100==0:print('D4_QUERY '+json.dumps(dict(processed=len(rows),total=world.g,candidates=all_candidates,kills=sum(r.get('probability')==1 for r in rows),seconds=time.monotonic()-began)),flush=True)
+  # Incremental output preserves completed work; incomplete is never converted0.
+  if len(rows)%100==0:(a.out/'partial.json').write_text(json.dumps(clean(dict(rows=rows)),separators=(',',':'))+'\n')
+ assert Path(__file__).read_bytes()==source_bytes,'query source changed during computation'
+ counts['terminal_resolved']=len(reverse.resolved);counts['terminal_real']=sum(t is not None for t in reverse.resolved.values());counts['prefix_checked']=len(prefix_cache);counts['prefix_proven_dead']=sum(not v for v in prefix_cache.values())
+ out=dict(unrestricted_optimality_closed=False,native_probability_calibrated=False,schema='inklab.d4.blade-only.query.v1',validation_status='uncalibrated-contact-disjoint-whole-wave-clear-fallback',full_d4_passed=False,map=world.meta['map'],stage=world.meta['stage'],enemy_index=a.enemy_index,enemy=enemy.tolist(),heading_quadrant=a.heading,heading_radians=heading,speed=a.speed,programs=a.programs,rows=rows,top2=best[:2],top2_certified_in_declared_model=top_certified or(len(best)>=2 and len(rows)==world.g and all(r['complete']for r in rows)),search_complete=len(rows)==world.g and all(r['complete']for r in rows),ground_nodes=world.g,wall_nodes=world.h,terminals=len(terms),counts=counts,candidates=all_candidates,seconds=time.monotonic()-began,config=clean(cfg.__dict__),source_sha256={str(p.relative_to(ROOT)):sha(p)for p in[Path(__file__),Path(__file__).with_name('model_v3.py'),Path(__file__).with_name('reverse_v2.py'),Path(__file__).with_name('flight_v2.py'),*[Path(__file__).with_name(n)for n in ['model_blade_only.py','blade_only.py','attack_model_safe.py','attack_batch_safe.py','optimistic_blade_only.py','query_model.py','optimistic.py','reverse_lazy.py','calibration_plan_v4.py','attack_model_v3.py','attack_model_v4.py','attack_model_v5.py','attack_geometry.py','attack_batch.py','attack_batch_v2.py','attack_cache.py','attack_sequence_v2.py','contact_shape.py','recoil.py']]]},graph_sha256=sha(a.graph/'graph.npz'),graph_meta_sha256=sha(a.graph/'graph.json'),shot_parameter_sha256=sha(ROOT/'work/a6/parameters.json'),attack_parameters_sha256=sha(ROOT/'work/d3r/attack-parameters-v1.json'),attack_fit_sha256=sha(ROOT/'work/d4/restart-v3/attack-fit-v1.json'),recoil_fit_sha256=sha(ROOT/'work/d4/restart-v3/recoil-fit-v2.json'),minimum_hooks=a.min_hooks,scope=['Conditional on the selected static enemy state, no uniform enemy-position average. Deterministic direction gives0/1, not calibrated native probability.','All declared ground starts and material-wall graph,0..3 hooks (or explicit fly-only filter), ground-zero-hook baseline included, finite named programs. Earliest successful route in exhaustive cost order, not a beam/ranked start bank.','Restricted projectile-only feasible routes: contact definitely disjoint, whole field assembly clear until body. Native/global/contact D4 unclosed.','Full100HP, projectile70/35 accumulation; contact unknown and excluded, never declared native0. Fixed180deg cone and ideal gun aim.','Gun falloff can require3shots at13.4u. No regen/armor/spread term. No winning fallback route is not proof nativeP=0.','Partial paths contain no own attacks; a native-model death before their end proves every attack-only suffix loses, so that prefix is discarded. No beam/rank cap.','Candidate caps produce unresolved intervals. Top-only is not a completed heatmap; no unknown values painted0.']);(a.out/'result.json').write_text(json.dumps(clean(out),indent=2)+'\n');print('D4_QUERY_DONE '+json.dumps({k:out[k]for k in['map','enemy_index','speed','search_complete','top2_certified_in_declared_model','candidates','seconds']}),flush=True)
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--graph',type=Path,required=True);p.add_argument('--enemy-index',type=int,required=True);p.add_argument('--heading',type=int,choices=[0,1,2,3],default=0);p.add_argument('--speed',type=int,choices=[20,40,60,129],default=40);p.add_argument('--programs',nargs='+',choices=PROGRAMS,default=['full-light','light3','light-full','full2']);p.add_argument('--out',type=Path,required=True);p.add_argument('--top-only',action='store_true');p.add_argument('--prune-terminal',action=argparse.BooleanOptionalAction,default=True);p.add_argument('--min-hooks',type=int,choices=[0,1],default=0);p.add_argument('--max-candidates',type=int,default=0);query(p.parse_args())

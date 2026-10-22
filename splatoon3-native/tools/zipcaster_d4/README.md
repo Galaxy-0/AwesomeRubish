@@ -52,3 +52,21 @@
 当前记录见`notes/d4-restart-executor-20261022.md`。正式批次12/216后因新的高台接触反例暂停；旧页面Worker仍是远端代理，不能用其交互计算宣称本版模型通过。
 
 本轮最终按两轮未闭合上限停止，见`notes/d4-restart-stop-20261022.md/.json`。`build_contact_transform.py`＋`contact_sensor_v5.h`只用于限定空间gate52的只读消费者区分，私有`OBS_MAX=53`；`audit_contact_transform.py`只接受严格指针归属。实际对照中未见该限定区域的消费者调用，不能据此证明所有物理路径均未更新。所有新增房间已收尾，剩余204正式案与新热图/页面不继续。`report_restart.py --out <新JSON> --status stopped`核对新duel_v6原件、已记录PID/全局宿主、峰值与保护哈希，不导出网格/原始字节。
+
+D4c（2026-10-22）独立入口，当前进行中，非D4签收：
+
+- `contact_hypotheses.py` / `contact_field.py`：旧刀按position_sample_frame去重对齐，三种LOS起点、精确box/finite-cylinder与三角面/法线假设表。`trace_contact_filter.py`核对当前类虚表+248恒返回1，不把注册候选命名为LOS。
+- `build_contact_chain.py` / `contact_sensor_v6.h`：新work私有宿主，保留6个保护宿主，扩大gate52并读取接触叶形状、过滤返回和Life pending。阳性刀pending1400已观测；接收/提交候选入口在阳性刀也零调用，观测链仍不完整。
+- `inspect_blade_halves.py`、`blade_halves.py`、`halves_hypotheses.py`：横5/纵7球、向外裁剪候选、中心规则显式分开。`build_half_sensor.py` / `contact_sensor_v7.h`读取共享函数前后槽数组；本刀槽为空，不证明物理/特效身份。`half_disagreement_probe.py`是最后一刀固定pitch区分夹具；原件一律新路径，不能自动补抽。
+- `contact_chain_report.py`：只导出归一帧、生命队列和叶类型等派生数值，不导出原生内存字节。
+- `blade_only.py`、`attack_model_safe.py`、`model_blade_only.py`：接触未知、四帧明确排除接触；整组场地球到首次体积相交均清晰才计墨刃。没有限定路线不等于原生P=0。完整D4/接触规则/游戏全局最优保持未闭合。
+- `query_blade_only.py`：0–3钩/全开大点/有限程序的限定查询；`--top-only`仍不是完整热图。`compute_blade_common.py`对9个固定常见敌态批算全起点；不是全部敌人×四向×四手速已完成。
+- `calibration_plan_blade_only.py`是解析下界快速计划；达不到同分门就保留partial并失败，不生成伪完整计划。`calibration_plan_blade_bank.py`从完整查询选普通导航支持集合内top2，并同时公开全几何网格top2/排除数量，不偷换成原生全局最优。
+- `duel_blade_only.py` / `batch_blade_only.py`：先普通摇杆微调，0.35u/自然满血门，原生接触不改机制。正式新216与资格检查/旧12完全分池；两次setup失败或同敌态两个正例都失败就停止后续发房，当前自建房自然收尾。当前仅一个限定正例资格检查通过；完整冻结/正式批次另见本轮notes，不据此宣称216已完成。
+
+```sh
+.venv/bin/python -m unittest tools.zipcaster_d4.test_contact_field tools.zipcaster_d4.test_contact_transform tools.zipcaster_d4.test_blade_halves tools.zipcaster_d4.test_blade_only tools.zipcaster_d4.test_blade_only_bound
+.venv/bin/python -m tools.zipcaster_d4.query_blade_only --graph work/d4/graph-v2-Yunohana --enemy-index 637 --heading 2 --speed 40 --out work/d4/new-blade-only-query
+```
+
+只读调研/两半检验/资格检查记录：`notes/d4-contact-hypotheses-20261022.md`、`notes/d4-halves-20261022.md`。默认arena、policies、原存档及T1/S1不变。
