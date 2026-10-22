@@ -1,0 +1,1452 @@
+{
+  "schema": "inklab.d4.mechanism.checkpoint.v1",
+  "full_d4_passed": false,
+  "confirmation": {
+    "schema": "inklab.d4.attack.confirm.report.v1",
+    "rows": [
+      {
+        "id": "confirm-negative-top1-full-original",
+        "artifact": "work/a6/d3-r-d4-attack4-confirm-20261022-174402-859995/result.json",
+        "artifact_sha256": "e9490a1a60ddf6c81432eac29b69668c0ae210a787599af2a511483c25524c2a",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "b59cb6be529b723fe52f66e914eb3bc34258c4653caee3feb4d851259af1aa45",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": 0.33609007234948035,
+        "actual_source": [
+          -12.0193329,
+          6.00000286,
+          -11.5297136
+        ],
+        "actual_enemy": [
+          -15.686223,
+          9.00000095,
+          -15.0382786
+        ],
+        "requested_pose_errors": [
+          0.04972846556235759,
+          0.0479330806888348
+        ],
+        "paired_pose_eligible": true,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.00370215362035563
+      },
+      {
+        "id": "confirm-positive-top1-light-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack4-confirm-20261022-174402-859995/result.json",
+        "artifact_sha256": "e9490a1a60ddf6c81432eac29b69668c0ae210a787599af2a511483c25524c2a",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "b59cb6be529b723fe52f66e914eb3bc34258c4653caee3feb4d851259af1aa45",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 7,
+            "drop": 35.0
+          }
+        ],
+        "native_pitch": 0.5400000000000001,
+        "actual_source": [
+          -12.0193338,
+          6.00011778,
+          -11.5297146
+        ],
+        "actual_enemy": [
+          -15.686223,
+          9.00000286,
+          -15.0382786
+        ],
+        "requested_pose_errors": [
+          0.04972765998043829,
+          0.04793308057467251
+        ],
+        "paired_pose_eligible": true,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.00372234039844592
+      },
+      {
+        "id": "top1-full-original",
+        "artifact": "work/a6/d3-r-d4-attack4-top1-20261022-174402-859995/result.json",
+        "artifact_sha256": "731db32cce029c3f722dee497b5ec76514e4aade85ed48b47353a7c8a30fc1d2",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "b59cb6be529b723fe52f66e914eb3bc34258c4653caee3feb4d851259af1aa45",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": 0.3285549069111432,
+        "actual_source": [
+          -12.0805273,
+          6.00000429,
+          -11.3721533
+        ],
+        "actual_enemy": [
+          -15.6723146,
+          9.00000095,
+          -15.13377
+        ],
+        "requested_pose_errors": [
+          0.2186943621538292,
+          0.07955134632501505
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": false,
+        "room_errors": [
+          "RuntimeError('A6 normal match duration exhausted')"
+        ],
+        "muzzle_error": 0.004281796922924009
+      },
+      {
+        "id": "top1-full-plus012",
+        "artifact": "work/a6/d3-r-d4-attack4-top1-20261022-174402-859995/result.json",
+        "artifact_sha256": "731db32cce029c3f722dee497b5ec76514e4aade85ed48b47353a7c8a30fc1d2",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "b59cb6be529b723fe52f66e914eb3bc34258c4653caee3feb4d851259af1aa45",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 9,
+            "drop": 70.0
+          }
+        ],
+        "native_pitch": 0.4528531825783534,
+        "actual_source": [
+          -12.0185347,
+          6.00001574,
+          -11.4967585
+        ],
+        "actual_enemy": [
+          -15.6624269,
+          9.0000267,
+          -15.1056376
+        ],
+        "requested_pose_errors": [
+          0.08156055546532093,
+          0.04976092341712421
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": false,
+        "room_errors": [
+          "RuntimeError('A6 normal match duration exhausted')"
+        ],
+        "muzzle_error": 0.0014905992046265004
+      },
+      {
+        "id": "top1-light-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack4-top1-light-max-margin-20261022-175612-341977/result.json",
+        "artifact_sha256": "e4e8dcdaee049185a736958a611cad54ab28d120d07ae053e73e7179f49a98a6",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "ed870ba8c2dc0c9710a410be11ce56e9ecf0732ec0bbb7f5c9c0d9507eb931fe",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/same-state-resume2-plan-v1.json": "002b4b690bf78153ea521b97f3fe7fe91806431b1dcdc632240d9642688f75bf",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 7,
+            "drop": 35.0
+          }
+        ],
+        "native_pitch": 0.5500000000000002,
+        "actual_source": [
+          -12.0189199,
+          6.00000334,
+          -11.5316448
+        ],
+        "actual_enemy": [
+          -15.6829472,
+          9.0,
+          -15.1529913
+        ],
+        "requested_pose_errors": [
+          0.04776462535447813,
+          0.10136668874247064
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.0015309075635460308
+      },
+      {
+        "id": "top1-light-original",
+        "artifact": "work/a6/d3-r-d4-attack4-top1-light-original-20261022-175612-341977/result.json",
+        "artifact_sha256": "ee292311b7e402f2804e725c856dc3b96e863ad5dc11c433d63f7fc6362fcd2c",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "ed870ba8c2dc0c9710a410be11ce56e9ecf0732ec0bbb7f5c9c0d9507eb931fe",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/same-state-resume2-plan-v1.json": "002b4b690bf78153ea521b97f3fe7fe91806431b1dcdc632240d9642688f75bf",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 7,
+            "drop": 35.0
+          }
+        ],
+        "native_pitch": 0.5105641850293193,
+        "actual_source": [
+          -12.0195894,
+          6.00000429,
+          -11.5309
+        ],
+        "actual_enemy": [
+          -15.6768236,
+          9.00000095,
+          -15.1386795
+        ],
+        "requested_pose_errors": [
+          0.04868329455891511,
+          0.08579993519561974
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.004268621422311956
+      },
+      {
+        "id": "top2-full-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack4-top2-20261022-174402-859995/result.json",
+        "artifact_sha256": "91fdc8eddc5ce0fff3a62428e0f7c59afedc54c0eeefcdd0b9cfc9b579ec33bc",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "b59cb6be529b723fe52f66e914eb3bc34258c4653caee3feb4d851259af1aa45",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": 0.4,
+        "actual_source": [
+          -12.0693579,
+          6.00000429,
+          -8.36694241
+        ],
+        "actual_enemy": [
+          -15.5085669,
+          9.00000095,
+          -15.0954132
+        ],
+        "requested_pose_errors": [
+          0.22679165074768337,
+          0.07590052309755656
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.0038212731095620357
+      },
+      {
+        "id": "top2-light-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack4-top2-20261022-174402-859995/result.json",
+        "artifact_sha256": "91fdc8eddc5ce0fff3a62428e0f7c59afedc54c0eeefcdd0b9cfc9b579ec33bc",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v4.py": "b59cb6be529b723fe52f66e914eb3bc34258c4653caee3feb4d851259af1aa45",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/zero_probe_v4.py": "f1bc3b933c66e53ff424fdf1b950973d18319c5ee3cb2dc9aa17143eb320bb23",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": 0.22000000000000008,
+        "actual_source": [
+          -12.0131836,
+          6.00001192,
+          -8.4926796
+        ],
+        "actual_enemy": [
+          -15.498311,
+          9.00000763,
+          -15.0695362
+        ],
+        "requested_pose_errors": [
+          0.09049940605445966,
+          0.04806573717027969
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 519,
+        "same_special_state_validated": true,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.005201940570384263
+      }
+    ],
+    "counts": {
+      "attempted": 8,
+      "comparisons": 8,
+      "agree": 8,
+      "paired_pose_eligible": 2,
+      "same_special_state_validated": 8,
+      "TP": 4,
+      "TN": 4
+    },
+    "ablation_sha256": "fd6e5d111aafd007d40b2d0710254115f64341121cf8c43e9deb200b7cd789e9",
+    "full_d4_passed": false,
+    "limits": [
+      "Finite single-slash mechanism check; not a stable hit rate or216-duel certification.",
+      "Placement failures recomputed at actual pose and excluded from identical-pose pairs.",
+      "Only35/70HP edges count as projectile hits; ink tick damage excluded.",
+      "Infinite only supplies another full gauge: native SuperHook duration still expires. Same-state gate is separate.",
+      "A completed slash in a later-expired room retains its own artifact/HP/source binding; room error remains visible.",
+      "Direct aim/infinite special are test-only; contact140 transform validation separate."
+    ]
+  },
+  "initial_eight_auxiliary": {
+    "schema": "inklab.d4.attack.confirm.report.v1",
+    "rows": [
+      {
+        "id": "confirm-negative-top1-full-original",
+        "artifact": "work/a6/d3-r-d4-attack3-confirm-20261022-163008-905858/result.json",
+        "artifact_sha256": "1673ef00ef73f51a90e319cd8493bd5386194a8ec5510a6138a824aeccc53d77",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": 0.334799435978857,
+        "actual_source": [
+          -12.033515,
+          6.00000143,
+          -11.5062361
+        ],
+        "actual_enemy": [
+          -15.6920404,
+          9.00000095,
+          -15.0540428
+        ],
+        "requested_pose_errors": [
+          0.07669352844094823,
+          0.04903079587975643
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 518,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.002383221136145864
+      },
+      {
+        "id": "confirm-positive-top1-light-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack3-confirm-20261022-163008-905858/result.json",
+        "artifact_sha256": "1673ef00ef73f51a90e319cd8493bd5386194a8ec5510a6138a824aeccc53d77",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/confirmation-plan-v2.json": "08dce7a360561defae27bc10ab210b71d0fa71265883089396dfbd83ee460a1b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 6,
+            "drop": 35.0
+          }
+        ],
+        "native_pitch": 0.5500000000000002,
+        "actual_source": [
+          -12.0151606,
+          6.00000095,
+          -11.5283394
+        ],
+        "actual_enemy": [
+          -15.6920404,
+          9.00000477,
+          -15.0540428
+        ],
+        "requested_pose_errors": [
+          0.04993917104697446,
+          0.04903079573094791
+        ],
+        "paired_pose_eligible": true,
+        "native_counter_before": 0,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.004743800714900629
+      },
+      {
+        "id": "top1-full-original",
+        "artifact": "work/a6/d3-r-d4-attack3-top1-20261022-162012-563530/result.json",
+        "artifact_sha256": "a062b2c5f4ea7e83db7aa4db8ac6c9df8daed09f9ec983b6fc44d5ca1d12e176",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/eight-shot-plan-v1.json": "07156b7d649d0b3e30ab9d8bb9032a7db76901b12ad87154e4be6c700cb9656e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": 0.3355784889526698,
+        "actual_source": [
+          -12.0320625,
+          6.00000334,
+          -11.5076952
+        ],
+        "actual_enemy": [
+          -15.6871386,
+          9.0,
+          -15.0406332
+        ],
+        "requested_pose_errors": [
+          0.07479143308784562,
+          0.04776706581110992
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 519,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.0020269856022956255
+      },
+      {
+        "id": "top1-full-plus012",
+        "artifact": "work/a6/d3-r-d4-attack3-top1-20261022-162012-563530/result.json",
+        "artifact_sha256": "a062b2c5f4ea7e83db7aa4db8ac6c9df8daed09f9ec983b6fc44d5ca1d12e176",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/eight-shot-plan-v1.json": "07156b7d649d0b3e30ab9d8bb9032a7db76901b12ad87154e4be6c700cb9656e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 9,
+            "drop": 70.0
+          }
+        ],
+        "native_pitch": 0.4555756654327445,
+        "actual_source": [
+          -12.0120897,
+          6.00000048,
+          -11.5283499
+        ],
+        "actual_enemy": [
+          -15.6871386,
+          9.0000124,
+          -15.0406332
+        ],
+        "requested_pose_errors": [
+          0.04933093640972236,
+          0.04776706618232803
+        ],
+        "paired_pose_eligible": true,
+        "native_counter_before": 0,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.002632447610372903
+      },
+      {
+        "id": "top1-light-original",
+        "artifact": "work/a6/d3-r-d4-attack3-top1-20261022-162012-563530/result.json",
+        "artifact_sha256": "a062b2c5f4ea7e83db7aa4db8ac6c9df8daed09f9ec983b6fc44d5ca1d12e176",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/eight-shot-plan-v1.json": "07156b7d649d0b3e30ab9d8bb9032a7db76901b12ad87154e4be6c700cb9656e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 6,
+            "drop": 35.0
+          }
+        ],
+        "native_pitch": 0.5042648445694436,
+        "actual_source": [
+          -12.0120897,
+          6.00008297,
+          -11.5283499
+        ],
+        "actual_enemy": [
+          -15.7075186,
+          9.0,
+          -15.2086544
+        ],
+        "requested_pose_errors": [
+          0.04933080923222496,
+          0.1622080076500638
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 0,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.005280878843227666
+      },
+      {
+        "id": "top1-light-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack3-top1-20261022-162012-563530/result.json",
+        "artifact_sha256": "a062b2c5f4ea7e83db7aa4db8ac6c9df8daed09f9ec983b6fc44d5ca1d12e176",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/eight-shot-plan-v1.json": "07156b7d649d0b3e30ab9d8bb9032a7db76901b12ad87154e4be6c700cb9656e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": true,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": true,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [
+          {
+            "frame": 6,
+            "drop": 35.0
+          }
+        ],
+        "native_pitch": 0.5500000000000002,
+        "actual_source": [
+          -12.0120897,
+          6.00016451,
+          -11.5283499
+        ],
+        "actual_enemy": [
+          -15.6797972,
+          9.00000095,
+          -15.1396933
+        ],
+        "requested_pose_errors": [
+          0.04933081908364153,
+          0.0879251399683408
+        ],
+        "paired_pose_eligible": false,
+        "native_counter_before": 0,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.005468349590514414
+      },
+      {
+        "id": "top2-full-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack3-top2-20261022-162012-563530/result.json",
+        "artifact_sha256": "5fa0635ff851b7cb6c3bdacbd3cc2c5b9fae522b20d8aa3d919c93b3b9181b70",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/eight-shot-plan-v1.json": "07156b7d649d0b3e30ab9d8bb9032a7db76901b12ad87154e4be6c700cb9656e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "full",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": -0.12,
+        "actual_source": [
+          -12.0136127,
+          6.00000334,
+          -8.53502274
+        ],
+        "actual_enemy": [
+          -15.5275574,
+          9.00000095,
+          -15.0077991
+        ],
+        "requested_pose_errors": [
+          0.04974437313786535,
+          0.0495983162428208
+        ],
+        "paired_pose_eligible": true,
+        "native_counter_before": 519,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.0035715591374561205
+      },
+      {
+        "id": "top2-light-max-margin",
+        "artifact": "work/a6/d3-r-d4-attack3-top2-20261022-162012-563530/result.json",
+        "artifact_sha256": "5fa0635ff851b7cb6c3bdacbd3cc2c5b9fae522b20d8aa3d919c93b3b9181b70",
+        "source_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_probe_v3.py": "9ec0aaf7ebef93cc8a55576864aa527db6bfd7b9e01778036eb26ad3f9337ac2",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_model_v3.py": "ac37a2731964a3ff19058fbfe832d6c47700424024a7aaff27970d3b4720704f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/eight-shot-plan-v1.json": "07156b7d649d0b3e30ab9d8bb9032a7db76901b12ad87154e4be6c700cb9656e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v3/attack-fit-v1.json": "8d308af848e94e5f50805086037354b1fef5d73801a10ad893c3918f56e10624"
+        },
+        "style": "light",
+        "predicted_hit": false,
+        "assembly_uncertain": false,
+        "exact_projectile_hp_edge": false,
+        "comparison_defined": true,
+        "agrees": true,
+        "native_large_hp_edges": [],
+        "native_pitch": 0.22000000000000008,
+        "actual_source": [
+          -12.0143461,
+          6.00011778,
+          -8.53748226
+        ],
+        "actual_enemy": [
+          -15.5275574,
+          9.00000477,
+          -15.0077991
+        ],
+        "requested_pose_errors": [
+          0.04773136772440459,
+          0.0495983159486092
+        ],
+        "paired_pose_eligible": true,
+        "native_counter_before": 0,
+        "same_special_state_validated": false,
+        "room_driver_completed": true,
+        "room_errors": [],
+        "muzzle_error": 0.005329259853542136
+      }
+    ],
+    "counts": {
+      "attempted": 8,
+      "comparisons": 8,
+      "agree": 8,
+      "paired_pose_eligible": 4,
+      "same_special_state_validated": 0,
+      "TP": 4,
+      "TN": 4
+    },
+    "ablation_sha256": "9fd76047c868a0592a511eabaf0113723eac0d64b99c9a9f3d0034add66ef970",
+    "full_d4_passed": false,
+    "limits": [
+      "Finite single-slash mechanism check; not a stable hit rate or216-duel certification.",
+      "Placement failures recomputed at actual pose and excluded from identical-pose pairs.",
+      "Only35/70HP edges count as projectile hits; ink tick damage excluded.",
+      "Infinite only supplies another full gauge: native SuperHook duration still expires. Same-state gate is separate.",
+      "A completed slash in a later-expired room retains its own artifact/HP/source binding; room error remains visible.",
+      "Direct aim/infinite special are test-only; contact140 transform validation separate."
+    ]
+  },
+  "contact": {
+    "schema": "inklab.d4.contact.world.readback.v1",
+    "static": {
+      "schema": "inklab.d4.contact.static.v1",
+      "image_sha256": "dfe220f83a982c8ea27968a2da01978832714728c0c40c8ec59a1e8f70051d8d",
+      "tool_sha256": "4be0c848451343885367f0f60ebdd6cd40a6f1d682d45b79023e692f1d22fe73",
+      "checked_addresses": [
+        "0x17a9048",
+        "0x17a9154",
+        "0x19eb408",
+        "0x19eb414",
+        "0x19eb418",
+        "0x19eb41c",
+        "0x19eb42c",
+        "0x19eb868",
+        "0x19eb870",
+        "0x19eba28",
+        "0x19eba34",
+        "0x19eba44",
+        "0x19ebbf4",
+        "0x19ebc00",
+        "0x19ebc10",
+        "0x19ebc28",
+        "0x19ebd00",
+        "0x19ebd08",
+        "0x4cb7b3c",
+        "0x4cb7b40",
+        "0x4cb7b44",
+        "0x4a85aa4",
+        "0x4a85ab0",
+        "0x4a85ab4",
+        "0x4a85af4",
+        "0x4a85af8"
+      ],
+      "parameter_layout": {
+        "BoxCenter": "0x30",
+        "BoxHalfExtents": "0x3c",
+        "CylinderCenterA": "0x48",
+        "CylinderCenterB": "0x54",
+        "CylinderRadius": "0x60"
+      },
+      "local_translation": "(0,0,BoxHalfExtents.Z) added to box center and cylinder endpoints",
+      "engine_rotation_offset": "0x268",
+      "engine_position_offset": "0x25c",
+      "physics_consumer": "main+0x4a85aa4 copies position3/rotation9 into physics interface",
+      "world_transform_consumer_verified": true,
+      "limits": [
+        "Build-specific read-only static evidence; no copied native instructions/assets in report.",
+        "This does not prove actor rotation, target Body shape, contact timing, or stable hit rate."
+      ]
+    },
+    "runs": [
+      {
+        "artifact": "work/a6/d3-r-d4-attack3-shape-inner-20261022-172335-127358/result.json",
+        "artifact_sha256": "974eed03b0047436529dd3459cd87382eeaf17f24217f505b8d279cae81d36f3",
+        "log_sha256": "2c03cae6fb903e7ee7e60f45ad6955a9499bceb1b5bcecef1d4a571564ba792b",
+        "cases": [
+          {
+            "id": "shape-inner",
+            "style": "full",
+            "requested_pose_errors": [
+              0.23554275993036147,
+              0.08545565987384264
+            ],
+            "paired_pose_eligible": false,
+            "frames": [
+              {
+                "frame": 7895,
+                "position": [
+                  -3.250049591064453,
+                  4.199282646179199,
+                  -8.68372631072998
+                ],
+                "rotation": [
+                  [
+                    0.5112519860267639,
+                    0.21467070281505585,
+                    0.832188606262207
+                  ],
+                  [
+                    0.0,
+                    0.9683019518852234,
+                    -0.24978241324424744
+                  ],
+                  [
+                    -0.8594307899475098,
+                    0.1277017593383789,
+                    0.49504637718200684
+                  ]
+                ],
+                "direction": [
+                  0.8321885871552469,
+                  -0.24978240750927033,
+                  0.49504636581579575
+                ],
+                "shape_kind": "box+finite-cylinder",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.399999976158142
+                ],
+                "box_half": [
+                  0.5,
+                  1.399999976158142,
+                  0.699999988079071
+                ],
+                "cylinder_enabled": true,
+                "source": [
+                  -3.68275619,
+                  3.00000381,
+                  -8.94101715
+                ],
+                "enemy": [
+                  -0.0293964334,
+                  3.00000095,
+                  -6.76853228
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.003498421089097079,
+                  "direction_aligned": 0.32399638674805403
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703713,
+                    "clearance": 0.036358567472962844
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703736,
+                    "clearance": 0.2863585674729626
+                  }
+                }
+              },
+              {
+                "frame": 7896,
+                "position": [
+                  -3.250049591064453,
+                  4.199282646179199,
+                  -8.68372631072998
+                ],
+                "rotation": [
+                  [
+                    0.5112519860267639,
+                    0.21467070281505585,
+                    0.832188606262207
+                  ],
+                  [
+                    0.0,
+                    0.9683019518852234,
+                    -0.24978241324424744
+                  ],
+                  [
+                    -0.8594307899475098,
+                    0.1277017593383789,
+                    0.49504637718200684
+                  ]
+                ],
+                "direction": [
+                  0.8321885871552469,
+                  -0.24978240750927033,
+                  0.49504636581579575
+                ],
+                "shape_kind": "box+finite-cylinder",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.399999976158142
+                ],
+                "box_half": [
+                  0.5,
+                  1.399999976158142,
+                  0.699999988079071
+                ],
+                "cylinder_enabled": true,
+                "source": [
+                  -3.68275619,
+                  3.00000381,
+                  -8.94101715
+                ],
+                "enemy": [
+                  -0.0293964334,
+                  3.00000095,
+                  -6.76853228
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.003498421089097079,
+                  "direction_aligned": 0.32399638674805403
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703713,
+                    "clearance": 0.036358567472962844
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703736,
+                    "clearance": 0.2863585674729626
+                  }
+                }
+              },
+              {
+                "frame": 7897,
+                "position": [
+                  -3.250049591064453,
+                  4.199282646179199,
+                  -8.68372631072998
+                ],
+                "rotation": [
+                  [
+                    0.5112519860267639,
+                    0.21467070281505585,
+                    0.832188606262207
+                  ],
+                  [
+                    0.0,
+                    0.9683019518852234,
+                    -0.24978241324424744
+                  ],
+                  [
+                    -0.8594307899475098,
+                    0.1277017593383789,
+                    0.49504637718200684
+                  ]
+                ],
+                "direction": [
+                  0.8321885871552469,
+                  -0.24978240750927033,
+                  0.49504636581579575
+                ],
+                "shape_kind": "box+finite-cylinder",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.399999976158142
+                ],
+                "box_half": [
+                  0.5,
+                  1.399999976158142,
+                  0.699999988079071
+                ],
+                "cylinder_enabled": true,
+                "source": [
+                  -3.68275619,
+                  3.00000381,
+                  -8.94101715
+                ],
+                "enemy": [
+                  -0.0293964334,
+                  3.00000095,
+                  -6.76853228
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.003498421089097079,
+                  "direction_aligned": 0.32399638674805403
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703713,
+                    "clearance": 0.036358567472962844
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703736,
+                    "clearance": 0.2863585674729626
+                  }
+                }
+              },
+              {
+                "frame": 7898,
+                "position": [
+                  -3.250049591064453,
+                  4.199282646179199,
+                  -8.68372631072998
+                ],
+                "rotation": [
+                  [
+                    0.5112519860267639,
+                    0.21467070281505585,
+                    0.832188606262207
+                  ],
+                  [
+                    0.0,
+                    0.9683019518852234,
+                    -0.24978241324424744
+                  ],
+                  [
+                    -0.8594307899475098,
+                    0.1277017593383789,
+                    0.49504637718200684
+                  ]
+                ],
+                "direction": [
+                  0.8321885871552469,
+                  -0.24978240750927033,
+                  0.49504636581579575
+                ],
+                "shape_kind": "box+finite-cylinder",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.399999976158142
+                ],
+                "box_half": [
+                  0.5,
+                  1.399999976158142,
+                  0.699999988079071
+                ],
+                "cylinder_enabled": true,
+                "source": [
+                  -3.68275619,
+                  3.00000381,
+                  -8.94101715
+                ],
+                "enemy": [
+                  -0.0293964334,
+                  3.00000095,
+                  -6.76853228
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.003498421089097079,
+                  "direction_aligned": 0.32399638674805403
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703713,
+                    "clearance": 0.036358567472962844
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 1.5031431038207987,
+                    "cylinder_distance": 0.31364143252703736,
+                    "clearance": 0.2863585674729626
+                  }
+                }
+              }
+            ],
+            "hp_edges": [
+              {
+                "frame": 7900,
+                "drop": 100
+              }
+            ],
+            "native_ko": true,
+            "measured_world_transform": true,
+            "contact_hit": true
+          }
+        ]
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-attack3-light-shape-20261022-173232-871037/result.json",
+        "artifact_sha256": "4a9be867827d9c6174ee18d26da93ef55b605bead2129343d9b4d3d945085bdb",
+        "log_sha256": "a9a7542fa240818d6e7db48b002565e349222c08028c2954a9af38cbba8e48dc",
+        "cases": [
+          {
+            "id": "light-contact-near",
+            "style": "light",
+            "requested_pose_errors": [
+              0.058239888563758654,
+              0.07689156146823568
+            ],
+            "paired_pose_eligible": false,
+            "frames": [
+              {
+                "frame": 7911,
+                "position": [
+                  -2.0586252212524414,
+                  3.8984971046447754,
+                  -7.949339866638184
+                ],
+                "rotation": [
+                  [
+                    0.4839707612991333,
+                    -0.03155399486422539,
+                    0.8745151162147522
+                  ],
+                  [
+                    0.0,
+                    0.9993497729301453,
+                    0.03605823591351509
+                  ],
+                  [
+                    -0.8750842213630676,
+                    -0.017451131716370583,
+                    0.48365601897239685
+                  ]
+                ],
+                "direction": [
+                  0.8745151032922508,
+                  0.03605823538069113,
+                  0.48365601182552714
+                ],
+                "shape_kind": "box",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.7999999523162842
+                ],
+                "box_half": [
+                  1.600000023841858,
+                  0.25,
+                  1.399999976158142
+                ],
+                "cylinder_enabled": false,
+                "source": [
+                  -2.32237077,
+                  3.00000191,
+                  -8.09768486
+                ],
+                "enemy": [
+                  -0.0504648536,
+                  3.00000048,
+                  -6.84248114
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.0037013098178786574,
+                  "direction_aligned": 0.037208065756173615
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.35
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.6
+                  }
+                }
+              },
+              {
+                "frame": 7912,
+                "position": [
+                  -2.0586252212524414,
+                  3.8984971046447754,
+                  -7.949339866638184
+                ],
+                "rotation": [
+                  [
+                    0.4839707612991333,
+                    -0.03155399486422539,
+                    0.8745151162147522
+                  ],
+                  [
+                    0.0,
+                    0.9993497729301453,
+                    0.03605823591351509
+                  ],
+                  [
+                    -0.8750842213630676,
+                    -0.017451131716370583,
+                    0.48365601897239685
+                  ]
+                ],
+                "direction": [
+                  0.8745151032922508,
+                  0.03605823538069113,
+                  0.48365601182552714
+                ],
+                "shape_kind": "box",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.7999999523162842
+                ],
+                "box_half": [
+                  1.600000023841858,
+                  0.25,
+                  1.399999976158142
+                ],
+                "cylinder_enabled": false,
+                "source": [
+                  -2.32237077,
+                  3.00000191,
+                  -8.09768486
+                ],
+                "enemy": [
+                  -0.0504648536,
+                  3.00000048,
+                  -6.84248114
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.0037013098178786574,
+                  "direction_aligned": 0.037208065756173615
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.35
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.6
+                  }
+                }
+              },
+              {
+                "frame": 7913,
+                "position": [
+                  -2.0586252212524414,
+                  3.8984971046447754,
+                  -7.949339866638184
+                ],
+                "rotation": [
+                  [
+                    0.4839707612991333,
+                    -0.03155399486422539,
+                    0.8745151162147522
+                  ],
+                  [
+                    0.0,
+                    0.9993497729301453,
+                    0.03605823591351509
+                  ],
+                  [
+                    -0.8750842213630676,
+                    -0.017451131716370583,
+                    0.48365601897239685
+                  ]
+                ],
+                "direction": [
+                  0.8745151032922508,
+                  0.03605823538069113,
+                  0.48365601182552714
+                ],
+                "shape_kind": "box",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.7999999523162842
+                ],
+                "box_half": [
+                  1.600000023841858,
+                  0.25,
+                  1.399999976158142
+                ],
+                "cylinder_enabled": false,
+                "source": [
+                  -2.32237077,
+                  3.00000191,
+                  -8.09768486
+                ],
+                "enemy": [
+                  -0.0504648536,
+                  3.00000048,
+                  -6.84248114
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.0037013098178786574,
+                  "direction_aligned": 0.037208065756173615
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.35
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.6
+                  }
+                }
+              },
+              {
+                "frame": 7914,
+                "position": [
+                  -2.0586252212524414,
+                  3.8984971046447754,
+                  -7.949339866638184
+                ],
+                "rotation": [
+                  [
+                    0.4839707612991333,
+                    -0.03155399486422539,
+                    0.8745151162147522
+                  ],
+                  [
+                    0.0,
+                    0.9993497729301453,
+                    0.03605823591351509
+                  ],
+                  [
+                    -0.8750842213630676,
+                    -0.017451131716370583,
+                    0.48365601897239685
+                  ]
+                ],
+                "direction": [
+                  0.8745151032922508,
+                  0.03605823538069113,
+                  0.48365601182552714
+                ],
+                "shape_kind": "box",
+                "box_center": [
+                  0.0,
+                  0.0,
+                  1.7999999523162842
+                ],
+                "box_half": [
+                  1.600000023841858,
+                  0.25,
+                  1.399999976158142
+                ],
+                "cylinder_enabled": false,
+                "source": [
+                  -2.32237077,
+                  3.00000191,
+                  -8.09768486
+                ],
+                "enemy": [
+                  -0.0504648536,
+                  3.00000048,
+                  -6.84248114
+                ],
+                "origin_errors": {
+                  "yaw_only": 0.0037013098178786574,
+                  "direction_aligned": 0.037208065756173615
+                },
+                "overlap": {
+                  "ColBullet": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.35
+                  },
+                  "Body-candidate": {
+                    "hit": true,
+                    "box_distance": 0.0,
+                    "cylinder_distance": null,
+                    "clearance": 0.6
+                  }
+                }
+              }
+            ],
+            "hp_edges": [
+              {
+                "frame": 7918,
+                "drop": 20.0
+              },
+              {
+                "frame": 7922,
+                "drop": 35.0
+              }
+            ],
+            "native_ko": false,
+            "measured_world_transform": true,
+            "contact_hit": true
+          },
+          {
+            "id": "light-contact-far-pitch",
+            "style": "light",
+            "requested_pose_errors": [
+              0.3305048270929082,
+              0.046534927718526624
+            ],
+            "paired_pose_eligible": false,
+            "frames": [],
+            "hp_edges": [],
+            "native_ko": false,
+            "measured_world_transform": false,
+            "contact_hit": false
+          }
+        ]
+      }
+    ],
+    "full_d4_passed": false,
+    "limits": [
+      "Four-frame calc-entry transform; no post-physics collision callback claimed.",
+      "Native KO from100HP censors the damage magnitude;140 is the parameter value.",
+      "Target Body receiver is still an explicit candidate, not silently substituted.",
+      "Contact/projectile overlap and duplicate suppression must be resolved before universal combo credit."
+    ]
+  },
+  "protected_sha256": {
+    "work/d2b/round2-world-build/dmhost-sensors": "a9567f5f57f6d23a5e7e95c17d59019afa4efb9e32dd96744867cfa39cca09f6",
+    "upstream/dm/host/dmhost": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+    "work/a8/dmhost-arena-v15": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+    "work/a8/dmhost-arena-special-v15": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+    "work/d3r/aim-v1/dmhost-aim": "d826e11e51c2fcac5e51db4853cbf834e6b284158306ced46f3ee3c6499adffb",
+    "work/d4/meter-v1/dmhost-aim": "db86339af3f1b1aad0925a05c804863434e120bd9defc2671d7627c1e0961be8"
+  },
+  "raw_directory": "work/d4/restart-v3",
+  "counts": {
+    "new_room_attempts": 16,
+    "new_slashes": 23,
+    "phase_validated_confirmation_slashes": 8
+  },
+  "status": "Mechanism checkpoint only; corrected full-map/ranking/216-duel/page pending."
+}

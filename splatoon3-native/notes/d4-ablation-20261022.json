@@ -1,0 +1,1813 @@
+{
+  "schema": "inklab.d4.ablation.checkpoint.v1",
+  "date": "2026-10-22",
+  "new_native_shots_for_ablation": 0,
+  "shots": 27,
+  "actual_geometry_large_damage_confusion": {
+    "TN": 15,
+    "TP": 12
+  },
+  "rows": [
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 0,
+      "style": "full",
+      "muzzle_error": 0.004029688200010302,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.463989007156734,
+          "body_time": 4.24540692186194,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 15.710009029386018,
+          "body_time": 5.527202010659359,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.659374817789584,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.67493116839963,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 4.377505770000935,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 1,
+      "style": "full",
+      "muzzle_error": 0.004029708560337051,
+      "native_large_hp_edges": [
+        {
+          "frame": 10,
+          "drop": 70.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.463989007156734,
+          "body_time": 4.24540692186194,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 15.710010007691654,
+          "body_time": 5.527202354853487,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.659375736705054,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 15.548733371597898,
+          "body_time": 4.739337705056729,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 5.741880980800519,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 2,
+      "style": "full",
+      "muzzle_error": 0.004029687692204935,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.463989007156734,
+          "body_time": 4.24540692186194,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 15.494707313069195,
+          "body_time": 6.3192778203207505,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.51968458112054,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.3874976243300554,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 4.306427626485753,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.004029734867682538,
+      "native_large_hp_edges": [
+        {
+          "frame": 10,
+          "drop": 70.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.463989007156734,
+          "body_time": 4.24540692186194,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 15.494708864591498,
+          "body_time": 6.319278453085234,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.519685259675821,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.395736504528603,
+          "body_time": 5.43912193002344,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 17.281734272709983,
+          "body_time": 5.442578434045693,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 4,
+      "style": "light",
+      "muzzle_error": 0.004752778161460756,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 5.403586304754327,
+          "body_time": 1.5470921725214797,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.4737813034730967,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.1555407013725365,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.1580653567311796,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 2.4903425663647356,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 5,
+      "style": "light",
+      "muzzle_error": 0.0032668970609736796,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 5.403586304754327,
+          "body_time": 1.5470921725214797,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.4737815681438888,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.2704974051246982,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 4.871339646596087,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.831231607032866,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 6,
+      "style": "light",
+      "muzzle_error": 0.004014751257511654,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 5.403586304754327,
+          "body_time": 1.5470921725214797,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.4737817433615947,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.0808025988705154,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.0258544010259942,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 2.1427179841730637,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "index": 7,
+      "style": "light",
+      "muzzle_error": 0.002907780715084648,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 5.403586304754327,
+          "body_time": 1.5470921725214797,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 1.473782007110515,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 4.595576228125773,
+          "body_time": 2.053968462815975,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.462986576865601,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.46330484855514,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top2-20261022-143043-749478/result.json",
+      "index": 0,
+      "style": "full",
+      "muzzle_error": 0.004054998800527116,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.69280885253393,
+          "body_time": 7.545854421060945,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.796964844166298,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.767529730219744,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.763163757985601,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.36105608739117,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top2-20261022-143043-749478/result.json",
+      "index": 1,
+      "style": "full",
+      "muzzle_error": 0.004055001702273728,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.69280885253393,
+          "body_time": 7.545854421060945,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.796965703267167,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.767530459205389,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.016292608986643,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 7.013999627686261,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top2-20261022-143043-749478/result.json",
+      "index": 2,
+      "style": "full",
+      "muzzle_error": 0.0040549997443182426,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.69280885253393,
+          "body_time": 7.545854421060945,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.796966564624516,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.7675311901057595,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.621611378776759,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.320793921268605,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top2-20261022-143043-749478/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.004055001016591051,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.69280885253393,
+          "body_time": 7.545854421060945,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.7969674237286215,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.767531919094146,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.481716851886734,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.49731442809711,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-Yunohana-center-top1-20261022-143043-749480/result.json",
+      "index": 0,
+      "style": "full",
+      "muzzle_error": 0.004015413001370488,
+      "native_large_hp_edges": [
+        {
+          "frame": 3,
+          "drop": 100.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 7.304869000270375,
+          "body_time": 4.31724457508971,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 8.323298293092678,
+          "body_time": 4.22320036884046,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 8.00554726707891,
+          "body_time": 3.225148346903527,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 7.9991003485531635,
+          "body_time": 3.2252013719932786,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel4-District00-central_high-top1-h1-r0-20261022-140906-343785/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.0038632059537747846,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.463989007156734,
+          "body_time": 4.24540692186194,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 15.773245724374252,
+          "body_time": 5.534527131027515,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.7181338685878433,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.7394274948659705,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 4.394882061059917,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel4-District00-central_high-top1-h1-r0-20261022-140906-343785/result.json",
+      "index": 4,
+      "style": "light",
+      "muzzle_error": 0.00511378149168316,
+      "native_large_hp_edges": [
+        {
+          "frame": 6,
+          "drop": 35.3
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 5.403586304754327,
+          "body_time": 1.5470921725214797,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 5.030628890179832,
+          "body_time": 1.7995630933357827,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 4.758375437560174,
+          "body_time": 1.5264757463939678,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 4.774882613422491,
+          "body_time": 1.5321063726347877,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.532164957689016,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel4-District00-central_high-top2-h1-r0-20261022-140910-617530/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.002606120093056709,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.69280885253393,
+          "body_time": 7.545854421060945,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 7.051223723588174,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.0258058383879,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.024298076551486,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 7.019932610566301,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel4-District00-central_high-top2-h1-r0-20261022-140910-617530/result.json",
+      "index": 4,
+      "style": "light",
+      "muzzle_error": 0.0053640998231646204,
+      "native_large_hp_edges": [
+        {
+          "frame": 8,
+          "drop": 35.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.3392535910269574,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 2.2866793196459323,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.2438023150397886,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.247392657310518,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 3.2475099369391645,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel4-Yunohana-central_high-top1-h1-r0-20261022-134306-705556/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.0048308190209422,
+      "native_large_hp_edges": [
+        {
+          "frame": 3,
+          "drop": 100.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.4861653183827013,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.813724816915223,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 1.8131376306363154,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 1.8135778986740196,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 1.8147314810872446,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 1.8147314810872446,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel4-Yunohana-central_high-top2-h1-r0-20261022-134308-139587/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.003275099039057276,
+      "native_large_hp_edges": [
+        {
+          "frame": 13,
+          "drop": 70.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 7.2832471331258235,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 7.8748858062138964,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 7.08763649531601,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 7.0897547434328985,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 8.094204075296823,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel4-Yunohana-central_high-top2-h1-r0-20261022-134308-139587/result.json",
+      "index": 4,
+      "style": "light",
+      "muzzle_error": 0.003985244918276779,
+      "native_large_hp_edges": [
+        {
+          "frame": 8,
+          "drop": 30.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.3393731167211227,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.640173415281414,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.2854887540535374,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.2846211917172323,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 3.3394399213278554,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top1-h1-r0-20261022-144326-261885/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.0035789544102020378,
+      "native_large_hp_edges": [
+        {
+          "frame": 9,
+          "drop": 70.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.463989007156734,
+          "body_time": 4.24540692186194,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 15.753830866167958,
+          "body_time": 5.488224565138988,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 3.6810084136209618,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 16.8851985179517,
+          "body_time": 4.502849684392653,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 4.505713475930572,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 4.505713475930572,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top1-h1-r0-20261022-144326-261885/result.json",
+      "index": 4,
+      "style": "light",
+      "muzzle_error": 0.003921414762778279,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 5.403586304754327,
+          "body_time": 1.5470921725214797,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 4.92955068766614,
+          "body_time": 1.9154972342721643,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 4.762502631045258,
+          "body_time": 1.7479346279455292,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.4360337459820975,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.436351669330132,
+          "body_time": null,
+          "right_censored": false,
+          "native_observed": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top2-h1-r0-20261022-144326-261886/result.json",
+      "index": 3,
+      "style": "full",
+      "muzzle_error": 0.004143694226512171,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 24.69280885253393,
+          "body_time": 7.545854421060945,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 6.891174036456273,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 5.86942468019229,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 26.826018233811915,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top2-h1-r0-20261022-144326-261886/result.json",
+      "index": 4,
+      "style": "light",
+      "muzzle_error": 0.004101578498952599,
+      "native_large_hp_edges": [],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 2.3392535910269574,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 2.2144240765944976,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": 2.062742113263917,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-Yunohana-center-top1-h1-r0-20261022-144326-261885/result.json",
+      "index": 2,
+      "style": "light",
+      "muzzle_error": 0.0028184963414385877,
+      "native_large_hp_edges": [
+        {
+          "frame": 6,
+          "drop": 35.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 2.106860507742909,
+          "body_time": 1.249510304179063,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 2.399174123498158,
+          "body_time": 1.1342406909654514,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 1.9092528608508372,
+          "body_time": 0.6452683713718589,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 1.908993957017902,
+          "body_time": 0.6452293562727832,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 1.6452293562727833,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-Yunohana-center-top1-h1-r0-20261022-144326-261885/result.json",
+      "index": 3,
+      "style": "light",
+      "muzzle_error": 0.0029228970398979042,
+      "native_large_hp_edges": [
+        {
+          "frame": 5,
+          "drop": 35.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 2.106860507742909,
+          "body_time": 1.249510304179063,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 2.399059577625383,
+          "body_time": 1.235572210775015,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 1.9091617057182637,
+          "body_time": 0.7455317336487115,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 1.9088980916377916,
+          "body_time": 0.7454808492395941,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": false,
+          "independent_side_hit": false,
+          "core_lifetime_side_hit": false,
+          "core_field_time": null,
+          "body_time": null,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 1.7898340124320593,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-Yunohana-center-top1-h1-r0-20261022-144326-261885/result.json",
+      "index": 4,
+      "style": "light",
+      "muzzle_error": 0.004930560022480055,
+      "native_large_hp_edges": [
+        {
+          "frame": 7,
+          "drop": 30.0
+        }
+      ],
+      "stages": [
+        {
+          "stage": "nominal_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 2.106860507742909,
+          "body_time": 1.249510304179063,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_pose",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 2.381430593229923,
+          "body_time": 1.38315929937689,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_p110",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 1.8884692637298293,
+          "body_time": 0.8916441605981654,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_direction",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 1.8838318791832667,
+          "body_time": 0.8916013490562353,
+          "right_censored": null,
+          "native_observed": true
+        },
+        {
+          "stage": "actual_trajectory_observed_prefix",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": null,
+          "body_time": 0.9381286095337887,
+          "right_censored": true,
+          "native_observed": true
+        },
+        {
+          "stage": "unobserved_final_update_hypothesis",
+          "core_hit": true,
+          "independent_side_hit": true,
+          "core_lifetime_side_hit": true,
+          "core_field_time": 2.8838899208964532,
+          "body_time": 0.9381286095337887,
+          "right_censored": null,
+          "native_observed": false
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "tools/zipcaster_d4/ablate_attacks.py": "5f92dc47d0c49a8e793c301748caa292cdbfda41f93581572360647192abaa89",
+    "tools/zipcaster_d4/attack_geometry.py": "5cb8fcd7ec15dbcd079b7446b6c2f31089d810d41c63db63753be62d55e93680"
+  },
+  "input_sha256": {
+    "work/d4/restart-v3/ablation-v2.json": "aecbf9d2eda2d600c6226d16e8ba9dee41b376d4752661fbcdc4d5464d73196f"
+  },
+  "full_d4_passed": false,
+  "limits": [
+    "Native actor world matrix/side-sphere update policy not recorded; assembly alternatives remain separate.",
+    "Finite projectile lifetime26/6 is an empirical observation envelope; per-shot actual trajectory not extended beyond its last accessor.",
+    "Damage Body reference is not proven identical to ColBullet capsule. No wall-clear-only damage credit.",
+    "HP acknowledgement has finite receipt latency; reported geometric times are not equated with HP callback frames.",
+    "Nominal/actual finite rays use the same capsule test. Native no-large-damage includes ink-only cases.",
+    "Hit classification includes near140 clamped100; matching hit/no-hit does not validate damage amount or contact geometry.",
+    "Actual p110/direction are read from the same shot; replay explanation, not independent prediction or stable-rate proof.",
+    "Right-censored final accessor cannot prove a miss; last-update extension is an explicit nonobserved hypothesis."
+  ]
+}

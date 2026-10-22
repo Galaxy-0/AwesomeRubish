@@ -1,8 +1,20 @@
 # D4：给定敌情，反推全图开大点
 
-输入敌人位置/固定世界朝向，查询地面开大点。旧D3-R均匀敌人先验排名不再作主结论。本轮有界停止：近身140遗漏和高差反例两轮仍未闭合，正式三图重复/全量模型未签收。浏览器亮暗/手机原型自查已完成，不能替代机制验证；见`notes/d4-blocker-20261022.md/.json`。下列搜索入口只用于复查旧远端核心代理，不宜继续扩大为最优推荐。测试特殊量/直接瞄准仅测量夹具，默认/正式对战禁用。
+输入敌人位置/固定世界朝向，查询地面开大点。旧D3-R均匀敌人先验排名不再作主结论。2026-10-22采纳Astra后已重启：逐刀生成点/体积归因、同状态八刀、真实接触形状/世界变换与20+35独立伤害已完成机制检查点；正在接回新模型，正式三图重复/全量模型仍未签收。见`notes/d4-attack-confirm-20261022.md/.json`。旧浏览器QA不能替代新模型原生验证。测试特殊量/直接瞄准仅测量夹具，默认/正式对战禁用。
 
-当前入口：
+重启入口（原件新路径，禁止覆盖）：
+
+- `ablate_attacks.py --out <新JSON> [--results <闭合原件> ...]`：逐级替换与核心/侧球分解；删除前截断明确标记。
+- `attack_probe_v4.py --plan <冻结计划> --group <组名>`：每刀自然返回/恢复摆位和满血/重新发动，原生内部计数500–530门；每房最多两刀，未尝试项另开新房。`infinite`不延长原生大招计时。
+- `build_contact.py --out work/d4/<新构建>`默认`contact_sensor_v3.h`，读取实际box/cylinder、创建方向和engine父对象；私有gate51/BuildID/测试瞄准门。旧`contact_sensor.h`是被否定的d8矩阵假设复现源码，不作当前传感。
+- `contact_probe_v2.py --host <新私有宿主> --plan ... --group ...`、`report_contact.py --results ... --out <新JSON>`：四帧局部形状与物理消费者使用的世界变换核对。
+- `attack_model_v4.py`、`attack_sequence_v2.py`、`model_v3.py`：真实体积/接触/强制位移后再瞄准/有限程序组件。尚未完成新全图和正式原生排名，不能据此给最优推荐。
+
+```sh
+.venv/bin/python -m unittest tools.zipcaster_d4.test_attack_geometry tools.zipcaster_d4.test_attack_batch tools.zipcaster_d4.test_attack_sequence tools.zipcaster_d4.test_attack_sequence_v2 tools.zipcaster_d4.test_model_v3
+```
+
+历史搜索/执行入口（旧远端代理，仅复查；不可与修正模型结果混池）：
 
 - `model_v2.py`：固定180°视锥、原生参数代理、完整枪口→生成点碰撞段、31f开大就绪、严格槽截止。
 - `query_v4.py` + `reverse_v2.py`：全部声明开大点，0–3钩、有限程序、反向预算下界/成本有序路径；出刀前已经确定倒下的前缀可安全丢弃。不是beam/排名子集。
