@@ -1,0 +1,985 @@
+{
+  "schema": "inklab.d4.foundation.v1",
+  "date": "2026-10-22",
+  "full_d4_passed": false,
+  "status": "foundation checkpoint; native pilot/cohort and page pending",
+  "zero_boundary": {
+    "schema": "inklab.d4.zero.summary.v1",
+    "runs": [
+      {
+        "path": "work/a6/d3-r-d4-zero-r1a-20261022-111850-662738/result.json",
+        "sha256": "12cdefd171ae190c4fce860e251a8e899f2ef01d80016809523a8782142202c9",
+        "passed": false,
+        "errors": [
+          "AssertionError('insufficient normal match time, unattempted cases retained')"
+        ],
+        "requested_counter": null,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero-r1a-20261022-111850-662738/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7511,
+            "requested_counter": null,
+            "counter_at_input": 37,
+            "zero_interval": [
+              7530,
+              7533
+            ],
+            "zero_sample": {
+              "frame": 7533,
+              "remaining": 0,
+              "source": "canonical4"
+            },
+            "previous_positive": {
+              "frame": 7529,
+              "remaining": 1,
+              "source": "canonical4"
+            },
+            "first_light_birth": {
+              "frame": 7522,
+              "velocity": [
+                -4.16226053,
+                0.0387522019,
+                -0.622461975
+              ]
+            },
+            "ko": {
+              "frame": 7530,
+              "target_native_frame": 7154,
+              "native_hp": 0
+            },
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": true,
+            "d4_deadline_confirmed": false,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero-r1a-20261022-111850-662738/steps.jsonl": "057dc4b9a176e9552c2b1c0cc5d8d4823eed3097dc3defa95399095288b7ddfe",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-111850-736550/player-0/host.log": "1ca4025714ac7f7a33af6b1ce4f6926e1dc578e5de225505cfd6a6257eca5d91",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-111850-736550/player-1/host.log": "70ef41547533bad41dfb9f8c12b2d1d13e1f7c9aa18c59af8638855f2fa9b2bf"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero2-c25-r1-20261022-112704-422007/result.json",
+        "sha256": "3a3e8fbfa3ec3a040904ac287e2c5dc413fdecb0c430c76dbd567ea5eafa2718",
+        "passed": false,
+        "errors": [
+          "AssertionError('did not reach prime gauge')"
+        ],
+        "requested_counter": 25,
+        "closed": true,
+        "records": [],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero2-c25-r1-20261022-112704-422007/steps.jsonl": "7e5d5454fd67a21f85952fcdd985307056237226af3f5ca6ef9fb8a5c579ea1c",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-112704-486557/player-0/host.log": "4a2ec91d66b3ef38dc04bc1a8efe2a4aefbb13b3e373e9649496860434d4a76e",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-112704-486557/player-1/host.log": "8b2784b63fc4215415774061844e0f01912187fc01ea6c5166cd38e14f484920"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero2-c32-r1-20261022-112704-422499/result.json",
+        "sha256": "280e5f5d4a12df4601094981a21b557b51492cf0d396f8c4ed5d8e527a3b8319",
+        "passed": false,
+        "errors": [
+          "AssertionError('did not reach prime gauge')"
+        ],
+        "requested_counter": 32,
+        "closed": true,
+        "records": [],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero2-c32-r1-20261022-112704-422499/steps.jsonl": "eb2b4055593260519a7d6de4769110db68f59a04f5d3313a1e777101cb2bd784",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-112704-486739/player-0/host.log": "3515cfa9108f2d97e68f98b47df6a2398e1965e08690eb9481a7b8bda4a998f6",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-112704-486739/player-1/host.log": "c68a76a0e673882dbbe37c4228d937bec5536928e845ab7bc32f92d9d355d772"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero2-c34-r1-20261022-112704-422495/result.json",
+        "sha256": "c9f377a2993ce99a27a62aede9d206bb116414d041a1d09613c78bd04bf4d690",
+        "passed": false,
+        "errors": [
+          "AssertionError('did not reach prime gauge')"
+        ],
+        "requested_counter": 34,
+        "closed": true,
+        "records": [],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero2-c34-r1-20261022-112704-422495/steps.jsonl": "4af142c4c0dceb7d393b749a36e9e70151b86c0359427158252cf63cbe1501a9",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-112704-486953/player-0/host.log": "f7aab3f491d88877ab5ae73f0aa1d793e0587f26c97935d85ac01446aeae3c07",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-112704-486953/player-1/host.log": "e49fad2d192faaf032d50a93ceb5b0390a15d9b93bd4241069895b6a27285be1"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero3-light-c32-r2-20261022-114704-718091/result.json",
+        "sha256": "4cf945712943ca7f02199fb10e9dc0535f245d1bb8681ca1e5506155922383c5",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 32,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero3-light-c32-r2-20261022-114704-718091/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7560,
+            "requested_counter": 32,
+            "counter_at_input": 32,
+            "zero_interval": [
+              7574,
+              7574
+            ],
+            "zero_sample": {
+              "frame": 7574,
+              "remaining": 0,
+              "source": "meter1"
+            },
+            "previous_positive": {
+              "frame": 7573,
+              "remaining": 1,
+              "source": "meter1"
+            },
+            "first_light_birth": {
+              "frame": 7571,
+              "velocity": [
+                -4.17602205,
+                0.038761843,
+                -0.529832304
+              ]
+            },
+            "ko": {
+              "frame": 7578,
+              "target_native_frame": 7226,
+              "native_hp": 0
+            },
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": true,
+            "d4_deadline_confirmed": false,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero3-light-c32-r2-20261022-114704-718091/steps.jsonl": "4179c8795cd3c4c923c07bcb795679982ca30b6eef35fde2b6586012c12f2ee6",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-114704-774722/player-0/host.log": "7c953807494f03a013b410cc0ef3a0dc009a19001421732780530a91e4df917a",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-114704-774722/player-1/host.log": "20a928f62acb61f50a0d4bdc1561489859c94943b5fc3c87d6cd754542e34d0c"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero3-parent-c32-r2-20261022-114705-844912/result.json",
+        "sha256": "c327805826cd4423ae7811bfab74899996e0796840a463fc09296b1b392c5a36",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 32,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero3-parent-c32-r2-20261022-114705-844912/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7383,
+            "requested_counter": 32,
+            "counter_at_input": 30,
+            "zero_interval": [
+              7395,
+              7398
+            ],
+            "zero_sample": {
+              "frame": 7398,
+              "remaining": 0,
+              "source": "canonical4"
+            },
+            "previous_positive": {
+              "frame": 7394,
+              "remaining": 1,
+              "source": "canonical4"
+            },
+            "first_light_birth": null,
+            "ko": null,
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": false,
+            "d4_deadline_confirmed": false,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero3-parent-c32-r2-20261022-114705-844912/steps.jsonl": "afe4ff4dde2169d45ebda434ca42ed25b9882a049ea9671e5a10ce9a848070f8",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-114705-896339/player-0/host.log": "85e7be5a17cd23525e60b656e9326b3d54d27f115405fff211a3741bbb59cca0",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-114705-896339/player-1/host.log": "2333974963b092f4e07fd3204b3e14525dbc6ede8505614feeb8fa68e625058e"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero4-zero-v4-batch1-c29-r0-20261022-115636-833112/result.json",
+        "sha256": "2ad0520379a7608665862abbce9658e1d719eb2261a6c226aee29491789b7ec2",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 29,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero4-zero-v4-batch1-c29-r0-20261022-115636-833112/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7275,
+            "requested_counter": 29,
+            "counter_at_input": 29,
+            "zero_interval": [
+              7286,
+              7286
+            ],
+            "zero_sample": {
+              "frame": 7286,
+              "remaining": 0,
+              "source": "meter1"
+            },
+            "previous_positive": {
+              "frame": 7285,
+              "remaining": 1,
+              "source": "meter1"
+            },
+            "first_light_birth": null,
+            "ko": null,
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": false,
+            "d4_deadline_confirmed": false,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero4-zero-v4-batch1-c29-r0-20261022-115636-833112/steps.jsonl": "cc395347518eab4c1c64768184995430bf0f4b123932e4225202f890e0d2c064",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-115636-895532/player-0/host.log": "0b0f8c70ad14eaf3efe33de855496e227f0d773e4edfc4ee4df753e4083f9c06",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-115636-895532/player-1/host.log": "81128d0848114621f55f227afed34fc7242c3d09ce82be86440ce6634c1dd3d6"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero4-zero-v4-batch1-c30-r0-20261022-115636-833112/result.json",
+        "sha256": "3b509c7e7fad3160a72928217d310dc8cc776c3902716d662170f71e81663f9c",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 30,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero4-zero-v4-batch1-c30-r0-20261022-115636-833112/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7479,
+            "requested_counter": 30,
+            "counter_at_input": 30,
+            "zero_interval": [
+              7491,
+              7491
+            ],
+            "zero_sample": {
+              "frame": 7491,
+              "remaining": 0,
+              "source": "meter1"
+            },
+            "previous_positive": {
+              "frame": 7490,
+              "remaining": 1,
+              "source": "meter1"
+            },
+            "first_light_birth": null,
+            "ko": null,
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": false,
+            "d4_deadline_confirmed": false,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero4-zero-v4-batch1-c30-r0-20261022-115636-833112/steps.jsonl": "b0f76ab387e00e7cf1e1cb5dcde75b8280c4481853e043e48ee542bd39106d24",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-115636-895258/player-0/host.log": "01bb7ee1c463b7fe6bb3af15eddf3fb9e2e5f7030e8a699b8ca6add1d67bdcbb",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-115636-895258/player-1/host.log": "8befbcc13b7add7ae1474d63740bba5f1686a40462147ef0d3792e06c85958eb"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero4-zero-v4-batch1-c40-r0-20261022-115636-833118/result.json",
+        "sha256": "d3a72f56d44754089150c9cf1a981a74b326aa962be26f4d02070ef017578f0a",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 40,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero4-zero-v4-batch1-c40-r0-20261022-115636-833118/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7487,
+            "requested_counter": 40,
+            "counter_at_input": 40,
+            "zero_interval": [
+              7510,
+              7510
+            ],
+            "zero_sample": {
+              "frame": 7510,
+              "remaining": 0,
+              "source": "meter1"
+            },
+            "previous_positive": {
+              "frame": 7509,
+              "remaining": 1,
+              "source": "meter1"
+            },
+            "first_light_birth": {
+              "frame": 7498,
+              "velocity": [
+                -4.1782794,
+                0.0387497582,
+                -0.500832021
+              ]
+            },
+            "ko": {
+              "frame": 7506,
+              "target_native_frame": 7170,
+              "native_hp": 0
+            },
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": true,
+            "d4_deadline_confirmed": true,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero4-zero-v4-batch1-c40-r0-20261022-115636-833118/steps.jsonl": "7e7764237cebec35c854fa8c780a63697d2cfb6627cf3e046f244c3017baeafb",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-115636-895447/player-0/host.log": "3cb8fb8f8a03564947aff1abbf639087d9209a4d1fc411b78247a04140e95e89",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-115636-895447/player-1/host.log": "47d992a1321e436c8bd94063adf9fb735120b95adb9e59a68bb447292e4424d1"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero4-zero-v4-batch2-c31-r0-20261022-123146-943892/result.json",
+        "sha256": "d68ba1352d12d22ada1d3878a362072b685599d93855e873dbf433faca2481c2",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 31,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero4-zero-v4-batch2-c31-r0-20261022-123146-943892/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7236,
+            "requested_counter": 31,
+            "counter_at_input": 31,
+            "zero_interval": [
+              7249,
+              7249
+            ],
+            "zero_sample": {
+              "frame": 7249,
+              "remaining": 0,
+              "source": "meter1"
+            },
+            "previous_positive": {
+              "frame": 7248,
+              "remaining": 1,
+              "source": "meter1"
+            },
+            "first_light_birth": {
+              "frame": 7247,
+              "velocity": [
+                -4.17695427,
+                0.0387624316,
+                -0.523440063
+              ]
+            },
+            "ko": {
+              "frame": 7255,
+              "target_native_frame": 6942,
+              "native_hp": 0
+            },
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": true,
+            "d4_deadline_confirmed": false,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero4-zero-v4-batch2-c31-r0-20261022-123146-943892/steps.jsonl": "004169a1b2a2403b2ebdcd8ac6127e628f9c60515816e0065cb305b90dead49f",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-123147-008204/player-0/host.log": "392ed919a3811ecf03253d5546f4e4ea83280b4659cc3c230f70b53145f16d6c",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-123147-008204/player-1/host.log": "44279c496605aadd7b65a74fdd9c819e6a1d82202c0c198d5ff28cc719dc0c6d"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero4-zero-v4-batch2-c32-r0-20261022-123146-943892/result.json",
+        "sha256": "b90c40c1b3aa18ff217a85038d44feea5e3e492241cbb2a78305739f9a404f52",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 32,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero4-zero-v4-batch2-c32-r0-20261022-123146-943892/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7344,
+            "requested_counter": 32,
+            "counter_at_input": 32,
+            "zero_interval": [
+              7358,
+              7358
+            ],
+            "zero_sample": {
+              "frame": 7358,
+              "remaining": 0,
+              "source": "meter1"
+            },
+            "previous_positive": {
+              "frame": 7357,
+              "remaining": 1,
+              "source": "meter1"
+            },
+            "first_light_birth": {
+              "frame": 7355,
+              "velocity": [
+                -4.18600368,
+                0.038752079,
+                -0.433473319
+              ]
+            },
+            "ko": {
+              "frame": 7362,
+              "target_native_frame": 7045,
+              "native_hp": 0
+            },
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": true,
+            "d4_deadline_confirmed": false,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero4-zero-v4-batch2-c32-r0-20261022-123146-943892/steps.jsonl": "ae6626a2f5833d7686388a98db1f284329947908ef63ede18138bf36fcb90fd6",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-123147-008416/player-0/host.log": "25eb785e9dbdb580f37692e48cfe4427818c4152a43571fc148cb92bcdb32c8b",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-123147-008416/player-1/host.log": "0f229ded9f2e6a677bdac9f3f9cd4ea3436763dadee15c1aa20a29e2784ee06a"
+        }
+      },
+      {
+        "path": "work/a6/d3-r-d4-zero4-zero-v4-batch2-c40-r0-20261022-123146-943893/result.json",
+        "sha256": "a68c3299436dd7b003288096c7be71e249a6f5a91fa36e7e941f5649d562820d",
+        "passed": true,
+        "errors": [],
+        "requested_counter": 40,
+        "closed": true,
+        "records": [
+          {
+            "artifact": "work/a6/d3-r-d4-zero4-zero-v4-batch2-c40-r0-20261022-123146-943893/result.json",
+            "index": 0,
+            "eligible": true,
+            "prime70": true,
+            "input_frame": 7438,
+            "requested_counter": 40,
+            "counter_at_input": 40,
+            "zero_interval": [
+              7461,
+              7461
+            ],
+            "zero_sample": {
+              "frame": 7461,
+              "remaining": 0,
+              "source": "meter1"
+            },
+            "previous_positive": {
+              "frame": 7460,
+              "remaining": 1,
+              "source": "meter1"
+            },
+            "first_light_birth": {
+              "frame": 7449,
+              "velocity": [
+                -4.17995691,
+                0.0387455039,
+                -0.481526434
+              ]
+            },
+            "ko": {
+              "frame": 7455,
+              "target_native_frame": 7138,
+              "native_hp": 0
+            },
+            "target_hp_at_input": 0.300000012,
+            "native_target_down": true,
+            "d4_deadline_confirmed": true,
+            "scope": "Native HP callback and own projectile direction, source-frame normalized target. Interval width1 only with per-present meter; coarse samples never promoted to exact same-frame order."
+          }
+        ],
+        "raw_sha256": {
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/a6/d3-r-d4-zero4-zero-v4-batch2-c40-r0-20261022-123146-943893/steps.jsonl": "bea7f44267df96040622929820b65503e26e0728892b2e832679bf825bc29cf5",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-123147-008439/player-0/host.log": "a5e84c2a5f9f3ced5f317d3f26e8d73b557a14c8b042b8bbfb7e6bb4dce8fd26",
+          "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261022-123147-008439/player-1/host.log": "44fc184078477b68a92dff8c8bcb011b87e5da3db8ac3b8e3216046586f01408"
+        }
+      }
+    ],
+    "open_runs": [],
+    "full_d4_passed": false,
+    "source_sha256": "13eb0ce823c8c72777065c7dbdb2e4e6f96aee5bba9181bfe9acc63cb0d1d5f2"
+  },
+  "geometry_check": {
+    "passed": true,
+    "maps": [
+      {
+        "map": "Yunohana",
+        "vision_cases": 1000,
+        "sphere_cases": 240,
+        "sphere_hits": 67
+      },
+      {
+        "map": "District00",
+        "vision_cases": 1000,
+        "sphere_cases": 240,
+        "sphere_hits": 70
+      },
+      {
+        "map": "Yagara",
+        "vision_cases": 1000,
+        "sphere_cases": 240,
+        "sphere_hits": 103
+      }
+    ],
+    "total_comparisons": 3723,
+    "seconds": 1.1974422498606145,
+    "scope": "Same two-sided finite thin-ray and exact sphere face/edge/vertex predicates; original game assets not exported",
+    "source_sha256": {
+      "tools/zipcaster_d4/check_geometry.py": "2ca883c48b73a593f032ca5c3319a478f00cd36e6f4f8c8eea085df40f2ef901",
+      "tools/zipcaster_d4/geometry.cpp": "a18eba95acb1de97d08ac1f782f04346ba1450c483596157a2236fcf1e2af193",
+      "tools/zipcaster_d4/geometry.py": "9f796eef166c582d8d75cc5f9e2877cd7b576be4a480be5018f56033840abd34"
+    }
+  },
+  "flight_metrics": {
+    "train": {
+      "n": 39,
+      "duration_rmse": 1.7541160386140584,
+      "duration_max_error": 4,
+      "position_rmse": 0.5283544849774995
+    },
+    "final-batches3-4": {
+      "n": 29,
+      "duration_rmse": 1.5312829869775528,
+      "duration_max_error": 3,
+      "position_rmse": 0.5191848412202476
+    },
+    "all": {
+      "n": 91,
+      "duration_rmse": 1.8486704459103622,
+      "duration_max_error": 5,
+      "position_rmse": 0.5475344161398787
+    }
+  },
+  "graphs": [
+    {
+      "map": "Yunohana",
+      "ground_nodes": 1580,
+      "candidate_wall_faces": 2139,
+      "wall_nodes": 3314,
+      "links": 230986,
+      "graph_sha256": "9d1737dd6946fb38a0428b6355f561fa00400b1c442e229fbf01c7de30ed01ce",
+      "scope": [
+        "All lattice ground points/all material-eligible known vertical faces, no policy-reachability/start-region/score cap. Both wall normals sampled.",
+        "Full3u declared graph only, not every continuous point. Ground/ceiling hook eligibility remains unsupported; not falsely declared unbindable.",
+        "Links use fittedD3-R origin/tangent/sphere.4/Fence proxy and sphere-center aim; first-contact point within.15 and material/normal checked. Native validation required.",
+        "Fixed nominal source pose/body heading0; incoming contact and native attachment can vary. No unvalidated dynamic geometry.",
+        "Native own-flight train-only duration/progress model; B6/terminal fall still separate extrapolation."
+      ]
+    },
+    {
+      "map": "District00",
+      "ground_nodes": 1061,
+      "candidate_wall_faces": 2119,
+      "wall_nodes": 5664,
+      "links": 434096,
+      "graph_sha256": "e51ed6bec62038f60f37515f1f076ab67b945bba2d29ec3dae0f1a10ad19b30a",
+      "scope": [
+        "All lattice ground points/all material-eligible known vertical faces, no policy-reachability/start-region/score cap. Both wall normals sampled.",
+        "Full3u declared graph only, not every continuous point. Ground/ceiling hook eligibility remains unsupported; not falsely declared unbindable.",
+        "Links use fittedD3-R origin/tangent/sphere.4/Fence proxy and sphere-center aim; first-contact point within.15 and material/normal checked. Native validation required.",
+        "Fixed nominal source pose/body heading0; incoming contact and native attachment can vary. No unvalidated dynamic geometry.",
+        "Native own-flight train-only duration/progress model; B6/terminal fall still separate extrapolation."
+      ]
+    },
+    {
+      "map": "Yagara",
+      "ground_nodes": 1317,
+      "candidate_wall_faces": 2191,
+      "wall_nodes": 4532,
+      "links": 292377,
+      "graph_sha256": "cddf3ff7ee2c2523456439ac872b5b6e576af388658ab1f8fc44a6baf372a13b",
+      "scope": [
+        "All lattice ground points/all material-eligible known vertical faces, no policy-reachability/start-region/score cap. Both wall normals sampled.",
+        "Full3u declared graph only, not every continuous point. Ground/ceiling hook eligibility remains unsupported; not falsely declared unbindable.",
+        "Links use fittedD3-R origin/tangent/sphere.4/Fence proxy and sphere-center aim; first-contact point within.15 and material/normal checked. Native validation required.",
+        "Fixed nominal source pose/body heading0; incoming contact and native attachment can vary. No unvalidated dynamic geometry.",
+        "Native own-flight train-only duration/progress model; B6/terminal fall still separate extrapolation."
+      ]
+    }
+  ],
+  "common_queries": [
+    {
+      "artifact": "work/d4/common-query-v2-District00-center-h0/result.json",
+      "sha256": "d10f959caf440a2635436da60855dbaf70db2fbc67faf260c830c5d948d01fd3",
+      "map": "District00",
+      "enemy": [
+        0.0,
+        6.0,
+        0.0
+      ],
+      "heading": 0,
+      "seconds": 0.48588437493890524,
+      "top2_certified": false,
+      "top2": []
+    },
+    {
+      "artifact": "work/d4/common-query-v2-District00-central_high-h2/result.json",
+      "sha256": "81b8faabb8edacadbe09c46c164d3a9027be85d6cc0f82949993749f9900f4ce",
+      "map": "District00",
+      "enemy": [
+        -15.0,
+        9.0,
+        -15.0
+      ],
+      "heading": 2,
+      "seconds": 1.654975375160575,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 223,
+          "position": [
+            -12.0,
+            6.0,
+            -12.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        },
+        {
+          "start": 224,
+          "position": [
+            -12.0,
+            6.0,
+            -9.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.699,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/d4/common-query-v2-District00-west_lane-h1/result.json",
+      "sha256": "7852203954fb90d84100016d9b51d7e8ad3c2b46488c42048d2517b8e926fcc3",
+      "map": "District00",
+      "enemy": [
+        -18.0,
+        6.0,
+        -3.0
+      ],
+      "heading": 1,
+      "seconds": 3.3159358750563115,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 222,
+          "position": [
+            -12.0,
+            6.0,
+            -15.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.6956666666666667,
+          "stealth": false
+        },
+        {
+          "start": 362,
+          "position": [
+            -6.0,
+            6.0,
+            -9.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.6956666666666667,
+          "stealth": false
+        }
+      ]
+    },
+    {
+      "artifact": "work/d4/common-query-v2-Yagara-center-h0/result.json",
+      "sha256": "ba95896bae887d30e27df94539d99bfd0652c64c03569a33c3606f35173ff54d",
+      "map": "Yagara",
+      "enemy": [
+        0.0,
+        6.0,
+        -3.0
+      ],
+      "heading": 0,
+      "seconds": 2.7656676250044256,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 597,
+          "position": [
+            -3.0,
+            6.0,
+            -6.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        },
+        {
+          "start": 657,
+          "position": [
+            0.0,
+            6.0,
+            -6.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/d4/common-query-v2-Yagara-central_high-h2/result.json",
+      "sha256": "b9aff4b5fb59cf4cfa1b781a78076c2e76247f96d5a962e20a138bd70d6f839d",
+      "map": "Yagara",
+      "enemy": [
+        12.0,
+        6.0,
+        -9.0
+      ],
+      "heading": 2,
+      "seconds": 1.7963080829940736,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 841,
+          "position": [
+            9.0,
+            9.0,
+            -6.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        },
+        {
+          "start": 967,
+          "position": [
+            15.0,
+            6.0,
+            -6.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/d4/common-query-v2-Yagara-west_lane-h1/result.json",
+      "sha256": "e4a2c46266db4e63ad66293aa92952d928eea3d50276d35ec77c5898b3aeabd6",
+      "map": "Yagara",
+      "enemy": [
+        -15.0,
+        6.0,
+        6.0
+      ],
+      "heading": 1,
+      "seconds": 1.3918063750024885,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 246,
+          "position": [
+            -21.0,
+            1.5,
+            3.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.699,
+          "stealth": true
+        },
+        {
+          "start": 247,
+          "position": [
+            -21.0,
+            6.0,
+            6.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.699,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/d4/common-query-v2-Yunohana-center-h0/result.json",
+      "sha256": "8ed1710a0bb22e852dc8fd695806d43bd66c560292437814cb774cf4a010cbd8",
+      "map": "Yunohana",
+      "enemy": [
+        0.0,
+        3.0,
+        -6.0
+      ],
+      "heading": 0,
+      "seconds": 0.7028456251136959,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 707,
+          "position": [
+            -3.0,
+            3.0,
+            -9.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        },
+        {
+          "start": 771,
+          "position": [
+            0.0,
+            3.0,
+            -9.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/d4/common-query-v2-Yunohana-central_high-h2/result.json",
+      "sha256": "04c51796e2100f1e68d556b99191d07cb78edd49458a4a69e411a24b1ce3cd41",
+      "map": "Yunohana",
+      "enemy": [
+        -6.0,
+        6.0009,
+        -3.0
+      ],
+      "heading": 2,
+      "seconds": 1.1241105839144439,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 638,
+          "position": [
+            -6.0,
+            4.5,
+            0.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        },
+        {
+          "start": 509,
+          "position": [
+            -12.0,
+            4.5,
+            0.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.699,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "artifact": "work/d4/common-query-v2-Yunohana-west_lane-h1/result.json",
+      "sha256": "daea1df068e2ced64ee8d14b7f49bda7cbdd1c8e9a8ce6f022e7ca3ccef7947f",
+      "map": "Yunohana",
+      "enemy": [
+        -18.0,
+        3.0,
+        0.0
+      ],
+      "heading": 1,
+      "seconds": 1.2785249578300864,
+      "top2_certified": true,
+      "top2": [
+        {
+          "start": 311,
+          "position": [
+            -21.0,
+            3.0,
+            -3.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        },
+        {
+          "start": 312,
+          "position": [
+            -21.0,
+            3.0,
+            0.0
+          ],
+          "program": "full-light",
+          "hooks": [],
+          "remaining": 0.7006666666666667,
+          "stealth": true
+        }
+      ]
+    }
+  ],
+  "complete_query": {
+    "map": "Yunohana",
+    "enemy": [
+      0.0,
+      3.0,
+      -6.0
+    ],
+    "heading_quadrant": 0,
+    "speed": 40,
+    "search_complete": true,
+    "ground_nodes": 1580,
+    "wall_nodes": 3314,
+    "terminals": 378,
+    "candidates": 1072,
+    "seconds": 1.6102348340209574
+  },
+  "tests": {
+    "component_cases": 18,
+    "passed": true
+  },
+  "source_sha256": {
+    "tools/zipcaster_d4/checkpoint.py": "9ef87aac73727a1f792e758b4a3b9830d2689f2a47a8085b861bb47095c1e3d6",
+    "work/d4/zero-summary-v3.json": "a2921a60a87a633bd4f9a3bf1508547424fe9414f23bf48d183dcfdfc498b6d2",
+    "work/d4/geometry-check-v1.json": "39d07c686bb0678551024c10d14fd1e845ad19192eb6c7368d31d012e48262bb",
+    "work/d4/flight-model-v2-final.json": "9d2607651b3a24e0d5ca39d970e41a43e48fa5a0bc56d838b1036ff9569029a6",
+    "work/d4/query-v2-full-Yunohana-e772-h0-s40/result.json": "2c63ffed9d6ae419df9eca42727920e8735284125a59945e696405dd99b21211"
+  },
+  "scope": [
+    "No grid arrays/triangles/raw assets included. Per-case original logs retained underignoredwork.",
+    "0..3hooks; zero-hook ground baseline separated from fly-only. Four operation bands finite programs, not arbitrary input synthesis.",
+    "Deterministic ideal aim/fixed stationary FOV model, not a calibrated native probability. Native cohorts pending.",
+    "Exact emitted-at-zero present not witnessed; input30 no light birth vs31/32 birth beforezero andKOafterzero brackets observed behavior, not a universal native integer cutoff."
+  ]
+}
