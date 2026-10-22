@@ -10,7 +10,7 @@ import numpy as np
 from tools.zipcaster_d4.model_v2 import (ROOT,World as BaseWorld,Config,post_path,
     schedule as old_schedule,gun_distance,damage_at_distance)
 from tools.zipcaster_d4.attack_geometry import capsule_fraction
-from tools.zipcaster_d4.attack_model_v4 import Shots
+from tools.zipcaster_d4.attack_cache import Shots
 from tools.zipcaster_d4.attack_sequence_v2 import sequence
 
 PROGRAMS=['full1','light2','full-light','light3','light-full','full2']
@@ -46,6 +46,8 @@ class World(BaseWorld):
         if np.linalg.norm(position-enemy)>28:return None
         horizon=inputs[-1][0]+80
         body=np.repeat(position[None,:],horizon+1,axis=0)if ground else post_path(position,self.graph['floor'][node],horizon)
+        if program=='full1' and not self.shots.best_contact(body[speed+4],enemy,'full')['hit']:
+            return None # One remaining projectile70 cannot defeat100HP.
         result=sequence(self.shots,body,enemy,inputs,self.recoil,self.cfg.receive_delay)
         kill=result['kill_frame']
         if kill is None:return None
@@ -98,3 +100,12 @@ class World(BaseWorld):
                     attacker_down=atk_down,enemy_down=enemy_down,exposure_frames=int(visible[:finish].sum()),
                     danger_frames=int(danger[:finish].sum()),stealth=not visible[:finish].any(),visible=visible,
                     shots=shots,events=events,uncertainties=term.get('uncertainties',[]))
+
+    def initial_stationary_death(self,start,enemy,heading,ground_terms=()):
+        # Unconditionally immobile during native activation. Do not assume
+        # a delayed proxy attack is the earliest possible contact140 attack.
+        horizon=self.cfg.activation_frames
+        path=np.repeat(self.graph['ground'][start][None,:],horizon+1,axis=0)
+        result=self.simulate(path,0,dict(damage_events=[],kill_frame=horizon),enemy,heading)
+        down=result['attacker_down']
+        return down if down is not None and down<horizon else None

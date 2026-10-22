@@ -40,3 +40,13 @@
 展示：`showcase/build.py`生成ignored单文件页面。4bit剩槽分档/偷袭热图＋自写WASM同谓词几何＋本地Worker重建选中路线；反查固定S可杀的敌态。仅处理后的数值、自己的BVH/几何标记，不带原始资源文件。浏览器与Python已有1800几何/180查询对照，前缀优化有47496对值/风险一致性对照。生成页、衍生网格/trace、截图和二进制都不提交；只提交生成/计算/测试源码与数值报告。已有v1/v2脚本保留为实验原件，不作当前入口。
 
 `attack_probe.py`固定俯仰/自然HP恢复、`duel_v5.py`成套偏移连招仅诊断；`report_blocker.py --out <新的JSON路径>`复核闭合案例/保护SHA/资源峰值并导出不含网格的数值报告。两轮原件全部保留，不混进正式重复率。
+
+新执行/计算入口（2026-10-22检查点，仍有接触过滤反例，不能作为已签收推荐）：
+
+- `duel_v6.py` / `batch_duel_v4.py`：接触与墨刃生成前分别重瞄；实际姿态预报只记录、不筛掉战斗失败。冻结依赖、每局新进程，`STOP_LAUNCH`只阻止新任务，当前房间自然收尾。
+- `query_v7.py`：必要包络＋lazy终点求解＋完整成本序路径。`--top-only`只证明top2，未查格保持未知；未设candidate cap时才允许声明完整。`query_v5/v6`是性能实验历史，不混用其未闭合原件。
+- `verify_bound.py --out <新JSON> --poses 100`：固定种子离线可采纳性抽查，结果不等于原生验证。
+- `audit_contact_duels.py --results <闭合result.json> ... --out <新JSON>`：实际接触体世界变换/胶囊候选与场地诊断射线。相交不授予伤害，射线是假设而非已确定的原生规则。
+- `contact_sensor_v4.h`另读伤害组件，用`build_contact.py --sensor tools/zipcaster_d4/contact_sensor_v4.h --out work/d4/<新私有构建>`构建；不覆盖默认或受保护宿主。
+
+当前记录见`notes/d4-restart-executor-20261022.md`。正式批次12/216后因新的高台接触反例暂停；旧页面Worker仍是远端代理，不能用其交互计算宣称本版模型通过。

@@ -21,7 +21,7 @@ def sequence(shots,source_path,enemy,inputs,recoil,receive_delay=4):
     def event(release,birth,due,style,damage,channel):
         return dict(input=release,birth=birth,due=int(due),kind=style,damage=damage,source=channel)
 
-    for release,style in inputs:
+    for input_index,(release,style) in enumerate(inputs):
         cb=release+(4 if style=='full'else 9)
         pb=release+(6 if style=='full'else 11)
         if pb+27>=len(source_path):raise ValueError('finite trace too short')
@@ -58,6 +58,11 @@ def sequence(shots,source_path,enemy,inputs,recoil,receive_delay=4):
             unknown.append('contact-only20 recoil unmeasured at'+str(release))
         casts.append(dict(release=release,style=style,contact_aim=ca,contact=contact,
                           projectile_aim=pa,prediction=projectile,target_at_birth=previous_path[pb].tolist()))
+        hp=100.;earliest=None
+        for e in sorted(events,key=lambda e:e['due']):
+            hp-=e['damage']
+            if hp<=0:earliest=e['due'];break
+        if earliest is not None and(input_index+1==len(inputs)or earliest<=inputs[input_index+1][0]):break
     hp=100.;kill=None
     events.sort(key=lambda e:e['due'])
     for e in events:

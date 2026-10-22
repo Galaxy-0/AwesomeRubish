@@ -5,7 +5,7 @@ from tools.zipcaster_d4.attack_sequence_v2 import sequence
 
 class FixtureShots:
     def __init__(self,contact=True):self.allow_contact=contact;self.targets=[]
-    def best_contact(self,source,target,style):return dict(yaw=0.,native_pitch=0.)
+    def best_contact(self,source,target,style):return dict(yaw=0.,native_pitch=0.,hit=self.allow_contact)
     def contact(self,source_path,target_path,style,yaw,pitch,receiver='ColBullet'):
         return dict(hit=self.allow_contact,first_age=0,damage=140 if style=='full'else 20)
     def best(self,source,target,style):
