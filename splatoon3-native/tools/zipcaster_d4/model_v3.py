@@ -2,6 +2,10 @@
 
 Finite-program conditional model, not an unconditional game proof. Components
 return unresolved geometry/dynamics explicitly for query/report consumers.
+
+Known native counterexample: an obstructed high-platform contact overlaps the
+modeled cylinder but does not deliver140. Final physics/receiver filtering is
+unclosed; this version is diagnostic and must not be presented as calibrated.
 """
 import math
 from pathlib import Path

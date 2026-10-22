@@ -1,0 +1,789 @@
+{
+  "schema": "inklab.d4.restart.checkpoint.v2",
+  "date": "2026-10-22",
+  "status": "stopped",
+  "full_d4_passed": false,
+  "formal": {
+    "valid": 12,
+    "planned": 216,
+    "pending": 204,
+    "stop_reason": "Owner pause for native high top2 counterexample: read native contact transform intersects modeled cylinder, target receives no damage. Preserve cohort, finish active rooms; diagnose contact filtering before resuming formal validation.",
+    "groups": {
+      "control": {
+        "valid": 4,
+        "kills": 0
+      },
+      "top1": {
+        "valid": 4,
+        "kills": 4
+      },
+      "top2": {
+        "valid": 4,
+        "kills": 3
+      }
+    },
+    "sha256": "a09f78d97a2aaa7900b58dcdbe224a473fac2206b1463ee849a266ad8e3ca61a"
+  },
+  "rooms": [
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-District00-center-control-h1-r0-20261022-204218-797593/result.json",
+      "sha256": "41ee1cfadae3ad598555fcfe634e5933d2de683c0c279e779bdbc81dccb18f9c",
+      "point": "District00-center-control",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": false,
+      "attacker_down": 18,
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": {
+        "probability": 0,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": null,
+        "attacker_down": 17,
+        "exposure_frames": 18,
+        "stealth": false,
+        "uncertainties": [],
+        "source": [
+          -3.05188823,
+          6.00016975,
+          3.57325244
+        ],
+        "enemy": [
+          -2.98038244,
+          6.00000191,
+          -0.360458434
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.5755960190911236,
+        0.36099187152307743
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-District00-center-top1-h1-r0-20261022-204045-317527/result.json",
+      "sha256": "71be31bff0ad5b4aaf74e86927067d7846cdba378bdbd60ef12439f2d16dab76",
+      "point": "District00-center-top1",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 80,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 435,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -3.00268888,
+          5.99999952,
+          -2.43608117
+        ],
+        "enemy": [
+          -3.00296617,
+          6.00000095,
+          -0.50626421
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.5639252405279034,
+        0.5062728992275761
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-District00-center-top2-h1-r0-20261022-204218-328476/result.json",
+      "sha256": "5add15edf81a75ae854f9c71abdc89b2a0e3038e2a8ddc6a7a40ffc2d673b732",
+      "point": "District00-center-top2",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 80,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 435,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -5.99407005,
+          6.00003147,
+          -2.37704897
+        ],
+        "enemy": [
+          -2.98039651,
+          6.00000095,
+          -0.360515267
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.6229792541292399,
+        0.36104785633093556
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-District00-high-reaim-v6-h1-r0-20261022-184341-267988/result.json",
+      "sha256": "8fd5669a589af1fb041e4c92c6de24c4295417d1c6161931b9a819e6a0d80022",
+      "point": "District00-high-reaim-v6",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": false,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 125,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 376,
+      "actual_pose_model": null,
+      "setup_errors": [
+        0.16189061794652618,
+        0.5485961805462927
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-District00-high-reaim-v6-h1-r1-20261022-184341-267988/result.json",
+      "sha256": "33e9ebb43d6afe77ba7de361ec55abeb821acdaaa748740590b5cead4f1428df",
+      "point": "District00-high-reaim-v6",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": false,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 124,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 377,
+      "actual_pose_model": null,
+      "setup_errors": [
+        0.5847264055464779,
+        0.3777849766313492
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-center-control-h1-r0-20261022-202746-018211/result.json",
+      "sha256": "3bb1ddd633ebd55bd0167abb8b027bb2324f878707df6375a0ffab3e1dcdc865",
+      "point": "Yunohana-center-control",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": false,
+      "attacker_down": 17,
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": {
+        "probability": 0,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": null,
+        "attacker_down": 17,
+        "exposure_frames": 18,
+        "stealth": false,
+        "uncertainties": [],
+        "source": [
+          -3.06925058,
+          3.00001478,
+          -8.98817921
+        ],
+        "enemy": [
+          0.00758342771,
+          3.00000143,
+          -6.56414795
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.070252217936581,
+        0.5641989169318565
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-center-top1-h1-r0-20261022-202746-018209/result.json",
+      "sha256": "47e1daab958c8afd8f47f9536e22b23cc6925d527da99965d458c614602dccfe",
+      "point": "Yunohana-center-top1",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 79,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 436,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          3.49608684,
+          3.00002098,
+          -5.99484158
+        ],
+        "enemy": [
+          0.0166077763,
+          3.00000048,
+          -6.42749214
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.4961136589111836,
+        0.4278146187259627
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-center-top2-h1-r0-20261022-202746-018209/result.json",
+      "sha256": "cce70c6fc59b48f065425cb17c93ec7cc62f2768b572aff07c13d4eab7b5c406",
+      "point": "Yunohana-center-top2",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 80,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 435,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          2.60613203,
+          3.00004482,
+          -8.98385525
+        ],
+        "enemy": [
+          0.00157707941,
+          3.00000048,
+          -6.53933477
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.3941987224146165,
+        0.5393370757797471
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-center-v6-pilot-top1-h1-r0-20261022-182552-493556/result.json",
+      "sha256": "482116febc25318ce38b6b5dc34c85e4eaa99463cc2992a4140f7d9156e3e41c",
+      "point": "Yunohana-center-v6-pilot-top1",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": false,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 79,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 436,
+      "actual_pose_model": null,
+      "setup_errors": [
+        0.07338658415337244,
+        0.6078553841870172
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-center-v6-pilot-top2-h1-r0-20261022-182552-493825/result.json",
+      "sha256": "8c85c74506b5b5af2d68a17df80c3e94c04b541a0c244da19f138c186572d9c5",
+      "point": "Yunohana-center-v6-pilot-top2",
+      "errors": [
+        "AssertionError('ideal-retry-component-0 blocked: [23.8999939, 10.5000515, -71.4331589]')"
+      ],
+      "combat_started": false,
+      "cohort_eligible": false,
+      "native_kill": false,
+      "attacker_down": null,
+      "enemy_down": null,
+      "strict_budget_win": null,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": null,
+      "setup_errors": null
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-control-h1-r0-20261022-203306-433762/result.json",
+      "sha256": "08b23ab8f682d07eefb284deb3d79d3a1d17c4b18e0abdc6aa157dc35b09efe9",
+      "point": "Yunohana-central_high-control",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": false,
+      "attacker_down": 17,
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": {
+        "probability": 0,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": null,
+        "attacker_down": 16,
+        "exposure_frames": 17,
+        "stealth": false,
+        "uncertainties": [],
+        "source": [
+          -6.00272942,
+          6.00063086,
+          -5.50151205
+        ],
+        "enemy": [
+          -6.04506779,
+          6.0006876,
+          -2.98335004
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.49849582145999866,
+        0.048045519845722424
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-contact-occlusion-r1-h1-r0-20261022-205312-610242/result.json",
+      "sha256": "303960c6497fe287c4dc7de9c9a1bdaeaa0fdd00820baf63b4b197698b802920",
+      "point": "Yunohana-central_high-top1-contact-occlusion-r1",
+      "errors": [
+        "RuntimeError('native RL connection closed or invalid observation header')",
+        "cleanup: NativeProcessExitError('player-0: unclean exit -6')"
+      ],
+      "combat_started": false,
+      "cohort_eligible": false,
+      "native_kill": false,
+      "attacker_down": null,
+      "enemy_down": null,
+      "strict_budget_win": null,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": null,
+      "setup_errors": null
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-contact-transform-r2-h1-r0-20261022-210232-562468/result.json",
+      "sha256": "ccd3370410b9aec92d2f36668e338f393c9ab6db8aacc7df6c899e4afe7b366d",
+      "point": "Yunohana-central_high-top1-contact-transform-r2",
+      "errors": [
+        "NativeProcessExitError('player-0: unclean exit -6')"
+      ],
+      "combat_started": false,
+      "cohort_eligible": false,
+      "native_kill": null,
+      "attacker_down": null,
+      "enemy_down": null,
+      "strict_budget_win": null,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": null,
+      "setup_errors": null
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-contact-transform-r2-h1-r0-20261022-210533-969419/result.json",
+      "sha256": "b714655a86faf577a19dba2f3784ffe796fe2f99a2bdcefae00ae15a4bc384b7",
+      "point": "Yunohana-central_high-top1-contact-transform-r2",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": false,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 79,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 436,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -6.15468836,
+          4.45867777,
+          0.224319488
+        ],
+        "enemy": [
+          -6.04235506,
+          6.00046825,
+          -2.9759984
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.27559979700327164,
+        0.04868484690564531
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-h1-r0-20261022-203204-238987/result.json",
+      "sha256": "c7c49ab88889e7ac6e41a068731f8e75a68f7444199491169b1a158ffe4b9b1f",
+      "point": "Yunohana-central_high-top1",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 79,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 436,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -6.22619867,
+          4.40914011,
+          0.323379338
+        ],
+        "enemy": [
+          -6.08533764,
+          5.97864342,
+          -2.91317034
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.4049636454867265,
+        0.12376291047717605
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-contact-occlusion-r1-h1-r0-20261022-205312-610242/result.json",
+      "sha256": "94a618abd3183f9698533001dee8c903cdd0b6dcff2f4613b099e18bd42c3f7c",
+      "point": "Yunohana-central_high-top2-contact-occlusion-r1",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": false,
+      "native_kill": false,
+      "attacker_down": null,
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -8.91841602,
+          3.01367378,
+          -2.86010909
+        ],
+        "enemy": [
+          -6.08567142,
+          5.99621677,
+          -2.9215548
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.16194262311311639,
+        0.11625478162677545
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-contact-transform-r2-h1-r0-20261022-210232-562462/result.json",
+      "sha256": "9e0e786a9a93b64b3935ee66f7fbbcdde404a090797af43333a3f56fcbbd3119",
+      "point": "Yunohana-central_high-top2-contact-transform-r2",
+      "errors": [
+        "NativeProcessExitError('player-0: unclean exit -6')"
+      ],
+      "combat_started": false,
+      "cohort_eligible": false,
+      "native_kill": null,
+      "attacker_down": null,
+      "enemy_down": null,
+      "strict_budget_win": null,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": null,
+      "setup_errors": null
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-contact-transform-r2-h1-r0-20261022-210533-969444/result.json",
+      "sha256": "7bf0484ce78a65696446e5352d4ccc3c5abd858398bfaf1a6799b03e1f48590a",
+      "point": "Yunohana-central_high-top2-contact-transform-r2",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": false,
+      "native_kill": false,
+      "attacker_down": null,
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -8.8892622,
+          3.01369715,
+          -2.86334467
+        ],
+        "enemy": [
+          -6.08240509,
+          5.9828434,
+          -2.92880845
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.1758907034904675,
+        0.1103851278609151
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-h1-r0-20261022-203257-194225/result.json",
+      "sha256": "623f23cf60e639892e26c82434a0d193595c6ec49f711561df5e8792c3cdcef7",
+      "point": "Yunohana-central_high-top2",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": false,
+      "attacker_down": null,
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -8.92632008,
+          3.01367521,
+          -2.85798693
+        ],
+        "enemy": [
+          -6.09592152,
+          5.99494696,
+          -2.91438031
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.15998888485321533,
+        0.12871327825849257
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-west_lane-control-h1-r0-20261022-203745-561949/result.json",
+      "sha256": "cca87407c2d84b4d91fabce90567e45b93995b7d0577bda0b719fe2224a9cbeb",
+      "point": "Yunohana-west_lane-control",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": false,
+      "attacker_down": 17,
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "actual_pose_model": {
+        "probability": 0,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": null,
+        "attacker_down": 17,
+        "exposure_frames": 18,
+        "stealth": false,
+        "uncertainties": [],
+        "source": [
+          -15.3758574,
+          3.00008631,
+          -2.68678689
+        ],
+        "enemy": [
+          -17.99053,
+          2.99999952,
+          -0.0667700917
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.4892558071807095,
+        0.06743831289301962
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-west_lane-top1-h1-r0-20261022-203624-136675/result.json",
+      "sha256": "2ea207d38beff1e153825a9cd9d7d110c91550887a0c3d591edb2bc10056e055",
+      "point": "Yunohana-west_lane-top1",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 80,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 435,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -21.3018684,
+          3.00001669,
+          0.367218703
+        ],
+        "enemy": [
+          -17.9718094,
+          3.00000048,
+          -0.467154264
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.47536733904436296,
+        0.46800407722793613
+      ]
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel6-Yunohana-west_lane-top2-h1-r0-20261022-203740-944294/result.json",
+      "sha256": "e26c037c1c4bdbdfb74e21daf73863930cdd2e64dfd114e207be7b4bdec5da76",
+      "point": "Yunohana-west_lane-top2",
+      "errors": [],
+      "combat_started": true,
+      "cohort_eligible": true,
+      "native_kill": true,
+      "attacker_down": null,
+      "enemy_down": 80,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 435,
+      "actual_pose_model": {
+        "probability": 1,
+        "remaining": 0.8086666666666666,
+        "cost": 0.19133333333333336,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "exposure_frames": 0,
+        "stealth": true,
+        "uncertainties": [],
+        "source": [
+          -21.1388817,
+          3.00000906,
+          -2.89138436
+        ],
+        "enemy": [
+          -17.9682693,
+          3.00000048,
+          -0.41539073
+        ],
+        "scope": "Actual pose prediction recorded beforeRS; never used to discard combat outcomes or reselect a winner."
+      },
+      "setup_errors": [
+        0.17631075954003175,
+        0.41660088321156175
+      ]
+    }
+  ],
+  "resources": {
+    "room_attempts": 22,
+    "recorded_owned_hosts": 40,
+    "peak_rooms_conservative": 3,
+    "active_owned_hosts": [],
+    "active_game_hosts": [],
+    "protected_hosts_sha256": {
+      "work/d2b/round2-world-build/dmhost-sensors": "a9567f5f57f6d23a5e7e95c17d59019afa4efb9e32dd96744867cfa39cca09f6",
+      "upstream/dm/host/dmhost": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+      "work/a8/dmhost-arena-v15": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "work/a8/dmhost-arena-special-v15": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+      "work/d3r/aim-v1/dmhost-aim": "d826e11e51c2fcac5e51db4853cbf834e6b284158306ced46f3ee3c6499adffb",
+      "work/d4/meter-v1/dmhost-aim": "db86339af3f1b1aad0925a05c804863434e120bd9defc2671d7627c1e0961be8"
+    },
+    "private_runtime": {
+      "contact-host-v5": {
+        "host_sha256": "221c098bf675604001ad90178bd0c84ee278be209e5e53359fb4def67c2d030a",
+        "record_sha256": "ae47b3b3ba10234a03ec0766ea634de68c7471a37966cc2aba9c73bf4c647598"
+      },
+      "contact-host-v6": {
+        "host_sha256": "2fb66f9494eb4370de42f9d5f6a92d0117fbadfe4505a11a3c9e19bf35dd3dcc",
+        "record_sha256": "7d840949083e194a19c945c401bc69aa704b2f3138b72f376ad20b081ce25d20"
+      },
+      "contact-host-v7": {
+        "host_sha256": "a4afe3a8dc4cbfea7b929d69aa9ef00abd099fb2e6ed7eeec150ecac438f9380",
+        "record_sha256": "73859232732870877282b903de0ea1e4fd98e35e099cd5f8647d54a9b2c1661f"
+      },
+      "contact-host-v8": {
+        "host_sha256": "ccf01426907b5c36d23d317b030f20de2271d789188aff62588f88dd5300bd38",
+        "record_sha256": "79bfd1da7cbd005d1015a6a5ea56adfa09e4dfa7013d35b3a480ce1160f6f193"
+      }
+    },
+    "all_room_freeze_before_after_equal": true,
+    "freeze_scope": "Unchanged inactive historical mismatch list; not a claim all frozen files match."
+  },
+  "evidence_sha256": {
+    "work/a6/d3-r-d4-duel6-District00-center-control-h1-r0-20261022-204218-797593/result.json": "41ee1cfadae3ad598555fcfe634e5933d2de683c0c279e779bdbc81dccb18f9c",
+    "work/a6/d3-r-d4-duel6-District00-center-top1-h1-r0-20261022-204045-317527/result.json": "71be31bff0ad5b4aaf74e86927067d7846cdba378bdbd60ef12439f2d16dab76",
+    "work/a6/d3-r-d4-duel6-District00-center-top2-h1-r0-20261022-204218-328476/result.json": "5add15edf81a75ae854f9c71abdc89b2a0e3038e2a8ddc6a7a40ffc2d673b732",
+    "work/a6/d3-r-d4-duel6-District00-high-reaim-v6-h1-r0-20261022-184341-267988/result.json": "8fd5669a589af1fb041e4c92c6de24c4295417d1c6161931b9a819e6a0d80022",
+    "work/a6/d3-r-d4-duel6-District00-high-reaim-v6-h1-r1-20261022-184341-267988/result.json": "33e9ebb43d6afe77ba7de361ec55abeb821acdaaa748740590b5cead4f1428df",
+    "work/a6/d3-r-d4-duel6-Yunohana-center-control-h1-r0-20261022-202746-018211/result.json": "3bb1ddd633ebd55bd0167abb8b027bb2324f878707df6375a0ffab3e1dcdc865",
+    "work/a6/d3-r-d4-duel6-Yunohana-center-top1-h1-r0-20261022-202746-018209/result.json": "47e1daab958c8afd8f47f9536e22b23cc6925d527da99965d458c614602dccfe",
+    "work/a6/d3-r-d4-duel6-Yunohana-center-top2-h1-r0-20261022-202746-018209/result.json": "cce70c6fc59b48f065425cb17c93ec7cc62f2768b572aff07c13d4eab7b5c406",
+    "work/a6/d3-r-d4-duel6-Yunohana-center-v6-pilot-top1-h1-r0-20261022-182552-493556/result.json": "482116febc25318ce38b6b5dc34c85e4eaa99463cc2992a4140f7d9156e3e41c",
+    "work/a6/d3-r-d4-duel6-Yunohana-center-v6-pilot-top2-h1-r0-20261022-182552-493825/result.json": "8c85c74506b5b5af2d68a17df80c3e94c04b541a0c244da19f138c186572d9c5",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-control-h1-r0-20261022-203306-433762/result.json": "08b23ab8f682d07eefb284deb3d79d3a1d17c4b18e0abdc6aa157dc35b09efe9",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-contact-occlusion-r1-h1-r0-20261022-205312-610242/result.json": "303960c6497fe287c4dc7de9c9a1bdaeaa0fdd00820baf63b4b197698b802920",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-contact-transform-r2-h1-r0-20261022-210232-562468/result.json": "ccd3370410b9aec92d2f36668e338f393c9ab6db8aacc7df6c899e4afe7b366d",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-contact-transform-r2-h1-r0-20261022-210533-969419/result.json": "b714655a86faf577a19dba2f3784ffe796fe2f99a2bdcefae00ae15a4bc384b7",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top1-h1-r0-20261022-203204-238987/result.json": "c7c49ab88889e7ac6e41a068731f8e75a68f7444199491169b1a158ffe4b9b1f",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-contact-occlusion-r1-h1-r0-20261022-205312-610242/result.json": "94a618abd3183f9698533001dee8c903cdd0b6dcff2f4613b099e18bd42c3f7c",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-contact-transform-r2-h1-r0-20261022-210232-562462/result.json": "9e0e786a9a93b64b3935ee66f7fbbcdde404a090797af43333a3f56fcbbd3119",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-contact-transform-r2-h1-r0-20261022-210533-969444/result.json": "7bf0484ce78a65696446e5352d4ccc3c5abd858398bfaf1a6799b03e1f48590a",
+    "work/a6/d3-r-d4-duel6-Yunohana-central_high-top2-h1-r0-20261022-203257-194225/result.json": "623f23cf60e639892e26c82434a0d193595c6ec49f711561df5e8792c3cdcef7",
+    "work/a6/d3-r-d4-duel6-Yunohana-west_lane-control-h1-r0-20261022-203745-561949/result.json": "cca87407c2d84b4d91fabce90567e45b93995b7d0577bda0b719fe2224a9cbeb",
+    "work/a6/d3-r-d4-duel6-Yunohana-west_lane-top1-h1-r0-20261022-203624-136675/result.json": "2ea207d38beff1e153825a9cd9d7d110c91550887a0c3d591edb2bc10056e055",
+    "work/a6/d3-r-d4-duel6-Yunohana-west_lane-top2-h1-r0-20261022-203740-944294/result.json": "e26c037c1c4bdbdfb74e21daf73863930cdd2e64dfd114e207be7b4bdec5da76"
+  },
+  "source_sha256": "70ca70b49b928f269e8500b205108434ccc8313df8168b364b0691286de0a24a",
+  "limits": [
+    "Formal cohort not complete; no native ranking/significance acceptance.",
+    "Passive/changed-input/debug samples stay auxiliary. Pre-RS failures are voids, not kills or combat losses.",
+    "Exact contact-volume overlap has an unclosed native damage/field-filter counterexample.",
+    "New full-map bank, extreme-budget chains and corrected browser worker are not signed off.",
+    "No grids, native code/byte dumps, screenshots, generated HTML or raw trace arrays in this report."
+  ]
+}

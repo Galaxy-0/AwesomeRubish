@@ -50,3 +50,5 @@
 - `contact_sensor_v4.h`另读伤害组件，用`build_contact.py --sensor tools/zipcaster_d4/contact_sensor_v4.h --out work/d4/<新私有构建>`构建；不覆盖默认或受保护宿主。
 
 当前记录见`notes/d4-restart-executor-20261022.md`。正式批次12/216后因新的高台接触反例暂停；旧页面Worker仍是远端代理，不能用其交互计算宣称本版模型通过。
+
+本轮最终按两轮未闭合上限停止，见`notes/d4-restart-stop-20261022.md/.json`。`build_contact_transform.py`＋`contact_sensor_v5.h`只用于限定空间gate52的只读消费者区分，私有`OBS_MAX=53`；`audit_contact_transform.py`只接受严格指针归属。实际对照中未见该限定区域的消费者调用，不能据此证明所有物理路径均未更新。所有新增房间已收尾，剩余204正式案与新热图/页面不继续。`report_restart.py --out <新JSON> --status stopped`核对新duel_v6原件、已记录PID/全局宿主、峰值与保护哈希，不导出网格/原始字节。
