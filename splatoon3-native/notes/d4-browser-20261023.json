@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "shots": 72,
+  "terminals": 288,
+  "queries": 45,
+  "numericalAimTies": 3,
+  "resumed": 3,
+  "aimTies": [
+    {
+      "map": "Yagara",
+      "source": [
+        21,
+        6,
+        -6
+      ],
+      "target": [
+        12,
+        6,
+        -9
+      ],
+      "style": "light",
+      "python_pitch": 0,
+      "browser_pitch": 0.020000000000000018,
+      "python_age": 2.6136693507892295,
+      "browser_age": 2.6221751592865323,
+      "clearance_gap": -6.661338147750939e-16
+    },
+    {
+      "map": "Yagara",
+      "source": [
+        21,
+        6,
+        -6
+      ],
+      "target": [
+        12,
+        9,
+        -9
+      ],
+      "style": "light",
+      "python_pitch": 0.30000000000000016,
+      "browser_pitch": 0.2500000000000001,
+      "python_age": 2.900978869946289,
+      "browser_age": 2.8273554341261242,
+      "clearance_gap": -2.220446049250313e-16
+    },
+    {
+      "map": "Yagara",
+      "source": [
+        -21,
+        6,
+        6
+      ],
+      "target": [
+        -15,
+        9,
+        6
+      ],
+      "style": "light",
+      "python_pitch": 0.37,
+      "browser_pitch": 0.35,
+      "python_age": 1.6840932446390113,
+      "browser_age": 1.66568250961942,
+      "clearance_gap": 0
+    }
+  ],
+  "seconds": 95.25701795799999,
+  "source_sha256": {
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/tools/zipcaster_d4/test_browser_safe.js": "6ad3e91c6953d5ab7bfd93f323c7c37b52de24794f8d2ecfd6f7ea0ee615388d",
+    "showcase/d4_safe_worker.js": "9c875d3d673e8fd460b33718eeaceae6d810e4ee98f0bca14ef158f4abc24eb1",
+    "showcase/d4_worker.js": "62596bab0105805e6770e90a7e8e1a859c45c53b762644946dd3863d71723c5c",
+    "work/d4/restart-v4/safe-browser-runtime-v3.json": "561807d648860bb11723aaa374ec7b8d383b35122764189c8c2878a2c57a8e8b",
+    "work/d4/restart-v4/safe-browser-cases-v1.json": "6ec32840e303014a0951b652864ac72ed054e7a4a8a84b3497b4c65ce420d21e"
+  },
+  "evidence": "work/d4/restart-v4/safe-browser-parity-v6.json"
+}

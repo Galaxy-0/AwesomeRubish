@@ -6,12 +6,14 @@ import json
 import math
 from pathlib import Path
 import re
-import sys
+import sys,argparse
 import base64,zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'showcase'),str(ROOT)]
-PAGE = ROOT / 'showcase/index.html'
+parser=argparse.ArgumentParser();parser.add_argument('--page',type=Path,default=ROOT/'showcase/index.html');parser.add_argument('--report',type=Path)
+args=parser.parse_args()
+PAGE = args.page.resolve()
 text = PAGE.read_text()
 match = re.search(r'<script id="showcase-data" type="application/json">(.*?)</script>', text, re.S)
 assert match, 'embedded data missing'
@@ -167,6 +169,12 @@ if data.get('d4',{}).get('schema')=='showcase.d4.v2':
     check('D4 full heat queries separate from prefix certificates',d4['counts']['complete']==complete and complete>=9 and d4['counts']['unresolved']==len(paths)-complete)
     check('D4 computed start rows disclosed',d4['counts']['start_rows']==start_rows)
     check('D4 historical core bank not bound',not any('/all-full-v' in p or '/common-full-v3/'in p for p in data['sources']))
+    if d4.get('native'):
+        n=d4['native'];observed=sum(b['n']for s in n['by_state']for b in s['bands'].values())
+        check('D4 native counts use a distinct denominator',observed==n['valid']and n['planned']==216)
+        check('D4 native repetition is not full acceptance',n['full_d4_passed']is False and n['old12_reused']is False and n['counter_capacity']==540)
+        if n['complete_new216']:
+            check('D4 completed cohort exactly8 each',n['valid']==216 and n['stop_reason']is None and len(n['by_state'])==9 and all(set(s['bands'])=={'top1','top2','control'}and all(b['n']==8 for b in s['bands'].values())for s in n['by_state']))
 
 for t in data['traces']:
     if t['id'].startswith('d4-'):
@@ -247,6 +255,8 @@ for t in data['traces']:
                     check('sim state preserved', max(abs(a-b)for a,b in zip(row[2:5],v[:3]))<=.00501 and abs(row[7]-v[6])<=.000501)
         check('events bounded and labeled as inputs', all(t['start_frame']<=e['frame']<=t['end_frame'] and e['evidence']=='recorded_input_edge' for e in player['events']))
 
-report = dict(passed=True, checks=len(checks), maps=[dict(name=m['id'], cells=len(m['cells']), vision_samples=m['sample_count'],wall_voxels=len(m['walls']),ambush_candidates=len(m['ambush'])) for m in data['maps']], trace_clips=len(data['traces']),trace_samples=sum(len(p['states']) for t in data['traces'] for p in t['players']),bytes=PAGE.stat().st_size, page_sha256=hashlib.sha256(PAGE.read_bytes()).hexdigest(), scope='offline data and asset audit; browser interactions verified separately')
-(ROOT / 'work/showcase/check.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+report = dict(passed=True, checks=len(checks), maps=[dict(name=m['id'], cells=len(m['cells']), vision_samples=m['sample_count'],wall_voxels=len(m['walls']),ambush_candidates=len(m['ambush'])) for m in data['maps']], trace_clips=len(data['traces']),trace_samples=sum(len(p['states']) for t in data['traces'] for p in t['players']),page=str(PAGE),bytes=PAGE.stat().st_size, page_sha256=hashlib.sha256(PAGE.read_bytes()).hexdigest(), scope='offline data and asset audit; browser interactions verified separately')
+target=args.report or ROOT/'work/showcase/check.json'
+if args.report:assert not target.exists(),'fresh explicit audit report required'
+target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
 print(json.dumps(report, ensure_ascii=False, indent=2))
