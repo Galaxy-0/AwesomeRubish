@@ -53,13 +53,14 @@ def report(batch_path):
   enemy,heading=next(iter(states))
   summaries.append(dict(map=graph.split('-')[-1],region=region,enemy=list(enemy),heading=heading,bands=counts,tests=tests))
  assert len({(r['point'],r['repeat'])for r in valid})==len(valid),'duplicate eligible outcomes'
- complete=len(valid)==216 and batch['stop_reason']is None
+ assert len(valid)==batch['valid']and batch['planned']==216,'driver/report count disagreement'
+ complete=len(valid)==216 and batch['pending']==0 and batch['stop_reason']is None and not unresolved
  if complete:assert all(sum(r['point']==p['id']for r in valid)==8 for p in plan['points'])
  actual_eligible=[r for r in valid if r['actual_pose_model'].get('probability')in [0,1]]
  mismatches=[dict(point=r['point'],repeat=r['repeat'],predicted=r['actual_pose_model']['probability'],win=r['win'])for r in actual_eligible if bool(r['actual_pose_model']['probability'])!=r['win']]
  timing=[r['enemy_down']-r['actual_pose_model']['enemy_down']for r in actual_eligible if r['win']and r['actual_pose_model'].get('enemy_down')is not None]
  remaining=[r['native_remaining']-r['actual_pose_model']['remaining']for r in actual_eligible if r['win']and r['actual_pose_model'].get('remaining')is not None]
- return dict(schema='inklab.d4.blade-only.native.report.v1',full_d4_passed=False,complete_new216=complete,old12_reused=False,planned=216,valid=len(valid),setup_void_attempts=len(voids),unresolved_combats=len(unresolved),stop_reason=batch['stop_reason'],
+ return dict(schema='inklab.d4.blade-only.native.report.v1',full_d4_passed=False,complete_new216=complete,old12_reused=False,planned=216,valid=len(valid),total_attempts=len(batch['results']),rooms=batch['rooms'],wall_seconds=batch['seconds'],setup_void_attempts=len(voids),unresolved_combats=len(unresolved),stop_reason=batch['stop_reason'],
   actual_pose_concordance=dict(eligible=len(actual_eligible),mismatches=mismatches,kill_frame_error=numeric_summary(timing),remaining_error=numeric_summary(remaining)),
   counter_capacity=540,by_state=summaries,runs=valid,voids=voids,unresolved=unresolved,
   source_sha256=sha(__file__),batch_sha256=sha(batch_path),plan_sha256=sha(plan_path),
