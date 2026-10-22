@@ -1,0 +1,483 @@
+{
+  "schema": "inklab.d4.search.checkpoint.v2",
+  "date": "2026-10-22",
+  "full_d4_passed": false,
+  "status": "incomplete projectile-only search/cohort checkpoint; final bounded-stop diagnosis in notes/d4-blocker-20261022",
+  "native": {
+    "planned": 216,
+    "closed": 18,
+    "strict_wins": 9,
+    "attacker_down": 7,
+    "rows": [
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-center-top1-h1-r0-20261022-133703-764705/result.json",
+        "sha256": "cc63df5e81052c02794f7c2a5270f730555e9279f34c23ea928b773fb645b50c",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 80,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 435,
+        "point": "Yunohana-center-top1",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 80,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 2
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-center-top2-h1-r0-20261022-133703-765146/result.json",
+        "sha256": "f401879f4f4d544227e3fb6e38b3c198f31f2fa0a237151f08e48978026195db",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 124,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 377,
+        "point": "Yunohana-center-top2",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 89,
+            "hp": 300
+          },
+          {
+            "frame": 124,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 3
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-center-control-h1-r0-20261022-133703-764705/result.json",
+        "sha256": "b7cb34b09046ee1426b62621098fec6164a0574b908b016ea50f6d636b65c8a4",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": 16,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "Yunohana-center-control",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          }
+        ],
+        "hp_edges_total": 1
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-central_high-top2-h1-r0-20261022-134308-139587/result.json",
+        "sha256": "645a972488b43deaa72ecc129213cf05f5234300f09c83693e6fa2a7e4d1acb3",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 126,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 375,
+        "point": "Yunohana-central_high-top2",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 90,
+            "hp": 300
+          },
+          {
+            "frame": 126,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 3
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-central_high-top1-h1-r0-20261022-134306-705556/result.json",
+        "sha256": "11ec949df17d92297065d2c0c4cabfec0cf4a88ecf5f3492ec3deda804a9394b",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 80,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 435,
+        "point": "Yunohana-central_high-top1",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 80,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 2
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-central_high-control-h1-r0-20261022-134349-777076/result.json",
+        "sha256": "c7d8838fe885990e51c97a3b7daab453ed7864a34f70dc55723fa70e1da6257e",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": 16,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "Yunohana-central_high-control",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          }
+        ],
+        "hp_edges_total": 1
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-west_lane-top2-h1-r0-20261022-135134-124898/result.json",
+        "sha256": "eba470baa2f2683c2757abd76a1d63b82f55da4830534e858710c03cb0a7652e",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 79,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 436,
+        "point": "Yunohana-west_lane-top2",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 79,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 2
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-west_lane-top1-h1-r0-20261022-135119-305319/result.json",
+        "sha256": "9b57e626675da7489c6f55678249de9eb8c78229293d71aa9fa6c263698ebccc",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 80,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 435,
+        "point": "Yunohana-west_lane-top1",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 80,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 2
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-Yunohana-west_lane-control-h1-r0-20261022-135339-485030/result.json",
+        "sha256": "6921c701d14e612acfde2f69b9de03e434f26a17cdd4a80eaff7a6cf8581e8eb",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": 18,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "Yunohana-west_lane-control",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          }
+        ],
+        "hp_edges_total": 1
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-center-top1-h1-r0-20261022-140335-419840/result.json",
+        "sha256": "1f48262d8965458ad46996c52fd64968e3e5c6677aea2e33abd1cbafc2d58d53",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 80,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 435,
+        "point": "District00-center-top1",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 80,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 2
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-center-top2-h1-r0-20261022-140338-885322/result.json",
+        "sha256": "dcd62811fcf2c490838908c804bf881cbcdf35eceed672016d802765d34d14b6",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 80,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 435,
+        "point": "District00-center-top2",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 80,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 2
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-center-control-h1-r0-20261022-140404-939402/result.json",
+        "sha256": "39e79bb858aab7107ba80382a1ca4c496518d635de4194cd6905dd011dfebc25",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": 17,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "District00-center-control",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          }
+        ],
+        "hp_edges_total": 1
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-central_high-top2-h1-r0-20261022-140910-617530/result.json",
+        "sha256": "c17ea56d5fbfd20dc197d42c2d8d85033063973de67a06ff9b89ca7e3e8704c4",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": null,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "District00-central_high-top2",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 126,
+            "hp": 650
+          },
+          {
+            "frame": 186,
+            "hp": 652
+          },
+          {
+            "frame": 187,
+            "hp": 654
+          },
+          {
+            "frame": 188,
+            "hp": 657
+          },
+          {
+            "frame": 189,
+            "hp": 659
+          }
+        ],
+        "hp_edges_total": 9
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-central_high-top1-h1-r0-20261022-140906-343785/result.json",
+        "sha256": "0cf0b5ac49dcc32a9074143bbbbefb9671358c9c4891a55b6941dc1d7c212baa",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": null,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "District00-central_high-top1",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 94,
+            "hp": 998
+          },
+          {
+            "frame": 95,
+            "hp": 995
+          },
+          {
+            "frame": 96,
+            "hp": 992
+          },
+          {
+            "frame": 97,
+            "hp": 989
+          },
+          {
+            "frame": 98,
+            "hp": 986
+          }
+        ],
+        "hp_edges_total": 32
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-central_high-control-h1-r0-20261022-140917-997237/result.json",
+        "sha256": "376825ffc94a854b0fe4a929357c7ab1f3443715a27671612801793139d56f45",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": 16,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "District00-central_high-control",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          }
+        ],
+        "hp_edges_total": 1
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-west_lane-top1-h1-r0-20261022-141439-978123/result.json",
+        "sha256": "71e785e98f9451471f9e763decfa98cc5b8799fda78b6a462d31c11fbbce0382",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": 21,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "District00-west_lane-top1",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          }
+        ],
+        "hp_edges_total": 1
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-west_lane-top2-h1-r0-20261022-141450-665468/result.json",
+        "sha256": "3b598d45131fb11f84fc2666cec86534a13ad3e473f3af633f620b33737de118",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": 128,
+        "attacker_down": null,
+        "strict_budget_win": true,
+        "first_zero": null,
+        "counter_at_enemy_down": 373,
+        "point": "District00-west_lane-top2",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          },
+          {
+            "frame": 96,
+            "hp": 300
+          },
+          {
+            "frame": 128,
+            "hp": 0
+          }
+        ],
+        "hp_edges_total": 3
+      },
+      {
+        "artifact": "work/a6/d3-r-d4-duel4-District00-west_lane-control-h1-r0-20261022-141530-506695/result.json",
+        "sha256": "d4bcdb097f8f82f64ec85ca83e380fdfe56b0187e9c99588d4bd13f13847502a",
+        "eligible": true,
+        "repeat": 0,
+        "enemy_down": null,
+        "attacker_down": 17,
+        "strict_budget_win": false,
+        "first_zero": null,
+        "counter_at_enemy_down": null,
+        "point": "District00-west_lane-control",
+        "target_hp_edges": [
+          {
+            "frame": 0,
+            "hp": 1000
+          }
+        ],
+        "hp_edges_total": 1
+      }
+    ]
+  },
+  "offline": {
+    "planned": 63328,
+    "statuses": {
+      "prior-complete": 3466,
+      "complete": 3581,
+      "error": 14,
+      "timeout": 45
+    },
+    "complete": 7047,
+    "scope": "Version2 projectile-only baseline. Unknowns retained; does not include later model-contact correction."
+  },
+  "tests": {
+    "components": 22,
+    "browser_geometry": 1800,
+    "browser_queries": 180,
+    "prefix_value_pairs": 47496,
+    "page_audit": 8954
+  },
+  "page": {
+    "path": "showcase/index.html",
+    "bytes": 5868749,
+    "sha256": "a493b1e04de1b7d2be1b7b8592c4fcca475853f038f501c3f5a1a608e8aa52d5",
+    "generated_not_committed": true
+  },
+  "evidence": {
+    "work/d4/calibration-contact-freeze-v1.json": "6e36d0cf47938bc151b611a58c8552412bc0fa6a75cb840946a6adb3e0ee59b5",
+    "work/d4/calibration-native-v3/batch.json": "2454a551866f1eb7690c945776a164f73d0cb48306b02375af00100321e70035",
+    "work/d4/all-full-v4/progress.json": "33aeb9d9470a923d808ec0a41f343fc01dc8e4c2ab76e2b16eb90b2415558488",
+    "work/d4/attack-assembly-diagnosis-v1.json": "e5a573e6c578b4552f9d7e3e7e350504b2af439caf92f6beff6b049afcf48d1d",
+    "work/d4/attack-probes-r1/closed.json": "8119461fcb276379e404c7bcb0da304eef547187c454065d91ff63951829118f",
+    "work/d4/components-checkpoint2.log": "5b04ea09c0319911715acdac442b8d8f4a06920fd3eeb2892aea92d3bfddf09c",
+    "work/d4/browser/parity-result-v2.json": "4a715fa7f8c9d68cd3870e9b2a0899e4322dafd6682a7406eb7504013a47a303",
+    "work/d4/prefix-parity-v1.json": "8f37ae61cfc5c387a7113e76611c49b19bf3216681eb153ed64f79d89427d251",
+    "work/showcase/check.json": "f5b0007db74166f0143ad034e3f1fd1b53e23c8227840029978d9c414f9f672f"
+  },
+  "scope": [
+    "No grid/triangle arrays, generatedHTML, screenshots, game bytes or binaries.",
+    "Only a source checkpoint. No repeat-rate significance or complete all-map claim. Native diagnosis is not independent validation."
+  ]
+}

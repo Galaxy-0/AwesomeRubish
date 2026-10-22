@@ -1,0 +1,508 @@
+{
+  "schema": "inklab.d4.blocker.v1",
+  "date": "2026-10-22",
+  "status": "stopped after two bounded elevation/contact diagnostic rounds did not close native-model consistency",
+  "full_d4_passed": false,
+  "diagnostic_round1": [
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json",
+      "point": "District00-central_high-top1",
+      "cases": [
+        {
+          "index": 0,
+          "style": "full",
+          "pitch_delta": 0.0,
+          "minimum_hp": 917,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            },
+            {
+              "frame": 43,
+              "hp": 997
+            },
+            {
+              "frame": 47,
+              "hp": 989
+            },
+            {
+              "frame": 51,
+              "hp": 981
+            },
+            {
+              "frame": 55,
+              "hp": 973
+            },
+            {
+              "frame": 59,
+              "hp": 965
+            },
+            {
+              "frame": 63,
+              "hp": 957
+            },
+            {
+              "frame": 67,
+              "hp": 949
+            }
+          ],
+          "hp_edges_total": 12
+        },
+        {
+          "index": 1,
+          "style": "full",
+          "pitch_delta": 0.12,
+          "minimum_hp": 300,
+          "direct70_window": true,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            },
+            {
+              "frame": 37,
+              "hp": 300
+            }
+          ],
+          "hp_edges_total": 2
+        },
+        {
+          "index": 2,
+          "style": "full",
+          "pitch_delta": -0.12,
+          "minimum_hp": 1000,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            }
+          ],
+          "hp_edges_total": 1
+        },
+        {
+          "index": 3,
+          "style": "full",
+          "pitch_delta": 0.24,
+          "minimum_hp": 300,
+          "direct70_window": true,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            },
+            {
+              "frame": 37,
+              "hp": 300
+            }
+          ],
+          "hp_edges_total": 2
+        },
+        {
+          "index": 4,
+          "style": "light",
+          "pitch_delta": 0.0,
+          "minimum_hp": 1000,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            }
+          ],
+          "hp_edges_total": 1
+        },
+        {
+          "index": 5,
+          "style": "light",
+          "pitch_delta": 0.12,
+          "minimum_hp": 919,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            },
+            {
+              "frame": 41,
+              "hp": 991
+            },
+            {
+              "frame": 45,
+              "hp": 979
+            },
+            {
+              "frame": 49,
+              "hp": 967
+            },
+            {
+              "frame": 53,
+              "hp": 955
+            },
+            {
+              "frame": 57,
+              "hp": 943
+            },
+            {
+              "frame": 61,
+              "hp": 931
+            },
+            {
+              "frame": 65,
+              "hp": 919
+            }
+          ],
+          "hp_edges_total": 8
+        },
+        {
+          "index": 6,
+          "style": "light",
+          "pitch_delta": -0.12,
+          "minimum_hp": 1000,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            }
+          ],
+          "hp_edges_total": 1
+        },
+        {
+          "index": 7,
+          "style": "light",
+          "pitch_delta": 0.24,
+          "minimum_hp": 977,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            },
+            {
+              "frame": 45,
+              "hp": 997
+            },
+            {
+              "frame": 49,
+              "hp": 993
+            },
+            {
+              "frame": 53,
+              "hp": 989
+            },
+            {
+              "frame": 57,
+              "hp": 985
+            },
+            {
+              "frame": 61,
+              "hp": 981
+            },
+            {
+              "frame": 65,
+              "hp": 977
+            }
+          ],
+          "hp_edges_total": 7
+        }
+      ],
+      "errors": [],
+      "bounded_stop": null,
+      "calibration_eligible": false
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-District00-central_high-top2-20261022-143043-749478/result.json",
+      "point": "District00-central_high-top2",
+      "cases": [
+        {
+          "index": 0,
+          "style": "full",
+          "pitch_delta": 0.0,
+          "minimum_hp": 1000,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            }
+          ],
+          "hp_edges_total": 1
+        },
+        {
+          "index": 1,
+          "style": "full",
+          "pitch_delta": 0.12,
+          "minimum_hp": 1000,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            }
+          ],
+          "hp_edges_total": 1
+        },
+        {
+          "index": 2,
+          "style": "full",
+          "pitch_delta": -0.12,
+          "minimum_hp": 1000,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            }
+          ],
+          "hp_edges_total": 1
+        },
+        {
+          "index": 3,
+          "style": "full",
+          "pitch_delta": 0.24,
+          "minimum_hp": 919,
+          "direct70_window": false,
+          "target_down": false,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            },
+            {
+              "frame": 62,
+              "hp": 991
+            },
+            {
+              "frame": 66,
+              "hp": 979
+            },
+            {
+              "frame": 70,
+              "hp": 967
+            },
+            {
+              "frame": 74,
+              "hp": 955
+            },
+            {
+              "frame": 78,
+              "hp": 943
+            },
+            {
+              "frame": 82,
+              "hp": 931
+            },
+            {
+              "frame": 86,
+              "hp": 919
+            }
+          ],
+          "hp_edges_total": 8
+        }
+      ],
+      "errors": [],
+      "bounded_stop": "natural recovery not full",
+      "calibration_eligible": false
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-attack-r1-Yunohana-center-top1-20261022-143043-749480/result.json",
+      "point": "Yunohana-center-top1",
+      "cases": [
+        {
+          "index": 0,
+          "style": "full",
+          "pitch_delta": 0.0,
+          "minimum_hp": 0,
+          "direct70_window": false,
+          "target_down": true,
+          "hp_edges": [
+            {
+              "frame": 1,
+              "hp": 1000
+            },
+            {
+              "frame": 30,
+              "hp": 0
+            }
+          ],
+          "hp_edges_total": 2
+        }
+      ],
+      "errors": [],
+      "bounded_stop": "native KO; no HP/respawn repair",
+      "calibration_eligible": false
+    }
+  ],
+  "diagnostic_round2": [
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top1-h1-r0-20261022-144326-261885/result.json",
+      "point": "attack-r2-District00-central_high-top1",
+      "pitch_bias": {
+        "full": 0.24,
+        "light": 0.18
+      },
+      "program": "full-light",
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "target_hp_edges": [
+        {
+          "frame": 0,
+          "hp": 1000
+        },
+        {
+          "frame": 86,
+          "hp": 300
+        }
+      ],
+      "target_hp_edges_total": 2,
+      "calibration_eligible": false,
+      "scope": "Diagnostic offsets chosen after round1. Not independent native win-rate validation."
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top2-h1-r0-20261022-144326-261886/result.json",
+      "point": "attack-r2-District00-central_high-top2",
+      "pitch_bias": {
+        "full": 0.36,
+        "light": 0.3
+      },
+      "program": "full-light",
+      "enemy_down": null,
+      "strict_budget_win": false,
+      "counter_at_enemy_down": null,
+      "target_hp_edges": [
+        {
+          "frame": 0,
+          "hp": 1000
+        },
+        {
+          "frame": 115,
+          "hp": 998
+        },
+        {
+          "frame": 116,
+          "hp": 995
+        },
+        {
+          "frame": 117,
+          "hp": 992
+        },
+        {
+          "frame": 118,
+          "hp": 989
+        },
+        {
+          "frame": 119,
+          "hp": 986
+        },
+        {
+          "frame": 120,
+          "hp": 983
+        },
+        {
+          "frame": 121,
+          "hp": 980
+        }
+      ],
+      "target_hp_edges_total": 79,
+      "calibration_eligible": false,
+      "scope": "Diagnostic offsets chosen after round1. Not independent native win-rate validation."
+    },
+    {
+      "artifact": "work/a6/d3-r-d4-duel5-attack-r2-Yunohana-center-top1-h1-r0-20261022-144326-261885/result.json",
+      "point": "attack-r2-Yunohana-center-top1",
+      "pitch_bias": {
+        "full": 0.0,
+        "light": 0.0
+      },
+      "program": "light3",
+      "enemy_down": 149,
+      "strict_budget_win": true,
+      "counter_at_enemy_down": 359,
+      "target_hp_edges": [
+        {
+          "frame": 0,
+          "hp": 1000
+        },
+        {
+          "frame": 88,
+          "hp": 650
+        },
+        {
+          "frame": 117,
+          "hp": 300
+        },
+        {
+          "frame": 149,
+          "hp": 0
+        }
+      ],
+      "target_hp_edges_total": 4,
+      "calibration_eligible": false,
+      "scope": "Diagnostic offsets chosen after round1. Not independent native win-rate validation."
+    }
+  ],
+  "remaining_blockers": [
+    "Missing native near-contact140 volume/first-hit timing changes optimal resource objective. Do not fit an arbitrary distance threshold to win outcomes.",
+    "High ledge first-full70 possible with raised pitch, but two fresh paired high-combo controls still failed to KO; core/player side-volume/spawn-position/ordinary-placement effects not closed.",
+    "Old projectile-only all-map traversal incomplete and not a calibrated probability. Full216 plan, Yagara cohort, extreme-budget chains not completed."
+  ],
+  "resources": {
+    "rooms": 63,
+    "owned_hosts": 126,
+    "peak_rooms_conservative": 3,
+    "active_owned_hosts": [],
+    "protected_hosts_sha256": {
+      "work/d2b/round2-world-build/dmhost-sensors": "a9567f5f57f6d23a5e7e95c17d59019afa4efb9e32dd96744867cfa39cca09f6",
+      "upstream/dm/host/dmhost": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+      "work/a8/dmhost-arena-v15": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "work/a8/dmhost-arena-special-v15": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+      "work/d3r/aim-v1/dmhost-aim": "d826e11e51c2fcac5e51db4853cbf834e6b284158306ced46f3ee3c6499adffb"
+    },
+    "private_modules_sha256": {
+      "sdk.gates.tsv": "b8a423e96ef3e974536ac76daedfd36bfb4f8c5c53202b1f75b44cab0c3422a4",
+      "main.cuts.tsv": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f",
+      "main.patched.bin": "05798f98be81b6d3eab0b6b9b471146e90ef74ed487334a10534741bce9203c5",
+      "main.params.tsv": "44457b202d91dc0f747161c8b607a1f951dd149b5a1292b80e922f827354631f",
+      "sdk.cuts.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+      "sdk.params.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+      "sdk.sites.tsv": "47133c275153917e458eb79052939ae2ae864c1e1624c89c7dc5724932c0964e",
+      "sdk.patched.bin": "80f9323eea986f5fd28f722115c16629b0ad00a02bd79b64487f1e25cc03c96b",
+      "main.sites.tsv": "5bd67b1fc42cd0711c22bf91fb3002c68bd2338d29058a86700dd7300d9dbbea",
+      "build_src.sha256": "619b81c7ee7f5ae1bb9eb7ae44fd9d5d93ad7eaf176d9cbad07f9e2f97e4594c",
+      "sdk.obs.tsv": "59e0fffcc6d160736ad2d5db53194e03a8d13c7618a7cbe94c687dbacd83b0ae",
+      "main.gates.tsv": "e10fa54874757b99e1b2eca58e27004ac6574b61669ab83596ec482de33aad3a",
+      "main.obs.tsv": "ff27ed8427d075966b563069938608f54dc1b1a6cdaaed34342ee6c4ca4889b8",
+      "main.fixups.tsv": "6f83f654b9d6c3bd04b91557667e9d64c1e83357ecd14e3cc5afe7c8118dcab7",
+      "sdk.fixups.tsv": "63cebe532bd9f6c81d6944caa7bfc66befc226e816e42adfcf9d07da53ea071b"
+    },
+    "all_room_freeze_before_after_equal": true,
+    "stale_freeze_scope": "Existing6 mismatches include prior runner/policy/RL edits; inactive baseline mismatch list unchanged, not a claim those36files match the historical tournament manifest."
+  },
+  "evidence_sha256": {
+    "work/a6/d3-r-d4-attack-r1-District00-central_high-top1-20261022-143043-749479/result.json": "7cb842da9dfe2fc3c8be2d3315b5da69675dda1eb25433946afa068f10257a41",
+    "work/a6/d3-r-d4-attack-r1-District00-central_high-top2-20261022-143043-749478/result.json": "94ffe688f49a5eeeec2bc27c1b3ae490c0bcfe08a6cdb5e46dba3596b46d822a",
+    "work/a6/d3-r-d4-attack-r1-Yunohana-center-top1-20261022-143043-749480/result.json": "f95894857311f6bd98df6f309d37d24fd05b09534ee6e44aa3770418194d362e",
+    "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top1-h1-r0-20261022-144326-261885/result.json": "079338d1d5399d802bc7e03c0ee57646ddc992cafeeee7a7547a4713daffdd57",
+    "work/a6/d3-r-d4-duel5-attack-r2-District00-central_high-top2-h1-r0-20261022-144326-261886/result.json": "a284ec47a0074cac5a4039e12a9c90e82b172f38b311a19fe0738173c1dfaf7a",
+    "work/a6/d3-r-d4-duel5-attack-r2-Yunohana-center-top1-h1-r0-20261022-144326-261885/result.json": "63f360c4d315e5d3aedd45aa96509a70ec7f29b9c1ab1285c6b075b730bb5838"
+  },
+  "source_sha256": {
+    "tools/zipcaster_d4/report_blocker.py": "a2c491160036e7a277f39c4bed26bc1f67360b5118f291301f9fe4f26b33ee1a"
+  },
+  "scope": "Numerical diagnosis only. No map meshes, original game bytes, generated page, screenshots or trace arrays. Test-only direct aim, full/infinite gauge in fixtures; no policies/default-host changes, no T1/S1."
+}

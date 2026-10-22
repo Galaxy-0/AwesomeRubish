@@ -33,6 +33,7 @@ class ResourceAudit(HTMLParser):
         if tag == 'link':
             check('only approved Google Fonts stylesheet/preconnect', (attrs.get('rel'), attrs.get('href')) in {('preconnect','https://fonts.googleapis.com'),('preconnect','https://fonts.gstatic.com'),('stylesheet','https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap')})
         if tag == 'a':
+            check('no download attribute', 'download' not in attrs)
             check('only inline navigation links', attrs.get('href', '').startswith('#'))
         check('no embedded media/model', tag not in ('img', 'video', 'audio', 'model-viewer', 'iframe', 'object', 'embed'))
 
@@ -55,7 +56,8 @@ for m in data['maps']:
             length = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
             check(f"{m['id']} {point['id']} ETA sanity {side}", abs(length / data['speed'] - point['times'][side]) < .4)
 check('page under 10MB', PAGE.stat().st_size < 10_000_000)
-check('preview has no download control or API', 'download-data' not in text and 'createObjectURL' not in text and '.download=' not in text)
+check('preview has no download control or anchor API', 'download-data' not in text and '.download=' not in text)
+check('only ephemeral worker Blob URL', text.count('createObjectURL(')==1 and 'new Worker(url)'in text and 'URL.revokeObjectURL(url)'in text)
 check('scene script resolved', '__SCENE_SCRIPT__' not in text and '__D3_FUNCTIONS__' not in text)
 check('generated index ignored', '/index.html' in (ROOT/'showcase/.gitignore').read_text())
 check('derived data ignored', '/data/' in (ROOT/'showcase/.gitignore').read_text())
@@ -91,7 +93,7 @@ for m in data['maps']:
         witness=vision.witnesses(RefereeSnapshot('check',0,(enemy,candidate)),'e')[0]
         check('ambush static concealment witness', witness.line_clear is False)
         check('ambush standing ray to choke', mesh.clear(np.array(a['position'])+[0,1.1,0],np.array(target)+[0,.7,0]))
-check('native examples and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==4+len(data['zipcaster']['recommendations'])+sum(t['id'].startswith(('d3-','d3r-'))for t in data['traces']) and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
+check('native examples and two simulated clips', [t['source_kind'] for t in data['traces']].count('native_observation')==4+len(data['zipcaster']['recommendations'])+sum(t['id'].startswith(('d3-','d3r-','d4-'))for t in data['traces']) and [t['source_kind'] for t in data['traces']].count('simulated_state')==2)
 if 'd3'in data:
     d3=data['d3'];check('finite model not native certificate',d3['model_calibrated']is False)
     check('three maps and27 finite D3 tactics',len(d3['maps'])==3 and all(len(m['points'])==9 for m in d3['maps']))
@@ -138,6 +140,18 @@ for m in zipdata['maps']:
         check('bounded per-region selection',sum(any(t['region']==region for t in p['targets'])for p in m['candidates'])<=zipdata['per_region'])
     check('all static points remain candidates',all(p['status']=='candidate'for p in m['candidates']))
 for t in data['traces']:
+    if t['id'].startswith('d4-'):
+        from showcase.d3 import native_trace
+        from showcase.projectiles import augment
+        path=Path(t['evidence']['result']);run=json.loads((ROOT/path).read_text());expected=native_trace(ROOT,lambda p:ROOT/p,path.parent,t['id'],t['label']);augment(ROOT,lambda p:ROOT/p,expected)
+        check('D4 raw own-state reconstruction',t['players']==expected['players']and t['start_frame']==expected['start_frame']and t['end_frame']==expected['end_frame'])
+        check('D4 readonly projectile reconstruction',t['projectiles']==expected['projectiles'])
+        check('D4 fixed logical FOV disclosed',t['enemy_fov_degrees']==180 and abs(t['enemy_fov_heading']-run['point']['heading']*math.pi/2)<1e-12)
+        check('D4 visibility history exact',t['logical_visibility']==[[h['frame'],h['visible'],h['in_range']]for h in run['defender_history']])
+        check('D4 annotated timeline bounded',all(t['start_frame']<=e['frame']<=t['end_frame']for e in t['annotations']))
+        check('D4 native clocks and map',t['map']==run['point']['graph'].split('-')[-1]and t['fps']==60)
+        check('D4 ideal fixture explicit',t['ideal_operation_fixture']is True)
+        continue
     if t['id'].startswith('d3r-'):
         check('D3R native trace reconstruction',t==rlookup[t['id']])
         check('D3R ideal fixture disclosed',t['ideal_operation_fixture']is True)
