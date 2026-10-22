@@ -52,5 +52,5 @@ function d4NativeSummary(){
  const table=el('table'),head=el('tr');for(const text of ['敌态','top1','top2','对照'])head.append(el('th','',text));table.append(head);
  for(const s of n.by_state){const row=el('tr');row.append(el('td','',s.map+' / '+({center:'中路',central_high:'高台',west_lane:'侧路'}[s.region]||s.region)));for(const b of ['top1','top2','control']){const c=s.bands[b];row.append(el('td','mono',c?`${c.wins}/${c.n}`:'未测'))}table.append(row)}box.append(table);
  if(n.stop_reason)box.append(el('p','d3-caveat','预设停止条件触发：'+n.stop_reason));
- box.append(el('p','',`零钩、40f、理想瞄准夹具；不是玩家胜率，也不外推连钩。实际姿态模型另有${n.actual_pose_concordance.mismatches.length}次胜负不一致。完整D4、接触规则与全局最优未闭合。`));
+ box.append(el('p','',`零钩、40f、我方理想瞄准 / 固定.52脚本；对手直线瞄准未补下坠，不是完美防守方或玩家胜率，也不外推连钩。实际姿态模型另有${n.actual_pose_concordance.mismatches.length}次胜负不一致。完整D4、接触规则与全局最优未闭合。`));
 }

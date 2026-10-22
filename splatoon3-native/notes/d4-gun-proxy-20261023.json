@@ -1,0 +1,24 @@
+{
+  "schema": "inklab.d4.existing-gun-volume-diagnostic.v1",
+  "artifact": "work/d4/restart-v4/west-gun-first-trace-v1.json",
+  "actual_recorded_capsule_contacts": [],
+  "straight_proxy_first_contact": [
+    13.116699753990936
+  ],
+  "vertical_velocity_first_negative": 5,
+  "last_observed_progress": 12.282772326643816,
+  "source_distance": 13.058339950797187,
+  "last_observed_height": 0.28995466000000025,
+  "native_large_gun_hp_loss": false,
+  "scope": "One existing first-object finite observed trace; no native field-despawn reason or unique sole cause inferred. Shows model planar proxy is not the observed gun trajectory. Native/formal inputs unchanged.",
+  "evidence_sha256": {
+    "work/d4/restart-v4/west-gun-volume-diagnostic-v1.json": "ba1366aec0879a276768e5790cad6be3f41912f4646516fca5252200f143b20d",
+    "work/d4/restart-v4/west-gun-first-trace-v1.json": "a15a0aa803923317d8316451ce8cf571065460a1ddf9cb57f12a6bd1010cc8a1"
+  },
+  "limits": [
+    "Observed first-object trace only; final field collision/despawn cause unobserved.",
+    "Capsule .35+.285 and axis .35..1.30 are declared model geometry, not proof of native receiver shape.",
+    "Fixed native defender uses straight live gun aim, without ballistic pitch compensation. Native gravity/spread remain.",
+    "Frozen cohort not refitted/reselected. This does not certify ideal defensive optimum or full D4."
+  ]
+}

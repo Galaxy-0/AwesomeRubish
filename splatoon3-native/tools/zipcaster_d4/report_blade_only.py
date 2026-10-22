@@ -63,6 +63,8 @@ def report(batch_path):
   limits=['Only ordinary-navigation-supported setup domain; all-grid top2 remain separate in plan proofs.',
    'Whole-wave-clear and contact-disjoint declared model. Contact/native global optimum remain unclosed.',
    'One-sided Fisher values are descriptive until all216 complete; no acceptance from early stopped data.',
+   'Native defender uses live FOV/range and straight gun aim, without ballistic pitch compensation. Native gravity/spread retained; not ideal defensive optimum.',
+   'Planar gun proxy differs from an existing native boundary trace; actual-pose mismatches retained. Do not interpret model0/1 as calibrated native rate.',
    'Same native fixture repeats; direct aim and full-special only for local measurement. No policies/T1/S1.'])
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--batch',type=Path,required=True);p.add_argument('--out',type=Path);a=p.parse_args();d=report(a.batch)
