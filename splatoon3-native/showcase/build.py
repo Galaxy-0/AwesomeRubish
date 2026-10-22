@@ -280,7 +280,7 @@ def main():
     data['d4_runtime'] = compile_runtime(ROOT, source)
     data['d4_runtime']['safe_model'] = compile_safe_model(ROOT, source)
     data['traces'][:0] = d4_clips
-    data['snapshot'] = '2026-10-22'
+    data['snapshot'] = '2026-10-23'
     d3_scene = source('showcase/d3_scene.js')
     d4_scene = source('showcase/d4_scene.js')
     d4_worker = source('showcase/d4_worker.js')

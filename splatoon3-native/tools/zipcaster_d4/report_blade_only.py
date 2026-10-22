@@ -48,7 +48,10 @@ def report(batch_path):
    for b in ['top1','top2']:
     if b in counts:
      q=counts[b];p=fisher_greater(q['wins'],q['n'],c['wins'],c['n']);tests[b]=dict(p_one_sided=p,p_bonferroni18=min(1,p*18),scope='Exploratory independent-Bernoulli assumption; same fixture repeats are not random player opponents.')
-  summaries.append(dict(map=graph.split('-')[-1],region=region,bands=counts,tests=tests))
+  state_points=[p for p in plan['points']if p['graph']==graph and p['region']==region]
+  states={(tuple(p['enemy']),p['heading'])for p in state_points};assert len(states)==1
+  enemy,heading=next(iter(states))
+  summaries.append(dict(map=graph.split('-')[-1],region=region,enemy=list(enemy),heading=heading,bands=counts,tests=tests))
  assert len({(r['point'],r['repeat'])for r in valid})==len(valid),'duplicate eligible outcomes'
  complete=len(valid)==216 and batch['stop_reason']is None
  if complete:assert all(sum(r['point']==p['id']for r in valid)==8 for p in plan['points'])
