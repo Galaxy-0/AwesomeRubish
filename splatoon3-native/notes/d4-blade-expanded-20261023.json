@@ -1,0 +1,612 @@
+{
+  "schema": "inklab.d4.blade-only.bank.report.v1",
+  "full_d4_passed": false,
+  "unrestricted_optimality_closed": false,
+  "completed_queries": 11,
+  "start_rows": 14771,
+  "all_enemy_heading_speed_queries": 63328,
+  "all_queries_precomputed": false,
+  "batch_seconds": 1775.229132915847,
+  "summed_query_seconds": 5790.261591791175,
+  "queries": [
+    {
+      "map": "Yunohana",
+      "region": "central_high",
+      "enemy_index": 637,
+      "heading": 2,
+      "speed": 40,
+      "starts": 1580,
+      "statuses": {
+        "predicted-kill": 1094,
+        "dies-before-any-declared-route-can-move-or-kill": 15,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 51,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 419
+      },
+      "wins_by_hooks": {
+        "0": 62,
+        "1": 224,
+        "2": 583,
+        "3": 225
+      },
+      "seconds": 170.2866743330378,
+      "artifact": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/d4/restart-v4/high-blade-full-query-v1/result.json",
+      "sha256": "7d324a104f73889b276eb6b50b271b809ed43d0fca62944f9180d3f8d12b14a3",
+      "top2": [
+        {
+          "start": 509,
+          "position": [
+            -12.0,
+            4.5,
+            0.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 574,
+          "position": [
+            -9.0,
+            9.0,
+            3.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "District00",
+      "region": "center",
+      "enemy_index": 446,
+      "heading": 0,
+      "speed": 40,
+      "starts": 1061,
+      "statuses": {
+        "predicted-kill": 985,
+        "dies-before-any-declared-route-can-move-or-kill": 24,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 29,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 22
+      },
+      "wins_by_hooks": {
+        "0": 39,
+        "1": 198,
+        "2": 386,
+        "3": 362
+      },
+      "seconds": 263.1194779998623,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/District00-center/result.json",
+      "sha256": "3a6647694213c0bf7650403caec9bcecb7e6450f520092235990cc8fbde5eac8",
+      "top2": [
+        {
+          "start": 289,
+          "position": [
+            -9.0,
+            6.0,
+            -3.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 287,
+          "position": [
+            -9.0,
+            6.0,
+            -6.0
+          ],
+          "remaining": 0.6973333333333334,
+          "cost": 0.30266666666666664,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "Yunohana",
+      "region": "west_lane",
+      "enemy_index": 372,
+      "heading": 1,
+      "speed": 40,
+      "starts": 1580,
+      "statuses": {
+        "predicted-kill": 988,
+        "dies-before-any-declared-route-can-move-or-kill": 30,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 155,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 406
+      },
+      "wins_by_hooks": {
+        "2": 438,
+        "0": 37,
+        "1": 150,
+        "3": 363
+      },
+      "seconds": 336.1691389998887,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/Yunohana-west_lane/result.json",
+      "sha256": "35eb0fdb17c5f55ecd3c00ad60988296f5d155fb607bf3feda6e641f2d23292e",
+      "top2": [
+        {
+          "start": 310,
+          "position": [
+            -21.0,
+            3.0,
+            -6.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 314,
+          "position": [
+            -21.0,
+            3.0,
+            6.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "Yunohana",
+      "region": "center",
+      "enemy_index": 772,
+      "heading": 0,
+      "speed": 40,
+      "starts": 1580,
+      "statuses": {
+        "predicted-kill": 1066,
+        "dies-before-any-declared-route-can-move-or-kill": 9,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 91,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 413
+      },
+      "wins_by_hooks": {
+        "2": 502,
+        "1": 223,
+        "0": 48,
+        "3": 293
+      },
+      "seconds": 451.145967541961,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/Yunohana-center/result.json",
+      "sha256": "14b8359bf827fd44f4acb8b164e9628d2f8239324b7ca1bd894fbe37458153cd",
+      "top2": [
+        {
+          "start": 634,
+          "position": [
+            -6.0,
+            3.0,
+            -9.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 706,
+          "position": [
+            -3.0,
+            3.0,
+            -12.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "District00",
+      "region": "central_high",
+      "enemy_index": 160,
+      "heading": 2,
+      "speed": 40,
+      "starts": 1061,
+      "statuses": {
+        "dies-before-any-declared-route-can-move-or-kill": 16,
+        "predicted-kill": 979,
+        "occupied": 1,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 10,
+        "unreachable-in-declared-graph": 55
+      },
+      "wins_by_hooks": {
+        "1": 214,
+        "0": 21,
+        "2": 502,
+        "3": 242
+      },
+      "seconds": 490.929473917,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/District00-central_high/result.json",
+      "sha256": "e380dde577ea93df682faf071620246caf61cd82797e9d61ac99fb73dcef4c84",
+      "top2": [
+        {
+          "start": 228,
+          "position": [
+            -12.0,
+            10.5,
+            0.0
+          ],
+          "remaining": 0.694,
+          "cost": 0.30600000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 99,
+          "position": [
+            -18.0,
+            9.0,
+            -30.0
+          ],
+          "remaining": 0.694,
+          "cost": 0.30600000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 128,
+          "stealth": false
+        }
+      ]
+    },
+    {
+      "map": "Yagara",
+      "region": "central_high",
+      "enemy_index": 901,
+      "heading": 2,
+      "speed": 40,
+      "starts": 1317,
+      "statuses": {
+        "dies-before-any-declared-route-can-move-or-kill": 23,
+        "predicted-kill": 1102,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 43,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 148
+      },
+      "wins_by_hooks": {
+        "1": 272,
+        "2": 524,
+        "0": 45,
+        "3": 261
+      },
+      "seconds": 94.79093500017188,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/Yagara-central_high/result.json",
+      "sha256": "fbee86fc0de4bc34db89c3f9d8958a32a5be6fc3a9d5bd68f9292e81deb44d30",
+      "top2": [
+        {
+          "start": 1072,
+          "position": [
+            21.0,
+            6.0,
+            -6.0
+          ],
+          "remaining": 0.6973333333333334,
+          "cost": 0.30266666666666664,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 1073,
+          "position": [
+            21.0,
+            1.5,
+            -3.0
+          ],
+          "remaining": 0.6956666666666667,
+          "cost": 0.30433333333333334,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "Yagara",
+      "region": "center",
+      "enemy_index": 658,
+      "heading": 0,
+      "speed": 40,
+      "starts": 1317,
+      "statuses": {
+        "predicted-kill": 1075,
+        "dies-before-any-declared-route-can-move-or-kill": 13,
+        "occupied": 1,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 91,
+        "unreachable-in-declared-graph": 137
+      },
+      "wins_by_hooks": {
+        "0": 30,
+        "2": 507,
+        "1": 165,
+        "3": 373
+      },
+      "seconds": 883.1511495411396,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/Yagara-center/result.json",
+      "sha256": "2007ac90e32e65ba9b3641514c12999256c7544bd2a04a5dad27c983bf479a4c",
+      "top2": [
+        {
+          "start": 596,
+          "position": [
+            -3.0,
+            6.0,
+            -9.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 656,
+          "position": [
+            0.0,
+            6.0,
+            -9.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "District00",
+      "region": "west_lane",
+      "enemy_index": 108,
+      "heading": 1,
+      "speed": 40,
+      "starts": 1061,
+      "statuses": {
+        "dies-before-any-declared-route-can-move-or-kill": 17,
+        "predicted-kill": 971,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 47,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 25
+      },
+      "wins_by_hooks": {
+        "2": 453,
+        "1": 178,
+        "0": 19,
+        "3": 321
+      },
+      "seconds": 1026.3029564581811,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/District00-west_lane/result.json",
+      "sha256": "ba8a6e346eecb0c948a17e5ba60379e8e39f790cae249d7b521856c600b2d4d6",
+      "top2": [
+        {
+          "start": 222,
+          "position": [
+            -12.0,
+            6.0,
+            -15.0
+          ],
+          "remaining": 0.694,
+          "cost": 0.30600000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 128,
+          "stealth": false
+        },
+        {
+          "start": 362,
+          "position": [
+            -6.0,
+            6.0,
+            -9.0
+          ],
+          "remaining": 0.694,
+          "cost": 0.30600000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 128,
+          "stealth": false
+        }
+      ]
+    },
+    {
+      "map": "Yagara",
+      "region": "west_lane",
+      "enemy_index": 354,
+      "heading": 1,
+      "speed": 40,
+      "starts": 1317,
+      "statuses": {
+        "predicted-kill": 1071,
+        "dies-before-any-declared-route-can-move-or-kill": 17,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 78,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 150
+      },
+      "wins_by_hooks": {
+        "0": 49,
+        "1": 187,
+        "2": 548,
+        "3": 287
+      },
+      "seconds": 925.5567377919797,
+      "artifact": "work/d4/restart-v4/blade-common-full-v1/Yagara-west_lane/result.json",
+      "sha256": "94f963d43db4624735b8e5070ea4eecba24da5a9f85a28446743a8a46e1ab6c8",
+      "top2": [
+        {
+          "start": 247,
+          "position": [
+            -21.0,
+            6.0,
+            6.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 245,
+          "position": [
+            -21.0,
+            1.5,
+            0.0
+          ],
+          "remaining": 0.6973333333333334,
+          "cost": 0.30266666666666664,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "Yunohana",
+      "region": "center",
+      "enemy_index": 772,
+      "heading": 1,
+      "speed": 40,
+      "starts": 1580,
+      "statuses": {
+        "predicted-kill": 1056,
+        "dies-before-any-declared-route-can-move-or-kill": 19,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 91,
+        "occupied": 1,
+        "unreachable-in-declared-graph": 413
+      },
+      "wins_by_hooks": {
+        "2": 482,
+        "1": 226,
+        "0": 39,
+        "3": 309
+      },
+      "seconds": 744.1020160829648,
+      "artifact": "work/d4/restart-v4/blade-full-center-heading1-Yunohana-v1/result.json",
+      "sha256": "f200fe3f4930074ea14a065b2d3083dbfaff1de0afb92c42df16fee83f48a2f5",
+      "top2": [
+        {
+          "start": 634,
+          "position": [
+            -6.0,
+            3.0,
+            -9.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 706,
+          "position": [
+            -3.0,
+            3.0,
+            -12.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    },
+    {
+      "map": "Yagara",
+      "region": "center",
+      "enemy_index": 658,
+      "heading": 1,
+      "speed": 40,
+      "starts": 1317,
+      "statuses": {
+        "dies-before-any-declared-route-can-move-or-kill": 21,
+        "predicted-kill": 1107,
+        "occupied": 1,
+        "no-contact-excluded-route; unrestricted-kill-unknown": 51,
+        "unreachable-in-declared-graph": 137
+      },
+      "wins_by_hooks": {
+        "1": 257,
+        "0": 24,
+        "2": 564,
+        "3": 262
+      },
+      "seconds": 404.7070641249884,
+      "artifact": "work/d4/restart-v4/blade-full-center-heading1-Yagara-v1/result.json",
+      "sha256": "4d17bb5f0c5b1de8ecf4621bbcecd97b23bf6aa3324a7c1e5b50f45c671f948b",
+      "top2": [
+        {
+          "start": 596,
+          "position": [
+            -3.0,
+            6.0,
+            -9.0
+          ],
+          "remaining": 0.699,
+          "cost": 0.30100000000000005,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        },
+        {
+          "start": 536,
+          "position": [
+            -6.0,
+            5.5833,
+            -9.0
+          ],
+          "remaining": 0.6973333333333334,
+          "cost": 0.30266666666666664,
+          "program": "full-light",
+          "hooks": [],
+          "exposure_frames": 0,
+          "stealth": true
+        }
+      ]
+    }
+  ],
+  "original_batch_queries": 9,
+  "extra_queries": 2,
+  "batch_sha256": "f8f2923aa09636574180604c9bea268428fc4df2c9861d44121ac94a2df5d857",
+  "source_sha256": "6c363f3f4b08f555494c9a4470f0f3de33919999d1295584474a6cbf64700e0f",
+  "scope": "Fixed common enemy states with explicit headings, all declared ground starts,0..3 hooks/four programs/40f. batch_seconds covers the original9 only; summed_query_seconds includes separately closed extras, not a shared wall-clock run. Contact excluded and whole-wave clear. Not all63328 enemy-heading-speed queries. Setup-supported top2 certificates separately frozen before native trials."
+}

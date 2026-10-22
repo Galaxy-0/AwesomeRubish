@@ -30,6 +30,7 @@ def report(batch_path):
    unresolved.append(row);continue
   p=Path(row['artifact']);p=p if p.is_absolute()else ROOT/p
   d=json.loads(p.read_text());assert sha(p)==row['artifact_sha256'];point=byid[row['point']]
+  assert all(sha(Path(path))==digest for path,digest in d.get('raw_sha256',{}).items()),'native raw original changed'
   if row['eligible']:
    truth=reduce(p.resolve());assert truth['strict_budget_win']==row['strict_budget_win'];counter=truth['counter_at_enemy_down'];actual=d.get('actual_pose_model')or{}
    r=dict(point=row['point'],band=point['band'],repeat=row['repeat'],artifact=str(p),artifact_sha256=sha(p),win=truth['strict_budget_win'],enemy_down=truth['enemy_down'],attacker_down=truth['attacker_down'],nominal_model=point['model'],

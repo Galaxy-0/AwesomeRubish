@@ -141,14 +141,14 @@ for m in zipdata['maps']:
         check('bounded per-region selection',sum(any(t['region']==region for t in p['targets'])for p in m['candidates'])<=zipdata['per_region'])
     check('all static points remain candidates',all(p['status']=='candidate'for p in m['candidates']))
 if data.get('d4',{}).get('schema')=='showcase.d4.v2':
-    from showcase.d4 import code as d4_code
+    from showcase.d4 import code as d4_code,center_query
     d4=data['d4'];runtime=data['d4_runtime']
     check('D4 limited scope is not full acceptance',d4['full_d4_passed'] is False)
     check('D4 safe numerical runtime selected',runtime['safe_model']['schema']=='showcase.d4.safe-model.v1')
     check('D4 independent browser model embedded','class D4SafeWorld' in text and 'Contact-disjoint' in text)
     check('D4 no unexpanded worker marker','/* __D4_SAFE_WORKER__ */'not in text)
     batch=json.loads((ROOT/'work/d4/restart-v4/blade-common-full-v1/batch.json').read_text())
-    paths=[Path(x['artifact'])for x in batch['results']]+[ROOT/f'work/d4/restart-v4/blade-setup-center-{name}-v1/result.json'for name in ['Yunohana','Yagara']]
+    paths=[Path(x['artifact'])for x in batch['results']]+[center_query(ROOT,name)for name in ['Yunohana','Yagara']]
     complete=0;start_rows=0
     for m in d4['maps']:
         packed=zlib.decompress(base64.b64decode(m['codes']))
@@ -164,7 +164,7 @@ if data.get('d4',{}).get('schema')=='showcase.d4.v2':
                 check('D4 exact limited query grade',value==d4_code(r))
                 if r['status']=='no-contact-excluded-route; unrestricted-kill-unknown':
                     check('D4 outside-scope miss stays unknown',r['probability'] is None and value==13)
-    check('D4 full heat queries separate from prefix certificates',d4['counts']['complete']==complete==9 and d4['counts']['unresolved']==2)
+    check('D4 full heat queries separate from prefix certificates',d4['counts']['complete']==complete and complete>=9 and d4['counts']['unresolved']==len(paths)-complete)
     check('D4 computed start rows disclosed',d4['counts']['start_rows']==start_rows)
     check('D4 historical core bank not bound',not any('/all-full-v' in p or '/common-full-v3/'in p for p in data['sources']))
 

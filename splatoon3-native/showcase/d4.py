@@ -14,8 +14,11 @@ def code(row):
  if row.get('probability')==1:
   r=row['remaining'];return(7 if r>.3 else 6 if r>=.1 else 5)+(3 if row['stealth']else 0)
  return {'occupied':11,'unreachable-in-declared-graph':2,'dies-before-any-declared-route-can-move-or-kill':3,'no-winning-route-in-declared-model':4,'no-contact-excluded-route; unrestricted-kill-unknown':13,'excluded-from-native-setup-domain':14}.get(row['status'],12)
+def center_query(root,name):
+ full=root/f'work/d4/restart-v4/blade-full-center-heading1-{name}-v1/result.json'
+ return full if full.exists()else root/f'work/d4/restart-v4/blade-setup-center-{name}-v1/result.json'
 def compile_d4(root,source):
- states=json.loads(source('work/d4/all-enemy-states-v1.json').read_text());common=json.loads(source('work/d4/common-enemy-states-v2.json').read_text())['states'];maps=[];bindings={};counts={'complete':0,'unresolved':0,'missing':0,'start_rows':0};bank=json.loads(source('work/d4/restart-v4/blade-common-full-v1/batch.json').read_text());queries=[Path(x['artifact'])for x in bank['results']]+[root/f'work/d4/restart-v4/blade-setup-center-{name}-v1/result.json'for name in ['Yunohana','Yagara']];cache=root/'work/d4/browser';cache.mkdir(parents=True,exist_ok=True)
+ states=json.loads(source('work/d4/all-enemy-states-v1.json').read_text());common=json.loads(source('work/d4/common-enemy-states-v2.json').read_text())['states'];maps=[];bindings={};counts={'complete':0,'unresolved':0,'missing':0,'start_rows':0};bank=json.loads(source('work/d4/restart-v4/blade-common-full-v1/batch.json').read_text());queries=[Path(x['artifact'])for x in bank['results']]+[center_query(root,name)for name in ['Yunohana','Yagara']];cache=root/'work/d4/browser';cache.mkdir(parents=True,exist_ok=True)
  for name in['Yunohana','District00','Yagara']:
   z=np.load(root/f'work/d4/graph-v2-{name}/graph.npz');ground=z['ground'];g=len(ground);values=np.zeros((g*16,g),np.uint8);seen=set();support=[r['ordinary_route_supported']for r in states['states']if r['map']==name]
   # Only closed contact-disjoint queries; no historical core-ray scores.
@@ -27,7 +30,7 @@ def compile_d4(root,source):
    rowindex=q['enemy_index']*16+q['heading_quadrant']*4+SPEEDS.index(q['speed']);seen.add(rowindex);bindings[str(p.relative_to(root))]=hashlib.sha256(raw).hexdigest();counts['complete'if q['search_complete']else'unresolved']+=1
    for row in q['rows']:values[rowindex,row['start']]=code(row)
    counts['start_rows']+=len(q['rows'])
-  counts['missing']+=g*16-len(seen);flat=values.ravel();packed=(flat[::2]|(np.r_[flat[1::2],np.zeros(len(flat)%2,np.uint8)]<<4));compressed=zlib.compress(packed.tobytes(),9);default=next(r['enemy_index']for r in common if r['map']==name and r['region']=='center');maps.append(dict(id=name,g=g,ground=ground.tolist(),ordinary_support=support,codes=base64.b64encode(compressed).decode(),codes_encoding='zlib-base64-4bit-low-first',complete_queries=sum(1 for i in seen if not np.any(values[i]==0)and not np.any(values[i]==12)),total_queries=g*16,default_enemy=default,bytes=len(compressed)))
+  counts['missing']+=g*16-len(seen);flat=values.ravel();packed=(flat[::2]|(np.r_[flat[1::2],np.zeros(len(flat)%2,np.uint8)]<<4));compressed=zlib.compress(packed.tobytes(),9);default=next(r['enemy_index']for r in common if r['map']==name and r['region']=='center');maps.append(dict(id=name,g=g,ground=ground.tolist(),ordinary_support=support,codes=base64.b64encode(compressed).decode(),codes_encoding='zlib-base64-4bit-low-first',complete_queries=sum(1 for i in seen if not np.any(values[i]==0)and not np.any(values[i]==12)),total_queries=g*16,default_enemy=default,default_heading=1 if name in ['Yunohana','Yagara']else 0,bytes=len(compressed)))
  digest=hashlib.sha256(json.dumps(bindings,sort_keys=True).encode()).hexdigest();manifest=cache/f'heat-inputs-{digest[:16]}.json'
  if not manifest.exists():manifest.write_text(json.dumps(dict(inputs=bindings,compiler_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),scope='Closed contact-disjoint query results; partial setup proofs are not complete heatmaps; no game assets included'),indent=2)+'\n')
  source(manifest);clips=[]
