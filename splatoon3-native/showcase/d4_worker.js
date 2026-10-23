@@ -65,12 +65,23 @@ if(typeof self!=='undefined'&&typeof document==='undefined'){
     }
     self.postMessage({type:'inverse',id:m.id,rows});
    }else if(m.type==='heat'){
-    const rows=[];
-    for(let i=0;i<w.g;i++){
-     const r=w.query(i,p,100,runtime.safe_model?1000:0);rows.push({start:i,probability:r.probability,complete:r.complete,remaining:r.remaining,stealth:r.stealth,status:r.status});
-     if(i%10===0){self.postMessage({type:'progress',id:m.id,done:i,total:w.g});await yieldTask();if(job!==epoch){self.postMessage({type:'cancelled',id:m.id});return}}
+    // Presentation scheduling only: unchanged per-start query and search budgets.
+    // Prefer the visible ordinary standing set and nearby cells for first feedback.
+    const rows=new Array(w.g),E=w.ground[m.enemy],ordinary=m.ordinary||[],distance=i=>Math.hypot(w.ground[i][0]-E[0],w.ground[i][2]-E[2]);
+    for(const r of m.initialRows||[])if(Number.isInteger(r.start)&&r.start>=0&&r.start<w.g)rows[r.start]=r;
+    const order=Array.from({length:w.g},(_,i)=>i).sort((a,b)=>Number(!!ordinary[b])-Number(!!ordinary[a])||distance(a)-distance(b)||a-b);
+    let done=rows.filter(Boolean).length,chunk=[],last=performance.now(),ordinaryLeft=order.filter(i=>ordinary[i]&&!rows[i]).length;
+    const progress=()=>{self.postMessage({type:'progress',id:m.id,done,total:w.g,rows:chunk,ordinary_done:ordinaryLeft===0});chunk=[];last=performance.now()};
+    progress();await yieldTask();
+    for(const i of order){
+     if(job!==epoch){self.postMessage({type:'cancelled',id:m.id});return}
+     if(rows[i])continue;
+     const r=w.query(i,p,100,runtime.safe_model?1000:0);
+     const row={start:i,probability:r.probability,complete:r.complete,remaining:r.remaining,stealth:r.stealth,status:r.status,exposure_frames:r.exposure_frames};
+     rows[i]=row;chunk.push(row);done++;if(ordinary[i])ordinaryLeft--;
+     if(done<=8||chunk.length>=8||performance.now()-last>=120||ordinaryLeft===0&&ordinary[i]){progress();await yieldTask()}
     }
-    self.postMessage({type:'heat',id:m.id,rows});
+    progress();self.postMessage({type:'heat',id:m.id,rows});
    }
   }catch(e){self.postMessage({type:'error',id:m.id,error:String(e),stack:e.stack})}
  };
