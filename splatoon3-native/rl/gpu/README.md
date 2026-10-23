@@ -88,3 +88,32 @@ export CC="$HOME/splatoon3-native-rl-stage0/cc-zig"
 原生镜头测量，以及含完整观测≥200,000环境帧/s。
 计数=N×实际fixed60帧，不乘2agent；计时同步GPU，排除编译/重置/RNG须明示。
 `preview.py`仅生成work内私有回放QA页，不发布、不修改showcase原始数据计算。
+
+## run70：原生录像动力学诊断（不训练）
+
+旧 `data-v5` 与历史 checkpoint 继续可读。新的私有导出将**连续三角面脚底支撑**与导航涂地区分：
+
+```sh
+.venv/bin/python -m rl.gpu.ground --source work/rl-stage0/data-v5 \
+  --native-opening --out work/rl-demo/my-dynamics-data
+```
+
+只生成私有数值，不写入git。0.5u格只作保守三角面候选索引，真正支撑高度在当前XZ用重心坐标计算；坡面、叠层、真实台沿不再取最近导航点高度。侧面碰撞/可涂域仍为原近似，不能称完整原生碰撞。
+
+`Config(respawn_mode="native_launcher")`显式采用S1已测的温泉峡谷发射/重生模型：392f回到发射台、460f候选解锁，必须新ZR沿，有限发射轨迹后交回普通物理；默认`ground`兼容旧训练。392/460为包采样相对、带区间误差的测量，不是原生内部定时器证明。近距课程摆位显式退出发射状态。不要向历史checkpoint无声切换动力学。
+
+`Config(camera_codebook="native_plus5")`保留9档，中心细化以表达实测低幅转镜头；`legacy`保持旧动作意义。BC的新私有 `native_plus5_power_v1` 模型按独立单轴稳态窗口拟合右摇杆幂曲线，并用单独+5满推测量约束。不是全幅/动态陀螺仪重实现，物理轴向仍等用户确认。动作schema/档值与转换报告绑定，旧样本不重解释。
+
+```sh
+.venv/bin/python -m rl.demo.camera_model \
+  --source work/rl-demo/data-ready/native-survey-full-r2 \
+  --validation work/rl-demo/data-ready/native-survey-full-r3 \
+  --out work/rl-demo/my-camera-model.json
+.venv/bin/python -m rl.demo.dynamics_audit \
+  --recording work/rl-demo/smoke-final-r11 \
+  --data work/rl-demo/my-dynamics-data --camera work/rl-demo/my-camera-model.json \
+  --camera-codebook native_plus5 --respawn-mode native_launcher \
+  --out work/rl-demo/my-free-audit
+```
+
+自由积分只在第一份共同着地包初始化一次。`native_camera_only`/`native_camera_and_raw_move`是明确的归因条件；位置/HP后续均不纠正。BC仍用原生状态同步，物理步数0；不要用更小自由误差宣称可以换成自由积分生成专家观测。最新数值/剩余误差见`notes/rl-demo-ready-20261024.md/.json`。

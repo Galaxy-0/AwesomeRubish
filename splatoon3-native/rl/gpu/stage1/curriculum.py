@@ -6,7 +6,7 @@ The caller chooses fraction. Legacy train fades it by frames; capability drills 
 
 import math
 import torch
-from ..env import YAW, HEADING, GROUND
+from ..env import YAW, HEADING, GROUND, ARM
 
 
 @torch.no_grad()
@@ -65,4 +65,5 @@ def encounter_starts(env, fraction, seed):
     env.state[row, :, YAW] = yaw
     env.state[row, :, HEADING] = yaw
     env.state[row, :, GROUND] = 1
+    env.state[row, :, ARM] = -1
     return len(row)

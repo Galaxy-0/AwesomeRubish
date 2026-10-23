@@ -43,7 +43,49 @@ class Geometry:
         z = z.clamp(0, self.shape[1] - 1)
         return self.floor[x, z], self.ids[x, z], valid
 
+    def ground_candidates(self, p):
+        a = self.arrays
+        grid = torch.floor(
+            (torch.stack((p[..., 0], p[..., 2]), -1) - a["ground_origin"])
+            / a["ground_resolution"]
+        ).long()
+        bins = a["ground_bins"]
+        x, z = grid.unbind(-1)
+        valid = (x >= 0) & (x < bins.shape[0]) & (z >= 0) & (z < bins.shape[1])
+        ids = bins[x.clamp(0, bins.shape[0] - 1), z.clamp(0, bins.shape[1] - 1)].long()
+        tri = a["ground_triangles"][ids.clamp_min(0)]
+        start, ab, ac = (
+            tri[..., 0, :],
+            tri[..., 1, :] - tri[..., 0, :],
+            tri[..., 2, :] - tri[..., 0, :],
+        )
+        delta = p[..., None, :] - start
+        den = ab[..., 0] * ac[..., 2] - ab[..., 2] * ac[..., 0]
+        safe = torch.where(den.abs() > 1e-8, den, 1.0)
+        u = (delta[..., 0] * ac[..., 2] - delta[..., 2] * ac[..., 0]) / safe
+        v = (ab[..., 0] * delta[..., 2] - ab[..., 2] * delta[..., 0]) / safe
+        inside = (
+            valid[..., None]
+            & (ids >= 0)
+            & (den.abs() > 1e-8)
+            & (u >= -1e-6)
+            & (v >= -1e-6)
+            & (u + v <= 1 + 1e-6)
+        )
+        y = start[..., 1] + u * ab[..., 1] + v * ac[..., 1]
+        return y, inside
+
     def support(self, p, top_offset=0.205):
+        if "ground_triangles" in self.arrays:
+            y, valid = self.ground_candidates(p)
+            good = valid & (y <= p[..., 1, None] + top_offset)
+            floor = torch.where(good, y, -100.0).max(-1).values
+            projected = p.clone()
+            projected[..., 1] = floor
+            # Missing paint navigation does not make a real triangle a hole.
+            # The nonnegative sentinel is used only as a support-valid token.
+            cell = self.cell(projected)
+            return floor, torch.where(good.any(-1), cell.clamp_min(0), -1)
         y, ids, valid = self.column(p)
         good = (ids >= 0) & (y <= p[..., 1, None] + top_offset) & valid[..., None]
         yy = torch.where(good, y, -100.0)

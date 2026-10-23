@@ -124,6 +124,8 @@ class DemoSession(NativeSession):
         demo_predicate="strict",
         demo_warm_session=None,
         demo_native_survey=False,
+        demo_ink_every=0,
+        demo_warm_chain=(),
         **kwargs,
     ):
         self.demo_cancel = demo_cancel
@@ -132,6 +134,8 @@ class DemoSession(NativeSession):
         self.demo_predicate = demo_predicate
         self.demo_warm_session = demo_warm_session
         self.demo_native_survey = demo_native_survey
+        self.demo_ink_every = demo_ink_every
+        self.demo_warm_chain = demo_warm_chain
         super().__init__(**kwargs)
         self.monitor = AsyncDemoMonitor(self.out)
 
@@ -175,14 +179,20 @@ class DemoSession(NativeSession):
                     path.mkdir(parents=True, exist_ok=True)
                     warm[key] = str(path)
                 warm["DM_NVN_SHOT_OUT"] = "1280x720"
+        if self.demo_ink_every and n == 0:
+            path = self.out / "player-0/ink-targets"
+            path.mkdir(parents=True, exist_ok=True)
+            warm.update(
+                DM_DEMO_INK_DIR=str(path), DM_DEMO_INK_EVERY=str(self.demo_ink_every)
+            )
         if self.demo_warm_session:
             seed = ROOT / "upstream/dm/games/0100C2500FC20000/pso_manifest.tsv"
-            lines = (
-                seed.read_text().splitlines()
-                + (self.demo_warm_session / f"player-{n}/pso_user.tsv")
-                .read_text()
-                .splitlines()
-            )
+            lines = seed.read_text().splitlines()
+            for session in self.demo_warm_chain or (self.demo_warm_session,):
+                for name in (f"warm-{n}.tsv", f"player-{n}/pso_user.tsv"):
+                    file = session / name
+                    if file.is_file():
+                        lines.extend(file.read_text().splitlines())
             path = self.out / f"warm-{n}.tsv"
             path.write_text("\n".join(dict.fromkeys(lines)) + "\n")
             warm["DM_PSO_MANIFEST"] = str(path)
@@ -390,16 +400,35 @@ def run(a):
     native_survey = getattr(a, "native_survey", False)
     if native_survey and not manifest.get("native_capture_survey"):
         raise ValueError("native survey requires isolated build_capture host")
+    ink_every = getattr(a, "ink_every", 0)
+    if ink_every and (
+        not 15 <= ink_every <= 3600 or not manifest.get("periodic_ink_async")
+    ):
+        raise ValueError(
+            "periodic ink requires isolated async host and 15..3600 frames"
+        )
     catchup_frames = getattr(a, "max_catchup_frames", 6)
     if catchup_frames < 0:
         raise ValueError("max catchup frames must be nonnegative")
     warm_from = getattr(a, "warm_from", None)
     warm_session = None
+    warm_chain = []
     if warm_from:
         warm_from = safe_out(warm_from)
         warm_session = Path(
             json.loads((warm_from / "result.json").read_text())["session"]
         )
+        ancestor = warm_from
+        seen = set()
+        while ancestor:
+            if ancestor in seen:
+                raise ValueError("cyclic warm inheritance")
+            seen.add(ancestor)
+            prior = json.loads((ancestor / "result.json").read_text())
+            warm_chain.append(Path(prior["session"]))
+            ancestor = safe_out(prior["warm_from"]) if prior.get("warm_from") else None
+            if len(seen) > 100:
+                raise ValueError("invalid cyclic/oversized warm inheritance")
     if (
         manifest.get("test_feature") != "demonstration_capture"
         or manifest.get("render_mode") != "none"
@@ -467,11 +496,14 @@ def run(a):
         max_catchup_frames=catchup_frames,
         render_predicate=predicate,
         native_survey=native_survey,
+        ink_every_frames=ink_every,
         warm_from=str(warm_from) if warm_from else None,
         errors=[],
         artifacts=str(out),
         measurement_limits=[
-            "No native world paint readback; final turf is native, dense paint is reconstructed and flagged unknown.",
+            "Periodic exact-frame ink is qualified only in verified ground panels; walls/ambiguous/missing ticks remain masked."
+            if ink_every
+            else "No native world paint readback; final turf is native, dense paint is reconstructed and flagged unknown.",
             "ACK/sample frames do not imply fresh per-present physics state.",
             "Weapon/projectile sensor candidates retain raw evidence; unqualified fields are not silently promoted.",
         ],
@@ -537,7 +569,9 @@ def run(a):
                 demo_present_link=a.present_link,
                 demo_predicate=predicate,
                 demo_warm_session=warm_session,
+                demo_warm_chain=warm_chain,
                 demo_native_survey=native_survey,
+                demo_ink_every=ink_every,
                 demo_cancel=lambda: stop or (out / "STOP").exists(),
             ),
         )
@@ -761,6 +795,14 @@ def run(a):
         except BaseException as ex:
             result["postprocess_error"] = repr(ex)
             write(out / "result.json", result)
+    if ink_every and manifest.get("periodic_ink_panels") and barriers:
+        try:
+            from .periodic_ink import normalize
+
+            normalize(out)
+        except Exception as ex:
+            result["ink_postprocess_error"] = repr(ex)
+            write(out / "result.json", result)
     print(
         json.dumps(
             {k: v for k, v in result.items() if k not in ["origins", "source_sha256"]},
@@ -814,6 +856,17 @@ if __name__ == "__main__":
         "--warm-from",
         type=Path,
         help="private prior recording whose per-role PSO lists are copied into a new warm manifest",
+    )
+    p.add_argument(
+        "--fixture-inputs",
+        type=Path,
+        help="private fixed per-present script inputs, never human demonstration",
+    )
+    p.add_argument(
+        "--ink-every",
+        type=int,
+        default=0,
+        help="async 1600-square native ink period, isolated periodic host only; 0 disables",
     )
     p.add_argument("--timeout", type=float, default=1800)
     p.add_argument("--max-frames", type=int)

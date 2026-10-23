@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from dataclasses import replace
 from rl.gpu.contract import Config
-from rl.gpu.env import ParallelEnv, YAW, PITCH, HP, INK
+from rl.gpu.env import ParallelEnv, YAW, PITCH, HP, INK, ARM
 from rl.demo.convert import anchored, quantize, stats
 from rl.demo.capture import safe_out, write
 
@@ -20,13 +20,19 @@ def run(a):
     inputs = [json.loads(x) for x in (source / "inputs-per-present.jsonl").open()]
     camera = json.load(open(a.camera))
     cfg = Config(
-        **json.load(open(a.calibration))["config"],
-        decision_frames=1,
-        loadout_mode="primary_only",
+        **(
+            json.load(open(a.calibration))["config"]
+            | dict(decision_frames=1, loadout_mode="primary_only")
+        )
     )
     # Only diagnostic horizon is extended to cover native Ready/Go + judging;
     # no training configuration/physics or native game time is changed.
-    cfg = replace(cfg, duration_frames=len(inputs) + 1)
+    cfg = replace(
+        cfg,
+        duration_frames=len(inputs) + 1,
+        camera_codebook=getattr(a, "camera_codebook", None) or cfg.camera_codebook,
+        respawn_mode=getattr(a, "respawn_mode", None) or cfg.respawn_mode,
+    )
     env = ParallelEnv(a.data, cfg, n_envs=3)
     env.env_ids.zero_()  # Common random numbers across the three ablations.
     env._observation = lambda *args: None
@@ -118,7 +124,7 @@ def run(a):
                             hp=float(abs(st[HP] - i.get("hp", 0))),
                             ink=float(abs(st[INK] - i.get("ink", 0))),
                             native_alive=bool(i.get("alive")),
-                            sim_alive=bool(st[HP] > 0),
+                            sim_alive=bool(st[HP] > 0 and st[ARM] != -2),
                         )
                         errors[name][role].append(err)
                     if sf % 120 < 4:
@@ -144,6 +150,9 @@ def run(a):
                 )
     report = dict(
         schema="inklab.rl.demo.dynamics.v1",
+        camera_codebook=cfg.camera_codebook,
+        respawn_mode=cfg.respawn_mode,
+        exact_triangle_ground="ground_triangles" in env.geo.arrays,
         source=str(source),
         first_ground_frame=first,
         last_frame=f,
@@ -190,5 +199,13 @@ if __name__ == "__main__":
         "--calibration", default="work/rl-stage0/native-camera-calibration-v1.json"
     )
     p.add_argument("--camera", required=True)
+    p.add_argument(
+        "--respawn-mode", choices=["ground", "native_launcher"], default=None
+    )
     p.add_argument("--max-frames", type=int)
+    p.add_argument(
+        "--camera-codebook",
+        choices=["legacy", "fine_plus5", "native_plus5"],
+        default=None,
+    )
     run(p.parse_args())

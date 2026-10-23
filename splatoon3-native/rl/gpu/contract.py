@@ -33,6 +33,8 @@ class Config:
     camera_target_height: float | None = None
     camera_pitch_offset_radians: float | None = None
     loadout_mode: str = "full"  # stage1 uses primary_only; stage2 is not authorized yet
+    camera_codebook: str = "legacy"
+    respawn_mode: str = "ground"
     gun_spread_degrees: float = 6.0
     contact_occlusion: str = "whole_shape_clear"  # conservative, unconfirmed
     wave_clipping: str = "whole_wave"  # alternative: independent_halves, unconfirmed
@@ -40,6 +42,10 @@ class Config:
     paint_shaping_per_percent: float = 0.02
 
     def validate(self):
+        if self.respawn_mode not in ("ground", "native_launcher"):
+            raise ValueError("unknown respawn mode")
+        if self.camera_codebook not in ("legacy", "fine_plus5", "native_plus5"):
+            raise ValueError("unknown versioned camera codebook")
         if self.decision_frames < 1 or self.duration_frames < 1:
             raise ValueError("positive fixed60 durations required")
         if self.max_entities != 16 or (self.screen_width, self.screen_height) != (
@@ -69,3 +75,17 @@ class Config:
             value = getattr(self, name)
             if value is None or not math.isfinite(value) or value <= 0:
                 raise ValueError("native calibration missing: " + name)
+
+
+def camera_levels(config):
+    # Explicit opt-in keeps historical checkpoints/BC labels interpretable.
+    # .197 of the combined limit reproduces measured +5 full-stick speed;
+    # .03 and .004 add fine gyro/low-stick resolutions without changing the
+    # extreme human gyro upper bound. This is quantization, not a native filter.
+    if config.camera_codebook == "native_plus5":
+        return (-1.0, -0.197, -0.03, -0.0014, 0.0, 0.0014, 0.03, 0.197, 1.0)
+    return (
+        CAMERA_LEVELS
+        if config.camera_codebook == "legacy"
+        else (-1.0, -0.197, -0.03, -0.004, 0.0, 0.004, 0.03, 0.197, 1.0)
+    )

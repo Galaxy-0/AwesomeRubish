@@ -12,7 +12,7 @@ import math
 from pathlib import Path
 import numpy as np
 import torch
-from rl.gpu.contract import Config, MOVE_DIRECTIONS, CAMERA_LEVELS
+from rl.gpu.contract import Config, MOVE_DIRECTIONS, camera_levels
 from rl.gpu.env import (
     ParallelEnv,
     YAW,
@@ -25,6 +25,7 @@ from rl.gpu.env import (
     SUB,
     GROUND,
     RESPAWN,
+    ARM,
 )
 from rl.demo.capture import safe_out, write
 
@@ -37,11 +38,14 @@ def quantize(action, cfg, camera, previous):
     xy = np.asarray(action["sticks"][:2])
     moves = np.asarray(MOVE_DIRECTIONS)
     move = int(np.square(moves - xy).sum(1).argmin())
+    levels_camera = camera_levels(cfg)
     turn = cfg.gyro_max_radians_per_frame + cfg.stick_plus5_radians_per_frame
     native = np.asarray([*action["sticks"][2:], *action["gyro"]], float)
-    delta = np.asarray(camera["matrix"], float) @ native
+    from .camera_model import predict
+
+    delta = predict(native, camera)
     indices = [
-        int(np.abs(np.asarray(CAMERA_LEVELS) * turn - v).argmin()) for v in delta
+        int(np.abs(np.asarray(levels_camera) * turn - v).argmin()) for v in delta
     ]
     b = action["buttons"]
     levels = [move, *indices, b[0], b[1], b[4], b[2], b[3]]
@@ -53,7 +57,7 @@ def quantize(action, cfg, camera, previous):
     err = dict(
         move_l2=float(np.linalg.norm(moves[move] - xy)),
         camera_radians_per_frame=(
-            np.asarray(CAMERA_LEVELS)[indices] * turn - delta
+            np.asarray(levels_camera)[indices] * turn - delta
         ).tolist(),
         camera_clipped=(abs(delta) > turn).tolist(),
         unrepresented_Y=bool(b[5]),
@@ -160,6 +164,7 @@ def anchored(env, row, origins):
         s[SUB] = int(m.get("form_squid") == 1 and m.get("ground_contact") == 0)
         s[GROUND] = int(m.get("ground_contact") != 5)
         s[RESPAWN] = 0 if i.get("alive") else max(1, float(s[RESPAWN]))
+        s[ARM] = -1 if i.get("alive") else -2
     return valid, ages
 
 
@@ -442,6 +447,11 @@ if __name__ == "__main__":
     p.add_argument("--device", default="cpu")
     p.add_argument("--cpu-threads", type=int, default=1)
     p.add_argument("--stride", type=int, default=2)
+    p.add_argument(
+        "--sample-offset",
+        type=int,
+        help="sync-only: fixed sampling phase; default aligns periodic native ink",
+    )
     p.add_argument("--shard-size", type=int, default=256)
     p.add_argument("--max-frames", type=int)
     p.add_argument("--observation-mode", choices=["sync", "hybrid"], default="sync")

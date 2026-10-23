@@ -200,7 +200,10 @@ def attach(recording, mapping):
         raise ValueError("native control evidence required before unmasking any ink")
     base = read_jsonl(source / "native-barriers.jsonl")[0]["infos"]["player_0"]["frame"]
     groups = {}
-    for p in (source / "ink-targets").glob("frame-*-target-*.png"):
+    image_dir = source / "ink-targets"
+    if not image_dir.exists():
+        image_dir = Path(r["session"]) / "player-0/ink-targets"
+    for p in image_dir.glob("frame-*-target-*.png"):
         m = re.fullmatch(r"frame-(\d+)-target-(\w+)\.png", p.name)
         if m:
             groups.setdefault(m[2], []).append((int(m[1]), p))

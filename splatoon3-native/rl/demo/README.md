@@ -1,5 +1,7 @@
 # 人工示范录制准备（只录制，不训练）
 
+**run70 最新入口见[开录清单](开录清单.md)**：新的隔离宿主支持每30帧异步原生墨图，逐局核对片区矩阵；旧host/strict/稀疏调查命令作为历史保留。下面旧段落中的状态以最新 `notes/rl-demo-ready-20261024.md` 为准。物理手柄轴向仍待用户回来确认，不启动训练。
+
 当前为**诊断夹具**：USB Pro Controller摇杆/按键/200Hz IMU已读通；原生1v1、私有输入/状态记录和近似BC转换已实现。2026-10-24的私有异步条件渲染已将热段平均帧率提高到约60；全程锁60、物理陀螺仪方向、原生全图墨色/完整武器阶段仍未签收，暂不开始正式示范或训练。`--allow-unqualified`仍是诊断入口。最新性能与边界见`notes/rl-demo-realtime-20261024.md/.json`，原转换偏差见`notes/rl-demo-20261023.md`。
 
 在项目根运行。完全离线，只用本机已有SDL2和Python环境，不下载依赖，不训练。
@@ -201,3 +203,30 @@ UV表恢复/资格验证：
 只有原生控制点验证通过的片区才会进入`qualified_panels`；不能把原生包围盒当完整三角形归属。当前仅同构建固定温泉峡谷夹具验证，不自动对未来人玩录像套用另一局的UV表。1600²图像/映射NPZ/网格/BC全部私有，不能提交。
 
 最终观测候选：`work/rl-demo/truth-bc-combat-qualified/` 与 `truth-bc-ink-qualified/`；QA在`work/rl-demo/truth-qa-qualified/`。`weapon_stage_id`和`weapon_animation_remaining_frames`是独立元数据，后者不等于输入锁；原生弹体位置为calc前相位、速度是因果位置差分，通用速度/实体完整门仍保留。`minimap_valid`和射线墨色通道现在可以部分为true，但`dense_paint_native_valid`仍false，**不能把一次稀疏读回的有效格延续到下一帧**。
+
+## run70：周期墨图与版本化转换
+
+[中文开录清单](开录清单.md)列出新宿主的完整人玩/预热命令。两个独立构建入口（依赖固定的私有父路径），均用从未存在的输出目录：
+
+```sh
+# 历史父产物名固定；本机验收构建已在 work/rl-demo/。
+.venv/bin/python -m rl.demo.build_periodic --out work/rl-demo/periodic-new
+.venv/bin/python -m rl.demo.build_ink_recording --out work/rl-demo/ink-recording-new
+```
+
+构建器依赖本机保留的私有父构建，不下载游戏或覆盖已有二进制；正式arena/T1仍拒绝。`--ink-every 30`只在新异步宿主生效；0关闭。读回在下一帧首个GPU指令之前、同一Metal4队列有序复制上一帧原始RG8目标到共享缓冲，GPU完成后串行后台写PNG。最多两张在途，繁忙则丢并记录，绝不阻塞输入来追读回。所有图片带实际来源帧，未读回帧不延续有效mask。
+
+每局通过只读门重读164片区表；与run69控制点校准的所有数值严格相等才沿用133/147资格。`periodic-ink.json`报告实际间隔和范围，`native-ink.json`为精确帧索引。没有将墙、未测片区或混色推成真值。GPU错误/失败录像拒绝资格；PNG/映射/BC继续私有。
+
+`--warm-from`现在沿已有录制祖先合并“继承清单＋新建PSO”，避免下一轮预热丢掉上一轮已加载的管线。原文件不改，循环/过长链拒绝。新性能表同时保留冷构建长帧，未用删长帧或强制display来冒充60。
+
+转换示例（只计算，不训练）：
+
+```sh
+.venv/bin/python -m rl.demo.telemetry work/rl-demo/my-demo-001
+.venv/bin/python -m rl.demo.convert --recording work/rl-demo/my-demo-001 \
+  --out work/rl-demo/my-bc-001 --observation-mode sync --allow-approximate \
+  --camera work/rl-demo/run70/camera-nonlinear-r1.json
+```
+
+新版镜头模型会显式选择`native_plus5`动作档，报告保存档名/数值。没有该标记的旧矩阵仍用legacy；物理轴向/动态镜头响应资格不因换了曲线而升级。周期图像f对应动作前观测f+1，转换自动选一个固定采样相位，避免stride2与30帧读回恰好永远错开；`--sample-offset`可显式指定。没有持有过去墨图，也没有用未来图像。训练就绪仍由各通道mask及完整性门共同决定。

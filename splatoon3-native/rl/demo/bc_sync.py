@@ -41,12 +41,24 @@ def convert_synced(a):
     )
     conf = json.loads(Path(a.calibration).read_text())
     cfg = Config(
-        **conf.get("config", conf), decision_frames=1, loadout_mode="primary_only"
+        **(
+            conf.get("config", conf)
+            | dict(decision_frames=1, loadout_mode="primary_only")
+        )
+    )
+    from dataclasses import replace
+    from rl.gpu.contract import camera_levels
+
+    cfg = replace(
+        cfg, camera_codebook=camera.get("recommended_codebook", cfg.camera_codebook)
     )
     out.mkdir(parents=True, mode=0o700)
     write(out / "camera-response.json", camera)
     env = ParallelEnv(a.data, cfg, device=a.device)
     rebuilder = NativeRebuilder(env, source, rows[0]["infos"])
+    offset = sampling_phase(
+        a.stride, rebuilder.ink.index.rows, getattr(a, "sample_offset", None)
+    )
     batch_size = 32
     batch = ParallelEnv(a.data, cfg, device=a.device, n_envs=batch_size)
     pending = []
@@ -198,7 +210,7 @@ def convert_synced(a):
             seen[n].add(row["infos"][f"player_{n}"]["position_sample_frame"])
         lv, cmd, err = quantize(inputs[f]["actions"]["player_0"], cfg, camera, prev)
         errors.append(err)
-        if f % a.stride:
+        if f % a.stride != offset:
             continue
         pending.append(
             dict(
@@ -250,6 +262,9 @@ def convert_synced(a):
         source=result["source"],
         samples=labels,
         decision_stride=a.stride,
+        sample_offset=offset,
+        camera_codebook=cfg.camera_codebook,
+        camera_levels=list(camera_levels(cfg)),
         first_state_frame=first,
         last_frame_exclusive=export_stop,
         source_frames=len(inputs),
@@ -307,3 +322,18 @@ def convert_synced(a):
     write(out / "report.json", report)
     print(json.dumps(report, indent=2))
     return report
+
+
+def sampling_phase(stride, snapshots, override=None):
+    if stride < 1 or (override is not None and not 0 <= override < stride):
+        raise ValueError("sample offset must be in [0,stride)")
+    if override is not None:
+        return override
+    # Atlas frame f is available for observation f+1. Avoid an even period
+    # silently missing every snapshot when the default decision stride is 2.
+    # This chooses a fixed phase, never holds paint or uses future image values.
+    counts = np.zeros(stride, dtype=int)
+    for row in snapshots:
+        if row["frame"] >= 0:
+            counts[(row["frame"] + 1) % stride] += 1
+    return int(counts.argmax())

@@ -7,7 +7,7 @@ no observation privileges, forced charge rewards or auto-release actions.
 import argparse, json, math, tempfile, time
 from pathlib import Path
 import torch
-from ..env import HP, YAW, PITCH, HEADING
+from ..env import HP, YAW, PITCH, HEADING, ARM
 from ..test_env import flat
 from .common import configuration, checkpoint, load_policy, CSV, digest
 from .policy import Policy, prepare
@@ -66,6 +66,7 @@ class Drill:
             [angle.sin() * distance, torch.zeros_like(angle), angle.cos() * distance],
             -1,
         )
+        e.state[mask, :, ARM] = -1
         e.state[mask, 0, :3] = torch.tensor([1.0, 0.0, 0.0], device=e.device)
         e.state[mask, 1, :3] = target + torch.tensor([1.0, 0.0, 0.0], device=e.device)
         yaw = angle

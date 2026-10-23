@@ -7,7 +7,7 @@ This module never imports a native session or runs a training algorithm.
 import json, math
 from pathlib import Path
 import torch
-from .contract import Config, MOVE_DIRECTIONS, CAMERA_LEVELS, ACTION_SIZES
+from .contract import Config, MOVE_DIRECTIONS, camera_levels, ACTION_SIZES
 from .geometry import Geometry, basis
 from .collision import capsule_first, segment_distance
 
@@ -112,10 +112,17 @@ class ParallelEnv:
             device=self.device,
         )
         self.motion = self.params["motion"]
+        self.launch = None
+        if config.respawn_mode == "native_launcher":
+            from .launch import LaunchModel
+
+            if "opening" not in self.params:
+                raise ValueError("private measured S1 opening model required")
+            self.launch = LaunchModel(self.params["opening"], self.device)
         self.moves = torch.tensor(
             MOVE_DIRECTIONS, device=self.device, dtype=torch.float32
         )
-        self.turns = torch.tensor(CAMERA_LEVELS, device=self.device)
+        self.turns = torch.tensor(camera_levels(config), device=self.device)
         self.roles = torch.arange(2, device=self.device)[None, :]
         self.button_enabled = torch.ones(
             (1, 2, 8), dtype=torch.bool, device=self.device
@@ -195,6 +202,11 @@ class ParallelEnv:
         s[..., INK] = 1
         s[..., GROUND] = 1
         s[..., HURT] = 10000
+        s[..., ARM] = -1
+        if self.launch is not None:
+            s[..., :3] = self.launch.path[0] * self.launch.side
+            s[..., ARM] = 0
+            s[..., GROUND] = 0
         self.state = torch.where(mask[:, None, None], s, self.state)
         self.shots = torch.where(mask[:, None, None, None], 0.0, self.shots)
         self.paint = torch.where(mask[:, None], -1, self.paint)
@@ -303,7 +315,7 @@ class ParallelEnv:
         t = s.clone()
         q = shots.clone()
         old_paint = paint
-        live = s[..., HP] > 0
+        live = (s[..., HP] > 0) & (s[..., ARM] != -2)
         stamper = self.agent_mask
         zr, zl, jump, rr, rs = [a[..., i] > 0 for i in range(3, 8)]
         bjump = jump & (s[..., PREV_B] == 0)
@@ -313,6 +325,8 @@ class ParallelEnv:
         attached = phase == 4
         returning = phase == 5
         can = live & (phase != 1) & (phase != 3) & ~attached & ~returning
+        if self.launch is not None:
+            can &= s[..., ARM] < 0
         turn_max = (
             self.cfg.gyro_max_radians_per_frame + self.cfg.stick_plus5_radians_per_frame
         )
@@ -498,7 +512,9 @@ class ParallelEnv:
             speed = torch.where(select, model["speed"], speed)
             acc = torch.where(select, model["acceleration"], acc)
             brake = torch.where(select, model["braking"], brake)
-        speed = torch.where(~stamper & zr, self.gun["shot_move_speed"], speed)
+        speed = torch.where(
+            ~stamper & zr & ~zl & can, self.gun["shot_move_speed"], speed
+        )
         target = (
             torch.stack(
                 [
@@ -532,12 +548,20 @@ class ParallelEnv:
             allowed = (code & 3) != 2
             # A raised1u support column can overwrite a thin wall voxel. It
             # is an obstacle, not a hole to walk into and fall underneath.
-            column_y, column_ids, column_valid = self.geo.column(candidate)
-            raised = (
-                (column_ids >= 0)
-                & (column_y > p[..., 1, None] + 0.205)
-                & (column_y < p[..., 1, None] + 1.65)
-            ).any(-1) & column_valid
+            if "ground_triangles" in self.geo.arrays:
+                column_y, column_good = self.geo.ground_candidates(candidate)
+                raised = (
+                    column_good
+                    & (column_y > p[..., 1, None] + 0.205)
+                    & (column_y < p[..., 1, None] + 1.65)
+                ).any(-1)
+            else:
+                column_y, column_ids, column_valid = self.geo.column(candidate)
+                raised = (
+                    (column_ids >= 0)
+                    & (column_y > p[..., 1, None] + 0.205)
+                    & (column_y < p[..., 1, None] + 1.65)
+                ).any(-1) & column_valid
             allowed &= ~(ground & raised)
             p[..., axis] = torch.where(allowed, candidate[..., axis], p[..., axis])
             p[..., 1] = torch.where(
@@ -794,6 +818,7 @@ class ParallelEnv:
                 & (hit_t < wall_t)
                 & (hit_t <= 1)
                 & (t.flip(1)[..., HP, None] > 0)
+                & (t.flip(1)[..., ARM, None] != -2)
             )
             wall = enabled & (wall_t <= 1)
             earliest_hit = torch.minimum(
@@ -899,7 +924,7 @@ class ParallelEnv:
             & (s[..., CONTACT_HIT] == 0)
             & live
             & (phase != 5)
-            & (t.flip(1)[..., HP] > 0)
+            & ((t.flip(1)[..., HP] > 0) & (t.flip(1)[..., ARM] != -2))
             & (box | (full_contact & cylinder))
         )
         if self.cfg.contact_occlusion == "whole_shape_clear":
@@ -910,6 +935,12 @@ class ParallelEnv:
         # not claimed. It makes the next aim use the actual displaced target.
         push = horizontal * 0.06 * contact[..., None]
         t[..., :3] += push.flip(1)
+        # S1 recomputes submerged/ink conditions after jump/landing/movement.
+        # A jumping squid must not receive submerged ink regeneration that tick.
+        end_color = self.geo.color(paint, t[..., :3])
+        submerged = zl & (t[..., GROUND] > 0) & (end_color == self.roles) & live
+        t[..., SUB] = submerged.float()
+        enemy = (end_color >= 0) & (end_color != self.roles) & (t[..., GROUND] > 0)
         received = inflicted.flip(1) * (s[..., PROTECTED] <= 0)
         t[..., PROTECTED] = (s[..., PROTECTED] - 1).clamp_min(0)
         hp = (t[..., HP] - received).clamp_min(0)
@@ -933,6 +964,8 @@ class ParallelEnv:
         t[..., CREDIT] = (s[..., CREDIT] + credited).clamp_max(1.0)
         t[..., RESPAWN] = torch.where(died, 480.0, (s[..., RESPAWN] - 1).clamp_min(0))
         respawn = (s[..., HP] <= 0) & (t[..., RESPAWN] == 0)
+        if self.launch is not None:
+            respawn &= False
         t[..., :3] = torch.where(respawn[..., None], self.geo.spawn, t[..., :3])
         t[..., HP] = torch.where(respawn, 1.0, t[..., HP])
         t[..., INK] = torch.where(respawn, 1.0, t[..., INK])
@@ -941,6 +974,9 @@ class ParallelEnv:
         t[..., PROTECTED] = torch.where(respawn, 180.0, t[..., PROTECTED])
         t[..., PHASE] = torch.where(died | respawn, 0.0, t[..., PHASE])
         t[..., GAUGE] = torch.where(died, t[..., GAUGE] * 0.5, t[..., GAUGE])
+        if self.launch is not None:
+            launch_age, launch_active, launch_edge = self.launch.apply(s, t, a, died)
+            self.launch.motion(s, t, launch_age, launch_active, launch_edge, move)
         # Surface ink from projectile trails, limited to ground-adjacent cells.
         gains = []
         for owner in range(2):
@@ -1053,7 +1089,9 @@ class ParallelEnv:
             )
             * 64
         )
-        visible = (enemy[..., HP] > 0) & (enemy[..., SUB] == 0)
+        visible = (
+            (enemy[..., HP] > 0) & (enemy[..., ARM] != -2) & (enemy[..., SUB] == 0)
+        )
         person_hit = (person < dist) & visible[:, :, None, None]
         kind = torch.where(person_hit, 3, kind)
         dist = torch.where(person_hit, person, dist)
@@ -1079,7 +1117,11 @@ class ParallelEnv:
         )
         valid = torch.cat(
             [
-                ((s.flip(1)[..., HP] > 0) & (s.flip(1)[..., SUB] == 0))[..., None],
+                (
+                    (s.flip(1)[..., HP] > 0)
+                    & (s.flip(1)[..., ARM] != -2)
+                    & (s.flip(1)[..., SUB] == 0)
+                )[..., None],
                 q[:, :, :, ACTIVE].reshape(self.n, 1, 16).expand(-1, 2, -1) > 0,
             ],
             -1,

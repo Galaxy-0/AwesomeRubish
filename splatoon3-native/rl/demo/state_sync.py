@@ -22,6 +22,7 @@ from rl.gpu.env import (
     RESPAWN,
     CHARGE,
     COOL,
+    ARM,
 )
 
 
@@ -114,6 +115,7 @@ class NativeRebuilder:
                 s[0, n, SUB] = int(sq == 1 and contact == 0)
                 s[0, n, GROUND] = int(contact in (0, 4))
                 s[0, n, RESPAWN] = 0 if i.get("alive") else 1
+                s[0, n, ARM] = -1 if i.get("alive") else -2
                 sf = i["position_sample_frame"]
                 old = self.previous.get(p)
                 if old and sf > old[0]:
