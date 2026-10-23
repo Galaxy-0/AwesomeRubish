@@ -40,6 +40,9 @@ def main(a):
             fixed_distance=distance,
             button_semantics=semantics,
             aim_window=cfg.get("aim_window", "full"),
+            controls=cfg.get("controls", "auto"),
+            charge_anchor_fraction=cfg.get("charge_anchor_fraction", 0.0),
+            anchor_aim=cfg.get("anchor_aim", "free"),
             frames=d["frames"],
             cumulative_frames=d.get("cumulative_frames", d["frames"]),
             training_seconds=d["training_seconds"],
@@ -90,6 +93,54 @@ def main(a):
         ],
         runs=rows,
         executed_phase_frames=sum(x["frames"] for x in rows),
+    )
+    output["retention"] = {}
+    for p in sorted(root.glob("stage1-retention*/summary.json")):
+        d = json.loads(p.read_text())
+        output["retention"][p.parent.name] = {
+            mode: dict(
+                ko_fraction=d[mode]["ko_fraction"], combat=d[mode]["combat"]["stamper"]
+            )
+            for mode in ("sampled", "greedy")
+        } | dict(source_sha256=digest(p))
+    output["normal_spawn_diagnostics"] = {}
+    for p in sorted(root.glob("stage1-formal-diagnostic-*/summary.json")):
+        d = json.loads(p.read_text())
+        output["normal_spawn_diagnostics"][p.parent.name] = dict(
+            checkpoint_sha256=d["checkpoint_sha256"],
+            training_frames=d["training_frames"],
+            results={
+                kind: {
+                    k: r[k]
+                    for k in (
+                        "seed",
+                        "games",
+                        "frames",
+                        "decision_steps",
+                        "all_terminated",
+                        "finite",
+                        "invalid_special_input_count",
+                        "roles",
+                        "defender",
+                        "combat",
+                    )
+                    if k in r
+                }
+                for kind, r in d["results"].items()
+            },
+            gates=d["gates"],
+            automatic_gates_passed=d["automatic_gates_passed"],
+            source_sha256=digest(p),
+        )
+    regression = root / "stage1-eval-loop-regression-check-r1.json"
+    if regression.exists():
+        output["evaluation_loop_regression"] = json.loads(regression.read_text())
+    output["training_wall_seconds"] = sum(x["training_seconds"] for x in rows)
+    output["peak_allocated_mib"] = max(
+        (x["peak_allocated_mib"] for x in rows), default=0
+    )
+    output["largest_single_lineage_frames"] = max(
+        (x["cumulative_frames"] for x in rows), default=0
     )
     Path(a.out).write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n")
     print(

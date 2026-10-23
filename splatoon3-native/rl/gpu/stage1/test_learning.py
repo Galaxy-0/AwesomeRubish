@@ -107,6 +107,51 @@ class LearningTests(unittest.TestCase):
         self.assertTrue(changed[14:].any())
         self.assertFalse(changed[:14].all())
 
+    def test_rehearsal_rows_and_explicit_camera_mask(self):
+        from .drills import Drill
+        from .opponents import neutral
+
+        e = ParallelEnv(
+            self.temp.name, fixture_config(loadout_mode="primary_only"), n_envs=80
+        )
+        d = Drill(e, "random_pose", 101, charge_anchor_fraction=0.25)
+        self.assertEqual(int(d.anchors.sum()), 20)
+        distance = (e.state[:, 0, :3] - e.state[:, 1, :3]).norm(dim=-1)
+        torch.testing.assert_close(
+            distance[d.anchors], torch.full((20,), 21.0), atol=1e-5, rtol=0
+        )
+        self.assertTrue((distance[~d.anchors] <= 12.00001).all())
+        self.assertTrue(d.anchors[20:].any())
+        # A camera-enabled far retention probe must not silently freeze aim.
+        d.kind, d.controls, d.aim_window = "fixed", "aim", "narrow"
+        obs = e._observation(e.state, e.shots, e.paint, e.steps)
+        original = obs["action_mask"].clone()
+        view = d.view(obs, neutral(e.n, e.device), Policy(button_semantics="toggle"))
+        self.assertTrue((view["action_mask"][:, 1:3].sum(-1) == 3).all())
+        torch.testing.assert_close(obs["action_mask"], original)
+        # Fixed rehearsal preserves the original aligned ZR-only subtask;
+        # normal random-pose rows still train camera control.
+        d.kind, d.controls, d.anchor_aim = "random_pose", "aim", "fixed"
+        d.place(torch.ones(e.n, dtype=torch.bool))
+        delta = e.state[:, 1, :3] - e.state[:, 0, :3]
+        bearing = torch.atan2(delta[:, 0], delta[:, 2])
+        error = e.state[:, 0, 6] - bearing
+        self.assertLess(
+            float(torch.atan2(error.sin(), error.cos())[d.anchors].abs().max()), 1e-5
+        )
+        obs = e._observation(e.state, e.shots, e.paint, e.steps)
+        view = d.view(obs, neutral(e.n, e.device), Policy(button_semantics="toggle"))
+        self.assertTrue(
+            (
+                view["action_mask"][d.anchors.repeat_interleave(2), 1:3].sum(-1) == 1
+            ).all()
+        )
+        self.assertTrue(
+            (
+                view["action_mask"][~d.anchors.repeat_interleave(2), 1:3].sum(-1) == 3
+            ).all()
+        )
+
     def test_mask_and_environment_defense(self):
         e = self.env()
         e.state[:, :, GAUGE] = 1

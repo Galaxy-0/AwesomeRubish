@@ -13,6 +13,10 @@ def main(a):
     data = json.loads(match[2])
     trace = json.loads(Path(a.trace).read_text())
     trace.pop("referee_samples", None)
+    if a.label:
+        trace["label"] = a.label
+    if a.description:
+        trace["description"] = a.description
     data["traces"] = [trace] + data["traces"]
     page = (
         page[: match.start(2)]
@@ -25,6 +29,12 @@ def main(a):
         "'S1 · 模拟状态'",
         "clip.source_kind==='gpu_simulated_state'?(clip.id.startsWith('rl-stage1-')?'GPU · RL 阶段1策略':'GPU · RL 随机夹具'):'S1 · 模拟状态'",
     )
+    # Private QA should open the supplied clip, with old research overlays off.
+    page = page.replace(
+        "clip=DATA.traces.find(t=>t.id==='d3r-control-Yunohana')||",
+        "clip=DATA.traces[0]||",
+        1,
+    ).replace("chooseClip(clip.id,false)", "chooseClip(clip.id,true)", 1)
     out = Path(a.out).resolve()
     if "work" not in out.parts:
         raise ValueError("QA output must remain private under work/")
@@ -37,5 +47,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--showcase", default="showcase/index.html")
     p.add_argument("--trace", required=True)
+    p.add_argument("--label")
+    p.add_argument("--description")
     p.add_argument("--out", required=True)
     main(p.parse_args())

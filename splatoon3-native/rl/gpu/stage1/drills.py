@@ -18,10 +18,22 @@ from .combat_metrics import CombatMeter
 
 
 class Drill:
-    def __init__(self, env, kind, seed, fixed_distance=6.0, aim_window="full"):
+    def __init__(
+        self,
+        env,
+        kind,
+        seed,
+        fixed_distance=6.0,
+        aim_window="full",
+        controls="auto",
+        charge_anchor_fraction=0.0,
+        anchor_aim="free",
+    ):
         self.env, self.kind, self.seed = env, kind, seed
         self.fixed_distance = fixed_distance
         self.aim_window = aim_window
+        self.controls = controls
+        self.anchor_aim = anchor_aim
         self.gen = torch.Generator(device=env.device).manual_seed(seed)
         self.trials = torch.zeros(env.n, device=env.device)
         self.wins = self.trials.clone()
@@ -29,6 +41,13 @@ class Drill:
             env, torch.full((env.n,), math.pi, device=env.device)
         )
         self.age = torch.zeros(env.n, dtype=torch.int64, device=env.device)
+        self.anchors = torch.zeros(env.n, dtype=torch.bool, device=env.device)
+        if not 0 <= charge_anchor_fraction < 1:
+            raise ValueError("anchor fraction must be in [0,1)")
+        if charge_anchor_fraction > 0:
+            count = int(env.n * charge_anchor_fraction)
+            rows = torch.randperm(env.n, generator=self.gen, device=env.device)[:count]
+            self.anchors[rows] = True
         self.place(torch.ones(env.n, dtype=torch.bool, device=env.device))
 
     def place(self, mask):
@@ -42,6 +61,7 @@ class Drill:
         if self.kind != "fixed":
             angle = torch.rand(n, generator=self.gen, device=e.device) * 2 * math.pi
             distance = 4 + torch.rand(n, generator=self.gen, device=e.device) * 8
+            distance = torch.where(self.anchors[mask], 21.0, distance)
         target = torch.stack(
             [angle.sin() * distance, torch.zeros_like(angle), angle.cos() * distance],
             -1,
@@ -53,6 +73,8 @@ class Drill:
             yaw = (
                 angle + (torch.rand(n, generator=self.gen, device=e.device) - 0.5) * 1.2
             )
+            if self.anchor_aim == "fixed":
+                yaw = torch.where(self.anchors[mask], angle, yaw)
         e.state[mask, 0, YAW] = yaw
         e.state[mask, 1, YAW] = angle + math.pi
         e.state[mask, :, PITCH] = 0
@@ -67,14 +89,26 @@ class Drill:
         allowed = [3] if self.kind == "fixed" else [1, 2, 3]
         if self.kind in ("moving", "weak", "frozen"):
             allowed = [0, 1, 2, 3, 4, 5]
+        if self.controls != "auto":
+            allowed = {
+                "aim": [1, 2, 3],
+                "move": [0, 1, 2, 3],
+                "swim": [0, 1, 2, 3, 4],
+                "all": [0, 1, 2, 3, 4, 5],
+            }[self.controls]
         for h in range(8):
             if h not in allowed:
                 v["action_mask"][:, h] = False
                 v["action_mask"][:, h, 4 if h in (1, 2) else 0] = True
-        if self.kind != "fixed" and self.aim_window == "narrow":
+        if 1 in allowed and self.aim_window == "narrow":
             for h in (1, 2):
                 v["action_mask"][:, h, :3] = False
                 v["action_mask"][:, h, 6:] = False
+        if self.anchor_aim == "fixed" and self.anchors.any():
+            rows = self.anchors.repeat_interleave(2)
+            for h in (1, 2):
+                v["action_mask"][rows, h] = False
+                v["action_mask"][rows, h, 4] = True
         return v
 
     def opponent(self):
@@ -96,7 +130,7 @@ class Drill:
         return done
 
 
-def setup(a, n, seed):
+def setup(a, n, seed, training=False):
     # Private synthetic floor isolates controls from known4.34u map error.
     temp = tempfile.TemporaryDirectory()
     flat(a.data, temp.name)
@@ -118,7 +152,16 @@ def setup(a, n, seed):
         fast_rays=str(a.device).startswith("cuda"),
     )
     env = GraphEnv(base) if str(a.device).startswith("cuda") else base
-    drill = Drill(env, a.kind, seed, a.fixed_distance, a.aim_window)
+    drill = Drill(
+        env,
+        a.kind,
+        seed,
+        a.fixed_distance,
+        a.aim_window,
+        a.controls,
+        a.charge_anchor_fraction if training else 0.0,
+        a.anchor_aim,
+    )
     return env, drill, temp
 
 
@@ -208,7 +251,7 @@ def train(a):
     out.mkdir(parents=True, exist_ok=False)
     (out / "checkpoints").mkdir()
     start = time.perf_counter()
-    e, drill, temp = setup(a, a.n_envs, a.seed)
+    e, drill, temp = setup(a, a.n_envs, a.seed, training=True)
     if a.resume:
         policy, meta = load_policy(a.resume, a.device)
         if policy.button_semantics != a.button_semantics:
@@ -339,6 +382,9 @@ def train(a):
             environment_frames=frames,
             wall_seconds=time.perf_counter() - start,
             aux_scale=1.0,
+            anchor_environments=int(drill.anchors.sum().item()),
+            anchor_trials=float(drill.trials[drill.anchors].sum().item()),
+            anchor_weapon_kos=float(drill.wins[drill.anchors].sum().item()),
             **stats,
             **{"stamper_" + k: v for k, v in meter.report()["stamper"].items()},
         )
@@ -426,8 +472,13 @@ if __name__ == "__main__":
     )
     p.add_argument("--button-semantics", choices=["level", "toggle"], default="toggle")
     p.add_argument("--seed", type=int, default=101)
+    p.add_argument("--anchor-aim", choices=["free", "fixed"], default="free")
+    p.add_argument("--charge-anchor-fraction", type=float, default=0.0)
     p.add_argument("--fixed-distance", type=float, default=6.0)
     p.add_argument("--aim-window", choices=["narrow", "full"], default="full")
+    p.add_argument(
+        "--controls", choices=["auto", "aim", "move", "swim", "all"], default="auto"
+    )
     p.add_argument("--seeds", type=int, nargs="+", default=[101, 202, 303])
     p.add_argument("--trial-frames", type=int, default=360)
     p.add_argument("--eval-envs", type=int, default=64)

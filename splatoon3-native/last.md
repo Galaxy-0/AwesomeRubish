@@ -1,12 +1,30 @@
-# RL 阶段1恢复进行中（2026-10-23）
+# RL阶段1恢复：联合能力卡点，已按两轮规则停止（2026-10-23）
 
-用户采纳`work/codex/astra-r1.md`并重置卡点计数。当前只推进阶段1，正式门槛不变；此前失败记录保留在下方。
+阶段1仍未通过，不进入阶段2。按astra-r1与用户追加指示，完成ZR/ZL切换语义、稳定PPO和三种子能力课程。固定21u靶两臂（level/toggle）三个种子sampled/greedy均128/128首次生命KO，均可两满蓄；独立电平也学会，不能把收益归因于toggle单因素。
 
-ZR/ZL保持/按下/松开参数化、PPO优势下限/逐minibatch KL/逐头指标和按term/trunc评估已实现。13项学习组件与原14项CPU环境回归通过。未训练固定靶3种子对照已完成，切换语义仍极少满蓄；正在做固定6u靶的配对PPO（两臂×101/202/303，各128更新），之后仅改距离21u复测满蓄（离线两满蓄KO、三轻斩无伤控制已留原件）。短课程使用合成平地隔离控制，不是温泉峡谷正式验收；不据近靶轻斩KO签收蓄力。
+随机姿态后，25%远靶复习让两个种子恢复远靶，第三个仍失败。随后只延长预算、再只降低复习控制难度，两轮均未改善三种子近/远联合能力，已停止。移动靶、弱攻击、历史/自战训练尚未启动；.52本轮未训练。
 
-远端私有`~/splatoon3-native-rl-stage0/`：源码r8/r9/r10；tmux `spl3-r1-fixed-paired`和等待其正常结束的`spl3-r1-fixed-charge`，脚本`fixed-paired-r1.sh`/`fixed-charge-r1.sh`；原件目录`stage1-action-ablation-r1`、`stage1-fixed-paired-r1-*`、`stage1-fixed-charge-r1-*`。另外资格复核`spl3-r1-verify-courses`（r12）结束后，`spl3-r1-pose`（r13）只有三种子21u首次生命门都通过才继续随机距离/朝向窄相机课程；脚本`verify-courses-r1.sh`/`pose-r1.sh`。固定组已完成24份首次生命复核：21u两臂3种子训练后sampled/greedy均128/128；level初始全0/128，toggle初始3/128、0/128、0/128。独立电平也能学会，不能归功于toggle单因素；详见notes/rl-stage1-fixed-20261023.json，不代表正式验收。随机姿态r1因cuDNN eval模式在首个反向传播失败、0更新，原件保留；r14已补train模式，替代job`spl3-r1-pose-r2`/`pose-r2.sh`写新目录`stage1-pose-r2-*`。下一步先查日志/exit再行动，不重复启动。SSH偶发超时/EOF，后台作业与连接分离，不计学习卡点。
+正常出生温泉180秒诊断（各角色64局）：
 
-阶段1尚未通过，未进入更高课程/阶段2或T1/S1。源码/运行约定与当前边界见`notes/rl-stage1-restart-20261023.md`。未动policies/原存档/宿主/VPT，不提交资源/派生网格/生成页/checkpoint。
+| 种子 | 水刀sampled胜随机 | 水刀greedy胜随机 | 随机对局武器KO / 回血观察 |
+|---|---:|---:|---:|
+| 101 | 33/64 | 31/64 | 0 / 0 |
+| 202 | 30/64 | 0/64 | 0 / 0 |
+| 303 | 54/64 | 52/64 | 0 / 0 |
+
+D4近距sampled涂地胜61/64、60/64、61/64，仍0武器KO，不代表对枪通过。202 greedy正常局ZL占比99.926%，最长10,792帧；恢复完整控制后仍未协调。所有自动门false，掩体意图未证实。
+
+本恢复周期24个有效run共150,994,944环境帧，最长单模型谱系20,971,520；run计时合计3590.46秒/59.84分钟（含初探，不含末态资格/全局诊断/开发），峰值allocated2560.30MiB。失败cuDNN eval-mode尝试0更新/32768帧排除，修复后CUDA续训完成，失败原件保留。14项CPU学习组件、14项CPU环境回归、定向ruff/compileall/diff检查通过；旧B模型新终止循环下六类逐局字段完全一致，均10,800帧/180秒。
+
+详细报告：[notes/rl-stage1-restart-20261023.md](notes/rl-stage1-restart-20261023.md)；聚合数值：[JSON](notes/rl-stage1-restart-20261023.json)；用法：[rl/gpu/stage1/README.md](rl/gpu/stage1/README.md)。固定阶段源码/结果分段已推送519f1ec、54680c5；本次另提交复习/审计源码及最终停止报告。私有401文件归档SHA256 `72bb9a7e0f6b46528e529af3dcdc88115d4c1acc1425c38c8de559f9e02251df`，原件和checkpoint保留在asuka0私有根，不提交大型权重或派生数据。
+
+本地回放已实际播放/暂停/seek F1800/Alpha跟随，脚本error 0：
+
+- `work/rl-stage1-restart/preview-normal-r1/index.html`，6,294,765 bytes，明确标注阶段1未通过，未发布。
+- 截图`work/rl-stage1-restart/replay-normal-r1.png`。
+- 固定靶曲线`work/rl-stage1-restart/fixed-charge-curves-r1.png`。
+
+最终远端无本轮训练/评估进程，tmux无server、GPU compute列表空；状态原件`work/rl-stage1-restart/closeout-remote-r1.json`。自建浏览器标签与8897临时服务关闭。没有启动原生/T1/S1/阶段2，不动policies/原存档/VPT；游戏资源/网格/生成页/截图/checkpoint不进git。FOV轴向仍是假设，实图4.34u粗几何偏差保留。
 
 ---
 
