@@ -38,6 +38,8 @@ def episode_repeats(scenario,repeats):
 
 
 def run(policy,out,repeats=3,timeout=3600,shared_slots=DEFAULT_SLOTS,native_runtime=None):
+    if os.environ.get('DM_TEST_DEMO'):
+        raise ValueError('DM_TEST_DEMO is forbidden in formal arena/T1/proficiency')
     if os.environ.get('DM_TEST_AIM') or os.environ.get('DM_TEST_AIM_FILE'):
         raise ValueError('DM_TEST_AIM is forbidden in main-weapon proficiency')
     if os.environ.get('DM_TEST_SPECIAL'):

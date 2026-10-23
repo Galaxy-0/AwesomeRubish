@@ -1,0 +1,937 @@
+{
+  "schema": "inklab.rl.demo.preparation.v1",
+  "training_started": false,
+  "ready_for_human_demonstration": false,
+  "ready_for_bc": false,
+  "status": "capture/conversion chain verified; realtime60, physical controls and dense native observation gaps remain",
+  "controller": {
+    "sensor_event_hz": 200.0,
+    "sensor_event_count": 627,
+    "device": {
+      "index": 0,
+      "name": "Nintendo Switch Pro Controller",
+      "vendor": 1406,
+      "product": 8201,
+      "gyro": true,
+      "advertised_gyro_hz": 200.0,
+      "transport": "USB (user verified), handshake/IMU delegated to SDL HIDAPI",
+      "units": "rad/s; native gyro = rad/s / (2*pi)"
+    },
+    "seconds": 3.002538167173043,
+    "polls": 2378,
+    "unique_sensor_updates": 209,
+    "observed_sensor_hz": 66.66666666666667,
+    "gyro_peak_rad_s": [
+      0.009598285891115665,
+      0.0042608981020748615,
+      0.020210271701216698
+    ],
+    "stick_peak": [
+      0.11545152134769737,
+      0.027436140018921477,
+      0.019745475630970184,
+      0.05844294564653462
+    ],
+    "button_seen": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "gyro_readable": true,
+    "axis_sign_validation": "manual movement and native camera comparison still required"
+  },
+  "native_smoke": {
+    "passed": true,
+    "complete": true,
+    "source": "scripted_smoke",
+    "stage": 1,
+    "map": "Yunohana",
+    "loadout_mode": "primary_only",
+    "weapons": [
+      8000,
+      50
+    ],
+    "frames": 11511,
+    "controlled_wall_seconds": 309.6516346249264,
+    "controlled_presents_per_second": 37.17403272856286,
+    "errors": [],
+    "score_by_role": {
+      "player_0": [
+        0.899999976,
+        0.600000024
+      ],
+      "player_1": [
+        0.600000024,
+        0.899999976
+      ]
+    },
+    "turf_ratio_by_role": {
+      "player_0": [
+        0.00899999961,
+        0.00600000005
+      ],
+      "player_1": [
+        0.00600000005,
+        0.00899999961
+      ]
+    },
+    "host_sha256": "32b5b3e5e9243732713eaae3b2be99cc60fcc37b2cac86cc590f9de38516914f",
+    "host": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/host-r5/dmhost-demo"
+  },
+  "native_corpus_audit": {
+    "native_barriers": 11512,
+    "input_intervals": 11511,
+    "contiguous": true,
+    "paired_frame_offsets_exact": true,
+    "guest_clock_error_ns_min": 0,
+    "guest_clock_error_ns_max": 0,
+    "both_winners": true
+  },
+  "bc_audit": {
+    "samples": 5316,
+    "valid_native_state_samples": 5316,
+    "npz_shards": 21,
+    "finite": true,
+    "toggle_roundtrip_exact": true,
+    "screen_shape": "18x32x4",
+    "raw_referee_fields_exported": false,
+    "native_dense_paint_claimed": false,
+    "ready_for_training": false
+  },
+  "native_telemetry": {
+    "hud_by_role": {
+      "player_0": {
+        "enemy_hud_downs": 0,
+        "own_hud_downs": 0,
+        "enemy_environmental_downs": 0,
+        "own_environmental_downs": 0,
+        "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+      },
+      "player_1": {
+        "enemy_hud_downs": 0,
+        "own_hud_downs": 0,
+        "enemy_environmental_downs": 0,
+        "own_environmental_downs": 0,
+        "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+      }
+    },
+    "projectile_samples": 563,
+    "weapon_phase_candidates": 0,
+    "camera_samples": 22106,
+    "counts": {
+      "0": {
+        "full_aim_writes": 0,
+        "camera_elisions": 0,
+        "native_weapon_setup": [
+          [
+            "8000",
+            "2",
+            "0"
+          ]
+        ]
+      },
+      "1": {
+        "full_aim_writes": 0,
+        "camera_elisions": 55,
+        "native_weapon_setup": [
+          [
+            "50",
+            "2",
+            "0"
+          ]
+        ]
+      }
+    },
+    "native_dense_paint": false,
+    "weapon_phase_complete": false,
+    "projectile_active_set_complete": false,
+    "unknown_is_not_zero": true,
+    "notes": [
+      "No phase samples is unknown, not idle.",
+      "Native final turf comes from Winners; dense paint is not captured.",
+      "Raw vectors remain private and are not promised to be complete visible entities."
+    ]
+  },
+  "tests": {
+    "demo_components": 11,
+    "existing_t1_components": 11,
+    "real_policy_workers": 2,
+    "observation_schedule": {
+      "frames": 12,
+      "state_exact": true,
+      "shots_exact": true,
+      "paint_exact": true,
+      "step_and_termination_exact": true,
+      "scope": "Only omit unused observation construction in offline replay; call identical environment.step physics"
+    }
+  },
+  "policy_workers": [
+    {
+      "policy": "alpha",
+      "source_sha256": "241a5348bdc01f9f06c2726466a92028c833c8637969671e26b8f7516793ca30",
+      "passed": true
+    },
+    {
+      "policy": "bravo",
+      "source_sha256": "d2e1e00dcbb5a3a86ead355eb025180b5c33be426601d62a38c65ef517cc2705",
+      "passed": true
+    }
+  ],
+  "bc": {
+    "samples": 5316,
+    "first_ground_frame": 166,
+    "last_frame": 10799,
+    "decision_stride": 2,
+    "button_semantics": "toggle for ZR/ZL; physical holds retained",
+    "quantization_scope": "Stamper only, physical input -> levels; camera linear surrogate fitted from native sample windows",
+    "quantization": {
+      "move_l2": {
+        "n": 10632,
+        "mean": 0.05925507900677201,
+        "p95": 0.15000000000000002,
+        "max": 0.15000000000000002
+      },
+      "camera_abs_deg_per_frame": {
+        "n": 21264,
+        "mean": 0.020700996763282267,
+        "p95": 0.07082474965591627,
+        "max": 0.2788436882311955
+      },
+      "camera_clipped_fraction": 0.0,
+      "unrepresented_Y_frames": 0
+    },
+    "open_loop_native_error": {
+      "0": {
+        "position_units": {
+          "n": 2657,
+          "mean": 19.885419604655297,
+          "p95": 38.522007860108765,
+          "max": 39.21340633133393
+        },
+        "hp_fraction": {
+          "n": 2657,
+          "mean": 0.09032743695897628,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "ink_fraction": {
+          "n": 2657,
+          "mean": 0.34238190444051414,
+          "p95": 0.8463403582572937,
+          "max": 1.0
+        }
+      },
+      "1": {
+        "position_units": {
+          "n": 2658,
+          "mean": 24.276113833910458,
+          "p95": 27.037890296802168,
+          "max": 27.0378904951348
+        },
+        "hp_fraction": {
+          "n": 2658,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "ink_fraction": {
+          "n": 2658,
+          "mean": 6.897410226608078e-06,
+          "p95": 0.0,
+          "max": 0.008333325845581108
+        }
+      }
+    },
+    "source_state_age_frames": {
+      "n": 21264,
+      "mean": 2.5,
+      "p95": 4.0,
+      "max": 4.0
+    },
+    "final_native_turf_ratio": [
+      0.00899999961,
+      0.00600000005
+    ],
+    "free_rollout_turf_ratio": [
+      0.006697617779130832,
+      0.0
+    ],
+    "turf_error_percentage_points": [
+      -0.2302381830869168,
+      -0.600000005
+    ],
+    "limitations": [
+      "Native dense paint unavailable: minimap and ray ink are approximate, not BC-qualified.",
+      "Native projectile/weapon internal state not fully imported.",
+      "Original spawner flight omitted explicitly.",
+      "Quantization and geometry/dynamic mismatch accumulate; do not treat as native parity."
+    ]
+  },
+  "camera_fit": {
+    "samples": 5406,
+    "rank": 4,
+    "input_dimensions": 5,
+    "rmse_radians_per_frame": [
+      0.0009567230839169143,
+      0.00026470765211707126
+    ],
+    "scope": "Linear steady-input diagnostic fitted on this scripted corpus, not a held-out dynamic response calibration"
+  },
+  "performance": {
+    "perf-lean-r4": {
+      "warm_logic_frame_rates": {
+        "samples": 1200,
+        "median_fps": 36.95659348312604,
+        "one_percent_low_fps": 15.590451822661858,
+        "average_fps": 36.12164378945001,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "warm_display_frame_rates": {
+        "samples": 1196,
+        "median_fps": 30.00011190041739,
+        "one_percent_low_fps": 15.00003125631513,
+        "average_fps": 36.114825548179326,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "software_input_to_corresponding_drawable_presented_ms": {
+        "min": 53.014501,
+        "p50": 83.662876,
+        "p95": 91.9614922,
+        "max": 224.391251
+      },
+      "zero_presented_time_frames": 13,
+      "display_rate_scope": "Only adjacent native frames with positive drawable presentedTime; no FPS inferred across occluded/discarded gaps. These conditional rates do not certify continuous display60.",
+      "warmup_exclusion_frames": 600,
+      "cpu_gpu_profile": {
+        "player_0:@cpu_ms": {
+          "min": 3.405,
+          "p50": 3.8095,
+          "p95": 4.169199999999999,
+          "max": 12.168
+        },
+        "player_0:@proc_cpu_ms": {
+          "min": 13.64,
+          "p50": 15.539,
+          "p95": 38.884100000000004,
+          "max": 66.903
+        },
+        "player_0:@sub_cpu_ms": {
+          "min": 3.037,
+          "p50": 3.464,
+          "p95": 3.82205,
+          "max": 11.734
+        },
+        "player_0:@sub_wall_ms": {
+          "min": 20.023,
+          "p50": 23.6255,
+          "p95": 26.99725,
+          "max": 37.006
+        },
+        "player_0:@gpu_ms": {
+          "min": 6.905,
+          "p50": 10.2975,
+          "p95": 13.45405,
+          "max": 16.679
+        },
+        "player_0:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_0:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.02
+        },
+        "player_0:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_0:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 7.0
+        },
+        "player_0:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 12.0
+        },
+        "player_1:@cpu_ms": {
+          "min": 3.549,
+          "p50": 3.851,
+          "p95": 4.174,
+          "max": 10.373
+        },
+        "player_1:@proc_cpu_ms": {
+          "min": 12.154,
+          "p50": 14.103,
+          "p95": 33.77045,
+          "max": 70.659
+        },
+        "player_1:@sub_cpu_ms": {
+          "min": 3.281,
+          "p50": 3.521,
+          "p95": 3.83805,
+          "max": 10.055
+        },
+        "player_1:@sub_wall_ms": {
+          "min": 21.293,
+          "p50": 24.884999999999998,
+          "p95": 27.799699999999998,
+          "max": 34.68
+        },
+        "player_1:@gpu_ms": {
+          "min": 6.948,
+          "p50": 10.335,
+          "p95": 13.756200000000002,
+          "max": 16.872
+        },
+        "player_1:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 16.0
+        },
+        "player_1:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 5.0
+        }
+      }
+    },
+    "perf-peer-r5": {
+      "warm_logic_frame_rates": {
+        "samples": 1200,
+        "median_fps": 39.362523925034075,
+        "one_percent_low_fps": 15.557170332216893,
+        "average_fps": 38.07758701823364,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "warm_display_frame_rates": {
+        "samples": 1166,
+        "median_fps": 30.00011280042413,
+        "one_percent_low_fps": 14.400027342771919,
+        "average_fps": 37.95992206865894,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "software_input_to_corresponding_drawable_presented_ms": {
+        "min": 60.574167,
+        "p50": 82.889917,
+        "p95": 91.5152928,
+        "max": 114.354834
+      },
+      "zero_presented_time_frames": 14,
+      "display_rate_scope": "Only adjacent native frames with positive drawable presentedTime; no FPS inferred across occluded/discarded gaps. These conditional rates do not certify continuous display60.",
+      "warmup_exclusion_frames": 600,
+      "cpu_gpu_profile": {
+        "player_0:@cpu_ms": {
+          "min": 1.546,
+          "p50": 3.846,
+          "p95": 4.4426499999999995,
+          "max": 22.313
+        },
+        "player_0:@proc_cpu_ms": {
+          "min": 8.868,
+          "p50": 16.015,
+          "p95": 36.08909999999997,
+          "max": 68.204
+        },
+        "player_0:@sub_cpu_ms": {
+          "min": 1.16,
+          "p50": 3.538,
+          "p95": 4.0901,
+          "max": 21.951
+        },
+        "player_0:@sub_wall_ms": {
+          "min": 8.187,
+          "p50": 23.154,
+          "p95": 26.84875,
+          "max": 49.114
+        },
+        "player_0:@gpu_ms": {
+          "min": 3.74,
+          "p50": 9.622,
+          "p95": 13.535950000000001,
+          "max": 19.557
+        },
+        "player_0:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_0:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.011
+        },
+        "player_0:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_0:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 20.0
+        },
+        "player_0:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 25.0
+        },
+        "player_1:@cpu_ms": {
+          "min": 2.805,
+          "p50": 3.116,
+          "p95": 3.54905,
+          "max": 5.14
+        },
+        "player_1:@proc_cpu_ms": {
+          "min": 9.732,
+          "p50": 13.2675,
+          "p95": 32.66829999999999,
+          "max": 74.78
+        },
+        "player_1:@sub_cpu_ms": {
+          "min": 2.485,
+          "p50": 2.755,
+          "p95": 3.1755499999999994,
+          "max": 4.698
+        },
+        "player_1:@sub_wall_ms": {
+          "min": 17.384,
+          "p50": 21.1785,
+          "p95": 24.81905,
+          "max": 60.042
+        },
+        "player_1:@gpu_ms": {
+          "min": 5.703,
+          "p50": 8.768,
+          "p95": 12.18245,
+          "max": 20.185
+        },
+        "player_1:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.003
+        },
+        "player_1:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 5.0
+        }
+      }
+    },
+    "smoke-link0-r7": {
+      "warm_logic_frame_rates": {
+        "samples": 10199,
+        "median_fps": 36.96550194530954,
+        "one_percent_low_fps": 5.703340705683634,
+        "average_fps": 29.60547600869896,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "warm_display_frame_rates": {
+        "samples": 3374,
+        "median_fps": 40.000067200112895,
+        "one_percent_low_fps": 13.014380633757673,
+        "average_fps": 37.29215321926548,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "software_input_to_corresponding_drawable_presented_ms": {
+        "min": 29.081209,
+        "p50": 45.894001,
+        "p95": 51.0843919,
+        "max": 147.329626
+      },
+      "zero_presented_time_frames": 7076,
+      "display_rate_scope": "Only adjacent native frames with positive drawable presentedTime; no FPS inferred across occluded/discarded gaps. These conditional rates do not certify continuous display60.",
+      "warmup_exclusion_frames": 600,
+      "cpu_gpu_profile": {
+        "player_0:@cpu_ms": {
+          "min": 1.357,
+          "p50": 3.77,
+          "p95": 6.106099999999999,
+          "max": 22.428
+        },
+        "player_0:@proc_cpu_ms": {
+          "min": 7.887,
+          "p50": 15.521,
+          "p95": 38.377050000000004,
+          "max": 116.791
+        },
+        "player_0:@sub_cpu_ms": {
+          "min": 1.056,
+          "p50": 3.454,
+          "p95": 5.348,
+          "max": 11.106
+        },
+        "player_0:@sub_wall_ms": {
+          "min": 7.446,
+          "p50": 22.511499999999998,
+          "p95": 46.188499999999976,
+          "max": 564.833
+        },
+        "player_0:@gpu_ms": {
+          "min": 3.437,
+          "p50": 9.3225,
+          "p95": 17.356449999999995,
+          "max": 251.867
+        },
+        "player_0:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_0:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.001,
+          "max": 0.486
+        },
+        "player_0:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.033,
+          "p95": 0.135,
+          "max": 15.218
+        },
+        "player_0:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 7.0
+        },
+        "player_0:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 12.0
+        },
+        "player_1:@cpu_ms": {
+          "min": 2.726,
+          "p50": 3.405,
+          "p95": 5.793299999999996,
+          "max": 12.101
+        },
+        "player_1:@proc_cpu_ms": {
+          "min": 9.494,
+          "p50": 14.236,
+          "p95": 36.95105,
+          "max": 108.196
+        },
+        "player_1:@sub_cpu_ms": {
+          "min": 2.391,
+          "p50": 3.037,
+          "p95": 5.246,
+          "max": 11.147
+        },
+        "player_1:@sub_wall_ms": {
+          "min": 17.225,
+          "p50": 23.3825,
+          "p95": 37.15489999999997,
+          "max": 143.735
+        },
+        "player_1:@gpu_ms": {
+          "min": 6.051,
+          "p50": 10.996,
+          "p95": 17.410149999999998,
+          "max": 70.679
+        },
+        "player_1:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.003
+        },
+        "player_1:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 1.0
+        },
+        "player_1:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 5.0
+        }
+      }
+    },
+    "smoke-final-r11": {
+      "warm_logic_frame_rates": {
+        "samples": 10199,
+        "median_fps": 39.10807465590663,
+        "one_percent_low_fps": 15.309229556361561,
+        "average_fps": 38.13677104546782,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "warm_display_frame_rates": {
+        "samples": 10199,
+        "median_fps": 40.000067200112895,
+        "one_percent_low_fps": 14.658715987786021,
+        "average_fps": 38.13728709295115,
+        "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+      },
+      "software_input_to_corresponding_drawable_presented_ms": {
+        "min": 30.834584,
+        "p50": 45.474501,
+        "p95": 50.2691796,
+        "max": 153.832459
+      },
+      "zero_presented_time_frames": 4,
+      "display_rate_scope": "Only adjacent native frames with positive drawable presentedTime; no FPS inferred across occluded/discarded gaps. These conditional rates do not certify continuous display60.",
+      "warmup_exclusion_frames": 600,
+      "cpu_gpu_profile": {
+        "player_0:@cpu_ms": {
+          "min": 3.369,
+          "p50": 3.769,
+          "p95": 4.132049999999999,
+          "max": 13.421
+        },
+        "player_0:@proc_cpu_ms": {
+          "min": 13.198,
+          "p50": 15.419,
+          "p95": 36.45089999999984,
+          "max": 83.467
+        },
+        "player_0:@sub_cpu_ms": {
+          "min": 3.072,
+          "p50": 3.454,
+          "p95": 3.792,
+          "max": 13.07
+        },
+        "player_0:@sub_wall_ms": {
+          "min": 19.341,
+          "p50": 23.253500000000003,
+          "p95": 26.36705,
+          "max": 38.311
+        },
+        "player_0:@gpu_ms": {
+          "min": 6.481,
+          "p50": 10.223500000000001,
+          "p95": 13.573149999999998,
+          "max": 16.673
+        },
+        "player_0:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_0:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.002
+        },
+        "player_0:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.029,
+          "p95": 0.036,
+          "max": 0.13
+        },
+        "player_0:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 7.0
+        },
+        "player_0:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 12.0
+        },
+        "player_1:@cpu_ms": {
+          "min": 2.759,
+          "p50": 3.058,
+          "p95": 3.34,
+          "max": 7.862
+        },
+        "player_1:@proc_cpu_ms": {
+          "min": 10.661,
+          "p50": 12.968,
+          "p95": 33.19714999999998,
+          "max": 65.133
+        },
+        "player_1:@sub_cpu_ms": {
+          "min": 2.406,
+          "p50": 2.703,
+          "p95": 2.9870499999999995,
+          "max": 4.966
+        },
+        "player_1:@sub_wall_ms": {
+          "min": 17.237,
+          "p50": 21.205,
+          "p95": 23.785199999999996,
+          "max": 45.166
+        },
+        "player_1:@gpu_ms": {
+          "min": 5.643,
+          "p50": 8.938500000000001,
+          "p95": 12.20905,
+          "max": 14.814
+        },
+        "player_1:@wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pq_wait_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.009
+        },
+        "player_1:@drawable_ms": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "player_1:@pso_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 1.0
+        },
+        "player_1:@lib_new": {
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 4.0
+        }
+      }
+    }
+  },
+  "renderer_attempts": [
+    {
+      "candidate": "DM_3D_SCALE .25-.5",
+      "outcome": "existing implementation only targets D2R build; not applicable to Splatoon, no verified scale change"
+    },
+    {
+      "candidate": "DM_GAME_RES800x450",
+      "outcome": "native output still1280x720; requested640x360 not confirmed, attempt rejected; not a valid low-resolution performance result"
+    },
+    {
+      "candidate": "generic FXAA/bloom/shadow off",
+      "outcome": "no qualified Splatoon-specific toggle found; generic shader keys do not match known Splatoon map; not implemented or claimed as disabled"
+    },
+    {
+      "candidate": "remove exploratory heap dumps/avoid growing-log rescans",
+      "outcome": "implemented; bounded scalar sensors and original memory stop limits retained"
+    },
+    {
+      "candidate": "headless peer camera elision",
+      "outcome": "measured; human camera stays fully rendered and protected query semantics retained"
+    },
+    {
+      "candidate": "script-only RPCchunk8",
+      "average_presents_per_second": 32.51886569722225,
+      "outcome": "no speed win; not offered as human control or BC recording"
+    },
+    {
+      "candidate": "immediate drawable presentation link0",
+      "outcome": "lower software input-to-present latency, realtime60 still not attained"
+    }
+  ],
+  "latency_scope": "Software command send -> actual drawable presentedTime on common mach monotonic clock. Does not include USB polling or physical switch-to-photon latency. Frames without callback remain missing.",
+  "full_native_paint": false,
+  "weapon_phase_complete": false,
+  "native_projectile_set_complete": false,
+  "physical_button_to_photon_latency_measured": false,
+  "limitations": [
+    "Manual physical buttons/gyro sign validation pending.",
+    "FOV55vertical assumption/coarse geometry remain.",
+    "Native RNG unknown; simulated spread is not native replay equivalence.",
+    "Free rollout drifts; native-anchored BC still has approximate paint/projectiles/action state.",
+    "Performance runs include different navigation fixes/cache histories; not strict causal A/B speedup claims."
+  ],
+  "artifacts": {
+    "native": "work/rl-demo/smoke-final-r11",
+    "bc": "work/rl-demo/bc-final-r11",
+    "instructions": "rl/demo/README.md"
+  },
+  "source_sha256": {
+    "work/rl-demo/smoke-final-r11/result.json": "52539e13aa4b651f77f69e9aa3718bdf8d6d7c6404fb2f0015fdb8c6d49f8ce4",
+    "work/rl-demo/smoke-final-r11/latency.json": "320d6e16a8d779dc32d317a43dd7dff218c66279ec36a73d1b56b8be42b695fb",
+    "work/rl-demo/bc-final-r11/report.json": "08f30702fd3e0fdfb9e304cadbbe316bd7c31fd2726771088e9fec971e40caf6",
+    "work/rl-demo/controller-final-r3/summary.json": "8e222f7ffa2918c5dee4b02ad662d5c6622679a9fb64550153eb06aa154c031e",
+    "work/rl-demo/corpus-audit-final.json": "730c4ddf2d7db04cca3deff248d4ad63b8e3b4e7526542d29a4a4a6c16efaafa",
+    "work/rl-demo/bc-audit-final.json": "e047822e6d58487d166bcc98657885c4a29cc51137a9a7cb2a11bdbe0f281708"
+  },
+  "resource_scope": "whole native session including boot/settlement, not GPU allocator memory",
+  "resources": {
+    "max_rss_sum_mib": 3356.0,
+    "max_footprint_sum_mib": 6119.0,
+    "max_new_swapout_bytes": 0,
+    "max_pressure": 1,
+    "gpu_util_percent_mean": 76.9298245614035
+  }
+}

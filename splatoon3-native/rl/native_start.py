@@ -17,11 +17,15 @@ from .session import Session, ROOT, NativeProcessExitError
 MAPS={1:'Vss_Yunohana',2:'Vss_District00',3:'Vss_Yagara'}
 
 
-def validate_runtime(host,patched):
+def validate_runtime(host,patched,*,allow_demo=False):
+    if os.environ.get("DM_TEST_DEMO") and not allow_demo:
+        raise ValueError("DM_TEST_DEMO is forbidden in arena/T1; use rl.demo.capture")
     if os.environ.get('DM_TEST_AIM') or os.environ.get('DM_TEST_AIM_FILE'):
         raise ValueError('A7 arena startup rejects DM_TEST_AIM; direct aim is an isolated measurement fixture')
     host=Path(host).resolve();patched=Path(patched).resolve()
     manifest=json.loads(host.with_suffix('.build.json').read_text())
+    if manifest.get('test_feature')=='demonstration_capture' and not allow_demo:
+        raise ValueError('demonstration host is forbidden in arena/T1')
     if hashlib.sha256(host.read_bytes()).hexdigest()!=manifest['output_sha256']:
         raise ValueError('A7 host identity mismatch')
     for name,digest in manifest['source_sha256'].items():

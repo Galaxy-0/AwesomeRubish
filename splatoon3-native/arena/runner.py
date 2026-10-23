@@ -117,6 +117,8 @@ def abort_on_cancel(env,stop,finished,shared_slots=None,slot_errors=None,slots_r
 
 
 def run_match(task):
+    if os.environ.get('DM_TEST_DEMO'):
+        raise ValueError('DM_TEST_DEMO is forbidden in formal arena/T1/proficiency')
     if os.environ.get('DM_TEST_AIM') or os.environ.get('DM_TEST_AIM_FILE'):
         raise ValueError('DM_TEST_AIM is forbidden in arena/T1 matches')
     out=Path(task['out']);out.mkdir(parents=True)
@@ -239,6 +241,8 @@ def concurrency_window(matches):
 
 
 def tournament(policy_a,policy_b,games=70,parallel=4,timeout=7200,out=None,early_rate_check=False,resume=None,native_runtime=None):
+    if os.environ.get('DM_TEST_DEMO'):
+        raise ValueError('DM_TEST_DEMO is forbidden in formal arena/T1/proficiency')
     if os.environ.get('DM_TEST_AIM') or os.environ.get('DM_TEST_AIM_FILE'):
         raise ValueError('DM_TEST_AIM is forbidden in arena/T1 matches')
     if type(games) is not int or games<2 or games%2:raise ValueError('an even number of games is required for swapped pairs')
