@@ -242,6 +242,8 @@ def train(a):
     (out / "config.json").write_text(json.dumps(cfg, indent=2) + "\n")
     # Independent held-out seeds fixed before training, both action selection modes.
     initial = evaluate(a, policy, a.seed + 50000, out / "initial.json")
+    # load_policy returns eval mode; cuDNN recurrent backward needs train mode.
+    policy.train()
     e.reset(seed=a.seed)
     drill.place(torch.ones(e.n, dtype=torch.bool, device=e.device))
     obs = e._observation(e.state, e.shots, e.paint, e.steps)

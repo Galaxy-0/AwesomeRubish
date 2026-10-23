@@ -1,0 +1,1022 @@
+{
+  "schema": "inklab.rl.stage1.drills.aggregate.v1",
+  "stage1_passed": false,
+  "scope": "synthetic input/capability trials, not normal-spawn180s match acceptance",
+  "notes": [
+    "ZL remains masked in fixed/random_pose; zero ZL does not prove learned restraint",
+    "full_release means accepted attack with FULL flag; hit counts positive-damage decisions, not collision spheres",
+    "per-minute uses nominal attempt duration; primary script opponent is frozen",
+    "source trials and corrected seeded first-life reviews remain distinct"
+  ],
+  "runs": [
+    {
+      "run": "stage1-fixed-charge-r1-level-101",
+      "seed": 101,
+      "kind": "fixed",
+      "fixed_distance": 21.0,
+      "button_semantics": "level",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 98.20767954504117,
+      "peak_allocated_mib": 2559.294921875,
+      "initial": {
+        "ko_fraction": 0.0,
+        "combat": {
+          "attacks": 1389.0,
+          "full_releases": 3.0,
+          "hit_decisions": 1.0,
+          "weapon_kos": 0.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 108.5156250000002,
+          "full_releases_per_minute": 0.23437500000000044,
+          "hit_decisions_per_minute": 0.07812500000000015,
+          "weapon_kos_per_minute": 0.0,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 387.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.234375000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.031494140625,
+        "nonzero_reward_rate_last": 0.2362060546875,
+        "entropy_zr_first": 0.6691802740097046,
+        "entropy_zr_last": 0.10902854055166245,
+        "max_kl_zr": 0.012987247668206692,
+        "kl_stopped_updates": 1
+      },
+      "evidence_sha256": {
+        "stage1-fixed-charge-r1-level-101/summary.json": "39f0cb1a65dc05cf4e821aa9db1956d3694084effc94e196b07988b92344dac4",
+        "stage1-fixed-charge-r1-level-101/config.json": "422d7c723a1fedda10c9ed4f3dd1c83a15e491ade8c83c61b77a934553ae76ef",
+        "stage1-fixed-charge-r1-level-101/metrics.csv": "43597ae9f93671b9e170d8aa9c3ce492517a6713cc0e2a1bf3a05a94c776823c",
+        "stage1-firstlife-r1-21-level-101-000128/summary.json": "cebcf073e990dd8bc1eca6fdbab6fc53e57f1b6ab6b16fbf6c3c9e5c7993fd21",
+        "stage1-firstlife-r1-21-level-101-000000/summary.json": "884ec339199c5920ba67dae19f64382fe8bfd9cf088cc86dc3266d4d58511a8b"
+      }
+    },
+    {
+      "run": "stage1-fixed-charge-r1-level-202",
+      "seed": 202,
+      "kind": "fixed",
+      "fixed_distance": 21.0,
+      "button_semantics": "level",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 94.7866318289889,
+      "peak_allocated_mib": 2560.30126953125,
+      "initial": {
+        "ko_fraction": 0.0,
+        "combat": {
+          "attacks": 1384.0,
+          "full_releases": 2.0,
+          "hit_decisions": 2.0,
+          "weapon_kos": 0.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 108.1250000000002,
+          "full_releases_per_minute": 0.1562500000000003,
+          "hit_decisions_per_minute": 0.1562500000000003,
+          "weapon_kos_per_minute": 0.0,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 386.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.156250000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.03125,
+        "nonzero_reward_rate_last": 0.22662353515625,
+        "entropy_zr_first": 0.6896799802780151,
+        "entropy_zr_last": 0.06879722326993942,
+        "max_kl_zr": 0.00941012054681778,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-charge-r1-level-202/summary.json": "faa022c85fcf26c5898a40ed203fb6b7f8f6d8222ad34ba89165db37c38fa9fc",
+        "stage1-fixed-charge-r1-level-202/config.json": "aad840b4e7f6c18c17c2806ca51fbba64d49c0a3e4d3839a88d1bfd10c09da30",
+        "stage1-fixed-charge-r1-level-202/metrics.csv": "62b20a0e0c7595cff2027ec4770d8fcc859b273d927a0b7ff8ce720603ac3e84",
+        "stage1-firstlife-r1-21-level-202-000128/summary.json": "56dd236c6556a6f0d72442723f56849d3a303d42575c65b2fa1c3ad931350a37",
+        "stage1-firstlife-r1-21-level-202-000000/summary.json": "60c5027f22305e195df26c5c32a9d4ad115416caeb922011cdd6cebf62f23c94"
+      }
+    },
+    {
+      "run": "stage1-fixed-charge-r1-level-303",
+      "seed": 303,
+      "kind": "fixed",
+      "fixed_distance": 21.0,
+      "button_semantics": "level",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 97.71691312699113,
+      "peak_allocated_mib": 2559.298828125,
+      "initial": {
+        "ko_fraction": 0.0,
+        "combat": {
+          "attacks": 1400.0,
+          "full_releases": 2.0,
+          "hit_decisions": 2.0,
+          "weapon_kos": 0.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 109.37500000000021,
+          "full_releases_per_minute": 0.1562500000000003,
+          "hit_decisions_per_minute": 0.1562500000000003,
+          "weapon_kos_per_minute": 0.0,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 389.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.390625000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.02065768651664257,
+        "nonzero_reward_rate_first": 0.03125,
+        "nonzero_reward_rate_last": 0.11224365234375,
+        "entropy_zr_first": 0.6884293556213379,
+        "entropy_zr_last": 0.15583008527755737,
+        "max_kl_zr": 0.012289941310882568,
+        "kl_stopped_updates": 2
+      },
+      "evidence_sha256": {
+        "stage1-fixed-charge-r1-level-303/summary.json": "e90b6e5498e58b39a70830cad3466094653ba7c02c17c82da87be01e3a21fc35",
+        "stage1-fixed-charge-r1-level-303/config.json": "7384caa36d055eaa04024e2fd52fea3f18948512555fc9447a3dd2988e07ccf6",
+        "stage1-fixed-charge-r1-level-303/metrics.csv": "23b1ba5911ca15ebd7eb56b0b27b1e5a5fa18977ada4bf98cc081a48f5aa5d46",
+        "stage1-firstlife-r1-21-level-303-000128/summary.json": "a3d5308bb99e12f814fae0f02d9ef3b981e1458057423e663ab59e54e15cacc5",
+        "stage1-firstlife-r1-21-level-303-000000/summary.json": "35b9a80b0938b94a969a95805c6e63ffdc9396714404d4203da941084c573c15"
+      }
+    },
+    {
+      "run": "stage1-fixed-charge-r1-toggle-101",
+      "seed": 101,
+      "kind": "fixed",
+      "fixed_distance": 21.0,
+      "button_semantics": "toggle",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 102.21636145899538,
+      "peak_allocated_mib": 2556.798828125,
+      "initial": {
+        "ko_fraction": 0.0234375,
+        "combat": {
+          "attacks": 1248.0,
+          "full_releases": 24.0,
+          "hit_decisions": 22.0,
+          "weapon_kos": 3.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 97.50000000000018,
+          "full_releases_per_minute": 1.8750000000000036,
+          "hit_decisions_per_minute": 1.7187500000000033,
+          "weapon_kos_per_minute": 0.23437500000000044,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 358.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 27.968750000000053,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.021039605140686035,
+        "nonzero_reward_rate_first": 0.0361328125,
+        "nonzero_reward_rate_last": 0.21026611328125,
+        "entropy_zr_first": 1.0795419216156006,
+        "entropy_zr_last": 0.2371685951948166,
+        "max_kl_zr": 0.010649089701473713,
+        "kl_stopped_updates": 1
+      },
+      "evidence_sha256": {
+        "stage1-fixed-charge-r1-toggle-101/summary.json": "b64edf07316b4241ce0e37de873c2ae4115969e91e13ec63e26f8b6d8334ee20",
+        "stage1-fixed-charge-r1-toggle-101/config.json": "3aac58025b8df00d161d6a8e90b14e7da35a0e12c6327e8e332bb1e16f11f4a2",
+        "stage1-fixed-charge-r1-toggle-101/metrics.csv": "8d86e9d47da856f5df80a2a93a6798410fc04554c63fd510ccdd7dd25fdb0a9f",
+        "stage1-firstlife-r1-21-toggle-101-000128/summary.json": "bb3bd734c52d48ae31458ed9b104b0c7af3bbc6b2268828119bb1e2fa3ed75a6",
+        "stage1-firstlife-r1-21-toggle-101-000000/summary.json": "b7308bd3059ecb9747d2c56198737fc8930eb39f9ab73435517a3afab805a7dc"
+      }
+    },
+    {
+      "run": "stage1-fixed-charge-r1-toggle-202",
+      "seed": 202,
+      "kind": "fixed",
+      "fixed_distance": 21.0,
+      "button_semantics": "toggle",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 100.73205733404029,
+      "peak_allocated_mib": 2559.298828125,
+      "initial": {
+        "ko_fraction": 0.0,
+        "combat": {
+          "attacks": 1289.0,
+          "full_releases": 6.0,
+          "hit_decisions": 5.0,
+          "weapon_kos": 0.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 100.70312500000018,
+          "full_releases_per_minute": 0.4687500000000009,
+          "hit_decisions_per_minute": 0.3906250000000007,
+          "weapon_kos_per_minute": 0.0,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 345.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 26.95312500000005,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 256.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 20.00000000000004,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.0343017578125,
+        "nonzero_reward_rate_last": 0.1287841796875,
+        "entropy_zr_first": 1.0957318544387817,
+        "entropy_zr_last": 0.2009059488773346,
+        "max_kl_zr": 0.00993257388472557,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-charge-r1-toggle-202/summary.json": "cfd97aa7966e6d6eddc0449e697483d61cadb6740717a8915d77f1e896905cc7",
+        "stage1-fixed-charge-r1-toggle-202/config.json": "0b8e5d3c51bd310f61d68338ba5b8a37109df24223fae027fd132f7a7e237c3a",
+        "stage1-fixed-charge-r1-toggle-202/metrics.csv": "55cf9d882afbd24ae5113f54f10a01b15459b12fce3217676428b2f2bf55f32e",
+        "stage1-firstlife-r1-21-toggle-202-000128/summary.json": "4a5b97c678790b8366af20724eff3ec329129f135f9612dd386679f0ee347752",
+        "stage1-firstlife-r1-21-toggle-202-000000/summary.json": "ba225bcca1131e9057ca6bbcbdba7d774ec99a80decd69e65a44a8c972e0ec3b"
+      }
+    },
+    {
+      "run": "stage1-fixed-charge-r1-toggle-303",
+      "seed": 303,
+      "kind": "fixed",
+      "fixed_distance": 21.0,
+      "button_semantics": "toggle",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 100.79317763901781,
+      "peak_allocated_mib": 2558.923828125,
+      "initial": {
+        "ko_fraction": 0.0,
+        "combat": {
+          "attacks": 1267.0,
+          "full_releases": 25.0,
+          "hit_decisions": 24.0,
+          "weapon_kos": 0.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 98.98437500000018,
+          "full_releases_per_minute": 1.9531250000000038,
+          "hit_decisions_per_minute": 1.8750000000000036,
+          "weapon_kos_per_minute": 0.0,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 402.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 31.40625000000006,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 256.0,
+          "hit_decisions": 256.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 20.00000000000004,
+          "hit_decisions_per_minute": 20.00000000000004,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.03460693359375,
+        "nonzero_reward_rate_last": 0.1187744140625,
+        "entropy_zr_first": 1.0925989151000977,
+        "entropy_zr_last": 0.29140955209732056,
+        "max_kl_zr": 0.010686904191970825,
+        "kl_stopped_updates": 1
+      },
+      "evidence_sha256": {
+        "stage1-fixed-charge-r1-toggle-303/summary.json": "7c9e094826d8c8036c946fbef8361091123fd3521e352363df28054f82266f88",
+        "stage1-fixed-charge-r1-toggle-303/config.json": "13c6906e27874c9b8ecad0010072f33994a706059b7a2634b3292d804897e242",
+        "stage1-fixed-charge-r1-toggle-303/metrics.csv": "f51f101748a56899a2d6dae15e51133296b93e58c5060bf2d7d356d725f67ec2",
+        "stage1-firstlife-r1-21-toggle-303-000128/summary.json": "691e38704f0f01bdac2dc6b79455c1cc9b4e8018eaa39d59461124a69773e9fd",
+        "stage1-firstlife-r1-21-toggle-303-000000/summary.json": "b68d1fb629e7d86e7a212386b4cf84742277995b5c04e2455d2a09b220b07468"
+      }
+    },
+    {
+      "run": "stage1-fixed-paired-r1-level-101",
+      "seed": 101,
+      "kind": "fixed",
+      "fixed_distance": 6,
+      "button_semantics": "level",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 152.1658975549508,
+      "peak_allocated_mib": 2556.423828125,
+      "initial": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.0914306640625,
+        "nonzero_reward_rate_last": 0.10552978515625,
+        "entropy_zr_first": 0.6780003309249878,
+        "entropy_zr_last": 0.20957045257091522,
+        "max_kl_zr": 0.015276226215064526,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-paired-r1-level-101/summary.json": "c8f72383673b1fde79dcc77ae61e6d6410bb9eadb7520e62d9351d4b11929ab9",
+        "stage1-fixed-paired-r1-level-101/config.json": "5aa932920ca188aae980e9057ae2d82dd63b6d6389526738853dba8db86054a0",
+        "stage1-fixed-paired-r1-level-101/metrics.csv": "eec672e71672198f82927d1ecca4cc99345339d29c94a767e509aab58254054a",
+        "stage1-firstlife-r1-6-level-101-000128/summary.json": "a1c998fb0505cb0d380d5f6b7930fb5741b664e7f609716db1b9cefcf1bb4b9d",
+        "stage1-firstlife-r1-6-level-101-000000/summary.json": "cf1303b5ba3d6f34ea16b4c22a71efeb711bb908c043a2b2eb8dcf46e4634602"
+      }
+    },
+    {
+      "run": "stage1-fixed-paired-r1-level-202",
+      "seed": 202,
+      "kind": "fixed",
+      "fixed_distance": 6,
+      "button_semantics": "level",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 104.35289654997177,
+      "peak_allocated_mib": 2556.798828125,
+      "initial": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.0909423828125,
+        "nonzero_reward_rate_last": 0.1041259765625,
+        "entropy_zr_first": 0.6831647753715515,
+        "entropy_zr_last": 0.26746875047683716,
+        "max_kl_zr": 0.00689339404925704,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-paired-r1-level-202/summary.json": "08594c492829a237bbcb8cdba61c2697959afc80ecc93401e408dff477d98378",
+        "stage1-fixed-paired-r1-level-202/config.json": "5be416d76c021bdc0597afb51c7b4ff0a40f27876d8e0ab09b840d24bcb452fa",
+        "stage1-fixed-paired-r1-level-202/metrics.csv": "ef886ab6a796e15eae4d63a9be5e51ce9587da2ae08e00d56fed6d9577bba9c2",
+        "stage1-firstlife-r1-6-level-202-000128/summary.json": "4bf78edbc3fc9e7087bba76c7ac6837d1058b8a338ce995b543446cd167850c2",
+        "stage1-firstlife-r1-6-level-202-000000/summary.json": "aea70ab672f2f0dca8de9607505bc9a7c0d02dd852d497468fc9531d9ab1b069"
+      }
+    },
+    {
+      "run": "stage1-fixed-paired-r1-level-303",
+      "seed": 303,
+      "kind": "fixed",
+      "fixed_distance": 6,
+      "button_semantics": "level",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 104.33107188704889,
+      "peak_allocated_mib": 2556.798828125,
+      "initial": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.09136962890625,
+        "nonzero_reward_rate_last": 0.096923828125,
+        "entropy_zr_first": 0.685240626335144,
+        "entropy_zr_last": 0.2617001533508301,
+        "max_kl_zr": 0.010458424687385559,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-paired-r1-level-303/summary.json": "28c15ac2ea32e5f899f3579c5fee298105a77cd841af856cdb6aa6e0ae3d5404",
+        "stage1-fixed-paired-r1-level-303/config.json": "a3bf237282885076a72aabf0e856171f2721afaaba1c27031ddfbcba71b20a1e",
+        "stage1-fixed-paired-r1-level-303/metrics.csv": "30aafbb777d0601c3b17ed1b10591544db0b13e8888e70250860aed8b2643356",
+        "stage1-firstlife-r1-6-level-303-000128/summary.json": "516bc1116cb09127f91e3181d17107e6b067c62889e0cfde9e81e01f9254ebce",
+        "stage1-firstlife-r1-6-level-303-000000/summary.json": "516bc1116cb09127f91e3181d17107e6b067c62889e0cfde9e81e01f9254ebce"
+      }
+    },
+    {
+      "run": "stage1-fixed-paired-r1-toggle-101",
+      "seed": 101,
+      "kind": "fixed",
+      "fixed_distance": 6,
+      "button_semantics": "toggle",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 106.35407021595165,
+      "peak_allocated_mib": 2556.798828125,
+      "initial": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 378.0,
+          "full_releases": 8.0,
+          "hit_decisions": 378.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 29.531250000000057,
+          "full_releases_per_minute": 0.6250000000000012,
+          "hit_decisions_per_minute": 29.531250000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.0850830078125,
+        "nonzero_reward_rate_last": 0.10101318359375,
+        "entropy_zr_first": 1.086174726486206,
+        "entropy_zr_last": 0.18461155891418457,
+        "max_kl_zr": 0.008557626977562904,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-paired-r1-toggle-101/summary.json": "7240ba45895a8420fdaff57cb365f97873aa96211e6a0934127c0165e2384485",
+        "stage1-fixed-paired-r1-toggle-101/config.json": "2d5d136033170032e341960d70ec15ae174bf3510e62c4482c4a6f12411b3e8c",
+        "stage1-fixed-paired-r1-toggle-101/metrics.csv": "7b11ce819df2724735e56b0e0b8d6df0fdbe789daa928d71b061405a29c1f1fe",
+        "stage1-firstlife-r1-6-toggle-101-000128/summary.json": "51581e0d69bfbd7c85a29a3e050c8f7d7b0b627ba43f1bc53bcd9922cac75e4d",
+        "stage1-firstlife-r1-6-toggle-101-000000/summary.json": "7fb2718d419f4d99d8b0b1ae744117e5f38f81e422cc72443414bf58d93ec079"
+      }
+    },
+    {
+      "run": "stage1-fixed-paired-r1-toggle-202",
+      "seed": 202,
+      "kind": "fixed",
+      "fixed_distance": 6,
+      "button_semantics": "toggle",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 108.2200089780381,
+      "peak_allocated_mib": 2556.794921875,
+      "initial": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.0845947265625,
+        "nonzero_reward_rate_last": 0.10394287109375,
+        "entropy_zr_first": 1.096514105796814,
+        "entropy_zr_last": 0.1879180371761322,
+        "max_kl_zr": 0.008827771991491318,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-paired-r1-toggle-202/summary.json": "cda67cf5afaa3634b8a3a32c3aaaa76721c5f006fccac2586fde904b07a268e1",
+        "stage1-fixed-paired-r1-toggle-202/config.json": "09954e701121bf3b4aeae44ab7a04ffa843e12e20a4105b281192aa001a940f1",
+        "stage1-fixed-paired-r1-toggle-202/metrics.csv": "d98719fa079a9ff1f4f40fa48a088690fd6bc3da8a5c007823057a95948002bf",
+        "stage1-firstlife-r1-6-toggle-202-000128/summary.json": "895c8db80ad0509cddfebbda8871278b32625216968105def3f059336c8dd438",
+        "stage1-firstlife-r1-6-toggle-202-000000/summary.json": "1a9e68820884123a62ce2da9ac33b06fcf20d89c1b097ced81c9f9f67f21131b"
+      }
+    },
+    {
+      "run": "stage1-fixed-paired-r1-toggle-303",
+      "seed": 303,
+      "kind": "fixed",
+      "fixed_distance": 6,
+      "button_semantics": "toggle",
+      "aim_window": "full",
+      "frames": 4194304,
+      "cumulative_frames": 4194304,
+      "training_seconds": 106.69544768997002,
+      "peak_allocated_mib": 2556.798828125,
+      "initial": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 379.0,
+          "full_releases": 8.0,
+          "hit_decisions": 379.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 29.609375000000057,
+          "full_releases_per_minute": 0.6250000000000012,
+          "hit_decisions_per_minute": 29.609375000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "sampled": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "greedy": {
+        "ko_fraction": 1.0,
+        "combat": {
+          "attacks": 384.0,
+          "full_releases": 0.0,
+          "hit_decisions": 384.0,
+          "weapon_kos": 128.0,
+          "zl_frames": 0.0,
+          "submerged_frames": 0.0,
+          "attacks_per_minute": 30.000000000000057,
+          "full_releases_per_minute": 0.0,
+          "hit_decisions_per_minute": 30.000000000000057,
+          "weapon_kos_per_minute": 10.00000000000002,
+          "zl_fraction": 0.0,
+          "longest_zl_frames": 0.0,
+          "environments": 128
+        }
+      },
+      "fixed_seed_first_life_review": true,
+      "curve": {
+        "all_finite": true,
+        "min_advantage_divisor": 0.019999999552965164,
+        "nonzero_reward_rate_first": 0.08489990234375,
+        "nonzero_reward_rate_last": 0.100830078125,
+        "entropy_zr_first": 1.0945309400558472,
+        "entropy_zr_last": 0.5011765956878662,
+        "max_kl_zr": 0.006575786974281073,
+        "kl_stopped_updates": 0
+      },
+      "evidence_sha256": {
+        "stage1-fixed-paired-r1-toggle-303/summary.json": "44bba9d042b260db8f8425fccdfbb94ec2c177c877f9023b90ecfdbbf6ba0a0d",
+        "stage1-fixed-paired-r1-toggle-303/config.json": "e6fc819022405e8c7a146536be631fafd4d2bd05aac5dc5f1e32453238a17d34",
+        "stage1-fixed-paired-r1-toggle-303/metrics.csv": "0159e9ecd1f055b234b202006822ea13da14f78d4bd3a99e99037bc82183469e",
+        "stage1-firstlife-r1-6-toggle-303-000128/summary.json": "277e303b8115f678346482f8c2bfe5a41fa6435676828ba09374b27292a8edbb",
+        "stage1-firstlife-r1-6-toggle-303-000000/summary.json": "20426bb2464203c09e7cfa42e182afac752c9ff9955737fdbe98b5a02d3a4f7b"
+      }
+    }
+  ],
+  "executed_phase_frames": 50331648
+}
