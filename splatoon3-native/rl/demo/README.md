@@ -61,10 +61,10 @@ USB接好后，先平放3秒，再推四向摇杆、按ZR/ZL/B，分别抬头/�
   --camera work/rl-demo/bc-lean-r4/camera-response.json
 ```
 
-转换只计算/导出，不训练；M1默认CPU执行同一torch GPU环境代码，也可未来显式`--device cuda`。
+转换只计算/导出，不训练；M1默认CPU执行同一torch GPU环境代码，也可未来显式`--device cuda`。2026-10-24起默认`--observation-mode sync`只导入原生状态并计算观测，不积分物理；原混合积分仅显式`--observation-mode hybrid`诊断。
 输出分片`bc-*.npz`含screen/entities/mask/hud/minimap、17档移动、9档yaw/pitch、ZR/ZL切换标签及上一物理按键；量化与自由回放误差在`report.json`。相机线性响应需有对应标定，未给`--camera`时仅可用有足够激励的脚本局拟合，不能把低秩拟合当完整标定。
 
-BC观测用当前/过去原生位置/镜头/HP/墨量锚定，墨图/弹体/内部动作阶段由GPU近似重建；另做一次初始化后不校正的自由回放报告漂移。**没有原生全图墨色真值，minimap和射线墨色尚不能作合格BC标签**；明确`ready_for_training=false`，默认不加`--allow-approximate`就拒绝导出。FOV纵55°/横85.56559°仍是已接受的假设，几何近似偏差保留。
+新版BC观测用当前/过去原生位置/镜头/HP/墨量直接同步，使用原生eye/at计算射线。未知墨图/弹体/动作阶段不再推进模拟器补造，而以占位＋质量mask表示。自由回放改为独立`dynamics_audit`，不参与BC观测生成。**没有原生全图墨色真值，minimap和射线墨色尚不能作合格BC标签**；明确`ready_for_training=false`，默认不加`--allow-approximate`就拒绝导出。FOV纵55°/横85.56559°仍是已接受的假设，几何近似偏差保留。
 
 所有数据/网格/生成页/截图/权重不提交，正式arena/T1/proficiency拒绝`DM_TEST_DEMO`及demo宿主。T1/S1保持暂停。
 
@@ -111,3 +111,54 @@ BC观测用当前/过去原生位置/镜头/HP/墨量锚定，墨图/弹体/内�
 `--warm-from`只复制上一局双方PSO列表并合并原seed清单到本次私有目录，原文件不改；不保证所有地图/动作已预热。`--max-catchup-frames 1`限制墙钟卡顿后的追帧积欠，减少输入在显示队列中排队；底层仍逐帧输入、原fixed60，不改变游戏时间。兼容旧行为的默认值为6。资源采样已移到独立线程，原swap/内存压力阈值保持；异常或采样滞后超过5秒停止本房，不在输入ACK路径等待系统CLI。
 
 以`--source script`替换controller可测试完全相同的录制入口，不需`--allow-unqualified`；这是脚本冒烟，不是人的示范。独立对拍用`profile_run --fixture-inputs ... --predicate async|strict`，用`logic_compare`保留四帧状态采样时钟/差分，不能把插值当逐帧真值。具体完整局和短测的中位/1%low/平均、软件输入→呈现延迟及原件路径见最新报告；一切60数值都同时报告长帧和缺失回调，不以fixed60或强制display/不限帧冒充墙钟60。
+
+
+## 示范数据：原生同步与原生字段补采（2026-10-24）
+
+三局完整脚本录制已导出16194个BC候选样本；**ready_for_training仍false**。原生世界墨图映射、完整武器阶段和弹体活动集合还未闭合，详见`notes/rl-demo-data-20261024.md/.json`。这是链路/数据QA，不是专家示范，不启动训练。
+
+当前最终私有产物：
+
+- 录制：`work/rl-demo/data-ready/native-survey-full-r1/r2/r3/`。
+- BC schema v2：`work/rl-demo/data-ready/bc-native-sync-final-r1/r2/r3/`（5397/5399/5398样本）。
+- QA图：`work/rl-demo/data-ready/qa-native-sync-final-r1/r2/r3/`。
+- 原录像自由漂移：`work/rl-demo/data-ready/dynamics-original-r11-final/`。
+
+按顺序补采/转换的命令示例（每次用新的输出目录）：
+
+```sh
+# 独立诊断构建：不覆盖run67的render-host-r2，也不激活为人玩默认。
+.venv/bin/python -m rl.demo.build_capture --out work/rl-demo/data-host-new
+
+# 使用本机已有data-host-r3演示；两次GPU墨图读回会有停顿，不作FPS测量。
+.venv/bin/python -m rl.demo.capture --fixture --source script \
+  --script-pattern calibration --opponent 52 --native-survey \
+  --host work/rl-demo/data-host-r3/dmhost-demo \
+  --modules work/rl-demo/data-host-r3/modules \
+  --render-predicate async --present-link 0 --max-catchup-frames 1 \
+  --warm-from work/rl-demo/data-ready/native-survey-full-r3 \
+  --out work/rl-demo/my-native-survey
+.venv/bin/python -m rl.demo.native_survey work/rl-demo/my-native-survey
+.venv/bin/python -m rl.demo.convert --recording work/rl-demo/my-native-survey \
+  --out work/rl-demo/my-bc-sync --observation-mode sync --allow-approximate \
+  --camera work/rl-demo/data-ready/bc-native-sync-final-r2/camera-response.json
+.venv/bin/python -m rl.demo.visualize_bc --recording work/rl-demo/my-native-survey \
+  --bc work/rl-demo/my-bc-sync --out work/rl-demo/my-bc-qa
+```
+
+`calibration`脚本在出生后分别激励右摇杆两轴/陀螺仪三轴，再进入既有脚本动作；不能冒称人的示范。省略`--camera`会拟合本局稳态矩阵，rank只说明输入激励，不证明任意幅度/动态响应。r3使用固定r2矩阵的独立窗口误差在报告中，不在r3重拟合。
+
+`native_survey`把只读候选与未知语义留在旁车，原始日志保持不动；不能因地址可读就设qualified。两次1600²读回及256² R通道采样是原生UV数据，尚不具有世界格/队伍/多层映射，未写入BC墨图。全部留私有目录。
+
+BC新增`hud_valid`、`screen_channel_valid`、`minimap_valid`、`native_camera_valid`、`weapon_native_valid`、`projectiles_native_valid`、`entities_complete`及`entity_velocity_native_valid`。**state_valid不代表整个观测有效**，缺测占位不能解释为中立/空/idle。源位置每4帧更新，年龄保留；旁车严格只取当前ACK之前，计时零之后不导出操作标签。完整训练仍需闭合原生世界墨图/武器/弹体，并有非空原生实体/交火对照；消费者还需遵守mask和ready标记。
+
+自由积分仅作sim-to-real指标：
+
+```sh
+.venv/bin/python -m rl.demo.dynamics_audit \
+  --recording work/rl-demo/smoke-final-r11 \
+  --camera work/rl-demo/bc-final-r11/camera-response.json \
+  --out work/rl-demo/my-dynamics-audit
+```
+
+该诊断一次初始化后不纠正位置/HP；原生镜头和连续摇杆是明确的归因条件，不能当自主RL结果。原20–24u已复现；默认同步位置残差0只证明不再积分，绝不等于动力学修好。脚本无优化器、无训练副作用。

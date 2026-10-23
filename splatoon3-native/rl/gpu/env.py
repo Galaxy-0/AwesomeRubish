@@ -1006,7 +1006,7 @@ class ParallelEnv:
             event * playing[:, None, None],
         )
 
-    def _observe(self, s, q, paint, frame):
+    def _observe(self, s, q, paint, frame, camera_override=None):
         fwd, right, up = basis(
             s[..., YAW], s[..., PITCH] + self.cfg.camera_pitch_offset_radians
         )
@@ -1024,6 +1024,10 @@ class ParallelEnv:
             )
             * self.cfg.camera_target_forward
         )
+        # Offline native-corpus reconstruction only. Training/reset/step pass
+        # no override and retain the original observation/compilation path.
+        if camera_override is not None:
+            camera, fwd, right, up = camera_override
         xs = torch.linspace(-1, 1, 32, device=s.device) * math.tan(
             math.radians(self.cfg.camera_horizontal_fov_degrees / 2)
         )

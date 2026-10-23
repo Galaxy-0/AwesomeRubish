@@ -1,3 +1,24 @@
+# 示范数据：默认状态同步与三局导出完成，完整BC训练就绪未通过（2026-10-24）
+
+默认转换改为只同步原生包位置/朝向/HP/墨量/形态，再计算观测；**不推进GPU物理**。原生eye/at按ACK前一帧因果读取，位置原有1–4帧源年龄保留，不伪称逐帧新测量。timer零后约250帧InGame不再作操作标签，未知墨图/武器/弹体显式mask。
+
+- 三局脚本水刀vs.52均完整Winners、退出0、错误0，原生11511/11509/11510帧；最终**5397/5399/5398，共16194个BC候选样本**，有限值/动作mask/SHA审计通过。样本位置导入残差0仅证明不积分，不证明模拟器等价。
+- 原20–24u自由漂移在旧录像复现**19.8779/24.2761u**；原生镜头条件对照**6.3715/20.7996u**。地形/墨色移动/坠落重生仍有明显分岔，未盲调速度或更改GPU动力学。
+- 已补原生1600² UV墨目标读回、256²采样、按Player归属的水刀/.52对象与动作快照、弹体阶段候选、逐帧姿态候选。**世界墨图映射、完整武器阶段、弹体活动集合未闭合，ready_for_training仍false**；默认不加allow-approximate仍拒绝导出。
+- r2五轴稳态矩阵在r3独立5393窗口yaw/pitch RMSE .0006937/.00020835rad/f；量化均未超档。三局可见敌实体样本均0、HUD倒下0，不是专家交火示范或非空原生实体通过；另有合成可见人/潜墨mask正例。
+- **43项组件（29 demo＋14GPU）及11项T1组件通过**；run67/默认/保护宿主、原存档、两原始资源SHA一致。最多1房，全部本轮native已关闭。未训练、未恢复T1/S1、不动policies，数据/BC/截图/网格/生成页/宿主不提交。
+
+[完整报告与动力学校准优先级](notes/rl-demo-data-20261024.md) · [数值/来源SHA](notes/rl-demo-data-20261024.json) · [用法](rl/demo/README.md)。当前最终产物均私有：
+
+- 录制：`work/rl-demo/data-ready/native-survey-full-r1/r2/r3/`。
+- BC：`work/rl-demo/data-ready/bc-native-sync-final-r1/r2/r3/`。
+- QA：`work/rl-demo/data-ready/qa-native-sync-final-r1/r2/r3/frame-600.png`与`frame-1200.png`。
+- 原录像漂移：`work/rl-demo/data-ready/dynamics-original-r11-final/`。
+
+截图/射线大体对应地面、侧墙、远景/天空，保留粗几何与采样时刻限制。所有原生原件和迭代导出保留；源码/聚合说明提交推送后停止。手柄实测等用户回来，当前不需操作。
+
+---
+
 # 人玩实时性收尾：热段约60均速，低延迟43.64ms，全程锁60未签收（2026-10-24）
 
 私有异步条件渲染已消除run66的持续CPU↔GPU predicate等待。同源Submit墙钟中位23.336→2.498ms；原查询/counter/fence回写保留，只改变渲染条件读取。新宿主`work/rl-demo/render-host-r2/dmhost-demo`默认strict，异步必须显式开且正式入口拒绝。正式arena/T1/A8宿主不变。

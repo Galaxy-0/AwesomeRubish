@@ -123,6 +123,7 @@ class DemoSession(NativeSession):
         demo_cancel=None,
         demo_predicate="strict",
         demo_warm_session=None,
+        demo_native_survey=False,
         **kwargs,
     ):
         self.demo_cancel = demo_cancel
@@ -130,6 +131,7 @@ class DemoSession(NativeSession):
         self.demo_present_link = demo_present_link
         self.demo_predicate = demo_predicate
         self.demo_warm_session = demo_warm_session
+        self.demo_native_survey = demo_native_survey
         super().__init__(**kwargs)
         self.monitor = AsyncDemoMonitor(self.out)
 
@@ -162,6 +164,17 @@ class DemoSession(NativeSession):
 
     def host_options(self, n):
         warm = {}
+        if self.demo_native_survey:
+            warm["DM_DEMO_NATIVE_CAPTURE"] = "1"
+            if n == 0:
+                for folder, key in [
+                    ("ink-targets", "DM_DEMO_INK_DIR"),
+                    ("screenshots", "DM_DEMO_SHOT_DIR"),
+                ]:
+                    path = self.out / f"player-{n}" / folder
+                    path.mkdir(parents=True, exist_ok=True)
+                    warm[key] = str(path)
+                warm["DM_NVN_SHOT_OUT"] = "1280x720"
         if self.demo_warm_session:
             seed = ROOT / "upstream/dm/games/0100C2500FC20000/pso_manifest.tsv"
             lines = (
@@ -194,8 +207,18 @@ class DemoSession(NativeSession):
         )
 
 
-def scripted(frame):
+def scripted(frame, pattern="legacy"):
     a = neutral()
+    if pattern == "calibration" and 180 <= frame < 1080:
+        block, offset = divmod(frame - 360, 60)
+        if 0 <= block < 10 and offset < 50:
+            axis = block // 2
+            value = 1 if block % 2 == 0 else -1
+            if axis < 2:
+                a["sticks"][2 + axis] = value * 0.4
+            else:
+                a["gyro"][axis - 2] = value * 0.04
+        return a
     # Synthetic measurement schedule, never label it a human demonstration.
     if frame < 180:
         a["buttons"][0] = int(frame % 60 == 0)  # native respawn-launch input
@@ -364,6 +387,9 @@ def run(a):
         raise ValueError("unknown demo render predicate mode")
     if predicate != "strict" and not manifest.get("predicate_experiment"):
         raise ValueError("render predicate variants require isolated build_render host")
+    native_survey = getattr(a, "native_survey", False)
+    if native_survey and not manifest.get("native_capture_survey"):
+        raise ValueError("native survey requires isolated build_capture host")
     catchup_frames = getattr(a, "max_catchup_frames", 6)
     if catchup_frames < 0:
         raise ValueError("max catchup frames must be nonnegative")
@@ -423,6 +449,9 @@ def run(a):
         ready_for_bc=False,
         passed_scope="native capture/settlement loop only; not realtime60 or BC quality",
         source="scripted_smoke" if a.source == "script" else "human_USB",
+        script_pattern=getattr(a, "script_pattern", "legacy")
+        if a.source == "script"
+        else None,
         stage=1,
         map="Yunohana",
         mode="turf",
@@ -437,6 +466,7 @@ def run(a):
         present_link=a.present_link,
         max_catchup_frames=catchup_frames,
         render_predicate=predicate,
+        native_survey=native_survey,
         warm_from=str(warm_from) if warm_from else None,
         errors=[],
         artifacts=str(out),
@@ -507,6 +537,7 @@ def run(a):
                 demo_present_link=a.present_link,
                 demo_predicate=predicate,
                 demo_warm_session=warm_session,
+                demo_native_survey=native_survey,
                 demo_cancel=lambda: stop or (out / "STOP").exists(),
             ),
         )
@@ -545,7 +576,7 @@ def run(a):
                     result["cancelled"] = True
                     break  # Minus+Plus
             else:
-                control = scripted(frame)
+                control = scripted(frame, getattr(a, "script_pattern", "legacy"))
             if a.loadout == "primary_only":
                 control["buttons"][2:4] = [0, 0]
             battle = all(i["phase"] == 1 for i in env.process_infos.values())
@@ -782,6 +813,14 @@ if __name__ == "__main__":
     )
     p.add_argument("--timeout", type=float, default=1800)
     p.add_argument("--max-frames", type=int)
+    p.add_argument(
+        "--native-survey",
+        action="store_true",
+        help="private passive field/paint survey; extra readback may stall rendering",
+    )
+    p.add_argument(
+        "--script-pattern", choices=["legacy", "calibration"], default="legacy"
+    )
     p.add_argument("--pace", action=argparse.BooleanOptionalAction, default=True)
     p.add_argument(
         "--max-catchup-frames",

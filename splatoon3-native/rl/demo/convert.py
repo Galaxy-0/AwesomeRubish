@@ -1,8 +1,8 @@
 """Native per-present recording -> private BC shards + explicit reconstruction error.
 
-No optimizer or training. Dense native paint/projectile truth is not yet available:
-public observations use simulator reconstruction, carry quality flags, and require
---allow-approximate to export. Native anchored BC and free rollout are distinct.
+No optimizer or training. Default sync observes imported native state without
+integrating physics; unknown channels carry masks and require --allow-approximate.
+The old hybrid integrator is explicit diagnostic-only, separate from free audit.
 """
 
 import argparse
@@ -61,7 +61,7 @@ def quantize(action, cfg, camera, previous):
     return levels, command, err
 
 
-def fit_camera(inputs, barriers):
+def camera_windows(inputs, barriers):
     # Native sample times, not ACK times. Discard intervals containing spawn/death.
     X = []
     Y = []
@@ -93,7 +93,11 @@ def fit_camera(inputs, barriers):
             Y.append(np.asarray(dy) / (g - f))
     if len(X) < 10:
         raise ValueError("not enough native camera calibration windows")
-    X, Y = np.asarray(X), np.asarray(Y)
+    return np.asarray(X), np.asarray(Y)
+
+
+def fit_camera(inputs, barriers):
+    X, Y = camera_windows(inputs, barriers)
     coef = np.linalg.lstsq(X, Y, rcond=None)[0].T
     residual = Y - X @ coef.T
     return dict(
@@ -110,6 +114,17 @@ def fit_camera(inputs, barriers):
         rank=int(np.linalg.matrix_rank(X)),
         rmse_radians_per_frame=np.sqrt(np.mean(residual**2, axis=0)).tolist(),
         scope="Linear steady-input diagnostic fitted on this scripted corpus, not a held-out dynamic response calibration",
+    )
+
+
+def evaluate_camera(camera, inputs, barriers):
+    X, Y = camera_windows(inputs, barriers)
+    residual = Y - X @ np.asarray(camera["matrix"]).T
+    return dict(
+        samples=len(X),
+        rank=int(np.linalg.matrix_rank(X)),
+        rmse_radians_per_frame=np.sqrt(np.mean(residual**2, axis=0)).tolist(),
+        scope="Fixed external matrix on this held-out corpus; no coefficient refitting. Constant-input windows only, not arbitrary dynamic/physical gyro calibration.",
     )
 
 
@@ -162,7 +177,7 @@ def stats(v):
     )
 
 
-def convert(a):
+def legacy_convert(a):
     torch.set_num_threads(a.cpu_threads)
     source = Path(a.recording).resolve()
     out = safe_out(a.out)
@@ -406,6 +421,14 @@ def convert(a):
     return report
 
 
+def convert(a):
+    if getattr(a, "observation_mode", "sync") == "hybrid":
+        return legacy_convert(a)
+    from .bc_sync import convert_synced
+
+    return convert_synced(a)
+
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--recording", required=True)
@@ -421,4 +444,5 @@ if __name__ == "__main__":
     p.add_argument("--stride", type=int, default=2)
     p.add_argument("--shard-size", type=int, default=256)
     p.add_argument("--max-frames", type=int)
+    p.add_argument("--observation-mode", choices=["sync", "hybrid"], default="sync")
     convert(p.parse_args())

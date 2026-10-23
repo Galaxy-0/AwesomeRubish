@@ -1,0 +1,4091 @@
+{
+  "schema": "inklab.rl.demo.data-ready.v1",
+  "date": "2026-10-24",
+  "training_started": false,
+  "ready_for_training": false,
+  "cases": {
+    "1": {
+      "source": "work/rl-demo/data-ready/native-survey-full-r1",
+      "bc": "work/rl-demo/data-ready/bc-native-sync-final-r1",
+      "session": "work/tests/m6-2p-20261024-014236-190708",
+      "recording": {
+        "complete": true,
+        "passed": true,
+        "frames": 11511,
+        "source": "scripted_smoke",
+        "script_pattern": null,
+        "errors": [],
+        "host_sha256": "89d6dae58868b7141bd1b614a1760936db3ef0fd4751bf5b8cacb21425859528",
+        "weapons": [
+          8000,
+          50
+        ],
+        "loadout_mode": "primary_only",
+        "controlled_wall_seconds": 196.96094820811413,
+        "score_by_role": {
+          "player_0": [
+            0.600000024,
+            0.400000006
+          ],
+          "player_1": [
+            0.400000006,
+            0.600000024
+          ]
+        },
+        "hud_downs": {
+          "player_0": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "player_1": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "bc_report": {
+        "schema": "inklab.rl.demo.bc.v2",
+        "observation_mode": "native_state_sync_only",
+        "ready_for_training": false,
+        "training_started": false,
+        "source": "scripted_smoke",
+        "samples": 5397,
+        "decision_stride": 2,
+        "first_state_frame": 3,
+        "last_frame_exclusive": 10798,
+        "source_frames": 11511,
+        "invalid_packet_frames_skipped": 3,
+        "native_source_samples": [
+          2700,
+          2699
+        ],
+        "physics_steps_for_bc": 0,
+        "position_import_error_units": {
+          "n": 10794,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "source_state_age_frames": {
+          "n": 10794,
+          "mean": 3.0,
+          "p95": 4.0,
+          "max": 4.0
+        },
+        "native_camera_available_fraction": 1.0,
+        "readiness_gates": {
+          "complete_native_match": true,
+          "causal_state_available": true,
+          "state_physics_free": true,
+          "native_dense_paint": false,
+          "native_weapon_stage": false,
+          "native_projectile_active_set": false,
+          "camera_axes_calibration_rank5": false,
+          "accepted_stage0_geometry_contract": true,
+          "causal_native_camera_available": true,
+          "script_not_human": true
+        },
+        "blocked_gates": [
+          "native_dense_paint",
+          "native_weapon_stage",
+          "native_projectile_active_set",
+          "camera_axes_calibration_rank5"
+        ],
+        "quantization": {
+          "move_l2": {
+            "n": 10795,
+            "mean": 0.058360352014821676,
+            "p95": 0.15000000000000002,
+            "max": 0.15000000000000002
+          },
+          "camera_abs_deg_per_frame": {
+            "n": 21590,
+            "mean": 0.0313069796997573,
+            "p95": 0.1344688830723126,
+            "max": 0.267967676852711
+          },
+          "camera_clipped_fraction": 0.0
+        },
+        "camera_response": {
+          "matrix": [
+            [
+              -0.019557706259092696,
+              0.0,
+              0.06328844444444447,
+              -0.07794863750000006,
+              0.21951490794160927
+            ],
+            [
+              5.380466770186327e-05,
+              0.0,
+              -0.1371019945138889,
+              0.041534172083333334,
+              0.0
+            ]
+          ],
+          "input_columns": [
+            "rx",
+            "ry",
+            "gyro_x_turns_s",
+            "gyro_y_turns_s",
+            "gyro_z_turns_s"
+          ],
+          "output_columns": [
+            "delta_yaw_rad_per_frame",
+            "delta_pitch_rad_per_frame"
+          ],
+          "samples": 875,
+          "rank": 4,
+          "rmse_radians_per_frame": [
+            0.001474300748825911,
+            0.0007221927505645474
+          ],
+          "scope": "Linear steady-input diagnostic fitted on this scripted corpus, not a held-out dynamic response calibration"
+        },
+        "free_rollout": "separate dynamics audit; never used to build BC observations",
+        "unknown_contract": "Validity masks must be honored; false paint/projectile/weapon fields are placeholders, not neutral/idle/empty truth.",
+        "camera_contract": "Native eye/at direction when all batch cameras causal+valid; fallback batches have native_camera_valid=false. FOV remains stage0 assumption.",
+        "wall_seconds": 18.719693375052884,
+        "source_sha256": {
+          "result.json": "f5f17a41ddf99e5a5e30ad9440bf8f4a14b4600828d0188974def53de6e2c1fc",
+          "inputs-per-present.jsonl": "74423281acb20e7cec3a595ce96b7542b63cbe5d6fcd78ae440a89d7d1976d78",
+          "native-barriers.jsonl": "ade0080770f6759989d8c24036ef83bbf30a110d183fdc268360bf745a0534db",
+          "cameras.jsonl": "19091d4a29c3e8dd753e60aa29590fba44fbd244d71816521a6cf1f94504ab2f",
+          "native-state.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native-weapon.jsonl": "8d2feaeb95b1028dc4f2799ccca84e893613a9467b6bc0ae2a5aeef2bd7251f9"
+        }
+      },
+      "native_survey": {
+        "schema": "inklab.rl.demo.native-survey.v1",
+        "roles": {
+          "0": {
+            "owned_weapon_snapshots": 8289,
+            "live_candidate_samples": 0,
+            "pose170_same_source_frame_error": {
+              "n": 0
+            },
+            "saber_state38_counts": {
+              "6": 986,
+              "1": 966,
+              "5": 771,
+              "8": 40
+            },
+            "projectile_phase1238_counts": {
+              "0": 248
+            },
+            "weapon_stage_complete": false,
+            "projectile_active_set_complete": false
+          },
+          "1": {
+            "owned_weapon_snapshots": 8286,
+            "live_candidate_samples": 0,
+            "pose170_same_source_frame_error": {
+              "n": 0
+            },
+            "saber_state38_counts": {},
+            "projectile_phase1238_counts": {
+              "0": 220,
+              "2": 26,
+              "1": 63,
+              "3": 6
+            },
+            "weapon_stage_complete": false,
+            "projectile_active_set_complete": false
+          }
+        },
+        "ink_samples": [
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014236-190708/player-0/ink-targets/frame-1200-target-1979400.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 5380,
+            "r_values": [
+              0,
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255
+            ],
+            "nonzero_bounds": [
+              [
+                121,
+                58
+              ],
+              [
+                1598,
+                119
+              ]
+            ],
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014236-190708/player-0/ink-targets/frame-1200-target-1979800.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 0,
+            "r_values": [
+              0
+            ],
+            "nonzero_bounds": null,
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014236-190708/player-0/ink-targets/frame-600-target-1979400.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 4711,
+            "r_values": [
+              0,
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255
+            ],
+            "nonzero_bounds": [
+              [
+                121,
+                58
+              ],
+              [
+                1598,
+                119
+              ]
+            ],
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014236-190708/player-0/ink-targets/frame-600-target-1979800.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 0,
+            "r_values": [
+              0
+            ],
+            "nonzero_bounds": null,
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          }
+        ],
+        "native_paint_readback_available": true,
+        "native_world_ink_qualified": false,
+        "observations_may_use_candidates": false,
+        "notes": [
+          "0x25c engine pose failed first survey, never imported.",
+          "Player+170/+1ac raw candidates and native state38 are passive; static consumer/time semantics still required before BC imports.",
+          "Weapon object owner link+368 and action owner links recovered; numeric state is not automatically charge/swing/cooldown.",
+          "Projectile velocity callbacks are real live calls, not a complete active-set enumerator.",
+          "1600x1600 UV colors readable, but no verified world/team projection or continuous cadence."
+        ]
+      },
+      "resources": {
+        "peak_footprint_mib": 7473.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "sha256": {
+        "work/rl-demo/data-ready/native-survey-full-r1/result.json": "f5f17a41ddf99e5a5e30ad9440bf8f4a14b4600828d0188974def53de6e2c1fc",
+        "work/rl-demo/data-ready/native-survey-full-r1/inputs-per-present.jsonl": "74423281acb20e7cec3a595ce96b7542b63cbe5d6fcd78ae440a89d7d1976d78",
+        "work/rl-demo/data-ready/native-survey-full-r1/native-barriers.jsonl": "ade0080770f6759989d8c24036ef83bbf30a110d183fdc268360bf745a0534db",
+        "work/rl-demo/data-ready/native-survey-full-r1/native-state.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "work/rl-demo/data-ready/native-survey-full-r1/native-weapon.jsonl": "8d2feaeb95b1028dc4f2799ccca84e893613a9467b6bc0ae2a5aeef2bd7251f9",
+        "work/rl-demo/data-ready/native-survey-full-r1/native-survey.json": "0a22fe32574795e0851d268f95496ad2d4a4b2729cf2290a48542a87f28375aa",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/report.json": "d67553151ea3fbeacb54cb2a08ed75beef202dfed4390cc2d37fd257e2e273f1",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00000.npz": "85ac720790be9079b54cf03922310f008baebfff2b0356c356bdd3407bc52809",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00001.npz": "792047b6df6091f0c4509ce4e7dcaf478c08e93fad8c9c7f74ccbbb4b77a0314",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00002.npz": "110eba082bb81537fba7be73920ff83eff54ebbb1cc9943a8588c8fc4e1abbfd",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00003.npz": "0e5e26a9b17d535a69a94dcc52ef7b824fc3a30579c9f70518426691e2289f4b",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00004.npz": "d0c562f7c46bb361d4cac45066958e404c05f303f7bd7fc949c36eb1a98019ae",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00005.npz": "8b7dc1ef24619e987df9f6d7b29bdebf9dea3fffb17909ee435d8224f9806b0c",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00006.npz": "7e77cdb278ce538f7bee63885050703da35aa44b637d59052887788a1736e488",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00007.npz": "266ea9e78fd413a2138690a1afa7db9f6e3abcc19b15693846501617e0f25adb",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00008.npz": "3394c22493e9d3edf3ab61e6982fcd5f153ca7b42e672ef18a65af2696d484d0",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00009.npz": "b5fecaf4178a65a102f8c01973d6e886f76945d0556095e522780cace055f2e5",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00010.npz": "f2abc0d4ad530118aab89d3638f82fab18c358cf4bcb5122305020b7063ab88e",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00011.npz": "6895d1afca87d4909f1c27fe074fa10b340897191c5277134d26a0f7957d4629",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00012.npz": "0750dc44ff5bd3a4397b8f8689ed9920f3b01d288f1e199040201ac08e5dd7eb",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00013.npz": "363169c58848342724f9cb28f3f2861bffb8fb8c258865a8bcd6a0f48673f932",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00014.npz": "1e4aa528deff4d1cec9bba3ae4e28650da0cc1e1a2816a110db741746f182f81",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00015.npz": "bf0195b2908adc549b813f821ae1e6d01b8529b3d6fa3cb0e6a8c312533c00c1",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00016.npz": "142555a925b0df43550928f65e6f0c8da07e781bafe1d563ee3d42c3246a03f1",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00017.npz": "82c912e8e3c1c36e5d383b57d7d21ddf70347f37a97a936ff770f064b3ade1e5",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00018.npz": "e37ac4bc90808ed2d766fca894d4fbced7ea7afd0e7197c6db77f26424cc1520",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00019.npz": "d6feddc158c83d0577ec7b1de92aca8c73fbc9e768de715e6c4fe6eb166bd0c3",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00020.npz": "3c672e7711e7b7e155bcbcd5aa83b4a950fd185eb1748e210d29ae7993de14d9",
+        "work/rl-demo/data-ready/bc-native-sync-final-r1/bc-00021.npz": "5e9b3be1ceb717e700e7ee2177b078ce85130a52f3d7781dbe8f7ee1129b8ab6"
+      },
+      "source_bindings_current": {
+        "result.json": true,
+        "inputs-per-present.jsonl": true,
+        "native-barriers.jsonl": true,
+        "cameras.jsonl": true,
+        "native-state.jsonl": true,
+        "native-weapon.jsonl": true
+      },
+      "shard_audit": {
+        "samples": 5397,
+        "finite": true,
+        "actions_legal": true,
+        "unknown_paint_masked": true,
+        "unknown_projectiles_masked": true,
+        "source_age_max": 4,
+        "visible_entity_frames": 0,
+        "frame_order": true
+      },
+      "visual_qa": [
+        {
+          "frame": 602,
+          "screenshot": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014236-190708/player-0/screenshots/frame-600.png",
+          "output": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/data-ready/qa-native-sync-final-r1/frame-600.png",
+          "visible_entities": 0,
+          "ray_kind_counts": {
+            "0": 0,
+            "1": 506,
+            "2": 70,
+            "3": 0
+          },
+          "distance_range": [
+            8.0,
+            42.0
+          ],
+          "missing_truth_masked": true
+        },
+        {
+          "frame": 1202,
+          "screenshot": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014236-190708/player-0/screenshots/frame-1200.png",
+          "output": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/data-ready/qa-native-sync-final-r1/frame-1200.png",
+          "visible_entities": 0,
+          "ray_kind_counts": {
+            "0": 0,
+            "1": 404,
+            "2": 172,
+            "3": 0
+          },
+          "distance_range": [
+            5.0,
+            53.0
+          ],
+          "missing_truth_masked": true
+        }
+      ]
+    },
+    "2": {
+      "source": "work/rl-demo/data-ready/native-survey-full-r2",
+      "bc": "work/rl-demo/data-ready/bc-native-sync-final-r2",
+      "session": "work/tests/m6-2p-20261024-014739-274406",
+      "recording": {
+        "complete": true,
+        "passed": true,
+        "frames": 11509,
+        "source": "scripted_smoke",
+        "script_pattern": "calibration",
+        "errors": [],
+        "host_sha256": "89d6dae58868b7141bd1b614a1760936db3ef0fd4751bf5b8cacb21425859528",
+        "weapons": [
+          8000,
+          50
+        ],
+        "loadout_mode": "primary_only",
+        "controlled_wall_seconds": 200.37433775002137,
+        "score_by_role": {
+          "player_0": [
+            1.10000002,
+            0.400000006
+          ],
+          "player_1": [
+            0.400000006,
+            1.10000002
+          ]
+        },
+        "hud_downs": {
+          "player_0": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "player_1": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "bc_report": {
+        "schema": "inklab.rl.demo.bc.v2",
+        "observation_mode": "native_state_sync_only",
+        "ready_for_training": false,
+        "training_started": false,
+        "source": "scripted_smoke",
+        "samples": 5399,
+        "decision_stride": 2,
+        "first_state_frame": 2,
+        "last_frame_exclusive": 10799,
+        "source_frames": 11509,
+        "invalid_packet_frames_skipped": 3,
+        "native_source_samples": [
+          2700,
+          2700
+        ],
+        "physics_steps_for_bc": 0,
+        "position_import_error_units": {
+          "n": 10798,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "source_state_age_frames": {
+          "n": 10798,
+          "mean": 2.0498240414891646,
+          "p95": 3.0,
+          "max": 4.0
+        },
+        "native_camera_available_fraction": 1.0,
+        "readiness_gates": {
+          "complete_native_match": true,
+          "causal_state_available": true,
+          "state_physics_free": true,
+          "native_dense_paint": false,
+          "native_weapon_stage": false,
+          "native_projectile_active_set": false,
+          "camera_axes_calibration_rank5": true,
+          "accepted_stage0_geometry_contract": true,
+          "causal_native_camera_available": true,
+          "script_not_human": true
+        },
+        "blocked_gates": [
+          "native_dense_paint",
+          "native_weapon_stage",
+          "native_projectile_active_set"
+        ],
+        "quantization": {
+          "move_l2": {
+            "n": 10796,
+            "mean": 0.054186735828084476,
+            "p95": 0.15000000000000002,
+            "max": 0.15000000000000002
+          },
+          "camera_abs_deg_per_frame": {
+            "n": 21592,
+            "mean": 0.008638760604869058,
+            "p95": 0.04253378184232634,
+            "max": 0.14177927280775446
+          },
+          "camera_clipped_fraction": 0.0
+        },
+        "camera_response": {
+          "matrix": [
+            [
+              -0.0061862878039464515,
+              0.0006758501869684063,
+              0.0,
+              0.0,
+              0.2454051744791666
+            ],
+            [
+              0.0,
+              0.0,
+              -0.22434262601562502,
+              0.0004028545052083333,
+              0.0
+            ]
+          ],
+          "input_columns": [
+            "rx",
+            "ry",
+            "gyro_x_turns_s",
+            "gyro_y_turns_s",
+            "gyro_z_turns_s"
+          ],
+          "output_columns": [
+            "delta_yaw_rad_per_frame",
+            "delta_pitch_rad_per_frame"
+          ],
+          "samples": 5392,
+          "rank": 5,
+          "rmse_radians_per_frame": [
+            0.0006762567710643423,
+            0.00020564257756260388
+          ],
+          "scope": "Linear steady-input diagnostic fitted on this scripted corpus, not a held-out dynamic response calibration"
+        },
+        "free_rollout": "separate dynamics audit; never used to build BC observations",
+        "unknown_contract": "Validity masks must be honored; false paint/projectile/weapon fields are placeholders, not neutral/idle/empty truth.",
+        "camera_contract": "Native eye/at direction when all batch cameras causal+valid; fallback batches have native_camera_valid=false. FOV remains stage0 assumption.",
+        "wall_seconds": 18.58544620894827,
+        "source_sha256": {
+          "result.json": "c86679921522fd1bb7301dfed29ab94b84897379d86dfdd4f63721dc015e618f",
+          "inputs-per-present.jsonl": "8a0eb01072329e81a6fa4dbc1088ecc4c1d878428f072a1e72d46ad6a8e9c34e",
+          "native-barriers.jsonl": "e1b7d6139dd0aa84207a5e35f8f8d53a6fddedb0bf312fc28d68ab5240f42614",
+          "cameras.jsonl": "44e4bf4334536383f75407a168b0e72a208159fe86e8bc4dc789377042e55a2e",
+          "native-state.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "native-weapon.jsonl": "8c85aa6be135e863312a170c45ab69c777106ec3e0402a8554ddfdd03cefd917"
+        }
+      },
+      "native_survey": {
+        "schema": "inklab.rl.demo.native-survey.v1",
+        "roles": {
+          "0": {
+            "owned_weapon_snapshots": 8289,
+            "live_candidate_samples": 0,
+            "pose170_same_source_frame_error": {
+              "n": 0
+            },
+            "saber_state38_counts": {
+              "6": 956,
+              "5": 835,
+              "1": 942,
+              "8": 30
+            },
+            "projectile_phase1238_counts": {
+              "0": 747
+            },
+            "weapon_stage_complete": false,
+            "projectile_active_set_complete": false
+          },
+          "1": {
+            "owned_weapon_snapshots": 8286,
+            "live_candidate_samples": 0,
+            "pose170_same_source_frame_error": {
+              "n": 0
+            },
+            "saber_state38_counts": {},
+            "projectile_phase1238_counts": {
+              "0": 460,
+              "2": 21,
+              "1": 39,
+              "3": 6
+            },
+            "weapon_stage_complete": false,
+            "projectile_active_set_complete": false
+          }
+        },
+        "ink_samples": [
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014739-274406/player-0/ink-targets/frame-1200-target-1689700.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 6324,
+            "r_values": [
+              0,
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255
+            ],
+            "nonzero_bounds": [
+              [
+                121,
+                51
+              ],
+              [
+                1598,
+                119
+              ]
+            ],
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014739-274406/player-0/ink-targets/frame-1200-target-1690100.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 0,
+            "r_values": [
+              0
+            ],
+            "nonzero_bounds": null,
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014739-274406/player-0/ink-targets/frame-600-target-1689700.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 4908,
+            "r_values": [
+              0,
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255
+            ],
+            "nonzero_bounds": [
+              [
+                121,
+                55
+              ],
+              [
+                1598,
+                119
+              ]
+            ],
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014739-274406/player-0/ink-targets/frame-600-target-1690100.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 0,
+            "r_values": [
+              0
+            ],
+            "nonzero_bounds": null,
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          }
+        ],
+        "native_paint_readback_available": true,
+        "native_world_ink_qualified": false,
+        "observations_may_use_candidates": false,
+        "notes": [
+          "0x25c engine pose failed first survey, never imported.",
+          "Player+170/+1ac raw candidates and native state38 are passive; static consumer/time semantics still required before BC imports.",
+          "Weapon object owner link+368 and action owner links recovered; numeric state is not automatically charge/swing/cooldown.",
+          "Projectile velocity callbacks are real live calls, not a complete active-set enumerator.",
+          "1600x1600 UV colors readable, but no verified world/team projection or continuous cadence."
+        ]
+      },
+      "resources": {
+        "peak_footprint_mib": 6117.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "sha256": {
+        "work/rl-demo/data-ready/native-survey-full-r2/result.json": "c86679921522fd1bb7301dfed29ab94b84897379d86dfdd4f63721dc015e618f",
+        "work/rl-demo/data-ready/native-survey-full-r2/inputs-per-present.jsonl": "8a0eb01072329e81a6fa4dbc1088ecc4c1d878428f072a1e72d46ad6a8e9c34e",
+        "work/rl-demo/data-ready/native-survey-full-r2/native-barriers.jsonl": "e1b7d6139dd0aa84207a5e35f8f8d53a6fddedb0bf312fc28d68ab5240f42614",
+        "work/rl-demo/data-ready/native-survey-full-r2/native-state.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "work/rl-demo/data-ready/native-survey-full-r2/native-weapon.jsonl": "8c85aa6be135e863312a170c45ab69c777106ec3e0402a8554ddfdd03cefd917",
+        "work/rl-demo/data-ready/native-survey-full-r2/native-survey.json": "0e7e59d7d3ec42b4bcb21976166bc887250c3b55490e60cdf7589dd161c4d93b",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/report.json": "399e02979c5d232728513fc7388622b04b47b5ade7e688010969db56a97dce9f",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00000.npz": "e31a24bfe9c512a5ecabb3e89ef2ea35e596289b9bccb581d369574ce0a19c54",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00001.npz": "169cd7d58a27e3718add6954dcdae41f464eff1bc929dd8007a6b1ca820d0efd",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00002.npz": "d2077397ad2c3d7baee43e36ab09795afa8f0ad8d4399928f921061689813e70",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00003.npz": "973fcfc4a57d5cc41feb6af4241857fec5e94b783bab023f180568cb3ef9f066",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00004.npz": "e073d50264ce224a85e81d42a46fe6aafc036438858084860dfb392fbb5e2734",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00005.npz": "213b6b5ccb8dd4321cda327d9179414709b841cc0d9e21f29c00a564a81c9594",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00006.npz": "10d3159cf1002fb7575f82f482d8d8675a6d76dff0dc7634ea95369385dbf690",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00007.npz": "fd298ca66384aa0a26abaa75bc7d9b0eab95584bd35f5a117b5f7ef7ab79933e",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00008.npz": "78d1f66893d89aee20f577eda52717f02a8aea1bee1572b93d95532b0fc61064",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00009.npz": "b3274871a3bf2d1b0b70b79e407e7632f82c1af09af87b1951a51b6ec9f76e18",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00010.npz": "05943ea26143775c8008d6f651365dcbf233ba9c706b3876db2589e9a0a41eea",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00011.npz": "915162469621c737290b9b0588fc35a0e809992284db7860b726b26e747ed847",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00012.npz": "f9355e10dd951ac469b725a5a41f100da9bf2b70d6c023bc0c64f65c5f0c7182",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00013.npz": "3fc916b4529cb4ffea018641d39d9797d2ea123330c9d895f72685d607267f64",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00014.npz": "db783ec6800c5496a2ec6207d72db4d5431f5a7e99347740c2b85f0f3d0a5804",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00015.npz": "f12f03c9b2084054fcfa81d02c2e5d03fca7a0e2988fd4051de71a0eeff0d985",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00016.npz": "751719f2739c0f9aeab59376d9135f4bb93dba0c1eace73181a2e575a692735b",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00017.npz": "0eb6db6ad06ebc699f6ae3d3897986ea604e7d5676441aa8bf90c6fd75145712",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00018.npz": "748bbc268895fd81e313458a5350e08b53ef416e6c092e191d64be9d67cb6209",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00019.npz": "c850cbc10752f56a6a1e591ea7aff06c82c75e79fe9ae64cb751309c031f5422",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00020.npz": "c6244081bb2c3815a2551b680d6717fb00c0a268563cc05cb007fa121af9fe16",
+        "work/rl-demo/data-ready/bc-native-sync-final-r2/bc-00021.npz": "874144262823f0d91214107de5dd994c3d8c7ad1dde027d367b3c6ff1fd0034d"
+      },
+      "source_bindings_current": {
+        "result.json": true,
+        "inputs-per-present.jsonl": true,
+        "native-barriers.jsonl": true,
+        "cameras.jsonl": true,
+        "native-state.jsonl": true,
+        "native-weapon.jsonl": true
+      },
+      "shard_audit": {
+        "samples": 5399,
+        "finite": true,
+        "actions_legal": true,
+        "unknown_paint_masked": true,
+        "unknown_projectiles_masked": true,
+        "source_age_max": 3,
+        "visible_entity_frames": 0,
+        "frame_order": true
+      },
+      "visual_qa": [
+        {
+          "frame": 602,
+          "screenshot": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014739-274406/player-0/screenshots/frame-600.png",
+          "output": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/data-ready/qa-native-sync-final-r2/frame-600.png",
+          "visible_entities": 0,
+          "ray_kind_counts": {
+            "0": 223,
+            "1": 249,
+            "2": 104,
+            "3": 0
+          },
+          "distance_range": [
+            4.0,
+            64.0
+          ],
+          "missing_truth_masked": true
+        },
+        {
+          "frame": 1202,
+          "screenshot": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-014739-274406/player-0/screenshots/frame-1200.png",
+          "output": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/data-ready/qa-native-sync-final-r2/frame-1200.png",
+          "visible_entities": 0,
+          "ray_kind_counts": {
+            "0": 223,
+            "1": 249,
+            "2": 104,
+            "3": 0
+          },
+          "distance_range": [
+            4.0,
+            64.0
+          ],
+          "missing_truth_masked": true
+        }
+      ]
+    },
+    "3": {
+      "source": "work/rl-demo/data-ready/native-survey-full-r3",
+      "bc": "work/rl-demo/data-ready/bc-native-sync-final-r3",
+      "session": "work/tests/m6-2p-20261024-015658-623225",
+      "recording": {
+        "complete": true,
+        "passed": true,
+        "frames": 11510,
+        "source": "scripted_smoke",
+        "script_pattern": "calibration",
+        "errors": [],
+        "host_sha256": "ce127d34f307cfec39c44f35b86ae66ea1cd4e686f222b2d2ecb3cd81851f3ab",
+        "weapons": [
+          8000,
+          50
+        ],
+        "loadout_mode": "primary_only",
+        "controlled_wall_seconds": 197.42047291714698,
+        "score_by_role": {
+          "player_0": [
+            1.20000005,
+            0.400000006
+          ],
+          "player_1": [
+            0.400000006,
+            1.20000005
+          ]
+        },
+        "hud_downs": {
+          "player_0": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "player_1": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "bc_report": {
+        "schema": "inklab.rl.demo.bc.v2",
+        "observation_mode": "native_state_sync_only",
+        "ready_for_training": false,
+        "training_started": false,
+        "source": "scripted_smoke",
+        "samples": 5398,
+        "decision_stride": 2,
+        "first_state_frame": 2,
+        "last_frame_exclusive": 10798,
+        "source_frames": 11510,
+        "invalid_packet_frames_skipped": 2,
+        "native_source_samples": [
+          2699,
+          2699
+        ],
+        "physics_steps_for_bc": 0,
+        "position_import_error_units": {
+          "n": 10796,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "source_state_age_frames": {
+          "n": 10796,
+          "mean": 2.0,
+          "p95": 3.0,
+          "max": 3.0
+        },
+        "native_camera_available_fraction": 1.0,
+        "readiness_gates": {
+          "complete_native_match": true,
+          "causal_state_available": true,
+          "state_physics_free": true,
+          "native_dense_paint": false,
+          "native_weapon_stage": false,
+          "native_projectile_active_set": false,
+          "camera_axes_calibration_rank5": true,
+          "accepted_stage0_geometry_contract": true,
+          "causal_native_camera_available": true,
+          "script_not_human": true
+        },
+        "blocked_gates": [
+          "native_dense_paint",
+          "native_weapon_stage",
+          "native_projectile_active_set"
+        ],
+        "quantization": {
+          "move_l2": {
+            "n": 10796,
+            "mean": 0.054186735828084476,
+            "p95": 0.15000000000000002,
+            "max": 0.15000000000000002
+          },
+          "camera_abs_deg_per_frame": {
+            "n": 21592,
+            "mean": 0.008638760604869058,
+            "p95": 0.04253378184232634,
+            "max": 0.14177927280775446
+          },
+          "camera_clipped_fraction": 0.0
+        },
+        "camera_response": {
+          "matrix": [
+            [
+              -0.0061862878039464515,
+              0.0006758501869684063,
+              0.0,
+              0.0,
+              0.2454051744791666
+            ],
+            [
+              0.0,
+              0.0,
+              -0.22434262601562502,
+              0.0004028545052083333,
+              0.0
+            ]
+          ],
+          "input_columns": [
+            "rx",
+            "ry",
+            "gyro_x_turns_s",
+            "gyro_y_turns_s",
+            "gyro_z_turns_s"
+          ],
+          "output_columns": [
+            "delta_yaw_rad_per_frame",
+            "delta_pitch_rad_per_frame"
+          ],
+          "samples": 5392,
+          "rank": 5,
+          "rmse_radians_per_frame": [
+            0.0006762567710643423,
+            0.00020564257756260388
+          ],
+          "scope": "Linear steady-input diagnostic fitted on this scripted corpus, not a held-out dynamic response calibration"
+        },
+        "free_rollout": "separate dynamics audit; never used to build BC observations",
+        "unknown_contract": "Validity masks must be honored; false paint/projectile/weapon fields are placeholders, not neutral/idle/empty truth.",
+        "camera_contract": "Native eye/at direction when all batch cameras causal+valid; fallback batches have native_camera_valid=false. FOV remains stage0 assumption.",
+        "wall_seconds": 18.521581541979685,
+        "source_sha256": {
+          "result.json": "50910d942bf01ada43b875059990e9cb0bc409f13706d1c739b9de7214c65b12",
+          "inputs-per-present.jsonl": "be76708ccba3eec47b4bf8154f5a6e54719f8b44e6d4217ca6366f05b2bae4fd",
+          "native-barriers.jsonl": "4e0280540f7330365b410f05df1a4a50f12e437cc36ad87f426d687a9a9cf10c",
+          "cameras.jsonl": "d9926de068bb08211f251730655fd86b9adbcafc16b18331952f6392fb9181e7",
+          "native-state.jsonl": "78f1c70e7c4238ee074e2d5df7dec3c6e8cf47f11c3d3b1ef7e909935ce1001d",
+          "native-weapon.jsonl": "ff45b8f0c917d8b222c8ae34af4fac5a556ac633415298d9c8283db56969e3e9"
+        }
+      },
+      "native_survey": {
+        "schema": "inklab.rl.demo.native-survey.v1",
+        "roles": {
+          "0": {
+            "owned_weapon_snapshots": 8289,
+            "live_candidate_samples": 22102,
+            "pose170_same_source_frame_error": {
+              "n": 5526,
+              "mean": 0.017612795236640832,
+              "p95": 0.09052758047639324,
+              "max": 0.9616477927494999
+            },
+            "saber_state38_counts": {
+              "6": 1050,
+              "1": 942,
+              "5": 741,
+              "8": 30
+            },
+            "projectile_phase1238_counts": {
+              "0": 749
+            },
+            "weapon_stage_complete": false,
+            "projectile_active_set_complete": false
+          },
+          "1": {
+            "owned_weapon_snapshots": 8289,
+            "live_candidate_samples": 22100,
+            "pose170_same_source_frame_error": {
+              "n": 5526,
+              "mean": 0.011536855106774633,
+              "p95": 0.06184188077714047,
+              "max": 0.9616477927494999
+            },
+            "saber_state38_counts": {},
+            "projectile_phase1238_counts": {
+              "0": 433,
+              "2": 30,
+              "1": 59,
+              "3": 6
+            },
+            "weapon_stage_complete": false,
+            "projectile_active_set_complete": false
+          }
+        },
+        "ink_samples": [
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-015658-623225/player-0/ink-targets/frame-1200-target-1675100.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 6299,
+            "r_values": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255
+            ],
+            "nonzero_bounds": [
+              [
+                121,
+                49
+              ],
+              [
+                1598,
+                119
+              ]
+            ],
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-015658-623225/player-0/ink-targets/frame-1200-target-1675500.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 0,
+            "r_values": [
+              0
+            ],
+            "nonzero_bounds": null,
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-015658-623225/player-0/ink-targets/frame-600-target-1675100.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 4841,
+            "r_values": [
+              0,
+              1,
+              3,
+              4,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255
+            ],
+            "nonzero_bounds": [
+              [
+                121,
+                56
+              ],
+              [
+                1598,
+                119
+              ]
+            ],
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          },
+          {
+            "file": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-015658-623225/player-0/ink-targets/frame-600-target-1675500.png",
+            "native_size": [
+              1600,
+              1600
+            ],
+            "sample_size": [
+              256,
+              256
+            ],
+            "channel": "R raw native UV, owner/neutral semantics unqualified",
+            "r_nonzero_pixels": 0,
+            "r_values": [
+              0
+            ],
+            "nonzero_bounds": null,
+            "world_mapping_qualified": false,
+            "per_frame_coverage": false
+          }
+        ],
+        "native_paint_readback_available": true,
+        "native_world_ink_qualified": false,
+        "observations_may_use_candidates": false,
+        "notes": [
+          "0x25c engine pose failed first survey, never imported.",
+          "Player+170/+1ac raw candidates and native state38 are passive; static consumer/time semantics still required before BC imports.",
+          "Weapon object owner link+368 and action owner links recovered; numeric state is not automatically charge/swing/cooldown.",
+          "Projectile velocity callbacks are real live calls, not a complete active-set enumerator.",
+          "1600x1600 UV colors readable, but no verified world/team projection or continuous cadence."
+        ]
+      },
+      "resources": {
+        "peak_footprint_mib": 6069.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "sha256": {
+        "work/rl-demo/data-ready/native-survey-full-r3/result.json": "50910d942bf01ada43b875059990e9cb0bc409f13706d1c739b9de7214c65b12",
+        "work/rl-demo/data-ready/native-survey-full-r3/inputs-per-present.jsonl": "be76708ccba3eec47b4bf8154f5a6e54719f8b44e6d4217ca6366f05b2bae4fd",
+        "work/rl-demo/data-ready/native-survey-full-r3/native-barriers.jsonl": "4e0280540f7330365b410f05df1a4a50f12e437cc36ad87f426d687a9a9cf10c",
+        "work/rl-demo/data-ready/native-survey-full-r3/native-state.jsonl": "78f1c70e7c4238ee074e2d5df7dec3c6e8cf47f11c3d3b1ef7e909935ce1001d",
+        "work/rl-demo/data-ready/native-survey-full-r3/native-weapon.jsonl": "ff45b8f0c917d8b222c8ae34af4fac5a556ac633415298d9c8283db56969e3e9",
+        "work/rl-demo/data-ready/native-survey-full-r3/native-survey.json": "94a136917cf1e95cd0abc5a6cd1680fb87fcf7cd5d34a367d25c7230c91ac82e",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/report.json": "43885b7a7537c5095d4cc28774bac7789e20571c357d51d48fb8acfc85f5227d",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00000.npz": "e31a24bfe9c512a5ecabb3e89ef2ea35e596289b9bccb581d369574ce0a19c54",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00001.npz": "f2bfd6b1511e6769ee21760ecc4f2fa46a7dee51cd69a9fe2c1fa0cc4ece543f",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00002.npz": "0756b783452f4a2d0aca2f42bcaea05695f3b844b41df1ed6a2d73b462fa66fd",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00003.npz": "11f6ff7865d08f56d57a41fff06a8c2e9b1054ac470e5e4bfc408e8fb73fef97",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00004.npz": "27336a2c6390ccfedc1de298c61f94d53153cc9a39e852f8fa995adc7f3b913a",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00005.npz": "f47557d593c348bce9f6479d846b2c391195c929bb7d6dadde93273fc8c9b880",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00006.npz": "f87120cb688a2f49ed501549373398012a37d2f9423bb19d3b1471eec27604f8",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00007.npz": "614c85093629dc905cec77e7aefd04675c767b31807cbf0a979d494cfed3c48f",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00008.npz": "5982cad240949798c2d735cd5da2b45066069749f31033d9eac0a7dd949fe454",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00009.npz": "4432d0516d830c954939ffaf29820b7d8e84f9f650f3c44f341603c8ae232ffe",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00010.npz": "6eac65b6e65e536151caa323cb26860c0a0b7957d8e039de0643f13dfb7c5cb3",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00011.npz": "a8ff49fda751939de646b995a9a1e149b528f59f71e1637ee789ada4fba822f6",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00012.npz": "77eb93fb16cec194fa8ed2914d70334d30a5fd8f09b7331f1bee8df88edd6887",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00013.npz": "91baee579d01b21b6a2af10742b13877d50c74924f3ca342618bfe00a84995fa",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00014.npz": "bbd0909e4e485a1126354c92ff29249a3d937cb7cb3f1bec529833937749fb82",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00015.npz": "ed2cbd8ba63befbe5a322b5f31310f887aea874a1371197110e2806184df0115",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00016.npz": "86c22fb0f303cdd08a8f861a2238ebed58f64e007ba40bba15ab9aecc8ebb94d",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00017.npz": "738df0598fd223f67a842d03461dc99d2baa166842a444d829e623f87e0594be",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00018.npz": "d2217cd34494de72785beff1980fbb5524740b9cafd7263ef698e8963bdd61fa",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00019.npz": "3d1e23a6f019e5ccdad0d13ac92a2b3816ca8f3d754661a1363caef8b14fa319",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00020.npz": "789289b63f9aa083e6e8f6d4dbeb5a29fa7bf87b5a08796b1271abf0d4bc28ee",
+        "work/rl-demo/data-ready/bc-native-sync-final-r3/bc-00021.npz": "00bb8f5a94024d66c33181dd90994e05991d74cb3e0137eaeb8fe6956b7ec820"
+      },
+      "source_bindings_current": {
+        "result.json": true,
+        "inputs-per-present.jsonl": true,
+        "native-barriers.jsonl": true,
+        "cameras.jsonl": true,
+        "native-state.jsonl": true,
+        "native-weapon.jsonl": true
+      },
+      "shard_audit": {
+        "samples": 5398,
+        "finite": true,
+        "actions_legal": true,
+        "unknown_paint_masked": true,
+        "unknown_projectiles_masked": true,
+        "source_age_max": 3,
+        "visible_entity_frames": 0,
+        "frame_order": true
+      },
+      "visual_qa": [
+        {
+          "frame": 602,
+          "screenshot": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-015658-623225/player-0/screenshots/frame-600.png",
+          "output": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/data-ready/qa-native-sync-final-r3/frame-600.png",
+          "visible_entities": 0,
+          "ray_kind_counts": {
+            "0": 223,
+            "1": 249,
+            "2": 104,
+            "3": 0
+          },
+          "distance_range": [
+            4.0,
+            64.0
+          ],
+          "missing_truth_masked": true
+        },
+        {
+          "frame": 1202,
+          "screenshot": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-015658-623225/player-0/screenshots/frame-1200.png",
+          "output": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/data-ready/qa-native-sync-final-r3/frame-1200.png",
+          "visible_entities": 0,
+          "ray_kind_counts": {
+            "0": 223,
+            "1": 249,
+            "2": 104,
+            "3": 0
+          },
+          "distance_range": [
+            4.0,
+            64.0
+          ],
+          "missing_truth_masked": true
+        }
+      ]
+    }
+  },
+  "dynamics": {
+    "dynamics-r1": {
+      "schema": "inklab.rl.demo.dynamics.v1",
+      "source": "work/rl-demo/data-ready/native-survey-full-r1",
+      "first_ground_frame": 139,
+      "last_frame": 11051,
+      "wall_seconds": 126.61467408388853,
+      "variants": {
+        "quantized_free": {
+          "0": {
+            "position": {
+              "n": 2728,
+              "mean": 13.023752560815739,
+              "p95": 36.20172304148141,
+              "max": 38.59198430301892
+            },
+            "horizontal": {
+              "n": 2728,
+              "mean": 11.858879488052446,
+              "p95": 35.27220010719045,
+              "max": 37.730425963425695
+            },
+            "vertical": {
+              "n": 2728,
+              "mean": 4.484654015904772,
+              "p95": 8.132522462413819,
+              "max": 29.07668208705078
+            },
+            "hp": {
+              "n": 2728,
+              "mean": 0.04398826979472141,
+              "p95": 0.0,
+              "max": 1.0
+            },
+            "ink": {
+              "n": 2728,
+              "mean": 0.42570348660245844,
+              "p95": 0.8863366842269897,
+              "max": 1.0
+            },
+            "alive_mismatches": 150,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 75,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 300,
+                "mean": 0.5495794958229471,
+                "p95": 1.3695018400044767,
+                "max": 1.4039867378039408
+              },
+              "3600": {
+                "n": 900,
+                "mean": 2.6255516875722433,
+                "p95": 5.2608923116749295,
+                "max": 5.563824578740401
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 12.804823236480438,
+                "p95": 36.21059152042663,
+                "max": 38.59198430301892
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2727,
+              "mean": 25.36716353115179,
+              "p95": 28.178994968188785,
+              "max": 28.17899506333941
+            },
+            "horizontal": {
+              "n": 2727,
+              "mean": 25.294093567925195,
+              "p95": 28.116545623168342,
+              "max": 28.116545623168342
+            },
+            "vertical": {
+              "n": 2727,
+              "mean": 1.7400354599060617,
+              "p95": 1.8749995199999998,
+              "max": 2.993125900000001
+            },
+            "hp": {
+              "n": 2727,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2727,
+              "mean": 2.872506733731031e-05,
+              "p95": 0.0,
+              "max": 0.014999985694885254
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.07953091122108341,
+                "p95": 0.37765169288629186,
+                "max": 0.4193493960701335
+              },
+              "300": {
+                "n": 75,
+                "mean": 1.4446739135764088,
+                "p95": 4.007989700440464,
+                "max": 4.123380825479726
+              },
+              "1200": {
+                "n": 300,
+                "mean": 5.806856807201038,
+                "p95": 12.37206897006757,
+                "max": 13.540774771528927
+              },
+              "3600": {
+                "n": 900,
+                "mean": 19.65914683173553,
+                "p95": 28.178995000127447,
+                "max": 28.17899506333941
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 25.339045226303096,
+                "p95": 28.178994968188785,
+                "max": 28.17899506333941
+              }
+            }
+          }
+        },
+        "native_camera_only": {
+          "0": {
+            "position": {
+              "n": 2728,
+              "mean": 6.5735471898262015,
+              "p95": 14.603220812571365,
+              "max": 15.040682807084426
+            },
+            "horizontal": {
+              "n": 2728,
+              "mean": 6.489168624102234,
+              "p95": 14.540696566769101,
+              "max": 14.93151442417851
+            },
+            "vertical": {
+              "n": 2728,
+              "mean": 0.8623698722978249,
+              "p95": 1.5914218695208744,
+              "max": 2.201631065738525
+            },
+            "hp": {
+              "n": 2728,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2728,
+              "mean": 0.3051667190776507,
+              "p95": 0.8076002359390261,
+              "max": 0.9483466744422913
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 75,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 300,
+                "mean": 0.5482958932562167,
+                "p95": 1.365017816482395,
+                "max": 1.3996131999477819
+              },
+              "3600": {
+                "n": 900,
+                "mean": 2.32246532612372,
+                "p95": 4.186036214652851,
+                "max": 4.427705502890623
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 6.486617400107944,
+                "p95": 14.5958494128983,
+                "max": 14.856505368941269
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2727,
+              "mean": 21.472662115905898,
+              "p95": 23.643180373801638,
+              "max": 23.787376715673783
+            },
+            "horizontal": {
+              "n": 2727,
+              "mean": 21.285909269828174,
+              "p95": 23.452076443417553,
+              "max": 23.597442467635755
+            },
+            "vertical": {
+              "n": 2727,
+              "mean": 2.69651553591059,
+              "p95": 3.00001526,
+              "max": 3.260361194066162
+            },
+            "hp": {
+              "n": 2727,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2727,
+              "mean": 2.872506733731031e-05,
+              "p95": 0.0,
+              "max": 0.014999985694885254
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.07953091122108341,
+                "p95": 0.37765169288629186,
+                "max": 0.4193493960701335
+              },
+              "300": {
+                "n": 75,
+                "mean": 1.4896261201215468,
+                "p95": 4.290070592914222,
+                "max": 4.426947521976474
+              },
+              "1200": {
+                "n": 300,
+                "mean": 6.031444845244434,
+                "p95": 11.418072857424313,
+                "max": 12.235930437706488
+              },
+              "3600": {
+                "n": 900,
+                "mean": 17.066511359531674,
+                "p95": 23.643178922215846,
+                "max": 23.787376715673783
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 21.450956932108824,
+                "p95": 23.643180373801638,
+                "max": 23.787376715673783
+              }
+            }
+          }
+        },
+        "native_camera_and_raw_move": {
+          "0": {
+            "position": {
+              "n": 2728,
+              "mean": 16.921285063483076,
+              "p95": 38.57279525782621,
+              "max": 39.586645779820934
+            },
+            "horizontal": {
+              "n": 2728,
+              "mean": 16.1437434527574,
+              "p95": 36.47043346501189,
+              "max": 37.725635348224436
+            },
+            "vertical": {
+              "n": 2728,
+              "mean": 3.180271502684486,
+              "p95": 8.290019014637696,
+              "max": 29.382277485
+            },
+            "hp": {
+              "n": 2728,
+              "mean": 0.04398826979472141,
+              "p95": 0.0,
+              "max": 1.0
+            },
+            "ink": {
+              "n": 2728,
+              "mean": 0.38305811763031317,
+              "p95": 0.8830000162124634,
+              "max": 1.0
+            },
+            "alive_mismatches": 150,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 75,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 300,
+                "mean": 0.818446544986344,
+                "p95": 1.9300533436791159,
+                "max": 3.0029581334677355
+              },
+              "3600": {
+                "n": 900,
+                "mean": 4.362656051319118,
+                "p95": 9.448262477836703,
+                "max": 11.353450717767814
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 16.709959949247036,
+                "p95": 38.57279525782621,
+                "max": 39.586645779820934
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2727,
+              "mean": 22.1181357197477,
+              "p95": 25.08228511604728,
+              "max": 25.082285116047867
+            },
+            "horizontal": {
+              "n": 2727,
+              "mean": 22.097012762259673,
+              "p95": 25.08228511604293,
+              "max": 25.08228511604293
+            },
+            "vertical": {
+              "n": 2727,
+              "mean": 0.10993181697766015,
+              "p95": 0.23178410333483856,
+              "max": 3.260361194066162
+            },
+            "hp": {
+              "n": 2727,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2727,
+              "mean": 2.872506733731031e-05,
+              "p95": 0.0,
+              "max": 0.014999985694885254
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.06137298889441759,
+                "p95": 0.2612468489669605,
+                "max": 0.2703776265883886
+              },
+              "300": {
+                "n": 75,
+                "mean": 0.6816599946786227,
+                "p95": 1.852623753122584,
+                "max": 2.6120327364656175
+              },
+              "1200": {
+                "n": 300,
+                "mean": 1.2866723021274586,
+                "p95": 6.781114491189462,
+                "max": 9.831383091461426
+              },
+              "3600": {
+                "n": 900,
+                "mean": 16.10091244526408,
+                "p95": 25.08228511604315,
+                "max": 25.082285116043217
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 22.0884942257847,
+                "p95": 25.08228511604728,
+                "max": 25.082285116047867
+              }
+            }
+          }
+        }
+      },
+      "terrain": {
+        "valid_fraction": 1.0,
+        "native_height_over_coarse_support": {
+          "n": 5455,
+          "mean": 0.07691674732462478,
+          "p95": 0.6933291449999999,
+          "max": 4.10516262
+        }
+      },
+      "scope": "Positions/HP never corrected after one grounded initialization. Variants1/2 intentionally oracle-condition camera each frame for attribution, not free-policy parity. Raw left-stick ablation uses otherwise-unused movement table slots offline only. Native RNG/paint/spawn/dynamic collision remain approximate."
+    },
+    "dynamics-common-r1": {
+      "schema": "inklab.rl.demo.dynamics.v1",
+      "source": "work/rl-demo/data-ready/native-survey-full-r1",
+      "first_ground_frame": 139,
+      "last_frame": 11051,
+      "wall_seconds": 142.2331697079353,
+      "variants": {
+        "quantized_free": {
+          "0": {
+            "position": {
+              "n": 2728,
+              "mean": 13.023752560815739,
+              "p95": 36.20172304148141,
+              "max": 38.59198430301892
+            },
+            "horizontal": {
+              "n": 2728,
+              "mean": 11.858879488052446,
+              "p95": 35.27220010719045,
+              "max": 37.730425963425695
+            },
+            "vertical": {
+              "n": 2728,
+              "mean": 4.484654015904772,
+              "p95": 8.132522462413819,
+              "max": 29.07668208705078
+            },
+            "hp": {
+              "n": 2728,
+              "mean": 0.04398826979472141,
+              "p95": 0.0,
+              "max": 1.0
+            },
+            "ink": {
+              "n": 2728,
+              "mean": 0.42570348660245844,
+              "p95": 0.8863366842269897,
+              "max": 1.0
+            },
+            "alive_mismatches": 150,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 75,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 300,
+                "mean": 0.5495794958229471,
+                "p95": 1.3695018400044767,
+                "max": 1.4039867378039408
+              },
+              "3600": {
+                "n": 900,
+                "mean": 2.6255516875722433,
+                "p95": 5.2608923116749295,
+                "max": 5.563824578740401
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 12.804823236480438,
+                "p95": 36.21059152042663,
+                "max": 38.59198430301892
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2727,
+              "mean": 25.36716353115179,
+              "p95": 28.178994968188785,
+              "max": 28.17899506333941
+            },
+            "horizontal": {
+              "n": 2727,
+              "mean": 25.294093567925195,
+              "p95": 28.116545623168342,
+              "max": 28.116545623168342
+            },
+            "vertical": {
+              "n": 2727,
+              "mean": 1.7400354599060617,
+              "p95": 1.8749995199999998,
+              "max": 2.993125900000001
+            },
+            "hp": {
+              "n": 2727,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2727,
+              "mean": 2.872506733731031e-05,
+              "p95": 0.0,
+              "max": 0.014999985694885254
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.07953091122108341,
+                "p95": 0.37765169288629186,
+                "max": 0.4193493960701335
+              },
+              "300": {
+                "n": 75,
+                "mean": 1.4446739135764088,
+                "p95": 4.007989700440464,
+                "max": 4.123380825479726
+              },
+              "1200": {
+                "n": 300,
+                "mean": 5.806856807201038,
+                "p95": 12.37206897006757,
+                "max": 13.540774771528927
+              },
+              "3600": {
+                "n": 900,
+                "mean": 19.65914683173553,
+                "p95": 28.178995000127447,
+                "max": 28.17899506333941
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 25.339045226303096,
+                "p95": 28.178994968188785,
+                "max": 28.17899506333941
+              }
+            }
+          }
+        },
+        "native_camera_only": {
+          "0": {
+            "position": {
+              "n": 2728,
+              "mean": 6.5735471898262015,
+              "p95": 14.603220812571365,
+              "max": 15.040682807084426
+            },
+            "horizontal": {
+              "n": 2728,
+              "mean": 6.489168624102234,
+              "p95": 14.540696566769101,
+              "max": 14.93151442417851
+            },
+            "vertical": {
+              "n": 2728,
+              "mean": 0.8623698722978249,
+              "p95": 1.5914218695208744,
+              "max": 2.201631065738525
+            },
+            "hp": {
+              "n": 2728,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2728,
+              "mean": 0.3051667190776507,
+              "p95": 0.8076002359390261,
+              "max": 0.9483466744422913
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 75,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 300,
+                "mean": 0.5482958932562167,
+                "p95": 1.365017816482395,
+                "max": 1.3996131999477819
+              },
+              "3600": {
+                "n": 900,
+                "mean": 2.32246532612372,
+                "p95": 4.186036214652851,
+                "max": 4.427705502890623
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 6.486617400107944,
+                "p95": 14.5958494128983,
+                "max": 14.856505368941269
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2727,
+              "mean": 21.472662115905898,
+              "p95": 23.643180373801638,
+              "max": 23.787376715673783
+            },
+            "horizontal": {
+              "n": 2727,
+              "mean": 21.285909269828174,
+              "p95": 23.452076443417553,
+              "max": 23.597442467635755
+            },
+            "vertical": {
+              "n": 2727,
+              "mean": 2.69651553591059,
+              "p95": 3.00001526,
+              "max": 3.260361194066162
+            },
+            "hp": {
+              "n": 2727,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2727,
+              "mean": 2.872506733731031e-05,
+              "p95": 0.0,
+              "max": 0.014999985694885254
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.07953091122108341,
+                "p95": 0.37765169288629186,
+                "max": 0.4193493960701335
+              },
+              "300": {
+                "n": 75,
+                "mean": 1.4896261201215468,
+                "p95": 4.290070592914222,
+                "max": 4.426947521976474
+              },
+              "1200": {
+                "n": 300,
+                "mean": 6.031444845244434,
+                "p95": 11.418072857424313,
+                "max": 12.235930437706488
+              },
+              "3600": {
+                "n": 900,
+                "mean": 17.066511359531674,
+                "p95": 23.643178922215846,
+                "max": 23.787376715673783
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 21.450956932108824,
+                "p95": 23.643180373801638,
+                "max": 23.787376715673783
+              }
+            }
+          }
+        },
+        "native_camera_and_raw_move": {
+          "0": {
+            "position": {
+              "n": 2728,
+              "mean": 16.921285063483076,
+              "p95": 38.57279525782621,
+              "max": 39.586645779820934
+            },
+            "horizontal": {
+              "n": 2728,
+              "mean": 16.1437434527574,
+              "p95": 36.47043346501189,
+              "max": 37.725635348224436
+            },
+            "vertical": {
+              "n": 2728,
+              "mean": 3.180271502684486,
+              "p95": 8.290019014637696,
+              "max": 29.382277485
+            },
+            "hp": {
+              "n": 2728,
+              "mean": 0.04398826979472141,
+              "p95": 0.0,
+              "max": 1.0
+            },
+            "ink": {
+              "n": 2728,
+              "mean": 0.38305811763031317,
+              "p95": 0.8830000162124634,
+              "max": 1.0
+            },
+            "alive_mismatches": 150,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 75,
+                "mean": 5.150000752082632e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 300,
+                "mean": 0.818446544986344,
+                "p95": 1.9300533436791159,
+                "max": 3.0029581334677355
+              },
+              "3600": {
+                "n": 900,
+                "mean": 4.362656051319118,
+                "p95": 9.448262477836703,
+                "max": 11.353450717767814
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 16.709959949247036,
+                "p95": 38.57279525782621,
+                "max": 39.586645779820934
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2727,
+              "mean": 22.1181357197477,
+              "p95": 25.08228511604728,
+              "max": 25.082285116047867
+            },
+            "horizontal": {
+              "n": 2727,
+              "mean": 22.097012762259673,
+              "p95": 25.08228511604293,
+              "max": 25.08228511604293
+            },
+            "vertical": {
+              "n": 2727,
+              "mean": 0.10993181697766015,
+              "p95": 0.23178410333483856,
+              "max": 3.260361194066162
+            },
+            "hp": {
+              "n": 2727,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2727,
+              "mean": 2.872506733731031e-05,
+              "p95": 0.0,
+              "max": 0.014999985694885254
+            },
+            "alive_mismatches": 30,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.06137298889441759,
+                "p95": 0.2612468489669605,
+                "max": 0.2703776265883886
+              },
+              "300": {
+                "n": 75,
+                "mean": 0.6816599946786227,
+                "p95": 1.852623753122584,
+                "max": 2.6120327364656175
+              },
+              "1200": {
+                "n": 300,
+                "mean": 1.2866723021274586,
+                "p95": 6.781114491189462,
+                "max": 9.831383091461426
+              },
+              "3600": {
+                "n": 900,
+                "mean": 16.10091244526408,
+                "p95": 25.08228511604315,
+                "max": 25.082285116043217
+              },
+              "10800": {
+                "n": 2700,
+                "mean": 22.0884942257847,
+                "p95": 25.08228511604728,
+                "max": 25.082285116047867
+              }
+            }
+          }
+        }
+      },
+      "terrain": {
+        "valid_fraction": 1.0,
+        "native_height_over_coarse_support": {
+          "n": 5455,
+          "mean": 0.07691674732462478,
+          "p95": 0.6933291449999999,
+          "max": 4.10516262
+        }
+      },
+      "scope": "Positions/HP never corrected after one grounded initialization. Variants1/2 intentionally oracle-condition camera each frame for attribution, not free-policy parity. Raw left-stick ablation uses otherwise-unused movement table slots offline only. Native RNG/paint/spawn/dynamic collision remain approximate."
+    },
+    "dynamics-original-r11-final": {
+      "schema": "inklab.rl.demo.dynamics.v1",
+      "source": "work/rl-demo/smoke-final-r11",
+      "first_ground_frame": 166,
+      "last_frame": 10798,
+      "wall_seconds": 130.41792266699485,
+      "variants": {
+        "quantized_free": {
+          "0": {
+            "position": {
+              "n": 2658,
+              "mean": 19.87793825793717,
+              "p95": 38.52199782762246,
+              "max": 39.21340633133393
+            },
+            "horizontal": {
+              "n": 2658,
+              "mean": 18.13602368390361,
+              "p95": 28.081991689840976,
+              "max": 37.74269209750497
+            },
+            "vertical": {
+              "n": 2658,
+              "mean": 5.810030656531512,
+              "p95": 28.86617135972656,
+              "max": 29.78570460972656
+            },
+            "hp": {
+              "n": 2658,
+              "mean": 0.09029345372460497,
+              "p95": 1.0,
+              "max": 1.0
+            },
+            "ink": {
+              "n": 2658,
+              "mean": 0.3422556008272534,
+              "p95": 0.8463403582572937,
+              "max": 1.0
+            },
+            "alive_mismatches": 240,
+            "horizons": {
+              "60": {
+                "n": 16,
+                "mean": 4.8282999444526146e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 76,
+                "mean": 5.082274266265786e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 301,
+                "mean": 1.726902708789206,
+                "p95": 4.052895903326525,
+                "max": 4.398150012262176
+              },
+              "3600": {
+                "n": 901,
+                "mean": 6.858606695451619,
+                "p95": 12.54100858537979,
+                "max": 12.869019909875263
+              },
+              "10800": {
+                "n": 2658,
+                "mean": 19.87793825793717,
+                "p95": 38.52199782762246,
+                "max": 39.21340633133393
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2658,
+              "mean": 24.276113833910458,
+              "p95": 27.037890296802168,
+              "max": 27.0378904951348
+            },
+            "horizontal": {
+              "n": 2658,
+              "mean": 24.20011331023027,
+              "p95": 26.97279921378018,
+              "max": 26.97279921378018
+            },
+            "vertical": {
+              "n": 2658,
+              "mean": 1.7384391596910589,
+              "p95": 1.8749991205,
+              "max": 2.993125900000001
+            },
+            "hp": {
+              "n": 2658,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2658,
+              "mean": 6.897410026073815e-06,
+              "p95": 0.0,
+              "max": 0.008333325386047363
+            },
+            "alive_mismatches": 0,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.38068979975519934,
+                "p95": 1.2529835884817166,
+                "max": 1.714440962319784
+              },
+              "300": {
+                "n": 75,
+                "mean": 1.981858197015533,
+                "p95": 4.3518509427433365,
+                "max": 4.415855181602827
+              },
+              "1200": {
+                "n": 300,
+                "mean": 5.791062310045695,
+                "p95": 12.20385905306291,
+                "max": 13.571185345766176
+              },
+              "3600": {
+                "n": 900,
+                "mean": 18.881447193835363,
+                "p95": 27.037890397632776,
+                "max": 27.0378904951348
+              },
+              "10800": {
+                "n": 2658,
+                "mean": 24.276113833910458,
+                "p95": 27.037890296802168,
+                "max": 27.0378904951348
+              }
+            }
+          }
+        },
+        "native_camera_only": {
+          "0": {
+            "position": {
+              "n": 2658,
+              "mean": 6.37147278411539,
+              "p95": 14.520908236909808,
+              "max": 14.673499428377182
+            },
+            "horizontal": {
+              "n": 2658,
+              "mean": 6.286826407621252,
+              "p95": 14.472773311128009,
+              "max": 14.611275008862284
+            },
+            "vertical": {
+              "n": 2658,
+              "mean": 0.8470538876234718,
+              "p95": 1.569098734591248,
+              "max": 2.1416916896435545
+            },
+            "hp": {
+              "n": 2658,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2658,
+              "mean": 0.31078673597457457,
+              "p95": 0.824328398704529,
+              "max": 0.9483466744422913
+            },
+            "alive_mismatches": 0,
+            "horizons": {
+              "60": {
+                "n": 16,
+                "mean": 4.8282999444526146e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 76,
+                "mean": 5.082274266265786e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 301,
+                "mean": 0.5804728451999661,
+                "p95": 1.364743380906548,
+                "max": 1.3919006140829957
+              },
+              "3600": {
+                "n": 901,
+                "mean": 2.3503482360277874,
+                "p95": 4.186340550795852,
+                "max": 4.419838611046614
+              },
+              "10800": {
+                "n": 2658,
+                "mean": 6.37147278411539,
+                "p95": 14.520908236909808,
+                "max": 14.673499428377182
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2658,
+              "mean": 20.799551832012483,
+              "p95": 22.89345961120959,
+              "max": 23.184231487542416
+            },
+            "horizontal": {
+              "n": 2658,
+              "mean": 20.606487097314215,
+              "p95": 22.696040020853907,
+              "max": 22.989314684608438
+            },
+            "vertical": {
+              "n": 2658,
+              "mean": 2.6987217030169353,
+              "p95": 3.00004387,
+              "max": 3.260225053753052
+            },
+            "hp": {
+              "n": 2658,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2658,
+              "mean": 6.897410026073815e-06,
+              "p95": 0.0,
+              "max": 0.008333325386047363
+            },
+            "alive_mismatches": 0,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.38068979975519934,
+                "p95": 1.2529835884817166,
+                "max": 1.714440962319784
+              },
+              "300": {
+                "n": 75,
+                "mean": 2.032780329759065,
+                "p95": 4.526361971362037,
+                "max": 4.588966959549465
+              },
+              "1200": {
+                "n": 300,
+                "mean": 6.265685763329215,
+                "p95": 11.476282558899321,
+                "max": 12.008488449072884
+              },
+              "3600": {
+                "n": 900,
+                "mean": 16.709455949582356,
+                "p95": 22.893455112505062,
+                "max": 23.184231487542416
+              },
+              "10800": {
+                "n": 2658,
+                "mean": 20.799551832012483,
+                "p95": 22.89345961120959,
+                "max": 23.184231487542416
+              }
+            }
+          }
+        },
+        "native_camera_and_raw_move": {
+          "0": {
+            "position": {
+              "n": 2658,
+              "mean": 16.492133642331243,
+              "p95": 38.5726949123536,
+              "max": 39.622033007304005
+            },
+            "horizontal": {
+              "n": 2658,
+              "mean": 15.710688806360839,
+              "p95": 36.46533781298698,
+              "max": 37.72580814006131
+            },
+            "vertical": {
+              "n": 2658,
+              "mean": 3.087791706376673,
+              "p95": 8.30626764011316,
+              "max": 29.398106095
+            },
+            "hp": {
+              "n": 2658,
+              "mean": 0.045146726862302484,
+              "p95": 0.0,
+              "max": 1.0
+            },
+            "ink": {
+              "n": 2658,
+              "mean": 0.3840931668955387,
+              "p95": 0.8830000162124634,
+              "max": 1.0
+            },
+            "alive_mismatches": 120,
+            "horizons": {
+              "60": {
+                "n": 16,
+                "mean": 4.8282999444526146e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "300": {
+                "n": 76,
+                "mean": 5.082274266265786e-05,
+                "p95": 5.150000752082633e-05,
+                "max": 5.150000752082633e-05
+              },
+              "1200": {
+                "n": 301,
+                "mean": 0.8641142311980182,
+                "p95": 1.9330456444294761,
+                "max": 3.0037000869039834
+              },
+              "3600": {
+                "n": 901,
+                "mean": 4.453354327321305,
+                "p95": 9.463809066287636,
+                "max": 11.450364053398694
+              },
+              "10800": {
+                "n": 2658,
+                "mean": 16.492133642331243,
+                "p95": 38.5726949123536,
+                "max": 39.622033007304005
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "n": 2658,
+              "mean": 21.90954212407773,
+              "p95": 24.927124046909707,
+              "max": 24.92712404691398
+            },
+            "horizontal": {
+              "n": 2658,
+              "mean": 21.88707435573399,
+              "p95": 24.927124046871942,
+              "max": 24.927124046871942
+            },
+            "vertical": {
+              "n": 2658,
+              "mean": 0.11839897934724461,
+              "p95": 0.2512675339215707,
+              "max": 3.260225053753052
+            },
+            "hp": {
+              "n": 2658,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink": {
+              "n": 2658,
+              "mean": 6.897410026073815e-06,
+              "p95": 0.0,
+              "max": 0.008333325386047363
+            },
+            "alive_mismatches": 0,
+            "horizons": {
+              "60": {
+                "n": 15,
+                "mean": 0.13193697501818966,
+                "p95": 0.2661577713559955,
+                "max": 0.2690928859016737
+              },
+              "300": {
+                "n": 75,
+                "mean": 0.5831251705226551,
+                "p95": 1.7977174449208984,
+                "max": 2.682293479932775
+              },
+              "1200": {
+                "n": 300,
+                "mean": 1.4076386947555302,
+                "p95": 7.057488949843302,
+                "max": 9.86837616221684
+              },
+              "3600": {
+                "n": 900,
+                "mean": 16.01519876818505,
+                "p95": 24.927124046873427,
+                "max": 24.927124046873768
+              },
+              "10800": {
+                "n": 2658,
+                "mean": 21.90954212407773,
+                "p95": 24.927124046909707,
+                "max": 24.92712404691398
+              }
+            }
+          }
+        }
+      },
+      "terrain": {
+        "valid_fraction": 1.0,
+        "native_height_over_coarse_support": {
+          "n": 5316,
+          "mean": 0.07956579047296827,
+          "p95": 0.599586964107666,
+          "max": 4.08871889
+        }
+      },
+      "scope": "Positions/HP never corrected after one grounded initialization. Variants1/2 intentionally oracle-condition camera each frame for attribution, not free-policy parity. Raw left-stick ablation uses otherwise-unused movement table slots offline only. Native RNG/paint/spawn/dynamic collision remain approximate."
+    }
+  },
+  "source_sha256": {
+    "rl/demo/__init__.py": "d27e520318873dcadcb023e9b0bb5bfa006537fc1f9e192f412b10f4d22dbb58",
+    "rl/demo/analyze.py": "9f4452dc564399c2b7ffeb98df88f8473be0a7eec945170cef3c68e74c1cbc38",
+    "rl/demo/bc_sync.py": "1b9deb92968a4268a6f54f3b5fcb08081306021c98680aa1bf7b8a8f06cbc191",
+    "rl/demo/bench_chunk.py": "fecdff459c6d69ac41e6c888491c7ed7162ecebf06d1467cb298f58f2b6765d8",
+    "rl/demo/build_capture.py": "98563db7271178c7a4131f96f247e917ecc5153ded8feeb974754e0b0ae7446f",
+    "rl/demo/build_host.py": "3c8cc6379014cfed309a5b012965f03f2f8a4f2e57ebf9cf3c96a50bfc814063",
+    "rl/demo/build_live.py": "323c103596a731c7f1a818468820389b36d4c655c6a2a05d235a783436c647cd",
+    "rl/demo/build_profile.py": "aeb45251fc1772f9ab7e995d8fed1ee9f59cfd04b0b3e22492f744a390335f8e",
+    "rl/demo/build_render.py": "e37e9421f1ba627f2bdd907611cc14b24890d027bd30c82f5f8a210bb69e3a8c",
+    "rl/demo/capture.py": "2fd46eafd8b3d297a7d2f7aac5169b470448887c8802c578abaef29cea083873",
+    "rl/demo/controller.py": "e15c187e47c4435260968835d5cd3198313a9c3dfa846fb03aad5f92f9ae3eb0",
+    "rl/demo/convert.py": "f4e1a878785d7df754f63cfb644241fd9a0f6747d9ece22549ddf3c90183fdea",
+    "rl/demo/data_report.py": "b7c2aa0c6b4edf353f523364cba85e5dd5f6abda379bcf8da824a8403bc7de30",
+    "rl/demo/dynamics_audit.py": "4aae9edd65e6dcd04f62166ef2fbdf79edce964ff335f4c9fe52acecd9e6ae7b",
+    "rl/demo/logic_compare.py": "4913dd56603200d2f8e43c138dd8b4f12dc0c97858c03838151e59345ca3fbcb",
+    "rl/demo/native_survey.py": "8785b22b41e0fde9326c9917b66f2885a9b151ccaa73d019279ac6936ad4dd77",
+    "rl/demo/profile_report.py": "c08441d4b435cbc23bf1f6ab623d150459bb0864447fc5c3103f34e829354c84",
+    "rl/demo/profile_run.py": "7761f7880ce2b7076e19a4f8ab62187d79a2d72231c1eb67e4aef2ef28a61c1e",
+    "rl/demo/protocol.py": "166ac8a17cdb801f01a2abeee7e150b2b9f442f05bea02391b25319597256220",
+    "rl/demo/render_overlay.py": "8d19210db4619edea2fa13e1139bc575f8b7e52d676276196c29bd04390b7703",
+    "rl/demo/render_research.py": "c6b128b00c592c245dd836e2eacbc056e01459db2a23f017ad4ee32c684e9665",
+    "rl/demo/report.py": "880c6c5231fadd7a2c6be47c6c31b5847d6c11a1efd4b46317241525ba4989b2",
+    "rl/demo/state_sync.py": "92e9a28ff3fe9814f0cbf3bb17346bc29053d4d4e007f68db20d6ea3e20ce673",
+    "rl/demo/telemetry.py": "38989fb0c4b5bc86da5a4d4021253024a865a24b47fe42c5ec21b42e5251eb1f",
+    "rl/demo/test_capture_loop.py": "ab9feb89fd0cfd168a66ae61d4749b0171915070ee53889e788c02ea51c0dd8e",
+    "rl/demo/test_demo.py": "819069e67ef57468ceb7d961bc24c6e2c792fcd5f1d2ce114649ea6f0c2c4556",
+    "rl/demo/test_monitor.py": "0edf88331cc45ac21671c8bff0becc5eb11d7721acec3769c09e04467a4185b0",
+    "rl/demo/test_predicate.py": "9befa4217d250ac0d367257b407e3e49497f48516e87691439cdf4d07d1fcc94",
+    "rl/demo/test_render_overlay.py": "4636f0490c2beef4bf58c7e3e333e73ea390d50b88158d3481b6eb780a00416b",
+    "rl/demo/test_sync.py": "dcd3a4557c7ad1c79c914d3f7c8a1e21e9fa2529d3e5fead2d1a84f79e80b374",
+    "rl/demo/visualize_bc.py": "577ad94a0fe80bfa8f298aed712a0994a41dd12897dcd120a9551c444c4121f1",
+    "rl/demo/capture_live.inc": "c98d67f01a13bd1a66f532d40d4450039b4b423bec6eaaae35bf39846dbd086d",
+    "rl/demo/capture_sensors.inc": "a4286c0094dd425f29ad0e386d30a599350f7714a0f45927f6310ec808f69bb1",
+    "rl/demo/render_predicate.inc": "e67619104613eb5f580e5e2312fecdbe9ae054a252f0e2e5664a0e6c9436c5e5",
+    "rl/gpu/env.py": "c643890c4dd8a095853a19933ab97799334a878a887c9ce3d78c414045269285"
+  },
+  "camera_heldout": {
+    "samples": 5393,
+    "rank": 5,
+    "rmse_radians_per_frame": [
+      0.0006937023197663932,
+      0.00020835360753296858
+    ],
+    "scope": "Fixed external matrix on this held-out corpus; no coefficient refitting. Constant-input windows only, not arbitrary dynamic/physical gyro calibration."
+  },
+  "total_bc_samples": 16194,
+  "protected": {
+    "work/rl-stage0/camera-host-r9/dmhost-aim": {
+      "expected": "b133db55fa807357ea4b1b99d5ef29ba62fc6e08d468eccaf0df4f2e5139e772",
+      "actual": "b133db55fa807357ea4b1b99d5ef29ba62fc6e08d468eccaf0df4f2e5139e772",
+      "unchanged": true
+    },
+    "upstream/dm/host/dmhost": {
+      "expected": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+      "actual": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+      "unchanged": true
+    },
+    "work/a8/dmhost-arena-v15": {
+      "expected": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "actual": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "unchanged": true
+    },
+    "work/a8/dmhost-arena-special-v15": {
+      "expected": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+      "actual": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+      "unchanged": true
+    },
+    "work/rl-demo/host-r5/dmhost-demo": {
+      "expected": "32b5b3e5e9243732713eaae3b2be99cc60fcc37b2cac86cc590f9de38516914f",
+      "actual": "32b5b3e5e9243732713eaae3b2be99cc60fcc37b2cac86cc590f9de38516914f",
+      "unchanged": true
+    },
+    "work/rl-demo/render-host-r2/dmhost-demo": {
+      "expected": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "actual": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "unchanged": true
+    },
+    "work/rl-demo/data-host-r2/dmhost-demo": {
+      "expected": "89d6dae58868b7141bd1b614a1760936db3ef0fd4751bf5b8cacb21425859528",
+      "actual": "89d6dae58868b7141bd1b614a1760936db3ef0fd4751bf5b8cacb21425859528",
+      "unchanged": true
+    }
+  },
+  "saves": {
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/save_ref/save.dat": "89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon-rl-lab/saves/bis/user/save/0000000000000001/0/save.dat": "89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd"
+  },
+  "saves_match_run67": true,
+  "manifest_checks": [
+    "host-r5",
+    "render-host-r2",
+    "data-host-r2",
+    "data-host-r3"
+  ],
+  "original_romfs": {
+    "Pack/Scene/Vss_Yunohana.pack.zs": {
+      "sha256": "782655acf53279b3ff4801c934884c000f8d41491658dadd01b200a5bac5bcf9",
+      "unchanged": true
+    },
+    "Pack/Bootup.Nin_NX_NVN.pack.zs": {
+      "sha256": "5862c49fc7ebbb1b99c7e79a62f1ab24df44e732f3fc173f08a84d1d22e80929",
+      "unchanged": true
+    }
+  },
+  "closeout": {
+    "owned_native_capture_processes": [],
+    "max_rooms": 1,
+    "training_started": false,
+    "production_defaults_unchanged": true,
+    "notes": "Full-state sensor semantics not promoted just because readable; all BC files remain masked approximate research artifacts."
+  }
+}
