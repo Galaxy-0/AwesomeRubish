@@ -33,6 +33,7 @@ def main(a):
             seed=a.seed + i * 101,
             device=a.device,
             trace=folder / "trace.json",
+            deterministic=not a.stochastic,
         )
         (folder / "result.json").write_text(json.dumps(r, indent=2) + "\n")
         result["results"][kind] = r
@@ -77,6 +78,7 @@ def main(a):
             seed=a.seed + 1000 + oldmeta["update"],
             device=a.device,
             opponent=old,
+            deterministic=not a.stochastic,
         )
         (root / f"history-{oldversion}.json").write_text(json.dumps(r, indent=2) + "\n")
         for role, row in r["roles"].items():
@@ -159,6 +161,7 @@ if __name__ == "__main__":
     p.add_argument("--history", nargs="*", default=[])
     p.add_argument("--ratings")
     p.add_argument("--pool-history", action="store_true")
+    p.add_argument("--stochastic", action="store_true")
     p.add_argument("--games", type=int, default=128)
     p.add_argument("--history-games", type=int, default=64)
     p.add_argument("--seed", type=int, default=19001)

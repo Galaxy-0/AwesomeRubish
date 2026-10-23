@@ -7,7 +7,7 @@ from .common import environment, load_policy, wilson
 from .policy import prepare
 from .opponents import D4Defender
 from ..record import Recorder
-from ..env import HP, SUB, YAW, HEADING, GROUND
+from ..env import HP, SUB, YAW, HEADING, GROUND, EVENT_SIZE
 
 
 def d4_positions(env):
@@ -79,7 +79,7 @@ def play(
     )
     rows = torch.arange(games, device=device)
     record = Recorder(env, environment=0, stride=6) if trace else None
-    totals = torch.zeros((games, 2, 5), device=device)
+    totals = torch.zeros((games, 2, EVENT_SIZE), device=device)
     healing = torch.zeros((games, 2), device=device)
     cover = torch.zeros_like(healing)
     damaging_heal = torch.zeros_like(healing)
@@ -108,7 +108,8 @@ def play(
         obs, reward, term, trunc, info = env.step(action)
         totals += info["events"]
         recovering = (
-            (oldhp < 0.5)
+            (oldhp > 0)
+            & (oldhp < 0.5)
             & (env.state[:, :, HP] > oldhp + 1e-5)
             & (env.state[:, :, SUB] > 0)
             & (env.state[:, :, HP] > 0)
@@ -126,10 +127,12 @@ def play(
             covered = (blocked < length - 0.35) & (length < 30)
             cover += (
                 covered
+                & (oldhp > 0)
+                & (env.state[:, :, HP] > 0)
                 & (oldhp < 0.5)
                 & ((env.state[:, :, :3] - oldpos).norm(dim=-1) > 0.005)
             )
-        kills = info["events"][:, :, 1].flip(1) > 0
+        kills = info["events"][:, :, 5].flip(1) > 0
         first_kill = torch.where(
             (first_kill < 0) & kills, env.steps[:, None], first_kill
         )
@@ -178,7 +181,7 @@ def play(
         draws = int((draw & mask).sum().item())
         damage = totals[mask, 1 - role, 0].sum().item() * 100
         deaths = totals[mask, role, 1].sum().item()
-        kills = totals[mask, 1 - role, 1].sum().item()
+        kills = totals[mask, 1 - role, 5].sum().item()
         report["roles"][name] = dict(
             games=number,
             wins=wins,
@@ -188,6 +191,9 @@ def play(
             wilson95=wilson(wins, number),
             kills=kills,
             deaths=deaths,
+            self_splats=float(
+                (totals[mask, role, 1] - totals[mask, role, 5]).sum().item()
+            ),
             kd=kills / max(1, deaths),
             damage_dealt=damage,
             own_turf_percent=float(
@@ -223,7 +229,7 @@ def play(
         role=roles.cpu().tolist(),
         winner=winner.cpu().tolist(),
         turf=count.cpu().tolist(),
-        kills=totals[:, :, 1].flip(1).cpu().tolist(),
+        kills=totals[:, :, 5].flip(1).cpu().tolist(),
         deaths=totals[:, :, 1].cpu().tolist(),
         first_kill_frame=first_kill.cpu().tolist(),
     )

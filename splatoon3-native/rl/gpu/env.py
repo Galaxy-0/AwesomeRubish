@@ -63,6 +63,7 @@ from .collision import capsule_first, segment_distance
     FLIGHT_DURATION,
 ) = range(48)
 STATE_SIZE = 48
+EVENT_SIZE = 6  # received,down,attack,hook,return-frame,weapon-caused-down
 # Projectile layout x,y,z,vx,vy,vz,age,lifetime,damage,kind,alive,radius.
 PX, PY, PZ, PVX, PVY, PVZ, PA, PL, PD, PK, ACTIVE, PR, RX, RY, RZ, UX, UY, UZ, MASK = (
     range(19)
@@ -237,7 +238,7 @@ class ParallelEnv:
             raise ValueError("actions must be int64 [n_envs,2,8] on environment device")
         actions = torch.where(self.button_enabled, actions, 0)
         reward = torch.zeros((self.n, 2), device=self.device)
-        events = torch.zeros((self.n, 2, 5), device=self.device)
+        events = torch.zeros((self.n, 2, EVENT_SIZE), device=self.device)
         for _ in range(self.cfg.decision_frames):
             self.state, self.shots, self.paint, r, event = self._advance(
                 self.state, self.shots, self.paint, actions, self.steps, self.anneal
@@ -969,7 +970,11 @@ class ParallelEnv:
         damage_reward = (
             credited[:, 1] - credited[:, 0]
         ) * self.cfg.damage_shaping_scale
-        kills = died[:, 1].float() - died[:, 0].float()
+        # A damage KO is not an unassisted fall. The former counts as a kill;
+        # self-splats only cost match time/paint, with no invented opponent kill.
+        # Delayed knockback-fall assists are not modeled in this approximation.
+        attributed = died & (hp <= 1e-6)
+        kills = attributed[:, 1].float() - attributed[:, 0].float()
         r = kills + (damage_reward + paint_reward) * anneal
         reward = torch.stack([r, -r], -1)
         for slot, val in [
@@ -981,7 +986,14 @@ class ParallelEnv:
         ]:
             t[..., slot] = val.float()
         event = torch.stack(
-            [received, died.float(), shot.float(), hook.float(), (phase == 5).float()],
+            [
+                received,
+                died.float(),
+                shot.float(),
+                hook.float(),
+                (phase == 5).float(),
+                attributed.float(),
+            ],
             -1,
         )
         # Finished environments freeze completely; no hidden post-terminal state changes.

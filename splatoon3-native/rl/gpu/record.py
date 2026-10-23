@@ -47,7 +47,14 @@ class Recorder:
                     )
                 if ev[1]:
                     self.events[player].append(
-                        dict(frame=frame, type="down", evidence="gpu_referee")
+                        dict(
+                            frame=frame,
+                            type="down",
+                            evidence="gpu_referee",
+                            cause=("weapon" if ev[5] else "self_splat")
+                            if len(ev) > 5
+                            else "unclassified",
+                        )
                     )
         if frame % self.stride == 0:
             self.rows.append(

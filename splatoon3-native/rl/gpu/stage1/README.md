@@ -76,6 +76,13 @@ RL_STAGE0_DATA=work/rl-stage0/data-v5 .venv/bin/python -m rl.gpu.test_env
 RL_STAGE0_DATA=work/rl-stage0/data-v5 .venv/bin/python -m rl.gpu.stage1.test_learning
 ```
 
-6项学习检查覆盖mask+物理防线、GRU终局重置、DeepSets排列不变、GAE终局截断、
-PPO更新/历史样本屏蔽、固定.52的正面KO/背面不开火控制。原14项环境单测继续保留。
+7项学习检查覆盖mask+物理防线、GRU终局重置、DeepSets排列不变、GAE终局截断、
+PPO更新/历史样本屏蔽、固定.52的正面KO/背面不开火、无伤自落不计击杀控制。原14项环境单测继续保留。
+事件第6项单列武器击倒；自落不给对手伪造击杀奖励，延迟推落助攻暂未建模。
 算法依据：[PPO原论文](https://arxiv.org/abs/1707.06347)。
+
+
+验收部署策略默认遵循训练时的masked categorical采样；greedy取各头最大值另作诊断，
+不能将二者混成同一策略。使用`assess --stochastic`可评估实际采样策略；保留greedy原结果，
+最终验证使用预先固定的新种子，不通过重抽赢局来改变胜率。`--pool-history`逐一评估checkpoint
+中保存的所有历史快照，并输出分武器Elo表。

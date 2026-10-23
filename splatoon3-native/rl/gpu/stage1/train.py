@@ -3,6 +3,7 @@
 import argparse, json, time, math
 from pathlib import Path
 import torch
+from ..env import EVENT_SIZE
 from .common import environment, checkpoint, CSV, digest
 from .policy import Policy, prepare
 from .opponents import League
@@ -79,7 +80,7 @@ def main(a):
     before = torch.ones(a.n_envs * 2, dtype=torch.bool, device=a.device)
     random_actions = env.random_actions()
     match_reward = torch.zeros((a.n_envs, 2), device=a.device)
-    match_events = torch.zeros((a.n_envs, 2, 5), device=a.device)
+    match_events = torch.zeros((a.n_envs, 2, EVENT_SIZE), device=a.device)
     match_records = []
     frame_unit = a.n_envs * env.cfg.decision_frames
     max_updates = (
@@ -174,6 +175,15 @@ def main(a):
                             draw=float((winner == 0).float().mean().item()),
                             damage_received=match_events[:, :, 0].sum(0).cpu().tolist(),
                             deaths=match_events[:, :, 1].sum(0).cpu().tolist(),
+                            weapon_kills=match_events[:, :, 5]
+                            .flip(1)
+                            .sum(0)
+                            .cpu()
+                            .tolist(),
+                            self_splats=(match_events[:, :, 1] - match_events[:, :, 5])
+                            .sum(0)
+                            .cpu()
+                            .tolist(),
                             turf_percent=(counts / env.paint_count * 100)
                             .mean(0)
                             .cpu()
@@ -239,10 +249,10 @@ def main(a):
                 **stats,
                 alpha_win=recent["alpha_win"] if recent else "",
                 bravo_win=recent["bravo_win"] if recent else "",
-                alpha_kd=(recent["deaths"][1] / max(1, recent["deaths"][0]))
+                alpha_kd=(recent["weapon_kills"][0] / max(1, recent["deaths"][0]))
                 if recent
                 else "",
-                bravo_kd=(recent["deaths"][0] / max(1, recent["deaths"][1]))
+                bravo_kd=(recent["weapon_kills"][1] / max(1, recent["deaths"][1]))
                 if recent
                 else "",
                 alpha_damage=recent["damage_received"][1] * 100 if recent else "",

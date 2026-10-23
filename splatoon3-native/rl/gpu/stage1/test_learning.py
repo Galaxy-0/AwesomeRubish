@@ -27,6 +27,17 @@ class LearningTests(unittest.TestCase):
             fixture_config(loadout_mode="primary_only", decision_frames=2),
         )
 
+    def test_unassisted_fall_is_not_opponent_kill(self):
+        e = self.env()
+        e.state[0, 0, 1] = -26.0
+        e.state[0, 0, 14] = 0
+        a = torch.zeros((1, 2, 8), dtype=torch.int64)
+        a[:, :, 1:3] = 4
+        _, reward, _, _, info = e.step(a)
+        self.assertEqual(float(info["events"][0, 0, 1]), 1.0)
+        self.assertEqual(float(info["events"][0, 0, 5]), 0.0)
+        torch.testing.assert_close(reward, torch.zeros_like(reward))
+
     def test_mask_and_environment_defense(self):
         e = self.env()
         e.state[:, :, GAUGE] = 1
