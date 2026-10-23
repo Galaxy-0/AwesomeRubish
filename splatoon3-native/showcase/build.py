@@ -22,6 +22,7 @@ from zipcaster import compile_zipcaster
 from d3 import compile_d3
 from d3r import compile_d3r
 from d4 import compile_d4
+from d4_presentation import compile_presentation
 from d4_runtime_data import compile_runtime
 from d4_safe_runtime import compile_safe_model
 
@@ -277,6 +278,8 @@ def main():
     source('showcase/d4_runtime_data.py')
     source('tools/zipcaster_d4/model_v2.py')
     data['d4'], d4_clips = compile_d4(ROOT, source)
+    source('showcase/d4_presentation.py')
+    data['d4_presentation'] = compile_presentation(ROOT, source, data['d4'], dict(SOURCES))
     data['d4_runtime'] = compile_runtime(ROOT, source)
     data['d4_runtime']['safe_model'] = compile_safe_model(ROOT, source)
     data['traces'][:0] = d4_clips

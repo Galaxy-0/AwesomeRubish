@@ -1,3 +1,26 @@
+# D4 展示辨识修复（2026-10-23）
+
+仅展示层，未启动游戏。D4开启自动使用中性灰底；绿/琥珀/红结果格、白色偷袭点、未知虚框、不可达不填色。地图左下常驻图例，上方直接显示敌位/朝向/最佳①/剩槽/偷袭或暴露。大号①②③图钉可点，默认温泉#634自动选中并显示路线；敌人具有人形、箭头和180°半圆。手机2D自动纵向排图，首屏可见结论、图钉和图例。空结果明确提示换朝向；关闭D4恢复原底图和控件。
+
+图钉标签只从原有完整查询复制；模型/原始数据/研究结论不改。所有原有payload字段逐项一致，18个冻结top1/top2保持一致，11个已有完整敌态有排序标签；未完整计算只称候选。代表#634仍124f、69.90%、零钩偷袭；完整D4状态沿用下方既有记录，不因视觉修复改变。
+
+`showcase/index.html`已重生，5,283,490 bytes，未提交/未发布。整页JS语法、原字段不变/标签原件/冻结点审计及24,591项页面检查通过。三图默认点、无确认点提示、图层开关恢复、2D/3D俯视、亮暗及390px通过；390px内容宽390，本页无控制台错误（浏览器扩展日志另保留）。临时视口恢复，自建页关闭。未动policies、存档、宿主或对战代码；T1/S1暂停。
+
+最终截图（均在work下，不提交）：
+
+- `work/showcase/d4-visual-final-light-3d-top.jpg`
+- `work/showcase/d4-visual-final-dark-3d-top.jpg`
+- `work/showcase/d4-visual-final-light-2d.jpg`
+- `work/showcase/d4-visual-final-dark-2d.jpg`
+- `work/showcase/d4-visual-final-light-mobile-3d.jpg`
+- `work/showcase/d4-visual-final-dark-mobile-3d.jpg`
+- `work/showcase/d4-visual-final-light-mobile-2d.jpg`
+- `work/showcase/d4-visual-final-dark-mobile-2d.jpg`
+
+审计：`work/showcase/d4-visual-data-audit-v7-20261023.json`、`d4-visual-check-v7-20261023.json`、`d4-visual-browser-final-20261023.json`，绑定最终页SHA。详情见showcase/README.md；源码提交推送后停止。
+
+---
+
 # D4c 限定交付 / 停止（2026-10-23）
 
 **新216全部闭合；完整D4未闭合。** 最初被打断两刀result/steps/双方host.log原件与SHA已保全。优先查横5球左右/纵7球上下裁剪，最终物理数组身份、核心共享及接触分半仍未闭合；未把领域知识误写为已否定。四刀机制预算用完后按授权切换接触确定不相交、整波墨刃场地清晰的有限路线。

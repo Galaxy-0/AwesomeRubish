@@ -164,11 +164,11 @@
     ring(position,radius,color,dashed=false){return this.line(Array.from({length:81},(_,i)=>new THREE.Vector3(position[0]+Math.sin(i/80*Math.PI*2)*radius,position[1]+.35,position[2]+Math.cos(i/80*Math.PI*2)*radius)),color,1,dashed)}
     refresh(){
       const m=currentMap();if(this.mapId!==m.id)this.setMap(m);updateZipUI();
-      this.renderer.setClearColor(cssToken('--scene-bg'));this.scene.background=new THREE.Color(cssToken('--scene-bg'));
+      this.renderer.setClearColor(cssToken(d4On()?'--d4-scene-bg':'--scene-bg'));this.scene.background=new THREE.Color(cssToken(d4On()?'--d4-scene-bg':'--scene-bg'));this.floors.material[0].color.set(d4On()?'#c1c9ce':'#a6b7ca');
       m.cells.forEach((c,i)=>{this.floors.setColorAt(i,new THREE.Color(heightColor(c,m)));this.tint.setColorAt(i,new THREE.Color(cellColor(c,m)))});
-      this.floors.instanceColor.needsUpdate=true;this.tint.instanceColor.needsUpdate=true;this.tint.visible=mode!=='height';
-      this.walls.material.color.set(cssToken('--wall'));this.edges.material.color.set(cssToken('--edge'));this.grid.material.color.set(cssToken('--scene-grid'));
-      this.spawnGroup.children.forEach((o,i)=>o.material.color.set(i?colors.bravo:colors.alpha));this.regionGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));this.ambushGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));
+      this.floors.instanceColor.needsUpdate=true;this.tint.instanceColor.needsUpdate=true;this.tint.visible=!d4On()&&mode!=='height';
+      this.walls.material.color.set(cssToken(d4On()?'--d4-wall':'--wall'));this.edges.material.color.set(cssToken(d4On()?'--d4-edge':'--edge'));this.grid.material.color.set(cssToken(d4On()?'--d4-ground-low':'--scene-grid'));
+      this.spawnGroup.children.forEach((o,i)=>o.material.color.set(d4On()?cssToken('--muted'):i?colors.bravo:colors.alpha));this.regionGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));this.ambushGroup.children.forEach(o=>o.material.color.set(cssToken('--marker')));
       this.spawnGroup.visible=$('show-spawns').checked;this.regionGroup.visible=$('show-eta').checked&&!d4On();this.ambushGroup.visible=$('show-ambush').checked;$('ambush-select').hidden=!this.ambushGroup.visible;this.walls.visible=$('show-walls').checked;
       const visibleIds=new Set(zipPoints().map(p=>p.id));this.zipGroup.visible=$('show-zip').checked;this.zipGroup.children.forEach(o=>{o.visible=visibleIds.has(o.userData.zipId);o.material.color.set(pointColor(zipPoints(currentMap(),false).find(p=>p.id===o.userData.zipId)));o.scale.setScalar(o.userData.zipId===selectedZip?.id?1.45:1)});
       this.clearOverlay();if(selectedZip&&this.zipGroup.visible){
@@ -229,7 +229,7 @@
         l.element.classList.toggle('point-number',l.kind==='eta'&&!expanded);
         if(l.kind==='eta'){
           const signature=expanded?'full':'number';if(l.signature!==signature){l.signature=signature;l.element.replaceChildren(document.createTextNode(expanded?`${l.number} ${l.point.label}`:l.number));if(expanded){const small=el('small');small.append(el('span','alpha',`A ${fmt(l.point.times[0])}s`),document.createTextNode(' / '),el('span','bravo',`B ${fmt(l.point.times[1])}s`));l.element.append(el('br'),small)}}
-        }else l.element.style.color=l.side?cssToken('--bravo'):cssToken('--alpha');
+        }else l.element.style.color=cssToken(d4On()?'--muted':l.side?'--bravo':'--alpha');
         items.push({element:l.element,position:l.position,priority:expanded?0:l.kind==='spawn'?2:3});
       }
       for(const [id,a]of Object.entries(this.actorObjects)){a.label.hidden=true;if(this.actors.visible&&a.group.visible)items.push({element:a.label,position:a.group.position.clone().add(new THREE.Vector3(0,3.5,0)),priority:1})}
@@ -246,7 +246,7 @@
     }
     render(){
       if(host.hidden||!host.clientWidth)return;this.updateActors();updateD4Frame(this);this.projectCamera();
-      this.camera.position.set(this.target.x+Math.sin(this.yaw)*Math.cos(this.elevation)*500,this.target.y+Math.sin(this.elevation)*500,this.target.z+Math.cos(this.yaw)*Math.cos(this.elevation)*500);this.camera.lookAt(this.target);this.zipGroup.children.forEach(o=>{if(o.userData.candidate)o.quaternion.copy(this.camera.quaternion)});this.renderer.render(this.scene,this.camera);this.renderLabels();
+      this.camera.position.set(this.target.x+Math.sin(this.yaw)*Math.cos(this.elevation)*500,this.target.y+Math.sin(this.elevation)*500,this.target.z+Math.cos(this.yaw)*Math.cos(this.elevation)*500);this.camera.lookAt(this.target);this.zipGroup.children.forEach(o=>{if(o.userData.candidate)o.quaternion.copy(this.camera.quaternion)});this.renderer.render(this.scene,this.camera);this.renderLabels();d4ProjectPins(this);
     }
     pick(x,y,hover=false){
       const r=host.getBoundingClientRect();this.raycaster.setFromCamera(new THREE.Vector2((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1),this.camera);
