@@ -23,7 +23,7 @@ def main(a):
         != parameters["map_export_sha256"]
     ):
         raise ValueError("private data checksum mismatch")
-    allowed = list(source.glob("*.py")) + [
+    allowed = list(source.rglob("*.py")) + [
         source / "README.md",
         source / "contract.py",
         data / "map.npz",
@@ -40,7 +40,11 @@ def main(a):
     manifest = {}
     with tarfile.open(fileobj=payload, mode="w:gz") as archive:
         for p in allowed:
-            name = ("data/" + p.name) if p.parent != source else ("src/gpu/" + p.name)
+            name = (
+                ("src/gpu/" + str(p.relative_to(source)))
+                if p.is_relative_to(source)
+                else ("data/" + p.name)
+            )
             archive.add(p, arcname=name, recursive=False)
             manifest[name] = hashlib.sha256(p.read_bytes()).hexdigest()
         meta = json.dumps(manifest, indent=2).encode()

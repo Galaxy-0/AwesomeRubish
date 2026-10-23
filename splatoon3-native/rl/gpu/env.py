@@ -7,7 +7,7 @@ This module never imports a native session or runs a training algorithm.
 import json, math
 from pathlib import Path
 import torch
-from .contract import Config, MOVE_DIRECTIONS, CAMERA_LEVELS
+from .contract import Config, MOVE_DIRECTIONS, CAMERA_LEVELS, ACTION_SIZES
 from .geometry import Geometry, basis
 from .collision import capsule_first, segment_distance
 
@@ -116,6 +116,21 @@ class ParallelEnv:
         )
         self.turns = torch.tensor(CAMERA_LEVELS, device=self.device)
         self.roles = torch.arange(2, device=self.device)[None, :]
+        self.button_enabled = torch.ones(
+            (1, 2, 8), dtype=torch.bool, device=self.device
+        )
+        self.button_enabled[:, 1, 6:] = (
+            False  # .52 sub/special not implemented in stage0
+        )
+        if config.loadout_mode == "primary_only":
+            self.button_enabled[:, :, 6:] = False
+        self.action_mask = torch.zeros(
+            (1, 2, 8, 17), dtype=torch.bool, device=self.device
+        )
+        for i, size in enumerate(ACTION_SIZES):
+            self.action_mask[:, :, i, :size] = True
+        self.action_mask[:, :, 6:, 1] = self.button_enabled[:, :, 6:]
+
         self.env_ids = torch.arange(n_envs, device=self.device)
         self.agent_mask = (self.roles == 0).expand(n_envs, 2)
         self.steps = torch.zeros(n_envs, device=self.device, dtype=torch.int64)
@@ -211,7 +226,7 @@ class ParallelEnv:
         a[..., 1:3] = torch.randint(
             0, 9, (self.n, 2, 2), generator=self.generator, device=self.device
         )
-        return a
+        return torch.where(self.button_enabled, a, 0)
 
     def step(self, actions):
         if (
@@ -220,6 +235,7 @@ class ParallelEnv:
             or actions.dtype != torch.int64
         ):
             raise ValueError("actions must be int64 [n_envs,2,8] on environment device")
+        actions = torch.where(self.button_enabled, actions, 0)
         reward = torch.zeros((self.n, 2), device=self.device)
         events = torch.zeros((self.n, 2, 5), device=self.device)
         for _ in range(self.cfg.decision_frames):
@@ -370,7 +386,14 @@ class ParallelEnv:
         )
         t[..., RECOVER] = torch.where(shot, 40.0, t[..., RECOVER])
         # Zipcaster: native resource rates, with explicitly approximate stage motion.
-        activate = rspress & stamper & live & ~sp & (s[..., GAUGE] >= 0.999)
+        activate = (
+            rspress
+            & stamper
+            & live
+            & ~sp
+            & (s[..., GAUGE] >= 0.999)
+            & (self.cfg.loadout_mode != "primary_only")
+        )
         phase = torch.where(activate, 1.0, phase)
         age = torch.where(activate, 0.0, s[..., AGE] + 1)
         t[..., SX : SZ + 1] = torch.where(
@@ -570,7 +593,8 @@ class ParallelEnv:
         t[..., CONTACT] = torch.where(phase == 5, 0.0, t[..., CONTACT])
         t[..., CHARGE] = torch.where(phase == 5, 0.0, t[..., CHARGE])
         bomb_throw = (
-            stamper
+            (self.cfg.loadout_mode != "primary_only")
+            & stamper
             & live
             & can
             & ~sp
@@ -1096,6 +1120,9 @@ class ParallelEnv:
                     -1, 2, 1
                 ),
                 turf,
+                (s[..., HP].clamp(0, 1).mul(4).ceil().div(4))[
+                    ..., None
+                ],  # own screen-damage cue, quantized
             ],
             -1,
         )
@@ -1108,6 +1135,7 @@ class ParallelEnv:
             torch.where(value[:, None] >= 0, 2, 0),
         ).to(torch.uint8)
         return {
+            "action_mask": self.action_mask.expand(self.n, -1, -1, -1),
             "screen": screen,
             "entities": entities,
             "entity_mask": mask,

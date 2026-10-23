@@ -275,7 +275,16 @@ class EnvTests(unittest.TestCase):
         )
         self.assertFalse(bool((obs["screen"][0, 0, :, :, 1] == 3).any()))
         self.assertEqual(
-            set(obs), {"screen", "entities", "entity_mask", "hud", "minimap", "audio"}
+            set(obs),
+            {
+                "screen",
+                "entities",
+                "entity_mask",
+                "hud",
+                "minimap",
+                "audio",
+                "action_mask",
+            },
         )
 
     def test_zero_sum_and_finish_freeze(self):

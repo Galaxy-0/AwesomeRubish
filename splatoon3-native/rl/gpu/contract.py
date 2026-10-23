@@ -32,6 +32,7 @@ class Config:
     camera_distance: float | None = None
     camera_target_height: float | None = None
     camera_pitch_offset_radians: float | None = None
+    loadout_mode: str = "full"  # stage1 uses primary_only; stage2 is not authorized yet
     gun_spread_degrees: float = 6.0
     contact_occlusion: str = "whole_shape_clear"  # conservative, unconfirmed
     wave_clipping: str = "whole_wave"  # alternative: independent_halves, unconfirmed
@@ -48,6 +49,8 @@ class Config:
             raise ValueError(
                 "stage0 observation contract is 32x18 rays and 16 entities"
             )
+        if self.loadout_mode not in ("full", "primary_only"):
+            raise ValueError("unknown loadout mode")
         if self.contact_occlusion not in ("whole_shape_clear", "ignore"):
             raise ValueError("unknown contact occlusion approximation")
         if self.wave_clipping not in ("whole_wave", "independent_halves"):

@@ -25,7 +25,7 @@ def main(a):
             camera_pitch_offset_radians=0.0,
         )
     )
-    calibrated = bool(a.calibration) and bool(conf.get("accepted", False))
+    calibrated = bool(a.calibration) and bool(conf.get("fov_axis_projection_validation", False))
     conf = conf.get("config", conf)
     config = Config(**conf, decision_frames=a.decision_frames, duration_frames=10800)
     torch.set_num_threads(a.cpu_threads)
