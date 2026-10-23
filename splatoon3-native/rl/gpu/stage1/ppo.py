@@ -38,17 +38,27 @@ def update(
     entropy_coef=0.0015,
     value_coef=0.5,
     target_kl=0.04,
+    advantage_floor=0.02,
 ):
+    if advantage_floor <= 0:
+        raise ValueError("positive advantage floor required")
     advantages, returns = gae(
         batch["rewards"], batch["values"], batch["done_after"], bootstrap, gamma, lam
     )
     learn = batch["learn"].float()
     count = learn.sum().clamp_min(1)
     mean = (advantages * learn).sum() / count
-    std = ((advantages - mean).square() * learn).sum().div(count).sqrt().clamp_min(1e-6)
-    advantages = (advantages - mean) / std
+    std = ((advantages - mean).square() * learn).sum().div(count).sqrt()
+    divisor = std.clamp_min(advantage_floor)
+    raw_advantages = advantages.clone()
+    advantages = (advantages - mean) / divisor
     obs = {k: sequences(v, sequence_length) for k, v in batch["obs"].items()}
     oldlog = sequences(batch["logprob"], sequence_length)
+    oldheads = (
+        sequences(batch["logprob_heads"], sequence_length)
+        if "logprob_heads" in batch
+        else None
+    )
     oldvalue = sequences(batch["values"], sequence_length)
     adv = sequences(advantages, sequence_length)
     ret = sequences(returns, sequence_length)
@@ -64,6 +74,8 @@ def update(
     total = len(eligible)
     stats = []
     early = False
+    steps = 0
+    head_stats = []
     if total == 0:
         return dict(
             policy_loss=0.0,
@@ -84,9 +96,10 @@ def update(
             w = mask[:, ids]
             den = w.sum().clamp_min(1)
             view = {k: v[:, ids] for k, v in obs.items()}
-            newlog, entropy, value = policy.sequence(
-                view, hidden[:, ids], done[:, ids], actions[:, ids]
+            newheads, head_entropy, value = policy.sequence(
+                view, hidden[:, ids], done[:, ids], actions[:, ids], return_heads=True
             )
+            newlog, entropy = newheads.sum(-1), head_entropy.sum(-1)
             logratio = newlog - oldlog[:, ids]
             ratio = logratio.exp()
             pg = torch.maximum(
@@ -106,13 +119,25 @@ def update(
             )
             ent = (entropy * w).sum() / den
             loss = loss_policy + value_coef * loss_value - entropy_coef * ent
-            optimizer.zero_grad(set_to_none=True)
-            loss.backward()
-            norm = torch.nn.utils.clip_grad_norm_(policy.parameters(), 0.5)
-            optimizer.step()
             with torch.no_grad():
                 kl = (((ratio - 1) - logratio) * w).sum() / den
                 clipped_fraction = (((ratio - 1).abs() > clip) * w).sum() / den
+                he = (head_entropy * w[..., None]).sum((0, 1)) / den
+                hk = torch.zeros_like(he)
+                if oldheads is not None:
+                    lr = newheads - oldheads[:, ids]
+                    hk = (((lr.exp() - 1) - lr) * w[..., None]).sum((0, 1)) / den
+                head_stats.append(torch.cat([he, hk]))
+            # Check each minibatch BEFORE taking another step, including first
+            # minibatch of each epoch. Never amplify tiny value residuals unboundedly.
+            early = float(kl.item()) > target_kl
+            norm = torch.zeros((), device=w.device)
+            if not early:
+                optimizer.zero_grad(set_to_none=True)
+                loss.backward()
+                norm = torch.nn.utils.clip_grad_norm_(policy.parameters(), 0.5)
+                optimizer.step()
+                steps += 1
             stats.append(
                 torch.stack(
                     [
@@ -125,16 +150,9 @@ def update(
                     ]
                 )
             )
-        # Once per epoch, not per frame; no cross-episode recurrent leakage.
-        if (
-            float(
-                torch.stack(stats)[-max(1, total // minibatch_sequences) :, 3]
-                .mean()
-                .item()
-            )
-            > target_kl
-        ):
-            early = True
+            if early:
+                break
+        if early:
             break
     result = dict(
         zip(
@@ -151,9 +169,26 @@ def update(
     )
     result.update(
         early_stop_kl=early,
-        optimization_steps=len(stats),
+        optimization_steps=steps,
         advantage_mean=float(mean.item()),
         advantage_std=float(std.item()),
+        advantage_divisor=float(divisor.item()),
+        nonzero_reward_rate=float(
+            ((batch["rewards"].abs() > 1e-9) * learn).sum().div(count).item()
+        ),
         finite=all(torch.isfinite(p).all().item() for p in policy.parameters()),
     )
+    heads = torch.stack(head_stats).mean(0).cpu().tolist()
+    for i, name in enumerate(["move", "yaw", "pitch", "ZR", "ZL", "B", "R", "RS"]):
+        result["entropy_" + name] = heads[i]
+        if oldheads is not None:
+            result["kl_" + name] = heads[8 + i]
+    for role in (0, 1):
+        m = learn * (batch["obs"]["weapon"] == role)
+        n = m.sum().clamp_min(1)
+        mu = (raw_advantages * m).sum() / n
+        result[f"advantage_mean_weapon{role}"] = float(mu.item())
+        result[f"advantage_std_weapon{role}"] = float(
+            (((raw_advantages - mu).square() * m).sum() / n).sqrt().item()
+        )
     return result

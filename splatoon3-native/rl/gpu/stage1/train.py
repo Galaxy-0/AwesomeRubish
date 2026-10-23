@@ -9,6 +9,7 @@ from .policy import Policy, prepare
 from .opponents import League, neutral
 from .ppo import update
 from .curriculum import encounter_starts
+from .controller import physical
 
 
 def main(a):
@@ -23,7 +24,10 @@ def main(a):
         a.data, a.calibration, a.n_envs, a.device, compiled=not a.no_compile
     )
     policy = Policy(
-        a.hidden, action_feedback=a.action_feedback, control_prior=a.control_prior
+        a.hidden,
+        action_feedback=a.action_feedback,
+        control_prior=a.control_prior,
+        button_semantics=a.button_semantics,
     ).to(a.device)
     optimizer = torch.optim.Adam(
         policy.parameters(), lr=a.lr, eps=1e-5, fused=str(a.device).startswith("cuda")
@@ -124,6 +128,7 @@ def main(a):
                     "obs",
                     "actions",
                     "logprob",
+                    "logprob_heads",
                     "values",
                     "rewards",
                     "done_after",
@@ -135,7 +140,7 @@ def main(a):
             policy.train()
             with torch.no_grad():
                 for step in range(a.rollout):
-                    visible = prepare(obs, previous_actions)
+                    visible = prepare(obs, previous_actions, policy.button_semantics)
                     stored["obs"].append(
                         {
                             k: v.detach().to(torch.float16).clone()
@@ -146,17 +151,21 @@ def main(a):
                     )
                     stored["hidden"].append(hidden.detach().clone())
                     stored["done_before"].append(before.clone())
-                    action, logprob, value, next_hidden = policy.act(visible, hidden)
+                    action, logprob, value, next_hidden, heads = policy.act(
+                        visible, hidden, return_heads=True
+                    )
                     if ((iteration - 1) * a.rollout + step) % 16 == 0:
                         random_actions = env.random_actions()
                     action = league.override(
                         visible, action.reshape(a.n_envs, 2, 8), random_actions
                     )
-                    obs, reward, term, trunc, info = env.step(action)
-                    previous_actions = action.detach().clone()
+                    levels = physical(action, previous_actions, policy.button_semantics)
+                    obs, reward, term, trunc, info = env.step(levels)
+                    previous_actions = levels.detach().clone()
                     after = term.reshape(-1).clone()
                     stored["actions"].append(action.reshape(a.n_envs * 2, 8).clone())
                     stored["logprob"].append(logprob.clone())
+                    stored["logprob_heads"].append(heads.clone())
                     stored["values"].append(value.clone())
                     stored["rewards"].append(reward.reshape(-1).clone())
                     stored["done_after"].append(after)
@@ -218,7 +227,7 @@ def main(a):
                 k: torch.stack([v[k] for v in stored["obs"]]) for k in stored["obs"][0]
             }
             with torch.no_grad():
-                latest = prepare(obs, previous_actions)
+                latest = prepare(obs, previous_actions, policy.button_semantics)
                 bootstrap = policy({k: v[None] for k, v in latest.items()}, hidden)[1][
                     0
                 ]
@@ -342,6 +351,7 @@ if __name__ == "__main__":
     p.add_argument("--hidden", type=int, default=384)
     p.add_argument("--action-feedback", action="store_true")
     p.add_argument("--control-prior", action="store_true")
+    p.add_argument("--button-semantics", choices=["level", "toggle"], default="level")
     p.add_argument("--rollout", type=int, default=128)
     p.add_argument("--sequence", type=int, default=32)
     p.add_argument("--minibatch-sequences", type=int, default=64)

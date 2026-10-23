@@ -3,9 +3,10 @@
 import torch
 from torch import nn
 from torch.nn import functional as F
+from .controller import command_mask
 
 
-def prepare(obs, previous_actions=None):
+def prepare(obs, previous_actions=None, button_semantics="level"):
     """GPU-only visible feature encoding. No referee position/HP of opponents."""
     n = obs["hud"].shape[0]
     role = torch.arange(2, device=obs["hud"].device)[None, :, None, None]
@@ -54,18 +55,28 @@ def prepare(obs, previous_actions=None):
         hud=hud,
         minimap=mini,
         weapon=torch.arange(2, device=hud.device).repeat(n),
-        action_mask=obs["action_mask"].reshape(n * 2, 8, 17),
+        action_mask=command_mask(
+            obs["action_mask"], previous_actions, button_semantics
+        ).reshape(n * 2, 8, 17),
     )
 
 
 class Policy(nn.Module):
     def __init__(
-        self, hidden=384, hud_size=10, action_feedback=False, control_prior=False
+        self,
+        hidden=384,
+        hud_size=10,
+        action_feedback=False,
+        control_prior=False,
+        button_semantics="level",
     ):
         super().__init__()
         self.hidden_size = hidden
         self.action_feedback = action_feedback
         self.control_prior = control_prior
+        self.button_semantics = button_semantics
+        if button_semantics not in ("level", "toggle"):
+            raise ValueError("unknown button semantics")
         if action_feedback:
             self.previous = nn.Embedding(8 * 17, 16)
             self.register_buffer("action_offsets", torch.arange(8) * 17)
@@ -159,14 +170,19 @@ class Policy(nn.Module):
         logits = logits.masked_fill(~obs["action_mask"].bool(), -1e9)
         return logits, self.value(states).squeeze(-1), hidden
 
-    def act(self, obs, hidden, deterministic=False):
+    def act(self, obs, hidden, deterministic=False, return_heads=False):
         seq = {k: v.unsqueeze(0) for k, v in obs.items()}
         logits, value, hidden = self(seq, hidden)
         dist = torch.distributions.Categorical(logits=logits[0], validate_args=False)
         action = logits[0].argmax(-1) if deterministic else dist.sample()
-        return action, dist.log_prob(action).sum(-1), value[0], hidden
+        logs = dist.log_prob(action)
+        result = action, logs.sum(-1), value[0], hidden
+        return (*result, logs) if return_heads else result
 
-    def sequence(self, obs, hidden, dones, actions):
+    def sequence(self, obs, hidden, dones, actions, return_heads=False):
         logits, value, _ = self(obs, hidden, dones)
         dist = torch.distributions.Categorical(logits=logits, validate_args=False)
-        return dist.log_prob(actions).sum(-1), dist.entropy().sum(-1), value
+        logs, entropy = dist.log_prob(actions), dist.entropy()
+        if return_heads:
+            return logs, entropy, value
+        return logs.sum(-1), entropy.sum(-1), value

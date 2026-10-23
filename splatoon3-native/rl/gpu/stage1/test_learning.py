@@ -7,6 +7,7 @@ from ..env import ParallelEnv, GAUGE, PHASE, INK, PREV_R
 from .policy import Policy, prepare
 from .opponents import D4Defender
 from .ppo import gae, update, sequences
+from .controller import physical, commands_from_levels, command_mask
 
 
 class LearningTests(unittest.TestCase):
@@ -37,6 +38,74 @@ class LearningTests(unittest.TestCase):
         self.assertEqual(float(info["events"][0, 0, 1]), 1.0)
         self.assertEqual(float(info["events"][0, 0, 5]), 0.0)
         torch.testing.assert_close(reward, torch.zeros_like(reward))
+
+    def test_toggle_is_exactly_physical_hold_and_release(self):
+        left, right = self.env(), self.env()
+        prev = torch.zeros((1, 2, 8), dtype=torch.int64)
+        prev[..., 1:3] = 4
+        # One press,10 keeps,then release produces22 physical held frames.
+        for i in range(35):
+            c = prev.clone()
+            c[..., 3:5] = 0
+            c[:, 0, 3] = 1 if i == 0 else 2 if i == 11 else 0
+            levels = physical(c, prev, "toggle")
+            explicit = prev.clone()
+            explicit[:, 0, 3] = int(i < 11)
+            x, y = left.step(levels), right.step(explicit)
+            torch.testing.assert_close(left.state, right.state, rtol=0, atol=0)
+            torch.testing.assert_close(left.shots, right.shots, rtol=0, atol=0)
+            torch.testing.assert_close(x[1], y[1], rtol=0, atol=0)
+            prev = levels
+
+    def test_toggle_mask_and_level_round_trip(self):
+        e = self.env()
+        a = e.random_actions()
+        c = commands_from_levels(a, "toggle")
+        torch.testing.assert_close(physical(c, 1 - a, "toggle"), a)
+        mask = e.action_mask.clone()
+        mask[:, :, 4, 1] = False
+        v = command_mask(mask, a, "toggle")
+        self.assertFalse(v[:, :, 4, 1].any())
+        self.assertTrue(v[:, :, 4, 2].all())
+        self.assertFalse(v[:, :, 6:, 1:].any())
+
+    def test_evaluation_uses_environment_termination_not_5400(self):
+        from unittest.mock import patch
+        from .evaluate import play
+
+        e = ParallelEnv(
+            self.temp.name,
+            fixture_config(
+                loadout_mode="primary_only", decision_frames=3, duration_frames=42
+            ),
+            n_envs=2,
+        )
+        with patch(play.__module__ + ".environment", return_value=e):
+            r = play(
+                Policy(button_semantics="toggle"),
+                "unused",
+                "unused",
+                games=2,
+                device="cpu",
+            )
+        self.assertEqual(r["frames"], 42)
+        self.assertEqual(r["decision_steps"], 14)
+        self.assertTrue(r["all_terminated"])
+        self.assertEqual(r["invalid_special_input_count"], 0)
+
+    def test_near_starts_fill_and_do_not_use_cohort_prefix(self):
+        from .curriculum import encounter_starts
+
+        e = ParallelEnv(
+            self.temp.name, fixture_config(loadout_mode="primary_only"), n_envs=20
+        )
+        before = e.state[:, :, :3].clone()
+        count = encounter_starts(e, 0.7, 1401)
+        changed = (e.state[:, :, :3] != before).any(-1).any(-1)
+        self.assertEqual(count, 14)
+        self.assertEqual(int(changed.sum()), 14)
+        self.assertTrue(changed[14:].any())
+        self.assertFalse(changed[:14].all())
 
     def test_mask_and_environment_defense(self):
         e = self.env()
@@ -121,7 +190,7 @@ class LearningTests(unittest.TestCase):
 
     def test_recurrent_teacher_forcing_matches_collected_logprob(self):
         e = self.env()
-        p = Policy(action_feedback=True, control_prior=True)
+        p = Policy(action_feedback=True, control_prior=True, button_semantics="toggle")
         obs, _ = e.reset()
         prev = torch.zeros((1, 2, 8), dtype=torch.int64)
         prev[:, :, 1:3] = 4
@@ -132,13 +201,13 @@ class LearningTests(unittest.TestCase):
         logs = []
         with torch.no_grad():
             for _ in range(12):
-                view = prepare(obs, prev)
+                view = prepare(obs, prev, p.button_semantics)
                 views.append(view)
                 hs.append(hidden.clone())
                 act, log, _, hidden = p.act(view, hidden)
                 actions.append(act)
                 logs.append(log)
-                prev = act.reshape(1, 2, 8).clone()
+                prev = physical(act.reshape(1, 2, 8), prev, p.button_semantics)
                 obs, *_ = e.step(prev)
             seq = {
                 k: sequences(torch.stack([v[k] for v in views]), 4) for k in views[0]
@@ -209,6 +278,26 @@ class LearningTests(unittest.TestCase):
             epochs=1,
         )
         self.assertEqual(result["optimization_steps"], 0)
+        self.assertTrue(torch.equal(initial, p.actor.weight))
+        # A violating minibatch must be rejected BEFORE another optimizer step.
+        # Near-zero rewards cannot normalize tiny residuals by1e-6.
+        batch["learn"].fill_(True)
+        batch["rewards"].fill_(1e-10)
+        batch["values"].zero_()
+        batch["logprob"] += 1.0
+        result = update(
+            p,
+            opt,
+            batch,
+            torch.zeros(2),
+            sequence_length=4,
+            minibatch_sequences=2,
+            epochs=3,
+            target_kl=1e-4,
+        )
+        self.assertTrue(result["early_stop_kl"])
+        self.assertEqual(result["optimization_steps"], 0)
+        self.assertAlmostEqual(result["advantage_divisor"], 0.02, places=7)
         self.assertTrue(torch.equal(initial, p.actor.weight))
 
 

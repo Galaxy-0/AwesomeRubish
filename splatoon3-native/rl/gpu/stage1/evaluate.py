@@ -6,6 +6,8 @@ import torch
 from .common import environment, load_policy, wilson
 from .policy import prepare
 from .opponents import D4Defender, neutral
+from .controller import physical
+from .combat_metrics import CombatMeter
 from ..record import Recorder
 from ..env import HP, SUB, YAW, HEADING, GROUND, EVENT_SIZE
 
@@ -90,17 +92,24 @@ def play(
     previous_actions = neutral(games, device)
     invalid_special = torch.zeros((), dtype=torch.int64, device=device)
     next_random = env.random_actions()
+    meter = CombatMeter(games, device)
     start = time.perf_counter()
-    for step in range(5400):
+    step = 0
+    while True:
         # Observation after explicit initial placement, and on every subsequent step.
         if step == 0:
             obs = env._observation(env.state, env.shots, env.paint, env.steps)
-        prepared = prepare(obs, previous_actions)
+        prepared = prepare(obs, previous_actions, policy.button_semantics)
         action, _, _, hidden = policy.act(prepared, hidden, deterministic)
-        action = action.reshape(games, 2, 8)
+        action = physical(
+            action.reshape(games, 2, 8), previous_actions, policy.button_semantics
+        )
         if kind == "history":
-            oa, _, _, other_hidden = opponent.act(prepared, other_hidden, deterministic)
-            other = oa.reshape(games, 2, 8)
+            op = prepare(obs, previous_actions, opponent.button_semantics)
+            oa, _, _, other_hidden = opponent.act(op, other_hidden, deterministic)
+            other = physical(
+                oa.reshape(games, 2, 8), previous_actions, opponent.button_semantics
+            )
         elif script:
             other = script.actions()
         else:
@@ -114,6 +123,7 @@ def play(
         obs, reward, term, trunc, info = env.step(action)
         previous_actions = action.detach().clone()
         totals += info["events"]
+        meter.capture(env, action, info)
         recovering = (
             (oldhp > 0)
             & (oldhp < 0.5)
@@ -157,6 +167,11 @@ def play(
                 ),
                 flush=True,
             )
+        step += 1
+        if bool((term | trunc).all().item()):
+            break
+        if step > math.ceil(env.cfg.duration_frames / env.cfg.decision_frames) + 1:
+            raise RuntimeError("environment did not terminate at configured duration")
     if str(device).startswith("cuda"):
         torch.cuda.synchronize()
     count = info["turf_counts"]
@@ -168,7 +183,9 @@ def play(
         kind=kind,
         games=games,
         seed=seed,
-        frames=10800,
+        frames=int(env.steps.max().item()),
+        decision_steps=step,
+        combat=meter.report(torch.arange(2, device=device)[None, :] == roles[:, None]),
         wall_seconds=time.perf_counter() - start,
         deterministic=deterministic,
         all_terminated=bool(term.all().item()),

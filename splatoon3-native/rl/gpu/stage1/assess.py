@@ -64,6 +64,9 @@ def main(a):
                 meta["hidden_size"],
                 action_feedback=meta.get("config", {}).get("action_feedback", False),
                 control_prior=meta.get("config", {}).get("control_prior", False),
+                button_semantics=meta.get("config", {}).get(
+                    "button_semantics", "level"
+                ),
             ).to(a.device)
             old.load_state_dict(state)
             old.memory.flatten_parameters()

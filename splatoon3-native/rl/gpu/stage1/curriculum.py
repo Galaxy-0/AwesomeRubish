@@ -1,7 +1,7 @@
 """Explicit early encounter starts; full spawn/180s held-out gates stay separate.
 
 This changes initial poses only, never actions, physics, damage or rewards.
-It fades to100% normal spawns with the auxiliary reward window(first30%).
+The caller chooses fraction. Legacy train fades it by frames; capability drills do not use that legacy schedule.
 """
 
 import math
@@ -24,10 +24,14 @@ def encounter_starts(env, fraction, seed):
     closest = d.argmin(-1)
     centers = points[closest]
     count = min(env.n, int(env.n * fraction))
-    rows = torch.arange(count, device=env.device)
-    center = centers[rows % 3]
-    angle = torch.rand(count, device=env.device, generator=generator) * (2 * math.pi)
-    radius = 6 + torch.rand(count, device=env.device, generator=generator) * 7
+    if not count:
+        return 0
+    # Build an overcomplete valid pool, then sample WITH replacement to fill.
+    # Random row allocation avoids coupling near starts to league cohort prefixes.
+    attempts = max(2048, count * 12)
+    center = centers[torch.arange(attempts, device=env.device) % len(centers)]
+    angle = torch.rand(attempts, device=env.device, generator=generator) * (2 * math.pi)
+    radius = 6 + torch.rand(attempts, device=env.device, generator=generator) * 7
     wish = center + torch.stack(
         [angle.sin() * radius, torch.zeros_like(radius), angle.cos() * radius], -1
     )
@@ -42,9 +46,16 @@ def encounter_starts(env, fraction, seed):
         start, direction / length[:, None].clamp_min(1e-6), 24.0, 0.5
     )
     valid &= (length >= 6) & (length <= 18) & (blocked >= length - 0.1)
-    row = rows[valid]
-    center = center[valid]
-    pose = pose[valid]
+    good = valid.nonzero().flatten()
+    if not len(good):
+        raise RuntimeError(
+            "no valid near-start pair; refusing silent curriculum underfill"
+        )
+    pick = good[
+        torch.randint(len(good), (count,), generator=generator, device=env.device)
+    ]
+    row = torch.randperm(env.n, generator=generator, device=env.device)[:count]
+    center, pose = center[pick], pose[pick]
     env.state[row, 0, :3] = pose
     env.state[row, 1, :3] = center
     yaw = (

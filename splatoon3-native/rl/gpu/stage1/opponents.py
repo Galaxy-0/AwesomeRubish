@@ -6,6 +6,7 @@ prepare(public_obs) only. The D4 cone stays fixed even while ideal gun aim moves
 
 import copy
 import torch
+from .controller import commands_from_levels
 from ..env import HP, SUB, YAW, PITCH, INK
 
 
@@ -123,5 +124,8 @@ class League:
         start = 9 * self.n // 10
         rows = torch.arange(start, self.n, device=self.device)
         opponent = 1 - self.role[rows]
-        actions[rows, opponent] = random_actions[rows, opponent]
+        random_commands = commands_from_levels(
+            random_actions, self.policy.button_semantics
+        )
+        actions[rows, opponent] = random_commands[rows, opponent]
         return actions

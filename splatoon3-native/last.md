@@ -1,3 +1,15 @@
+# RL 阶段1恢复进行中（2026-10-23）
+
+用户采纳`work/codex/astra-r1.md`并重置卡点计数。当前只推进阶段1，正式门槛不变；此前失败记录保留在下方。
+
+ZR/ZL保持/按下/松开参数化、PPO优势下限/逐minibatch KL/逐头指标和按term/trunc评估已实现。13项学习组件与原14项CPU环境回归通过。未训练固定靶3种子对照已完成，切换语义仍极少满蓄；正在做固定6u靶的配对PPO（两臂×101/202/303，各128更新），之后仅改距离21u复测满蓄（离线两满蓄KO、三轻斩无伤控制已留原件）。短课程使用合成平地隔离控制，不是温泉峡谷正式验收；不据近靶轻斩KO签收蓄力。
+
+远端私有`~/splatoon3-native-rl-stage0/`：源码r8/r9/r10；tmux `spl3-r1-fixed-paired`和等待其正常结束的`spl3-r1-fixed-charge`，脚本`fixed-paired-r1.sh`/`fixed-charge-r1.sh`；原件目录`stage1-action-ablation-r1`、`stage1-fixed-paired-r1-*`、`stage1-fixed-charge-r1-*`。另外资格复核`spl3-r1-verify-courses`（r12）结束后，`spl3-r1-pose`（r13）只有三种子21u首次生命门都通过才继续随机距离/朝向窄相机课程；脚本`verify-courses-r1.sh`/`pose-r1.sh`。首个21u种子原评估已从1/128→128/128，待三种子资格复核，不代表正式验收。下一步先查日志/exit再行动，不重复启动。SSH偶发超时/EOF，后台作业与连接分离，不计学习卡点。
+
+阶段1尚未通过，未进入更高课程/阶段2或T1/S1。源码/运行约定与当前边界见`notes/rl-stage1-restart-20261023.md`。未动policies/原存档/宿主/VPT，不提交资源/派生网格/生成页/checkpoint。
+
+---
+
 # RL 阶段1：未通过，已按两轮规则停止（2026-10-23）
 
 实现了主武器only的GPU PPO自我对战、158万/163万参数共享GRU、历史池、action mask、CSV/Elo和可播放回放。两轮有效训练各32,047,104环境帧：

@@ -83,6 +83,7 @@ def load_policy(path, device="cuda"):
         raw["hidden_size"],
         action_feedback=raw.get("config", {}).get("action_feedback", False),
         control_prior=raw.get("config", {}).get("control_prior", False),
+        button_semantics=raw.get("config", {}).get("button_semantics", "level"),
     ).to(device)
     p.load_state_dict(raw["policy"])
     p.eval()
