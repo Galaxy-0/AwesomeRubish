@@ -6,7 +6,7 @@ import torch
 from ..env import EVENT_SIZE
 from .common import environment, checkpoint, CSV, digest
 from .policy import Policy, prepare
-from .opponents import League
+from .opponents import League, neutral
 from .ppo import update
 from .curriculum import encounter_starts
 
@@ -22,7 +22,9 @@ def main(a):
     env = environment(
         a.data, a.calibration, a.n_envs, a.device, compiled=not a.no_compile
     )
-    policy = Policy(a.hidden).to(a.device)
+    policy = Policy(
+        a.hidden, action_feedback=a.action_feedback, control_prior=a.control_prior
+    ).to(a.device)
     optimizer = torch.optim.Adam(
         policy.parameters(), lr=a.lr, eps=1e-5, fused=str(a.device).startswith("cuda")
     )
@@ -78,6 +80,7 @@ def main(a):
     obs = env._observation(env.state, env.shots, env.paint, env.steps)
     hidden = policy.initial(a.n_envs * 2, a.device)
     before = torch.ones(a.n_envs * 2, dtype=torch.bool, device=a.device)
+    previous_actions = neutral(a.n_envs, a.device)
     random_actions = env.random_actions()
     match_reward = torch.zeros((a.n_envs, 2), device=a.device)
     match_events = torch.zeros((a.n_envs, 2, EVENT_SIZE), device=a.device)
@@ -132,7 +135,7 @@ def main(a):
             policy.train()
             with torch.no_grad():
                 for step in range(a.rollout):
-                    visible = prepare(obs)
+                    visible = prepare(obs, previous_actions)
                     stored["obs"].append(
                         {
                             k: v.detach().to(torch.float16).clone()
@@ -150,6 +153,7 @@ def main(a):
                         visible, action.reshape(a.n_envs, 2, 8), random_actions
                     )
                     obs, reward, term, trunc, info = env.step(action)
+                    previous_actions = action.detach().clone()
                     after = term.reshape(-1).clone()
                     stored["actions"].append(action.reshape(a.n_envs * 2, 8).clone())
                     stored["logprob"].append(logprob.clone())
@@ -204,6 +208,7 @@ def main(a):
                         obs = env._observation(
                             env.state, env.shots, env.paint, env.steps
                         )
+                        previous_actions = neutral(a.n_envs, a.device)
                         league.new_match()
                         random_actions = env.random_actions()
                         match_reward.zero_()
@@ -213,7 +218,7 @@ def main(a):
                 k: torch.stack([v[k] for v in stored["obs"]]) for k in stored["obs"][0]
             }
             with torch.no_grad():
-                latest = prepare(obs)
+                latest = prepare(obs, previous_actions)
                 bootstrap = policy({k: v[None] for k, v in latest.items()}, hidden)[1][
                     0
                 ]
@@ -335,6 +340,8 @@ if __name__ == "__main__":
     p.add_argument("--schedule-frames", type=int, default=64_000_000)
     p.add_argument("--frames", type=int, default=64_000_000)
     p.add_argument("--hidden", type=int, default=384)
+    p.add_argument("--action-feedback", action="store_true")
+    p.add_argument("--control-prior", action="store_true")
     p.add_argument("--rollout", type=int, default=128)
     p.add_argument("--sequence", type=int, default=32)
     p.add_argument("--minibatch-sequences", type=int, default=64)

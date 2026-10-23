@@ -5,7 +5,7 @@ from torch import nn
 from torch.nn import functional as F
 
 
-def prepare(obs):
+def prepare(obs, previous_actions=None):
     """GPU-only visible feature encoding. No referee position/HP of opponents."""
     n = obs["hud"].shape[0]
     role = torch.arange(2, device=obs["hud"].device)[None, :, None, None]
@@ -43,7 +43,11 @@ def prepare(obs):
     mini = F.adaptive_avg_pool2d(
         torch.cat([(ink == 1).float(), (ink == 2).float()], 1), (16, 24)
     )
+    if previous_actions is None:
+        previous_actions = torch.zeros((n, 2, 8), dtype=torch.int64, device=hud.device)
+        previous_actions[:, :, 1:3] = 4
     return dict(
+        previous_actions=previous_actions.reshape(n * 2, 8),
         screen=features,
         entities=ent,
         entity_mask=obs["entity_mask"].reshape(n * 2, 16),
@@ -55,9 +59,16 @@ def prepare(obs):
 
 
 class Policy(nn.Module):
-    def __init__(self, hidden=384, hud_size=10):
+    def __init__(
+        self, hidden=384, hud_size=10, action_feedback=False, control_prior=False
+    ):
         super().__init__()
         self.hidden_size = hidden
+        self.action_feedback = action_feedback
+        self.control_prior = control_prior
+        if action_feedback:
+            self.previous = nn.Embedding(8 * 17, 16)
+            self.register_buffer("action_offsets", torch.arange(8) * 17)
         self.screen = nn.Sequential(
             nn.Conv2d(8, 32, 3, 2, 1),
             nn.SiLU(),
@@ -83,7 +94,9 @@ class Policy(nn.Module):
         )
         self.weapon = nn.Embedding(2, 16)
         self.fuse = nn.Sequential(
-            nn.Linear(128 * 4 + 16, hidden), nn.LayerNorm(hidden), nn.SiLU()
+            nn.Linear(128 * 4 + 16 + (128 if action_feedback else 0), hidden),
+            nn.LayerNorm(hidden),
+            nn.SiLU(),
         )
         self.memory = nn.GRU(hidden, hidden)
         self.actor = nn.Linear(hidden, 8 * 17)
@@ -91,6 +104,18 @@ class Policy(nn.Module):
         nn.init.normal_(self.actor.weight, std=0.01)
         nn.init.zeros_(self.actor.bias)
         nn.init.zeros_(self.value.bias)
+        if control_prior:
+            # Trainable initial preferences, never a forced macro/action repeat.
+            # Every valid action remains possible and all biases receive PPO gradients.
+            with torch.no_grad():
+                b = self.actor.bias.reshape(8, 17)
+                camera = torch.tensor([-2.0, -1.0, 0.2, 1.2, 2.0, 1.2, 0.2, -1.0, -2.0])
+                b[1, :9] = camera
+                b[2, :9] = camera
+                b[3, :2] = torch.tensor([-1.0, 1.0])
+                b[4, :2] = torch.tensor([1.5, -1.5])
+                b[5, :2] = torch.tensor([1.0, -1.0])
+                b[0, 0] = 0.5
 
     def initial(self, batch, device=None):
         return torch.zeros(
@@ -104,18 +129,17 @@ class Policy(nn.Module):
         mean = (ent * mask).sum(-2) / mask.sum(-2).clamp_min(1)
         maximum = ent.masked_fill(~mask, -1e4).max(-2).values
         maximum = torch.where(mask.any(-2), maximum, 0.0)
-        return self.fuse(
-            torch.cat(
-                [
-                    self.screen(obs["screen"].float()),
-                    self.entity_pool(torch.cat([mean, maximum], -1)),
-                    self.hud(obs["hud"].float()),
-                    self.minimap(obs["minimap"].float()),
-                    self.weapon(obs["weapon"].long()),
-                ],
-                -1,
-            )
-        )
+        parts = [
+            self.screen(obs["screen"].float()),
+            self.entity_pool(torch.cat([mean, maximum], -1)),
+            self.hud(obs["hud"].float()),
+            self.minimap(obs["minimap"].float()),
+            self.weapon(obs["weapon"].long()),
+        ]
+        if self.action_feedback:
+            known = obs["previous_actions"].long().clamp(0, 16) + self.action_offsets
+            parts.append(self.previous(known).flatten(-2))
+        return self.fuse(torch.cat(parts, -1))
 
     def forward(self, obs, hidden, dones=None):
         """obs [T,B,...], dones[t] resets memory BEFORE observation t."""

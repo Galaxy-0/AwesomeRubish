@@ -23,7 +23,7 @@ def main(a):
     )
     page = page.replace(
         "'S1 · 模拟状态'",
-        "clip.source_kind==='gpu_simulated_state'?'GPU · RL 随机夹具':'S1 · 模拟状态'",
+        "clip.source_kind==='gpu_simulated_state'?(clip.id.startsWith('rl-stage1-')?'GPU · RL 阶段1策略':'GPU · RL 随机夹具'):'S1 · 模拟状态'",
     )
     out = Path(a.out).resolve()
     if "work" not in out.parts:

@@ -1,9 +1,25 @@
-# RL阶段1：主武器基础对枪（2026-10-23，进行中）
+# RL 阶段1：未通过，已按两轮规则停止（2026-10-23）
 
-阶段0已由用户接受；FOV采用纵55°的明确假设（16:9横85.56559°），轴向原生核验不阻塞。4.34u粗几何误差保留。
-阶段1代码在`rl/gpu/stage1/`：158万参数共享GRU策略、八头action mask、PPO/历史池、独立随机/D4参考评估、CSV/Elo/回放。双方R/RS禁用且环境再拦截；不启动阶段2。
+实现了主武器only的GPU PPO自我对战、158万/163万参数共享GRU、历史池、action mask、CSV/Elo和可播放回放。两轮有效训练各32,047,104环境帧：
 
-6项学习检查和14项环境回归通过；GPU两次更新冒烟通过，第一段16M训练已在asuka0私有tmux运行，计划总预算64M。当前没有阶段1签收结果；完成或两轮卡点才停止。详见[阶段1记录](notes/rl-stage1-20261023.md)。T1/S1暂停，不动policies/原存档，checkpoint/网格/游戏数据不提交。
+| 同种子、每角色64局 | 未训练水刀赢随机 | 训练后水刀赢随机 | 未训练/训练后.52赢随机 |
+|---|---:|---:|---:|
+| A 基版 | 55/64 | 2/64 | 64/64 → 60/64 |
+| B 自身动作反馈＋输入先验 | 34/64 | 12/64 | 64/64 → 64/64 |
+
+两轮均未学出收益，停止续训，不进入阶段2。B的100% .52胜率在初始化已达到，不能算RL成果。D4近距61/64涂地胜但水刀0伤害/0KO；残血潜墨回血观察0，掩体意图未证实。曲线无NaN但行为退化，不能签收基础对枪。错误自落击杀奖励pilot16.06M已修复并排除，原件保留。
+
+有效64,094,208帧是两个独立模型之和，非单模型64M；有效训练墙钟1067.52s（17.79分钟，不含评估/开发），峰值CUDA allocated2805.75MiB。CPU最终9项学习检查、原14项CPU/CUDA环境回归和GPU击杀归因控制通过。阶段0仍按用户验收接受；FOV纵55°/横85.56559°为待原生核验假设，实图4.34u偏差保留。
+
+详细报告：[notes/rl-stage1-20261023.md](notes/rl-stage1-20261023.md)；聚合数值/SHA：[results JSON](notes/rl-stage1-20261023-results.json)；用法：[rl/gpu/stage1/README.md](rl/gpu/stage1/README.md)。源码分段提交推送，checkpoint/地图/日志留`asuka0:~/splatoon3-native-rl-stage0/`私有目录，A/B分别`stage1-credit32-r1`/`stage1-feedback32-r1`。远端driver均exit0，无活动tmux/GPU训练进程；64M续训脚本未启动。
+
+本地私有回放已在showcase实际播放、暂停/跳帧/双侧跟随，无脚本error，未发布：
+
+- 水刀：`work/rl-stage1/preview-feedback-r1/index.html`（6,337,285 bytes）；截图`work/rl-stage1/replay-stamper-r1.png`。
+- .52：`work/rl-stage1/preview-feedback52-r1/index.html`（6,378,666 bytes）；截图`work/rl-stage1/replay-52-r1.png`。
+- 曲线：`work/rl-stage1/curves-credit32-r1.png`、`work/rl-stage1/curves-feedback32-r1.png`。
+
+未启动原生宿主/T1/S1或阶段2，未动policies/原存档/VPT；未提交游戏资源/派生网格/生成页/截图/checkpoint。
 
 ---
 

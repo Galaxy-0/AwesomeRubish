@@ -1,0 +1,546 @@
+{
+  "schema": "inklab.rl.stage1.delivery.v1",
+  "date": "2026-10-23",
+  "stage0_user_accepted": true,
+  "stage1_passed": false,
+  "stage2_started": false,
+  "status": "stopped_two_rounds_without_learning_progress",
+  "device": "NVIDIA RTX 4070 Ti",
+  "loadout": "primary_only",
+  "fov": {
+    "vertical_degrees": 55,
+    "horizontal_degrees": 85.565590112,
+    "source": "user-accepted assumption; native projection axis unverified"
+  },
+  "known_map_max_error_u": 4.338097,
+  "runs": {
+    "A": {
+      "training": {
+        "frames": 32047104,
+        "updates": 489,
+        "wall_seconds": 548.6233121099649,
+        "checkpoint": "../stage1-credit32-r1/checkpoints/u000489.pt",
+        "parameters": 1581513,
+        "peak_allocated_mib": 2793.8623046875,
+        "stage": 1,
+        "stage1_passed": false,
+        "reason": "Training completed; held-out gates and replay behavior evaluated separately"
+      },
+      "initial_random": {
+        "stamper": {
+          "games": 64,
+          "wins": 55,
+          "losses": 9,
+          "draws": 0,
+          "win_rate": 0.859375,
+          "wilson95": [
+            0.7538371825842297,
+            0.9242142744396914
+          ],
+          "kills": 0.0,
+          "deaths": 53.0,
+          "self_splats": 53.0,
+          "kd": 0.0,
+          "damage_dealt": 0.0,
+          "own_turf_percent": 2.447032928466797,
+          "enemy_turf_percent": 1.7376704216003418,
+          "submerged_recovery_agent_frames": 0.0,
+          "wounded_covered_movement_samples": 0.0
+        },
+        "52": {
+          "games": 64,
+          "wins": 64,
+          "losses": 0,
+          "draws": 0,
+          "win_rate": 1.0,
+          "wilson95": [
+            0.9433759402071946,
+            1.0
+          ],
+          "kills": 0.0,
+          "deaths": 62.0,
+          "self_splats": 62.0,
+          "kd": 0.0,
+          "damage_dealt": 0.0,
+          "own_turf_percent": 3.1352272033691406,
+          "enemy_turf_percent": 0.5127863883972168,
+          "submerged_recovery_agent_frames": 0.0,
+          "wounded_covered_movement_samples": 0.0
+        }
+      },
+      "evaluation": {
+        "random": {
+          "roles": {
+            "stamper": {
+              "games": 64,
+              "wins": 2,
+              "losses": 62,
+              "draws": 0,
+              "win_rate": 0.03125,
+              "wilson95": [
+                0.008612138346171874,
+                0.10697291770958313
+              ],
+              "kills": 0.0,
+              "deaths": 16.0,
+              "self_splats": 16.0,
+              "kd": 0.0,
+              "damage_dealt": 0.0,
+              "own_turf_percent": 0.43834197521209717,
+              "enemy_turf_percent": 1.7376704216003418,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 0.0
+            },
+            "52": {
+              "games": 64,
+              "wins": 60,
+              "losses": 4,
+              "draws": 0,
+              "win_rate": 0.9375,
+              "wilson95": [
+                0.8500251490779133,
+                0.9754287986033819
+              ],
+              "kills": 0.0,
+              "deaths": 41.0,
+              "self_splats": 41.0,
+              "kd": 0.0,
+              "damage_dealt": 0.0,
+              "own_turf_percent": 1.2587764263153076,
+              "enemy_turf_percent": 0.5127863883972168,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 0.0
+            }
+          },
+          "seed": 23501,
+          "games": 128,
+          "deterministic": false,
+          "finite": true,
+          "all_terminated": true
+        },
+        "d4-spawn": {
+          "roles": {
+            "stamper": {
+              "games": 64,
+              "wins": 55,
+              "losses": 0,
+              "draws": 9,
+              "win_rate": 0.859375,
+              "wilson95": [
+                0.7538371825842297,
+                0.9242142744396914
+              ],
+              "kills": 0.0,
+              "deaths": 35.0,
+              "self_splats": 35.0,
+              "kd": 0.0,
+              "damage_dealt": 0.0,
+              "own_turf_percent": 0.4170551598072052,
+              "enemy_turf_percent": 0.0,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 0.0
+            }
+          },
+          "defender": {
+            "firing_agent_decisions": 0.0,
+            "visible_agent_decisions": 0.0,
+            "damage_dealt": 0.0,
+            "stamper_deaths": 35.0
+          },
+          "seed": 23602,
+          "games": 64,
+          "deterministic": false,
+          "finite": true,
+          "all_terminated": true
+        },
+        "d4-encounter": {
+          "roles": {
+            "stamper": {
+              "games": 64,
+              "wins": 51,
+              "losses": 6,
+              "draws": 7,
+              "win_rate": 0.796875,
+              "wilson95": [
+                0.6828636426898583,
+                0.8772658218081634
+              ],
+              "kills": 0.0,
+              "deaths": 28.0,
+              "self_splats": 19.0,
+              "kd": 0.0,
+              "damage_dealt": 60.00000238418579,
+              "own_turf_percent": 0.3847087025642395,
+              "enemy_turf_percent": 0.046498022973537445,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 105.0
+            }
+          },
+          "defender": {
+            "firing_agent_decisions": 284.0,
+            "visible_agent_decisions": 2250.0,
+            "damage_dealt": 987.9999160766602,
+            "stamper_deaths": 28.0
+          },
+          "seed": 23703,
+          "games": 64,
+          "deterministic": false,
+          "finite": true,
+          "all_terminated": true
+        }
+      },
+      "gates": {
+        "stamper_beats_random": false,
+        "gun_beats_random": false,
+        "stamper_beats_d4_spawn": true,
+        "stamper_beats_d4_encounter": true,
+        "submerged_recovery_observed": false,
+        "wounded_cover_movement_observed": true,
+        "replay_human_review_required": true,
+        "training_curve_review_required": true
+      },
+      "curve": {
+        "updates": 489,
+        "all_finite": true,
+        "entropy_first": 9.289875030517578,
+        "entropy_last": 6.2508416175842285,
+        "max_approx_kl": 0.017949381843209267,
+        "kl_stopped_updates": 0,
+        "final_value_loss": 8.046796210692264e-06,
+        "completed_match_batches": 11,
+        "completed_training_weapon_kills": [
+          51.0,
+          17.0
+        ],
+        "last_match_damage": [
+          0.0,
+          0.0
+        ],
+        "aux_scale_final": 0.0
+      },
+      "elo": {
+        "scope": "descriptive batch K24, role specific, historical anchors1000; not global skill rating",
+        "historical_versions": [
+          0,
+          40,
+          80,
+          120,
+          160,
+          200,
+          240,
+          280,
+          320,
+          360,
+          400,
+          440,
+          480
+        ],
+        "latest": {
+          "stamper": 879.8273897779842,
+          "52": 971.7375355812981
+        }
+      },
+      "source_evidence": {
+        "work/rl-stage1/evidence32-r1/stage1-credit32-r1/summary.json": "855fc7c9496599bcaa8431ffd02a476882abd08ae9ea247f91a94cdd6b68b58e",
+        "work/rl-stage1/evidence32-r1/stage1-credit32-r1/metrics.csv": "70c3ff354d430e9aac6d2da0da37c07270eb4cbe03fed78d5e24925e4faa0600",
+        "work/rl-stage1/evidence32-r1/stage1-credit32-r1/matches.jsonl": "8d0541f1cfb296713859bc38c67fce740ac0ebce0e41ba402be1da424209dd8b",
+        "work/rl-stage1/evidence32-r1/stage1-credit32-r1/config.json": "d1bebad6454338f34384cc7079ccc237524d6ab546de3ca0e504dd9fdc4b6caf",
+        "work/rl-stage1/evidence32-assess-r1/stage1-credit-sampled32-r1/summary.json": "8597ede3d6e6bb080fbd7b0a066c91232d4ca0c411b6eb3074646115e3ee93d5",
+        "work/rl-stage1/evidence32-assess-r1/stage1-credit-sampled32-r1/elo.csv": "25121cac636427035c26512b500e0054011298588521c2f049552a42e67cb1b3",
+        "work/rl-stage1/evidence-final-r2/stage1-credit-initial-random-r1/result.json": "e02ff240b05d9f145ee314487b781665563ce6e7e37f7ebf664f42ea8115397f"
+      }
+    },
+    "B": {
+      "training": {
+        "frames": 32047104,
+        "updates": 489,
+        "wall_seconds": 518.8920139870606,
+        "checkpoint": "../stage1-feedback32-r1/checkpoints/u000489.pt",
+        "parameters": 1632841,
+        "peak_allocated_mib": 2805.7548828125,
+        "stage": 1,
+        "stage1_passed": false,
+        "reason": "Training completed; held-out gates and replay behavior evaluated separately"
+      },
+      "initial_random": {
+        "stamper": {
+          "games": 64,
+          "wins": 34,
+          "losses": 30,
+          "draws": 0,
+          "win_rate": 0.53125,
+          "wilson95": [
+            0.41072087051471007,
+            0.6482401257482395
+          ],
+          "kills": 0.0,
+          "deaths": 52.0,
+          "self_splats": 52.0,
+          "kd": 0.0,
+          "damage_dealt": 0.0,
+          "own_turf_percent": 1.657042145729065,
+          "enemy_turf_percent": 1.6141116619110107,
+          "submerged_recovery_agent_frames": 0.0,
+          "wounded_covered_movement_samples": 0.0
+        },
+        "52": {
+          "games": 64,
+          "wins": 64,
+          "losses": 0,
+          "draws": 0,
+          "win_rate": 1.0,
+          "wilson95": [
+            0.9433759402071946,
+            1.0
+          ],
+          "kills": 0.0,
+          "deaths": 39.0,
+          "self_splats": 39.0,
+          "kd": 0.0,
+          "damage_dealt": 0.0,
+          "own_turf_percent": 2.3384580612182617,
+          "enemy_turf_percent": 0.49911051988601685,
+          "submerged_recovery_agent_frames": 0.0,
+          "wounded_covered_movement_samples": 0.0
+        }
+      },
+      "evaluation": {
+        "random": {
+          "roles": {
+            "stamper": {
+              "games": 64,
+              "wins": 12,
+              "losses": 52,
+              "draws": 0,
+              "win_rate": 0.1875,
+              "wilson95": [
+                0.11064643172948806,
+                0.29974360564101526
+              ],
+              "kills": 0.0,
+              "deaths": 61.0,
+              "self_splats": 61.0,
+              "kd": 0.0,
+              "damage_dealt": 0.0,
+              "own_turf_percent": 1.0535191297531128,
+              "enemy_turf_percent": 1.6141116619110107,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 0.0
+            },
+            "52": {
+              "games": 64,
+              "wins": 64,
+              "losses": 0,
+              "draws": 0,
+              "win_rate": 1.0,
+              "wilson95": [
+                0.9433759402071946,
+                1.0
+              ],
+              "kills": 0.0,
+              "deaths": 66.0,
+              "self_splats": 66.0,
+              "kd": 0.0,
+              "damage_dealt": 0.0,
+              "own_turf_percent": 1.9078459739685059,
+              "enemy_turf_percent": 0.49911051988601685,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 0.0
+            }
+          },
+          "seed": 29001,
+          "games": 128,
+          "deterministic": false,
+          "finite": true,
+          "all_terminated": true
+        },
+        "d4-spawn": {
+          "roles": {
+            "stamper": {
+              "games": 64,
+              "wins": 64,
+              "losses": 0,
+              "draws": 0,
+              "win_rate": 1.0,
+              "wilson95": [
+                0.9433759402071946,
+                1.0
+              ],
+              "kills": 0.0,
+              "deaths": 62.0,
+              "self_splats": 62.0,
+              "kd": 0.0,
+              "damage_dealt": 0.0,
+              "own_turf_percent": 1.0378215312957764,
+              "enemy_turf_percent": 0.0,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 0.0
+            }
+          },
+          "defender": {
+            "firing_agent_decisions": 0.0,
+            "visible_agent_decisions": 0.0,
+            "damage_dealt": 0.0,
+            "stamper_deaths": 62.0
+          },
+          "seed": 29102,
+          "games": 64,
+          "deterministic": false,
+          "finite": true,
+          "all_terminated": true
+        },
+        "d4-encounter": {
+          "roles": {
+            "stamper": {
+              "games": 64,
+              "wins": 61,
+              "losses": 0,
+              "draws": 3,
+              "win_rate": 0.953125,
+              "wilson95": [
+                0.8710034625990631,
+                0.983930983213707
+              ],
+              "kills": 0.0,
+              "deaths": 70.0,
+              "self_splats": 60.0,
+              "kd": 0.0,
+              "damage_dealt": 0.0,
+              "own_turf_percent": 0.8602728843688965,
+              "enemy_turf_percent": 0.06088743731379509,
+              "submerged_recovery_agent_frames": 0.0,
+              "wounded_covered_movement_samples": 12.0
+            }
+          },
+          "defender": {
+            "firing_agent_decisions": 474.0,
+            "visible_agent_decisions": 2665.0,
+            "damage_dealt": 1195.9999084472656,
+            "stamper_deaths": 70.0
+          },
+          "seed": 29203,
+          "games": 64,
+          "deterministic": false,
+          "finite": true,
+          "all_terminated": true
+        }
+      },
+      "gates": {
+        "stamper_beats_random": false,
+        "gun_beats_random": true,
+        "stamper_beats_d4_spawn": true,
+        "stamper_beats_d4_encounter": true,
+        "submerged_recovery_observed": false,
+        "wounded_cover_movement_observed": true,
+        "replay_human_review_required": true,
+        "training_curve_review_required": true
+      },
+      "curve": {
+        "updates": 489,
+        "all_finite": true,
+        "entropy_first": 6.992733478546143,
+        "entropy_last": 4.799307346343994,
+        "max_approx_kl": 0.03335384279489517,
+        "kl_stopped_updates": 105,
+        "final_value_loss": 3.309365936843278e-08,
+        "completed_match_batches": 11,
+        "completed_training_weapon_kills": [
+          10.0,
+          15.0
+        ],
+        "last_match_damage": [
+          0.0,
+          0.0
+        ],
+        "aux_scale_final": 0.0
+      },
+      "elo": {
+        "scope": "descriptive batch K24, role specific, historical anchors1000; not global skill rating",
+        "historical_versions": [
+          0,
+          40,
+          80,
+          120,
+          160,
+          200,
+          240,
+          280,
+          320,
+          360,
+          400,
+          440,
+          480
+        ],
+        "latest": {
+          "stamper": 884.5399032600401,
+          "52": 1007.1820168165423
+        }
+      },
+      "source_evidence": {
+        "work/rl-stage1/evidence-final-r2/stage1-feedback32-r1/summary.json": "739e9d0a72448a863fe51ca16327535915492f58c9fae0f7f03aff2ca307e83e",
+        "work/rl-stage1/evidence-final-r2/stage1-feedback32-r1/metrics.csv": "abb4ccc2bbe58c32270162764e83fa5e71209e6dd8ed3b16a02d12d6ea547a1b",
+        "work/rl-stage1/evidence-final-r2/stage1-feedback32-r1/matches.jsonl": "e522a8aed553b439f1aa05f7746f6732188f0f5d7694c6a8be16f6fc8cdbeb64",
+        "work/rl-stage1/evidence-final-r2/stage1-feedback32-r1/config.json": "aeb57a11f0d3e526a86b4bb918741739687be4b76a73fd1e2a040598ac2c221a",
+        "work/rl-stage1/evidence-final-r2/stage1-feedback-assess32-r1/summary.json": "86569ed0dfe77d1fd675daad2aae20de1ee23106fd51dd58a51462d99db523ab",
+        "work/rl-stage1/evidence-final-r2/stage1-feedback-assess32-r1/elo.csv": "b65a9326e0d0d05c639c5ba78e0e073bdd91daf79ca02d851b084f675badb89b",
+        "work/rl-stage1/evidence-final-r2/stage1-feedback-initial-random-r1/result.json": "71c39567cc35f9a814493b525686baef0e2b849d345e8780b7c3168ebae0c1ab"
+      }
+    }
+  },
+  "totals": {
+    "valid_frames": 64094208,
+    "excluded_reward_bug_pilot_frames": 16056320,
+    "all_attempted_training_frames": 80150528,
+    "valid_training_wall_seconds": 1067.5153260970255,
+    "wall_scope": "training incl environment construction per run; excludes evaluations/development; independent models, not one 64M model"
+  },
+  "checkpoint_sha256": {
+    "A": "6336644b7fff95c1165a9226481cf68095af2df5a4003109861d9590708cf005",
+    "B": "eb2461914bb5426ea6af867c127f41bc8fad54179c4847e5a9da58ab86c7b686"
+  },
+  "replay_qa": {
+    "actual_browser_playback": true,
+    "pause_seek_follow": true,
+    "error_logs": [],
+    "screenshots": [
+      "work/rl-stage1/replay-stamper-r1.png",
+      "work/rl-stage1/replay-52-r1.png"
+    ],
+    "private_pages": [
+      "work/rl-stage1/preview-feedback-r1/index.html",
+      "work/rl-stage1/preview-feedback52-r1/index.html"
+    ],
+    "replay52_same_seed_rerun_equal_per_game_fields": [
+      "role",
+      "winner",
+      "turf",
+      "kills",
+      "deaths",
+      "first_kill_frame"
+    ],
+    "rerun_not_additional_independent_samples": true,
+    "healing_behavior_gate": false,
+    "cover_intent_not_established": true
+  },
+  "closing_control": {
+    "invalid_special_input_count": 0,
+    "source": "stage1-feedback-replay52-r1/result.json, r7 actual counter",
+    "drivers_exit_zero": true,
+    "own_gpu_jobs_remaining": false
+  },
+  "checks": {
+    "final_local_learning_tests": 9,
+    "final_local_environment_tests": 14,
+    "earlier_cuda_environment_tests": 14,
+    "cuda_reward_attribution_control": true,
+    "syntax": true,
+    "ruff_F_E9": true,
+    "diff_whitespace": true,
+    "earlier_remote_cpu_learning_tests": 7,
+    "gpu_learning_runtime_verified_by": "two 489-update CUDA PPO runs; learning unit module uses CPU"
+  },
+  "check_evidence_sha256": {
+    "work/rl-stage1/final-learning-tests-r1.log": "6daaad6ba2f766f70edb20457e361a2e8dc57bf4d691682d59b94144a4d9eec1",
+    "work/rl-stage1/final-env-tests-r1.log": "0138e02ccb4118b4e05f3c0e0cf3bae00b8910f346522abf44503fbed64c8b90"
+  }
+}

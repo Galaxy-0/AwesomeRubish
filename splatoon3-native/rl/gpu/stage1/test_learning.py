@@ -6,7 +6,7 @@ from ..test_env import flat, fixture_config
 from ..env import ParallelEnv, GAUGE, PHASE, INK, PREV_R
 from .policy import Policy, prepare
 from .opponents import D4Defender
-from .ppo import gae, update
+from .ppo import gae, update, sequences
 
 
 class LearningTests(unittest.TestCase):
@@ -99,6 +99,60 @@ class LearningTests(unittest.TestCase):
         other["entities"] = other["entities"].flip(1)
         other["entity_mask"] = other["entity_mask"].flip(1)
         torch.testing.assert_close(p.encode(view), p.encode(other), rtol=0, atol=1e-6)
+
+    def test_learned_own_action_feedback_and_priors(self):
+        e = self.env()
+        p = Policy(action_feedback=True, control_prior=True)
+        obs, _ = e.reset()
+        a = torch.zeros((1, 2, 8), dtype=torch.int64)
+        a[:, :, 1:3] = 4
+        left = prepare(obs, a)
+        changed = a.clone()
+        changed[0, 0, 3] = 1
+        right = prepare(obs, changed)
+        x, y = p.encode(left), p.encode(right)
+        self.assertFalse(torch.equal(x[0], y[0]))
+        torch.testing.assert_close(x[1], y[1], rtol=0, atol=0)
+        logits, _, _ = p({k: v[None] for k, v in left.items()}, p.initial(2))
+        prob = logits[0].softmax(-1)
+        self.assertTrue((prob[:, 3, 1] > 0.8).all())
+        self.assertTrue((prob[:, 4, 0] > 0.9).all())
+        self.assertEqual(sum(v.numel() for v in p.parameters()), 1632841)
+
+    def test_recurrent_teacher_forcing_matches_collected_logprob(self):
+        e = self.env()
+        p = Policy(action_feedback=True, control_prior=True)
+        obs, _ = e.reset()
+        prev = torch.zeros((1, 2, 8), dtype=torch.int64)
+        prev[:, :, 1:3] = 4
+        hidden = p.initial(2)
+        views = []
+        hs = []
+        actions = []
+        logs = []
+        with torch.no_grad():
+            for _ in range(12):
+                view = prepare(obs, prev)
+                views.append(view)
+                hs.append(hidden.clone())
+                act, log, _, hidden = p.act(view, hidden)
+                actions.append(act)
+                logs.append(log)
+                prev = act.reshape(1, 2, 8).clone()
+                obs, *_ = e.step(prev)
+            seq = {
+                k: sequences(torch.stack([v[k] for v in views]), 4) for k in views[0]
+            }
+            h0 = torch.cat([hs[i] for i in [0, 4, 8]], 1)
+            actual, _, _ = p.sequence(
+                seq,
+                h0,
+                torch.zeros((4, 6), dtype=torch.bool),
+                sequences(torch.stack(actions), 4),
+            )
+            torch.testing.assert_close(
+                actual, sequences(torch.stack(logs), 4), rtol=0, atol=1e-5
+            )
 
     def test_gae_terminal_no_bootstrap_leak(self):
         r = torch.tensor([[1.0], [2.0]])

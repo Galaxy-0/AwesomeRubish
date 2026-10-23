@@ -3,9 +3,11 @@
 阶段0已获用户接受。只运行阶段1，不开放任何副武器/特殊武器，不运行T1/S1原流程或原生宿主。
 地图温泉峡谷、工作刮水刀8000 vs .52(50)、fixed60、180秒涂地。
 
+本轮已按两轮无进展停止，阶段1未通过；下列命令是复现说明，不是已安排的续训。
+
 ## 接口与网络
 
-`Policy`共1,581,513参数：32×18射线三层小CNN；实体MLP+mask后的mean/max DeepSets；
+`Policy`基版1,581,513参数，`--action-feedback --control-prior`版1,632,841参数：32×18射线三层小CNN；实体MLP+mask后的mean/max DeepSets；
 HUD和16×24池化墨色minimap分别MLP；武器embedding；384维GRU；八个离散动作头和value。
 共享网络复用移动/观察学习，embedding区分两把武器。actor/value都只用public obs；
 内部state仅用于环境、离线摆位、记录与明确标记的D4参考脚本。
@@ -21,7 +23,7 @@ FOV明确是假设：竖55°、16:9横85.56559°（按标准公式，不将近�
 ## PPO和历史池
 
 默认256并行局、2f决策、128决策rollout、32步BPTT、3个PPO epoch、clip0.2、
-gamma0.9995、lambda0.95、Adam2e-4、grad clip0.5；初始循环状态从采样序列保存。
+gamma0.9995、lambda默认0.95（反馈实验0.99）、Adam2e-4、grad clip0.5；初始循环状态从采样序列保存。
 终局截断GAE并清GRU记忆，死亡不是一局结束。历史动作不进入PPO损失。
 50%当前对当前、40%历史对手（两个20% cohort）、10%保持16决策的随机对手；
 每40次更新快照，历史版本只在新一局切换。共享版本池同时保存两把武器。
@@ -55,7 +57,7 @@ export CC="$HOME/splatoon3-native-rl-stage0/cc-zig"
 ```sh
 ../.venv/bin/python -m gpu.stage1.assess --checkpoint ../stage1-run-new/checkpoints/u000977.pt \
   --data data --calibration data/camera-assumption-v1.json --out ../stage1-eval-new \
-  --games 128 --history ../stage1-run-new/checkpoints/u000000.pt
+  --games 128 --stochastic --history ../stage1-run-new/checkpoints/u000000.pt
 ```
 
 `evaluate/assess`对随机双方角色均衡；D4参考为固定180°半平面、30u视距、13.4u开火、
@@ -76,8 +78,8 @@ RL_STAGE0_DATA=work/rl-stage0/data-v5 .venv/bin/python -m rl.gpu.test_env
 RL_STAGE0_DATA=work/rl-stage0/data-v5 .venv/bin/python -m rl.gpu.stage1.test_learning
 ```
 
-7项学习检查覆盖mask+物理防线、GRU终局重置、DeepSets排列不变、GAE终局截断、
-PPO更新/历史样本屏蔽、固定.52的正面KO/背面不开火、无伤自落不计击杀控制。原14项环境单测继续保留。
+9项学习检查覆盖mask+物理防线、GRU终局重置、DeepSets排列不变、GAE终局截断、
+PPO更新/历史样本屏蔽、固定.52的正面KO/背面不开火、无伤自落不计击杀控制、自身动作反馈隔离与循环序列logprob重算一致性。原14项环境单测继续保留。
 事件第6项单列武器击倒；自落不给对手伪造击杀奖励，延迟推落助攻暂未建模。
 算法依据：[PPO原论文](https://arxiv.org/abs/1707.06347)。
 
@@ -86,3 +88,17 @@ PPO更新/历史样本屏蔽、固定.52的正面KO/背面不开火、无伤自�
 不能将二者混成同一策略。使用`assess --stochastic`可评估实际采样策略；保留greedy原结果，
 最终验证使用预先固定的新种子，不通过重抽赢局来改变胜率。`--pool-history`逐一评估checkpoint
 中保存的所有历史快照，并输出分武器Elo表。
+
+
+## 本轮状态：未通过，已停（2026-10-23）
+
+两种配置各32,047,104帧，水刀对随机均较自身初始模型退化：基版55/64→2/64，
+反馈版34/64→12/64；反馈版.52训练前后均64/64，不能把初始先验成绩归功于RL。
+近距D4计分胜场不代表击倒；残血潜墨恢复为0。两轮无进展已停止，示例运行命令不是待执行任务，
+不追加64M或进入阶段2。数据/显存/区间与原件路径见`notes/rl-stage1-20261023.md`及results JSON。
+
+反馈版把自己上一控制输入嵌入128维，不提供敌人信息或手工世界记忆。
+控制先验只是可训练logit初始偏置，所有合法动作仍可能采样；GRU和PPO都训练，
+不强制宏/动作保持。旧checkpoint缺少flags时按基版加载。新增CLI `evaluate --trace-env 1`
+可记录learner为.52的奇数环境；不要把env0的随机.52当作learner。
+评估记录实际禁用输入计数；CSV完整，当前未安装TensorBoard，event写入为可选项。

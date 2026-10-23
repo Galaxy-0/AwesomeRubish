@@ -60,7 +60,11 @@ def main(a):
 
             version_number, state = source
             oldmeta = {"update": version_number}
-            old = Policy(meta["hidden_size"]).to(a.device)
+            old = Policy(
+                meta["hidden_size"],
+                action_feedback=meta.get("config", {}).get("action_feedback", False),
+                control_prior=meta.get("config", {}).get("control_prior", False),
+            ).to(a.device)
             old.load_state_dict(state)
             old.memory.flatten_parameters()
             old.eval()
@@ -116,6 +120,9 @@ def main(a):
     spawn = result["results"]["d4-spawn"]["roles"]["stamper"]
     allrows = [v for r in result["results"].values() for v in r["roles"].values()]
     result["gates"] = dict(
+        primary_only_actions=all(
+            not r["invalid_special_inputs"] for r in result["results"].values()
+        ),
         stamper_beats_random=random["stamper"]["win_rate"] >= 0.95
         and random["stamper"]["wilson95"][0] >= 0.90,
         gun_beats_random=random["52"]["win_rate"] >= 0.95

@@ -79,7 +79,11 @@ def load_policy(path, device="cuda"):
     raw = torch.load(path, map_location="cpu", weights_only=False)
     if raw.get("schema") != "inklab.rl.stage1.checkpoint.v1":
         raise ValueError("checkpoint schema")
-    p = Policy(raw["hidden_size"]).to(device)
+    p = Policy(
+        raw["hidden_size"],
+        action_feedback=raw.get("config", {}).get("action_feedback", False),
+        control_prior=raw.get("config", {}).get("control_prior", False),
+    ).to(device)
     p.load_state_dict(raw["policy"])
     p.eval()
     return p, raw

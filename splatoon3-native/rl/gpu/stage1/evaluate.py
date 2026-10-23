@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 from .common import environment, load_policy, wilson
 from .policy import prepare
-from .opponents import D4Defender
+from .opponents import D4Defender, neutral
 from ..record import Recorder
 from ..env import HP, SUB, YAW, HEADING, GROUND, EVENT_SIZE
 
@@ -59,6 +59,7 @@ def play(
     deterministic=True,
     trace=None,
     opponent=None,
+    trace_env=0,
 ):
     torch.manual_seed(seed)
     env = environment(data, calibration, games, device)
@@ -78,19 +79,23 @@ def play(
         else torch.zeros(games, dtype=torch.long, device=device)
     )
     rows = torch.arange(games, device=device)
-    record = Recorder(env, environment=0, stride=6) if trace else None
+    if not 0 <= trace_env < games:
+        raise ValueError("trace environment index outside batch")
+    record = Recorder(env, environment=trace_env, stride=6) if trace else None
     totals = torch.zeros((games, 2, EVENT_SIZE), device=device)
     healing = torch.zeros((games, 2), device=device)
     cover = torch.zeros_like(healing)
     damaging_heal = torch.zeros_like(healing)
     first_kill = torch.full((games, 2), -1, dtype=torch.long, device=device)
+    previous_actions = neutral(games, device)
+    invalid_special = torch.zeros((), dtype=torch.int64, device=device)
     next_random = env.random_actions()
     start = time.perf_counter()
     for step in range(5400):
         # Observation after explicit initial placement, and on every subsequent step.
         if step == 0:
             obs = env._observation(env.state, env.shots, env.paint, env.steps)
-        prepared = prepare(obs)
+        prepared = prepare(obs, previous_actions)
         action, _, _, hidden = policy.act(prepared, hidden, deterministic)
         action = action.reshape(games, 2, 8)
         if kind == "history":
@@ -103,9 +108,11 @@ def play(
                 next_random = env.random_actions()
             other = next_random
         action[rows, 1 - roles] = other[rows, 1 - roles]
+        invalid_special += (action[:, :, 6:] != 0).sum()
         oldhp = env.state[:, :, HP].clone()
         oldpos = env.state[:, :, :3].clone()
         obs, reward, term, trunc, info = env.step(action)
+        previous_actions = action.detach().clone()
         totals += info["events"]
         recovering = (
             (oldhp > 0)
@@ -166,7 +173,8 @@ def play(
         deterministic=deterministic,
         all_terminated=bool(term.all().item()),
         finite=bool(torch.isfinite(env.state).all().item()),
-        invalid_special_inputs=False,
+        invalid_special_inputs=bool(invalid_special.item()),
+        invalid_special_input_count=int(invalid_special.item()),
         roles={},
         fixture=setup,
         script_privileged_referee_reads=bool(script),
@@ -217,7 +225,7 @@ def play(
     if record:
         clip = record.write(trace)
         clip.update(
-            id="rl-stage1-" + kind,
+            id="rl-stage1-" + kind + "-env" + str(trace_env),
             label="RL 阶段1 · " + kind,
             position_semantics="Trained recurrent PPO in GPU approximation; primary weapons only, not native evidence",
         )
@@ -225,6 +233,7 @@ def play(
             json.dumps(clip, separators=(",", ":"), ensure_ascii=False) + "\n"
         )
         report["trace"] = str(trace)
+        report["trace_environment"] = trace_env
     report["per_game"] = dict(
         role=roles.cpu().tolist(),
         winner=winner.cpu().tolist(),
@@ -232,6 +241,8 @@ def play(
         kills=totals[:, :, 5].flip(1).cpu().tolist(),
         deaths=totals[:, :, 1].cpu().tolist(),
         first_kill_frame=first_kill.cpu().tolist(),
+        submerged_recovery_agent_frames=damaging_heal.cpu().tolist(),
+        wounded_covered_movement_samples=cover.cpu().tolist(),
     )
     return report
 
@@ -254,6 +265,7 @@ def main(a):
         deterministic=not a.stochastic,
         trace=out / "trace.json" if a.trace else None,
         opponent=other,
+        trace_env=a.trace_env,
     )
     report.update(
         checkpoint=str(a.checkpoint),
@@ -280,5 +292,6 @@ if __name__ == "__main__":
     )
     p.add_argument("--device", default="cuda")
     p.add_argument("--trace", action="store_true")
+    p.add_argument("--trace-env", type=int, default=0)
     p.add_argument("--stochastic", action="store_true")
     main(p.parse_args())
