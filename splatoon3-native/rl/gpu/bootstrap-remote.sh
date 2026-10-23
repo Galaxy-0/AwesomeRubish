@@ -7,8 +7,8 @@ chmod 700 "$RL_STAGE0_ROOT"
 python3 -m venv "$RL_STAGE0_ROOT/.venv"
 "$RL_STAGE0_ROOT/.venv/bin/python" -m pip install \
   --timeout 120 --retries 3 --resume-retries 3 \
-  'torch==2.8.0+cu128' \
-  --index-url https://download.pytorch.org/whl/cu128 \
+  'torch==2.12.1+cu126' \
+  --index-url https://download.pytorch.org/whl/cu126 \
   --extra-index-url https://pypi.org/simple
 "$RL_STAGE0_ROOT/.venv/bin/python" -m pip install \
   --timeout 120 --retries 3 --resume-retries 3 'numpy==2.2.6'
