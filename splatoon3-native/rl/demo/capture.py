@@ -754,6 +754,10 @@ def run(a):
             from .telemetry import reduce
 
             reduce(out)
+            if getattr(a, "native_survey", False):
+                from .native_survey import reduce as survey
+
+                survey(out)
         except BaseException as ex:
             result["postprocess_error"] = repr(ex)
             write(out / "result.json", result)

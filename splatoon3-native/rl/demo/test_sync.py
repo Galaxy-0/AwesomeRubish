@@ -80,6 +80,61 @@ class SyncTests(unittest.TestCase):
         self.assertEqual(q["weapon_native_valid"], [False, False])
         self.assertEqual(obs["hud"][0, 0, 6], 157)
 
+    def test_native_primary_bullet_requires_exact_frame_and_does_not_ghost(self):
+        e, b = self.builder()
+        bullet = dict(
+            owner=1,
+            position=[0.0, 1.0, 4.0],
+            velocity=[0.0, 0.0, -3.06],
+            age_frames=1,
+            damage=52.0,
+            kind=3,
+        )
+        b.projectiles = CausalIndex(
+            [
+                dict(
+                    frame=49,
+                    observer=0,
+                    primary_projectile_set_qualified=True,
+                    projectiles=[bullet],
+                ),
+                dict(
+                    frame=50,
+                    observer=0,
+                    primary_projectile_set_qualified=True,
+                    projectiles=[],
+                ),
+            ]
+        )
+        _, q = b.observe(row(50))
+        self.assertTrue(q["projectiles_native_valid"])
+        self.assertEqual(e.shots[0, 1, 0, 10], 1)
+        self.assertEqual(e.shots[0, 1, 0, 9], 3)
+        self.assertAlmostEqual(float(e.shots[0, 1, 0, 5]), -3.06, places=4)
+        # Explicit release snapshot is known empty; absence next tick is unknown.
+        q, _ = b.sync(row(51))
+        self.assertTrue(q["projectiles_native_valid"])
+        self.assertFalse(e.shots.any())
+        q, _ = b.sync(row(52))
+        self.assertFalse(q["projectiles_native_valid"])
+        self.assertFalse(e.shots.any())
+
+    def test_unqualified_projectile_set_is_not_imported(self):
+        e, b = self.builder()
+        b.projectiles = CausalIndex(
+            [
+                dict(
+                    frame=49,
+                    observer=0,
+                    primary_projectile_set_qualified=False,
+                    projectiles=[{}],
+                )
+            ]
+        )
+        q, _ = b.sync(row(50))
+        self.assertFalse(q["projectiles_native_valid"])
+        self.assertFalse(e.shots.any())
+
     def test_invalid_old_packet_is_not_integrated_or_marked_current(self):
         e, b = self.builder()
         q, _ = b.sync(row(age=9))

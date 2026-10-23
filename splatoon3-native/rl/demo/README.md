@@ -162,3 +162,42 @@ BC新增`hud_valid`、`screen_channel_valid`、`minimap_valid`、`native_camera_
 ```
 
 该诊断一次初始化后不纠正位置/HP；原生镜头和连续摇杆是明确的归因条件，不能当自主RL结果。原20–24u已复现；默认同步位置残差0只证明不再积分，绝不等于动力学修好。脚本无优化器、无训练副作用。
+
+## run69：受控交火真值（开发测量，不是人玩录制入口）
+
+报告：`notes/rl-demo-truth-20261024.md/.json`。原生中路轻挥35、满蓄70、.52两发倒下/潜墨正例已录到。水刀主武器阶段和本组8000/50的observer0弹体可因果导入；墨图用原生ColPaint片区变换和V翻转，**只解除实测片区133/147内唯一向上地面、精确读回帧、无歧义R/G值的mask**。墙/其他片区/缺帧/混合权重保持未知。
+
+仍不训练：直接瞄准片段不是人的动作标签，`action_labels_trainable=false`；完整连续墨图、通用实体/双角色完整武器和倒下镜头门未签收。新旁车是观测真值来源，不能用GPU自由积分补缺测。BC候选仍要求`--allow-approximate`。
+
+专用宿主 `work/rl-demo/truth-host-r2c/dmhost-truth`、`truth-host-panels-r2`、`truth-host-panel-uv-r1` 均保留独立manifest。构建器分步保留失败版本及已冻结父输入；不覆盖run67人玩/arena默认宿主。实验必须同时开启私有DEMO/TRUTH/AIM夹具标志，正常`rl.demo.capture`继续禁止直接瞄准，正式选择器拒绝test_only宿主。
+
+```sh
+# 一房，普通导航/回血，只有瞄准写入。自动记原生记录；不需要手柄。
+.venv/bin/python -m rl.demo.truth_capture \
+  --host work/rl-demo/truth-host-r2c/dmhost-truth --name my-controlled-truth
+
+# <recording> 用上条输出的 work/a6/ 时间戳目录；下列只读原始日志，生成旁车。
+.venv/bin/python -m rl.demo.truth_reduce <recording>
+.venv/bin/python -m rl.demo.projectile_truth <recording>
+
+# 地面/出生高台涂地专测；可用 --setup-only 单独采集原生片区表。
+.venv/bin/python -m rl.demo.truth_capture \
+  --host work/rl-demo/truth-host-r2c/dmhost-truth \
+  --name my-ink-controls --extended-ink --ink-only
+```
+
+UV表恢复/资格验证：
+
+```sh
+.venv/bin/python -m rl.demo.native_ink extract <panel-uv-recording> \
+  --out work/rl-demo/my-native-ink-map
+.venv/bin/python -m rl.demo.ink_mapping_audit <downward-ink-recording>
+.venv/bin/python -m rl.demo.native_ink validate <downward-ink-recording> \
+  --mapping work/rl-demo/my-native-ink-map
+.venv/bin/python -m rl.demo.native_ink attach <recording> \
+  --mapping work/rl-demo/my-native-ink-map
+```
+
+只有原生控制点验证通过的片区才会进入`qualified_panels`；不能把原生包围盒当完整三角形归属。当前仅同构建固定温泉峡谷夹具验证，不自动对未来人玩录像套用另一局的UV表。1600²图像/映射NPZ/网格/BC全部私有，不能提交。
+
+最终观测候选：`work/rl-demo/truth-bc-combat-qualified/` 与 `truth-bc-ink-qualified/`；QA在`work/rl-demo/truth-qa-qualified/`。`weapon_stage_id`和`weapon_animation_remaining_frames`是独立元数据，后者不等于输入锁；原生弹体位置为calc前相位、速度是因果位置差分，通用速度/实体完整门仍保留。`minimap_valid`和射线墨色通道现在可以部分为true，但`dense_paint_native_valid`仍false，**不能把一次稀疏读回的有效格延续到下一帧**。

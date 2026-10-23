@@ -83,11 +83,23 @@ def convert_synced(a):
             else None
         )
         obs = batch._observe(
-            state, batch.shots, batch.paint, frames, camera_override=cam
+            state,
+            torch.cat([x["shots"] for x in padded]),
+            batch.paint,
+            frames,
+            camera_override=cam,
         )
         for j, x in enumerate(pending):
             q = x["quality"]
             i = x["info"]
+            single = {k: v[j : j + 1] for k, v in obs.items()}
+            single_camera = (
+                tuple(v[j : j + 1] for v in cam) if cam is not None else None
+            )
+            cutoff = i["frame"] - rows[0]["infos"]["player_0"]["frame"] - 1
+            ink_valid, minimap_valid = rebuilder.ink.overlay(
+                single, single_camera, cutoff
+            )
             record = {k: v[j, 0].detach().cpu().numpy() for k, v in obs.items()}
             if i.get("time_valid"):
                 record["hud"][6] = i["remaining_time"]
@@ -118,10 +130,24 @@ def convert_synced(a):
                 screen_channel_valid=np.broadcast_to(
                     np.array([True, True, False, True]), (18, 32, 4)
                 ).copy(),
-                minimap_valid=np.zeros_like(record["minimap"], dtype=bool),
+                minimap_valid=minimap_valid[0].cpu().numpy(),
                 dense_paint_native_valid=np.array(False),
-                projectiles_native_valid=np.array(False),
+                projectiles_native_valid=np.array(q["projectiles_native_valid"]),
                 weapon_native_valid=np.array(q["weapon_native_valid"][0]),
+                weapon_stage_id=np.array(
+                    q.get("weapon_details", [{}])[0].get("weapon_stage_id", -1),
+                    np.int16,
+                ),
+                weapon_animation_remaining_frames=np.array(
+                    q.get("weapon_details", [{}])[0].get(
+                        "animation_deadline_remaining_frames", -1
+                    ),
+                    np.float32,
+                ),
+                action_labels_trainable=np.array(
+                    result.get("action_labels_trainable", True)
+                    and not result.get("direct_aim", False)
+                ),
                 entities_complete=np.array(False),
                 entity_velocity_native_valid=np.array(False),
                 position_import_error_u=np.array(
@@ -129,6 +155,7 @@ def convert_synced(a):
                 ),
                 observation_mode=np.array(1, np.uint8),
             )
+            record["screen_channel_valid"][..., 2] = ink_valid[0].cpu().numpy()
             record["action_mask"] = (
                 command_mask(
                     obs["action_mask"][j, 0],
@@ -176,6 +203,7 @@ def convert_synced(a):
         pending.append(
             dict(
                 state=env.state.clone(),
+                shots=env.shots.clone(),
                 camera=cam,
                 quality=quality,
                 frame=f,
@@ -209,7 +237,8 @@ def convert_synced(a):
         causal_native_camera_available=bool(
             all_quality and all(all(q["camera_native_valid"]) for q in all_quality)
         ),
-        script_not_human=result["source"] == "scripted_smoke",
+        script_not_human=result["source"] != "human_USB",
+        no_direct_aim_action_labels=not result.get("direct_aim", False),
     )
     # Script is useful pipeline QA but not a human skill demonstration.
     ready = all(v for k, v in gates.items() if k != "script_not_human")
@@ -269,6 +298,8 @@ def convert_synced(a):
                 "cameras.jsonl",
                 "native-state.jsonl",
                 "native-weapon.jsonl",
+                "native-projectiles.jsonl",
+                "native-ink.json",
             ]
             if (source / f).exists()
         },

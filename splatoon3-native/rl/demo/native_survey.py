@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 from .capture import write
 from .convert import stats
+from .weapon_truth import decode_saber
 
 
 def reduce(source):
@@ -21,11 +22,22 @@ def reduce(source):
         base = barriers[0]["infos"][p]["frame"]
         path = session / f"player-{n}/host.log"
         owner = None
+        # E0 is gear-dependent ink cost. The current calibration covers only
+        # the fixture's explicit uniform quick-super-jump gear, not arbitrary
+        # Ink Saver/conditional ability combinations.
+        standard_pieces = set()
         for line in path.open():
+            g = re.search(
+                r"SPL3_GEAR piece=(\d+) id=-?\d+ main=10 subs=10,10,10 count=3 override=1",
+                line,
+            )
+            if g:
+                standard_pieces.add(int(g[1]))
             m = re.search(r"RL_SELF_SLOT slot=\d+ player=(0x\w+)", line)
             if m:
                 owner = int(m[1], 16)
                 break
+        standard_charge_cost = standard_pieces == {0, 1, 2}
         poses = {
             r["infos"][p]["position_sample_frame"] - base: r["infos"][p]["position"]
             for r in barriers
@@ -105,6 +117,15 @@ def reduce(source):
                         cooldown_frames_qualified=False,
                     )
                 )
+                if (
+                    kind == "action_saber"
+                    and result.get("weapons", [None] * 2)[n] == 8000
+                    and standard_charge_cost
+                ):
+                    decoded = decode_saber(state, cost, elapsed, duration)
+                    if decoded:
+                        weapons[-1].update(decoded)
+                        native.append(dict(player=n, frame=f, **decoded))
                 raw += 1
                 if kind == "action_saber" and n == 0:
                     states[state] += 1
@@ -149,6 +170,14 @@ def reduce(source):
             weapon_stage_complete=False,
             projectile_active_set_complete=False,
         )
+    # Raw four-frame snapshots and the passive live survey can share a frame.
+    # Keep a qualified owned-primary decoding ahead of an unqualified candidate.
+    combined = {}
+    for row in native:
+        key = (row["player"], row["frame"])
+        if key not in combined or row.get("weapon_phase_qualified"):
+            combined[key] = row
+    native = list(combined.values())
     for name, data in [("native-state", native), ("native-weapon", weapons)]:
         (source / f"{name}.jsonl").write_text(
             "".join(json.dumps(r, separators=(",", ":")) + "\n" for r in data)
@@ -193,7 +222,7 @@ def reduce(source):
         observations_may_use_candidates=False,
         notes=[
             "0x25c engine pose failed first survey, never imported.",
-            "Player+170/+1ac raw candidates and native state38 are passive; static consumer/time semantics still required before BC imports.",
+            "Player+170/+1ac poses remain candidates; owned primary Saber state38/E0/E4/E8 is decoded only for the controlled qualified subset.",
             "Weapon object owner link+368 and action owner links recovered; numeric state is not automatically charge/swing/cooldown.",
             "Projectile velocity callbacks are real live calls, not a complete active-set enumerator.",
             "1600x1600 UV colors readable, but no verified world/team projection or continuous cadence.",

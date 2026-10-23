@@ -60,6 +60,13 @@ class NativeRebuilder:
         self.native = [
             CausalIndex([r for r in rows if r["player"] == n]) for n in range(2)
         ]
+        path = Path(source) / "native-projectiles.jsonl"
+        self.projectiles = CausalIndex(read_jsonl(path) if path.is_file() else [])
+        from .native_ink import NativeInk
+
+        self.ink = NativeInk(source, env.geo)
+        self.ink.horizontal = env.cfg.camera_horizontal_fov_degrees
+        self.ink.vertical = env.cfg.camera_vertical_fov_degrees
 
     def sync(self, row):
         e = self.env
@@ -76,6 +83,7 @@ class NativeRebuilder:
         ups = []
         camera_valid = []
         phase_valid = []
+        weapon_details = []
         residual = []
         for n in range(2):
             p = f"player_{n}"
@@ -157,6 +165,19 @@ class NativeRebuilder:
             native = self.native[n].latest(cutoff, 4)
             wv = bool(native and native.get("weapon_phase_qualified"))
             phase_valid.append(wv)
+            weapon_details.append(
+                {
+                    k: native.get(k)
+                    for k in [
+                        "weapon_stage_id",
+                        "charge_native_frames",
+                        "animation_deadline_remaining_frames",
+                        "cooldown_lock_qualified",
+                    ]
+                }
+                if wv
+                else {}
+            )
             if wv:
                 s[0, n, CHARGE] = native["charge_frames"]
                 s[0, n, COOL] = native["cooldown_frames"]
@@ -168,13 +189,43 @@ class NativeRebuilder:
             if all(camera_valid)
             else None
         )
+        # Local native world0 primary bullets only. A past tick may NOT be
+        # carried forward: it may already have hit/released in the missing tick.
+        cutoff = (
+            row["infos"]["player_0"]["frame"] - self.origins["player_0"]["frame"] - 1
+        )
+        projectile = self.projectiles.latest(cutoff, 0)
+        pq = bool(
+            projectile
+            and projectile.get("primary_projectile_set_qualified")
+            and projectile.get("observer") == 0
+        )
+        if pq:
+            slots = [0, 0]
+            for bullet in projectile["projectiles"]:
+                owner = bullet["owner"]
+                slot = slots[owner]
+                slots[owner] += 1
+                if slot >= 8:
+                    pq = False
+                    e.shots.zero_()
+                    break
+                q = e.shots[0, owner, slot]
+                q[:3] = torch.as_tensor(bullet["position"], device=e.device)
+                q[3:6] = torch.as_tensor(bullet["velocity"], device=e.device)
+                q[6] = bullet["age_frames"]
+                q[8] = bullet["damage"]
+                q[9] = bullet["kind"]
+                q[10] = 1
         quality = dict(
             state_valid=valid,
             source_age_frames=ages,
             camera_native_valid=camera_valid,
             weapon_native_valid=phase_valid,
+            weapon_details=weapon_details,
             dense_paint_native_valid=False,
-            projectiles_native_valid=False,
+            projectiles_native_valid=pq,
+            projectile_observer_valid=[pq, False],
             position_import_residual=residual,
             physics_steps=0,
             entity_velocity_native_valid=False,
@@ -196,4 +247,12 @@ class NativeRebuilder:
         q["screen_color_valid"] = False
         q["minimap_valid"] = False
         q["entity_projectiles_complete"] = False
+        cutoff = (
+            row["infos"]["player_0"]["frame"] - self.origins["player_0"]["frame"] - 1
+        )
+        screen_valid, minimap_valid = self.ink.overlay(obs, cam, cutoff)
+        q["screen_ink_valid_mask"] = screen_valid
+        q["minimap_valid_mask"] = minimap_valid
+        q["screen_color_valid"] = bool(screen_valid[0].any())
+        q["minimap_valid"] = bool(minimap_valid[0].any())
         return obs, q

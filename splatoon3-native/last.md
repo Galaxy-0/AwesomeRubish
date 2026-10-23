@@ -1,3 +1,30 @@
+# run69：原生交火真值已接入，完整训练就绪仍未签收（2026-10-24）
+
+本轮不训练、不需手柄；最多同时1房，全部自建原生进程已退出。run67人玩宿主、正式arena/A8宿主、GPU动力学、policies和原存档不改，T1/S1保持暂停。
+
+|缺口|本轮结果|仍保留的边界|
+|---|---|---|
+|交火正例|两段原生中路控制均有可见敌人、轻挥35/满蓄70、.52两枪倒下、潜墨|直接瞄准测量夹具；非玩家示范、非完整Winners|
+|水刀主武器阶段|确认蓄力/轻挥/满蓄/恢复及ZL中断，接入HUD和阶段/动画计时元数据|动画截止不冒充输入锁；.52完整内部阶段未签收|
+|墨图|恢复温泉峡谷164原生ColPaint片区及UV变换；V翻转、R/G队伍、地面/高台控制通过|只解除实测133/147片区内唯一向上地面、精确读回帧的部分mask；墙/歧义/中间色/无帧未知|
+|弹体|原生reset/tick/release、武器ID所有者、池generation；接入observer0水刀/.52主武器entities|calc前采样、速度因果差分；通用全实体/其他武器/观察端资格未签收|
+
+原全图XZ墨图公式在高台错1467px；原生片区147变换预测误差约1.59px，像素处为R255/G0。四个地面控制归片区133；未将全164片区或包围盒都升级成真值。
+
+最终私有观测候选共**7218**：
+
+- `work/rl-demo/truth-bc-combat-qualified/`：3004样本，594样本看见敌人、18样本看见弹体；6个精确帧解除部分原生minimap/射线墨色mask。
+- `work/rl-demo/truth-bc-ink-qualified/`：4214个逐帧诊断样本，11个minimap/10个射线墨色帧。所有直接瞄准动作标签`action_labels_trainable=false`，不能用于模仿人的操作。
+- 原生交火：`work/a6/d3-truth-r1-20261024-031423-824512/`、`work/a6/d3-truth-r3-20261024-033500-389230/`。
+- 向下涂地：`work/a6/d3-truth-ink-r4-20261024-034156-335379/`；UV派生数据只在`work/rl-demo/truth-ink-mapping-r1/`，不提交。
+- 截图/射线/entities/HUD/minimap自查：`work/rl-demo/truth-qa-qualified/light-before.png`、`light-after.png`、`full-before.png`、`full-after.png`、`cancel-before.png`、`cancel-after.png`。
+
+**ready_for_training=false**：连续完整世界墨色、全曲面归属/墙面、通用实体、倒下后的镜头等未闭合；当前片段又是主动截断的理想瞄准夹具。保留逐格/逐通道资格，不把未知占位当中立/空/idle，也不跨帧借用稀疏墨图。57项CPU组件+11项T1组件、静态检查和源SHA审计通过；单房峰值约6211MiB，新增swap0。保护宿主、原存档、两份原始场景/Bootup资源SHA不变。
+
+[完整报告](notes/rl-demo-truth-20261024.md) · [数值与SHA](notes/rl-demo-truth-20261024.json) · [用法](rl/demo/README.md)。源码与文档提交推送；原生数据、截图、派生网格、生成页、宿主均不提交。保留所有原件/中间输出，完成本轮限定接入后停止，不开始训练。
+
+---
+
 # 示范数据：默认状态同步与三局导出完成，完整BC训练就绪未通过（2026-10-24）
 
 默认转换改为只同步原生包位置/朝向/HP/墨量/形态，再计算观测；**不推进GPU物理**。原生eye/at按ACK前一帧因果读取，位置原有1–4帧源年龄保留，不伪称逐帧新测量。timer零后约250帧InGame不再作操作标签，未知墨图/武器/弹体显式mask。

@@ -1,0 +1,582 @@
+{
+  "schema": "inklab.rl.demo.truth-report.v1",
+  "date": "2026-10-24",
+  "training_started": false,
+  "ready_for_training": false,
+  "rooms_concurrent_max": 1,
+  "cases": {
+    "firefight_r1": {
+      "passed": true,
+      "errors": [],
+      "frames": 5543,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-031423-883175",
+      "host_sha256": "4575391c3dde06fdf7b3397314ec49effadddb1cc2d553e55d0ce6f7605c8362",
+      "controlled_clip_complete": true,
+      "controlled_ink_complete": null,
+      "controlled_setup_complete": null,
+      "source": "work/a6/d3-truth-r1-20261024-031423-824512",
+      "sha256": {
+        "result.json": "1b0d96b36c0ecd38924e253c6188179a7bc0617823a1ffddaf7d859a4aab374e",
+        "inputs-per-present.jsonl": "5c2935c0061e35f8731397c651e40dc83a0ed595e5e81523e8d1cdbbed936afc",
+        "native-barriers.jsonl": "dbc21c6bb7d4944d4b83435ba5a7d7b11fff7cab7b112c2e32e56548813ce4f6"
+      },
+      "damage_edges": [
+        {
+          "frame": 3211,
+          "label": "light-release-cooldown",
+          "player": "player_1",
+          "damage": 35.0000024,
+          "hp": 0.649999976,
+          "down": false
+        },
+        {
+          "frame": 3927,
+          "label": "full-release-cooldown",
+          "player": "player_1",
+          "damage": 69.99999880000001,
+          "hp": 0.300000012,
+          "down": false
+        },
+        {
+          "frame": 5444,
+          "label": "gun-fire",
+          "player": "player_0",
+          "damage": 52.000001100000006,
+          "hp": 0.479999989,
+          "down": false
+        },
+        {
+          "frame": 5453,
+          "label": "gun-fire",
+          "player": "player_0",
+          "damage": 47.9999989,
+          "hp": 0,
+          "down": true
+        }
+      ],
+      "squid_frames": {
+        "player_0": 392,
+        "player_1": 728
+      },
+      "saber_stages": {
+        "idle": 5240,
+        "charging": 38,
+        "light_swing": 175,
+        "recovery": 65,
+        "full_swing": 21,
+        "charge_cancel_exit": 4
+      },
+      "resources": {
+        "peak_footprint_mib": 5884.0,
+        "additional_swapout_bytes": 0,
+        "max_pressure": 1
+      }
+    },
+    "aux_lifecycle_r2": {
+      "passed": false,
+      "errors": [
+        "AssertionError('ink-anchor-1 blocked: [4.44321966, 3.00000095, 8.00042915]')"
+      ],
+      "frames": 4929,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-033016-691823",
+      "host_sha256": "fed3bc4112c13c7196cba9aa3c5088850f678d666080956def125ad44a97d52a",
+      "controlled_clip_complete": null,
+      "controlled_ink_complete": null,
+      "controlled_setup_complete": null,
+      "source": "work/a6/d3-truth-r2c-20261024-033016-640668",
+      "sha256": {
+        "result.json": "a0e69d2462e59f29f8cecf6f1824edc86a7460a5f29bb0936d079c4c9814d32d",
+        "inputs-per-present.jsonl": "1fbe788102d07499a511fb41bff3208f882a3e12d2e3c3a17a3df795c92c05f2",
+        "native-barriers.jsonl": "d03a80998dd799f93b76e4205aeda4201afeb28e7c895189f3f9aee03d2e5fdd"
+      },
+      "damage_edges": [
+        {
+          "frame": 3211,
+          "label": "light-release-cooldown",
+          "player": "player_1",
+          "damage": 35.0000024,
+          "hp": 0.649999976,
+          "down": false
+        },
+        {
+          "frame": 3939,
+          "label": "full-release-cooldown",
+          "player": "player_1",
+          "damage": 69.99999880000001,
+          "hp": 0.300000012,
+          "down": false
+        }
+      ],
+      "squid_frames": {
+        "player_0": 196,
+        "player_1": 732
+      },
+      "saber_stages": {
+        "idle": 4715,
+        "charging": 35,
+        "light_swing": 100,
+        "recovery": 53,
+        "full_swing": 21,
+        "charge_cancel_exit": 4
+      },
+      "projectiles": {
+        "snapshots": 4928,
+        "positive_frames": 106,
+        "qualified_frames": 4928,
+        "events": {
+          "event0-vt5c75510": 4,
+          "event2-vt5c75510": 15,
+          "event3-vt5c75510": 4,
+          "event0-vt5c79398": 14,
+          "event2-vt5c79398": 86,
+          "event3-vt5c79398": 14,
+          "event0-vt5c76df0": 1,
+          "event2-vt5c76df0": 7,
+          "event3-vt5c76df0": 1
+        },
+        "complete_general_projectile_sensor": false,
+        "closed_lifetimes": 19,
+        "unclosed_lifetimes": 0
+      },
+      "resources": {
+        "peak_footprint_mib": 5585.0,
+        "additional_swapout_bytes": 0,
+        "max_pressure": 1
+      }
+    },
+    "firefight_r3": {
+      "passed": true,
+      "errors": [],
+      "frames": 6009,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-033500-443599",
+      "host_sha256": "fed3bc4112c13c7196cba9aa3c5088850f678d666080956def125ad44a97d52a",
+      "controlled_clip_complete": true,
+      "controlled_ink_complete": null,
+      "controlled_setup_complete": null,
+      "source": "work/a6/d3-truth-r3-20261024-033500-389230",
+      "sha256": {
+        "result.json": "2b89cf32514767959af7cc5cc0f9046ff16e8559345472adc6ba335bf5abbd5e",
+        "inputs-per-present.jsonl": "1dd33b04c024ae145055b7d6eee79e6a8c0995a2fa29a755c4071c4b2a39bed0",
+        "native-barriers.jsonl": "b7a6feadedf285c0a66bc735937f90606ddb5321775f1a5ea8bb8b8b1b2142de"
+      },
+      "damage_edges": [
+        {
+          "frame": 3329,
+          "label": "light-release-cooldown",
+          "player": "player_1",
+          "damage": 35.0000024,
+          "hp": 0.649999976,
+          "down": false
+        },
+        {
+          "frame": 4057,
+          "label": "full-release-cooldown",
+          "player": "player_1",
+          "damage": 69.99999880000001,
+          "hp": 0.300000012,
+          "down": false
+        },
+        {
+          "frame": 5912,
+          "label": "gun-fire",
+          "player": "player_0",
+          "damage": 52.000001100000006,
+          "hp": 0.479999989,
+          "down": false
+        },
+        {
+          "frame": 5919,
+          "label": "gun-fire",
+          "player": "player_0",
+          "damage": 47.9999989,
+          "hp": 0,
+          "down": true
+        }
+      ],
+      "squid_frames": {
+        "player_0": 392,
+        "player_1": 732
+      },
+      "saber_stages": {
+        "idle": 5632,
+        "charging": 40,
+        "light_swing": 225,
+        "recovery": 87,
+        "full_swing": 21,
+        "charge_cancel_exit": 4
+      },
+      "projectiles": {
+        "snapshots": 6009,
+        "positive_frames": 142,
+        "qualified_frames": 6009,
+        "events": {
+          "event0-vt5c75510": 9,
+          "event2-vt5c75510": 38,
+          "event3-vt5c75510": 9,
+          "event0-vt5c79398": 16,
+          "event2-vt5c79398": 101,
+          "event3-vt5c79398": 16,
+          "event0-vt5c76df0": 1,
+          "event2-vt5c76df0": 7,
+          "event3-vt5c76df0": 1
+        },
+        "complete_general_projectile_sensor": false,
+        "closed_lifetimes": 26,
+        "unclosed_lifetimes": 0
+      },
+      "resources": {
+        "peak_footprint_mib": 5724.0,
+        "additional_swapout_bytes": 0,
+        "max_pressure": 1
+      }
+    },
+    "downward_ink_r4": {
+      "passed": true,
+      "errors": [],
+      "frames": 4219,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-034156-389561",
+      "host_sha256": "fed3bc4112c13c7196cba9aa3c5088850f678d666080956def125ad44a97d52a",
+      "controlled_clip_complete": null,
+      "controlled_ink_complete": true,
+      "controlled_setup_complete": null,
+      "source": "work/a6/d3-truth-ink-r4-20261024-034156-335379",
+      "sha256": {
+        "result.json": "44b8e9c521351c3e8353058815887f51df9d421444e6a45917d88c154cbd11d1",
+        "inputs-per-present.jsonl": "374279794e7c7bb6c9f192009ca6100451935bc0a968150fe0e11dd712d1d5ea",
+        "native-barriers.jsonl": "31041c55193b14d68dfd0aa6a529212394f1f193885e20728f8af21ef4e11925"
+      },
+      "damage_edges": [],
+      "squid_frames": {
+        "player_0": 188,
+        "player_1": 188
+      },
+      "saber_stages": {
+        "idle": 3996,
+        "charging": 6,
+        "light_swing": 150,
+        "recovery": 66
+      },
+      "projectiles": {
+        "snapshots": 4218,
+        "positive_frames": 8,
+        "qualified_frames": 4218,
+        "events": {
+          "event0-vt5c75510": 6,
+          "event2-vt5c75510": 12,
+          "event3-vt5c75510": 6,
+          "event0-vt5c79398": 2,
+          "event2-vt5c79398": 2,
+          "event3-vt5c79398": 2
+        },
+        "complete_general_projectile_sensor": false,
+        "closed_lifetimes": 8,
+        "unclosed_lifetimes": 0
+      },
+      "resources": {
+        "peak_footprint_mib": 5584.0,
+        "additional_swapout_bytes": 0,
+        "max_pressure": 1
+      }
+    },
+    "panels": {
+      "passed": true,
+      "errors": [],
+      "frames": 450,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-041320-853879",
+      "host_sha256": "6279ae79aca8c0adc5c7b339c1e277729076a330527bd5e67ab2afefd1e26b40",
+      "controlled_clip_complete": null,
+      "controlled_ink_complete": null,
+      "controlled_setup_complete": true,
+      "source": "work/a6/d3-truth-panels-r1-20261024-041320-797974",
+      "sha256": {
+        "result.json": "74544de770b729ad09d752cf446f3b5dce0c06b69dece0cb4204e4014f509307",
+        "inputs-per-present.jsonl": "47eb40a6ba8a53fc2c5892f4137cc9637ccb136b20d8d0b2773d26506b9ddac8",
+        "native-barriers.jsonl": "8bf749f63ead5de7b3cde547ca2cb113348ed2c0736a74fef05d2d0fd385b33b"
+      },
+      "resources": {
+        "peak_footprint_mib": 5495.0,
+        "additional_swapout_bytes": 0,
+        "max_pressure": 1
+      }
+    },
+    "panel_uv": {
+      "passed": true,
+      "errors": [],
+      "frames": 450,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-042051-519990",
+      "host_sha256": "e13cc30bd872f5f33f6d53c137aa5d9ac0ae17b32b55b118d85c96b4cb095327",
+      "controlled_clip_complete": null,
+      "controlled_ink_complete": null,
+      "controlled_setup_complete": true,
+      "source": "work/a6/d3-truth-panel-uv-r1-20261024-042051-467143",
+      "sha256": {
+        "result.json": "4a13559d70ecbf2b26f56bed1546b532a3800eac699e71e2054c9c9891b91dd1",
+        "inputs-per-present.jsonl": "47eb40a6ba8a53fc2c5892f4137cc9637ccb136b20d8d0b2773d26506b9ddac8",
+        "native-barriers.jsonl": "d92942c6357889059f9b779bede77614a709a12ef947605c81fafc99f7db327f"
+      },
+      "resources": {
+        "peak_footprint_mib": 6211.0,
+        "additional_swapout_bytes": 0,
+        "max_pressure": 1
+      }
+    }
+  },
+  "bc": {
+    "combat": {
+      "path": "work/rl-demo/truth-bc-combat-qualified",
+      "counts": {
+        "samples": 3004,
+        "weapon_valid_samples": 3004,
+        "primary_projectile_valid_samples": 3004,
+        "visible_enemy_samples": 594,
+        "visible_projectile_samples": 18,
+        "native_minimap_samples": 6,
+        "native_minimap_valid_cells": 18759,
+        "native_ray_ink_samples": 6,
+        "native_ray_ink_valid_rays": 599,
+        "own_ink_cells": 26,
+        "enemy_ink_cells": 13
+      },
+      "finite": true,
+      "ideal_aim_labels_masked": true,
+      "source_bindings_current": {
+        "result.json": true,
+        "inputs-per-present.jsonl": true,
+        "native-barriers.jsonl": true,
+        "cameras.jsonl": true,
+        "native-state.jsonl": true,
+        "native-weapon.jsonl": true,
+        "native-projectiles.jsonl": true,
+        "native-ink.json": true
+      },
+      "ready_for_training": false,
+      "blocked_gates": [
+        "complete_native_match",
+        "native_dense_paint",
+        "native_weapon_stage",
+        "native_projectile_active_set",
+        "causal_native_camera_available",
+        "no_direct_aim_action_labels"
+      ],
+      "report_sha256": "bcb893a56a7dd6ae624633152696a6d1dadee8c1ef3959a7ac73434ee3dd0076",
+      "shard_sha256": {
+        "bc-00000.npz": "9a853b3b18b6e06dfcb6e7ea2845b471e0a9e8d9d416a09a4a26f54e4ebc2d0b",
+        "bc-00001.npz": "775fb1bf8d7505cb85d7b1724fc14396ff550a4aaef6124e12d94259d91cf266",
+        "bc-00002.npz": "30119b74edec39b5996031f40142000fc0f5b9c8f620a38cfd742c20a1ddb88d",
+        "bc-00003.npz": "da58f31b06d51c5ed7a180685816c5b536f99ddab6d56149f8f0408785c44bf1",
+        "bc-00004.npz": "e2d6e1f749ff69085673c5f90d17cb7eb598acd6f304f694a52d449390396184",
+        "bc-00005.npz": "945e08bafd4431cc92c8459b93872a5abdb454f1d651f5df25c276d7b43356c6",
+        "bc-00006.npz": "f44fb9fef93632f8ae68d7f2878731d2c87a5b39547ed873649e0453295976cd",
+        "bc-00007.npz": "cb353b0a86a78083e5a182014036d0a048e661563a8bcb703c627b14c04a8f34",
+        "bc-00008.npz": "19f792111ff8f29a8da847ca63624c7d968d5853d0f59298a9d2013a6cb0e1f4",
+        "bc-00009.npz": "e2a3e2f482b8ae33f154beb67ba82b8fa55418c34a26e13b69f353ff82fd4ea7",
+        "bc-00010.npz": "350373f1574ec5712e6ba5352bced597ec71184b235f5e3475421985b37e7e4f",
+        "bc-00011.npz": "3dc1ed922a826c24dbba5646ae83602530a0cfe14b6d08d356115890531b8827"
+      }
+    },
+    "ink_controls": {
+      "path": "work/rl-demo/truth-bc-ink-qualified",
+      "counts": {
+        "samples": 4214,
+        "weapon_valid_samples": 4214,
+        "primary_projectile_valid_samples": 4213,
+        "visible_enemy_samples": 67,
+        "visible_projectile_samples": 1,
+        "native_minimap_samples": 11,
+        "native_minimap_valid_cells": 34651,
+        "native_ray_ink_samples": 10,
+        "native_ray_ink_valid_rays": 1651,
+        "own_ink_cells": 34,
+        "enemy_ink_cells": 11
+      },
+      "finite": true,
+      "ideal_aim_labels_masked": true,
+      "source_bindings_current": {
+        "result.json": true,
+        "inputs-per-present.jsonl": true,
+        "native-barriers.jsonl": true,
+        "cameras.jsonl": true,
+        "native-state.jsonl": true,
+        "native-weapon.jsonl": true,
+        "native-projectiles.jsonl": true,
+        "native-ink.json": true
+      },
+      "ready_for_training": false,
+      "blocked_gates": [
+        "complete_native_match",
+        "native_dense_paint",
+        "native_weapon_stage",
+        "native_projectile_active_set",
+        "no_direct_aim_action_labels"
+      ],
+      "report_sha256": "469395f2f727131541e650f342a55feda37e33796fd398445519c404cdab0aba",
+      "shard_sha256": {
+        "bc-00000.npz": "aeb25f53bb5fb6995ce5331b19300180380cfcd61994677384a35d30fadfa8a5",
+        "bc-00001.npz": "ad4748c7fb94e5098f4b7bd022324917fc8a02e23b965d161811d1918fb7e5f6",
+        "bc-00002.npz": "9a7d185b6a3f711092777e20b3891ae8168d9d8d82f3c67977c9b057fa18cafc",
+        "bc-00003.npz": "2d17e0a5f57b78aec98c8016dafa5487a8947d10dc5e91cfb1d25a5f61631973",
+        "bc-00004.npz": "7625b8e818a6b03e0fdb0b1fda728345ce460c3cfc76130fc6291ae494576894",
+        "bc-00005.npz": "11c6796884ad95d4528e154570e273f47a9ff7fea89b07848166a353d3cf17c9",
+        "bc-00006.npz": "fc0618b8faecc16f4e7e0dd7cbde034e6e4b7886b18f18e75981d12950e3e2a8",
+        "bc-00007.npz": "9b83b5c00c57724402f194081a351d02e620b0a899d5448a886dd73f9a546850",
+        "bc-00008.npz": "d419f525c52fc4c3430a681074df1e87ffcda2794ffab286fc72ee949357e7fe",
+        "bc-00009.npz": "bf63c507276a5c9f1fb78aeb5235313acb3239aeced1dcb53c174a87cd9231e8",
+        "bc-00010.npz": "56a8dba8d9c7b8849deae71457c6fa8d8139083297efbc07e8562412d45ac544",
+        "bc-00011.npz": "d0e9d5ed017d22426e8ad9d58b46fcdf3ca3d5c59e603e66436ef73cb76e481a",
+        "bc-00012.npz": "2990d3b85349669b19f37f66b706648745aa848281e02fdc7b57a3c710753eb6",
+        "bc-00013.npz": "343fb5ef73489f1311bc0009151a999c9f91395c4003b62f3f4e5fca6d8e1267",
+        "bc-00014.npz": "28b1587ba7ced8d43c4aeffc22e31f93666389a2f93b88f3c6a2edf645b4cf05",
+        "bc-00015.npz": "befdc6401dbb4d64e6d18fc785e289e5438d38742c31b6447ad279877f0058ee",
+        "bc-00016.npz": "73e2d0bd57c62b43d1aea70f8310b92e8d48d646d96533d93d1417cd4bbac156"
+      }
+    }
+  },
+  "protection": {
+    "work/rl-stage0/camera-host-r9/dmhost-aim": "b133db55fa807357ea4b1b99d5ef29ba62fc6e08d468eccaf0df4f2e5139e772",
+    "upstream/dm/host/dmhost": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+    "work/a8/dmhost-arena-v15": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+    "work/a8/dmhost-arena-special-v15": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+    "work/rl-demo/host-r5/dmhost-demo": "32b5b3e5e9243732713eaae3b2be99cc60fcc37b2cac86cc590f9de38516914f",
+    "work/rl-demo/render-host-r2/dmhost-demo": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+    "work/rl-demo/data-host-r2/dmhost-demo": "89d6dae58868b7141bd1b614a1760936db3ef0fd4751bf5b8cacb21425859528",
+    "work/rl-demo/data-host-r3/dmhost-demo": "ce127d34f307cfec39c44f35b86ae66ea1cd4e686f222b2d2ecb3cd81851f3ab",
+    "work/rl-demo/truth-host-r1/dmhost-truth": "4575391c3dde06fdf7b3397314ec49effadddb1cc2d553e55d0ce6f7605c8362",
+    "work/rl-demo/truth-host-r2c/dmhost-truth": "fed3bc4112c13c7196cba9aa3c5088850f678d666080956def125ad44a97d52a",
+    "work/rl-demo/truth-host-panels-r2/dmhost-truth": "6279ae79aca8c0adc5c7b339c1e277729076a330527bd5e67ab2afefd1e26b40",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/save_ref/save.dat": "89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon-rl-lab/saves/bis/user/save/0000000000000001/0/save.dat": "89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd",
+    "work/data/v720896/RomFS/Pack/Scene/Vss_Yunohana.pack.zs": "782655acf53279b3ff4801c934884c000f8d41491658dadd01b200a5bac5bcf9",
+    "work/data/v720896/RomFS/Pack/Bootup.Nin_NX_NVN.pack.zs": "5862c49fc7ebbb1b99c7e79a62f1ab24df44e732f3fc173f08a84d1d22e80929"
+  },
+  "passed_scope": [
+    "controlled visible firefight/35/70/52/KO/squid",
+    "owned primary Saber stage/charge/recovery",
+    "native primary bullet reset/tick/release/owner, observer0",
+    "native UV transform/V flip/finite two-height controls; partial upward-floor overlays"
+  ],
+  "pending": [
+    "continuous dense world paint and full surface membership/walls/ambiguous panels",
+    "general all-weapon/all-observer projectile completeness; native post-calc pose and exact per-hit damage",
+    ".52 full firing/recovery stage (Saber owned HUD only qualified)",
+    "normal non-aim human demonstrations; native spectator camera after KO; accepted coarse geometry/FOV biases remain"
+  ],
+  "ink_projection": {
+    "passed": true,
+    "samples": [
+      {
+        "label": "after-paint-0",
+        "panel": 133,
+        "unique_upward_panel": true,
+        "native_pixel_rgb": [
+          255,
+          0,
+          0
+        ],
+        "centroid_error_pixels": 1.8421890599672714
+      },
+      {
+        "label": "floor-anchor-0-after",
+        "panel": 133,
+        "unique_upward_panel": true,
+        "native_pixel_rgb": [
+          255,
+          0,
+          0
+        ],
+        "centroid_error_pixels": 2.1097870305582638
+      },
+      {
+        "label": "floor-anchor-1-after",
+        "panel": 133,
+        "unique_upward_panel": true,
+        "native_pixel_rgb": [
+          255,
+          0,
+          0
+        ],
+        "centroid_error_pixels": 1.9222638936973624
+      },
+      {
+        "label": "floor-anchor-2-after",
+        "panel": 133,
+        "unique_upward_panel": true,
+        "native_pixel_rgb": [
+          255,
+          0,
+          0
+        ],
+        "centroid_error_pixels": 6.671219665695988
+      },
+      {
+        "label": "high-spawn-after",
+        "panel": 147,
+        "unique_upward_panel": true,
+        "native_pixel_rgb": [
+          255,
+          0,
+          0
+        ],
+        "centroid_error_pixels": 1.587129626626398
+      }
+    ],
+    "role1_pure_g_pixels": 126,
+    "projection_fitted_to_controls": false,
+    "scope": "finite native controls validate transform/vertical layer/V flip and role0-R/role1-G; unique upward panels only, no global surface membership proof",
+    "panels_sha256": "258cdf7772bb09d615c4fd0691d570b3e0cf02e5ee8783eaaa282be68ec310dd"
+  },
+  "qa": "work/rl-demo/truth-qa-qualified/",
+  "source_sha256": {
+    "rl/demo/__init__.py": "d27e520318873dcadcb023e9b0bb5bfa006537fc1f9e192f412b10f4d22dbb58",
+    "rl/demo/analyze.py": "9f4452dc564399c2b7ffeb98df88f8473be0a7eec945170cef3c68e74c1cbc38",
+    "rl/demo/bc_sync.py": "1431de770d85183981f73c7bcc496022b8200be4771f4702c78cb58dff2e81fd",
+    "rl/demo/bench_chunk.py": "fecdff459c6d69ac41e6c888491c7ed7162ecebf06d1467cb298f58f2b6765d8",
+    "rl/demo/build_capture.py": "98563db7271178c7a4131f96f247e917ecc5153ded8feeb974754e0b0ae7446f",
+    "rl/demo/build_host.py": "3c8cc6379014cfed309a5b012965f03f2f8a4f2e57ebf9cf3c96a50bfc814063",
+    "rl/demo/build_live.py": "323c103596a731c7f1a818468820389b36d4c655c6a2a05d235a783436c647cd",
+    "rl/demo/build_profile.py": "aeb45251fc1772f9ab7e995d8fed1ee9f59cfd04b0b3e22492f744a390335f8e",
+    "rl/demo/build_render.py": "e37e9421f1ba627f2bdd907611cc14b24890d027bd30c82f5f8a210bb69e3a8c",
+    "rl/demo/build_truth.py": "ca382e1a4beac906d7fdd478b15b4062089e053cc90011b3b132e5433afe1985",
+    "rl/demo/build_truth_dispatch.py": "1f2ace40d401fcaa6f0ada7789dcd6873bac333ade27351529070125fda854aa",
+    "rl/demo/build_truth_lifecycle.py": "2ea3f6f13bd57a33b58fcd37637329267e3682a396f1323e13754ac76a7e648e",
+    "rl/demo/build_truth_panel_uv.py": "86155fd45f8adffbd899b161d61bffb79ac7091580baaf2887225c46bee926bb",
+    "rl/demo/build_truth_panels.py": "77b8b35519b276f7b9bb93a8790db83aeed7bfd73f481c07ecdbe5674a2cb4de",
+    "rl/demo/capture.py": "97a4799a6de4ded497fe0781bcd774600bf1a83618c1859e39a36fc85bee215d",
+    "rl/demo/controller.py": "e15c187e47c4435260968835d5cd3198313a9c3dfa846fb03aad5f92f9ae3eb0",
+    "rl/demo/convert.py": "f4e1a878785d7df754f63cfb644241fd9a0f6747d9ece22549ddf3c90183fdea",
+    "rl/demo/data_report.py": "b7c2aa0c6b4edf353f523364cba85e5dd5f6abda379bcf8da824a8403bc7de30",
+    "rl/demo/dynamics_audit.py": "4aae9edd65e6dcd04f62166ef2fbdf79edce964ff335f4c9fe52acecd9e6ae7b",
+    "rl/demo/ink_mapping_audit.py": "e0450b54443edb8585f5e7f4ebb762066df611c6b6357429284e1901a5b0cde6",
+    "rl/demo/logic_compare.py": "4913dd56603200d2f8e43c138dd8b4f12dc0c97858c03838151e59345ca3fbcb",
+    "rl/demo/native_ink.py": "c103af8fed60bd1c3a45a9203f506d6beec0275565a1f84f697bc5353f40ff9d",
+    "rl/demo/native_survey.py": "22d902e24011aa6467cba50bca44d70039c63d58b68914b7e7b82aec5ecdcb56",
+    "rl/demo/profile_report.py": "c08441d4b435cbc23bf1f6ab623d150459bb0864447fc5c3103f34e829354c84",
+    "rl/demo/profile_run.py": "7761f7880ce2b7076e19a4f8ab62187d79a2d72231c1eb67e4aef2ef28a61c1e",
+    "rl/demo/projectile_truth.py": "ce3e7bbc85d3a4aac0e2f184356e653c35b8fdbcf2de2cbb1c9d9e275abfdd0a",
+    "rl/demo/protocol.py": "166ac8a17cdb801f01a2abeee7e150b2b9f442f05bea02391b25319597256220",
+    "rl/demo/render_overlay.py": "8d19210db4619edea2fa13e1139bc575f8b7e52d676276196c29bd04390b7703",
+    "rl/demo/render_research.py": "c6b128b00c592c245dd836e2eacbc056e01459db2a23f017ad4ee32c684e9665",
+    "rl/demo/report.py": "880c6c5231fadd7a2c6be47c6c31b5847d6c11a1efd4b46317241525ba4989b2",
+    "rl/demo/state_sync.py": "3b00b2b31f04ccf2505da8c10a97e08a53629bb5259ff143459d3af5c71941ff",
+    "rl/demo/telemetry.py": "38989fb0c4b5bc86da5a4d4021253024a865a24b47fe42c5ec21b42e5251eb1f",
+    "rl/demo/test_capture_loop.py": "ab9feb89fd0cfd168a66ae61d4749b0171915070ee53889e788c02ea51c0dd8e",
+    "rl/demo/test_demo.py": "819069e67ef57468ceb7d961bc24c6e2c792fcd5f1d2ce114649ea6f0c2c4556",
+    "rl/demo/test_ink.py": "c502c17b6d2e67eeb6d9a9c0851869eff7a0f1511db22651fa98454ec3aa5dc2",
+    "rl/demo/test_monitor.py": "0edf88331cc45ac21671c8bff0becc5eb11d7721acec3769c09e04467a4185b0",
+    "rl/demo/test_predicate.py": "9befa4217d250ac0d367257b407e3e49497f48516e87691439cdf4d07d1fcc94",
+    "rl/demo/test_render_overlay.py": "4636f0490c2beef4bf58c7e3e333e73ea390d50b88158d3481b6eb780a00416b",
+    "rl/demo/test_sync.py": "258af640fbe0f745e9b7463a2e89e99a5bf155a0e04f80d69c4cb94adc0a20e8",
+    "rl/demo/test_truth.py": "d0092da21111703c85b3e6cad683992430c76184e9ed67d59261c4755d549318",
+    "rl/demo/truth_capture.py": "23813b9c0f9e62f13b62cc5c3b2a0a2859ed49844dca834827519ad7d4abe918",
+    "rl/demo/truth_reduce.py": "21c169b67c4227bc2a71f73bdd5073a9f73386759f69ad9872d461955b3f0f55",
+    "rl/demo/truth_report.py": "4a45ece36a2ec3b1eecf64c37db7c1cb799dbaccac8f964f0ed4e650bb683a9c",
+    "rl/demo/visualize_bc.py": "577ad94a0fe80bfa8f298aed712a0994a41dd12897dcd120a9551c444c4121f1",
+    "rl/demo/visualize_truth.py": "214ea07b2433de67ba9286851542cd6804abc69bed7e97180f615656c716c519",
+    "rl/demo/weapon_truth.py": "16fea9b164f9e9846efc74137a333884d573e6976e0e3e3785e469724c7e2749",
+    "rl/demo/capture_live.inc": "c98d67f01a13bd1a66f532d40d4450039b4b423bec6eaaae35bf39846dbd086d",
+    "rl/demo/capture_sensors.inc": "a4286c0094dd425f29ad0e386d30a599350f7714a0f45927f6310ec808f69bb1",
+    "rl/demo/render_predicate.inc": "e67619104613eb5f580e5e2312fecdbe9ae054a252f0e2e5664a0e6c9436c5e5",
+    "rl/demo/truth_lifecycle.inc": "4ea24f0d7e5e231e4be79e60198d119b5d33b9e98e2c30ae1e0151ba5359f340",
+    "rl/demo/truth_panels.inc": "87cdd4181c09977684917e391f967d0310b53d2b887ecdd3b789796901419d79",
+    "rl/demo/truth_sensors.inc": "057d1de35a6c6381bcd4f17fa26128293de4a6217c716df880d8cca4baf78d02"
+  }
+}
