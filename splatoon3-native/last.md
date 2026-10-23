@@ -1,3 +1,29 @@
+# 人玩实时性收尾：热段约60均速，低延迟43.64ms，全程锁60未签收（2026-10-24）
+
+私有异步条件渲染已消除run66的持续CPU↔GPU predicate等待。同源Submit墙钟中位23.336→2.498ms；原查询/counter/fence回写保留，只改变渲染条件读取。新宿主`work/rl-demo/render-host-r2/dmhost-demo`默认strict，异步必须显式开且正式入口拒绝。正式arena/T1/A8宿主不变。
+
+| 完整局热段 | 原生中位 / 1%low / 平均 fps | 显示中位 / 1%low / 平均 fps | 软件输入→呈现P50 / P95 |
+|---|---:|---:|---:|
+| 异步、旧6帧追帧上限 | 60.17 / 47.15 / 59.99 | 60.00 / 59.42 / 59.99 | 102.12 / 104.90ms |
+| **异步、1帧追帧上限** | **60.43 / 43.29 / 59.95** | **60.00 / 55.64 / 59.95** | **43.64 / 46.13ms** |
+
+热段排前600帧/到10800前，显示1%low只用相邻有效回调；两个完整局均11510帧、全有呈现回调、Winners/错误0。最终capture命令退出0，含strict结算墙钟196.267s/58.645present/s。后台资源采样去掉原2s周期约50ms阻塞，保留原保护阈值/5s超时；1帧墙钟追帧上限降低队列延迟，不改fixed60或复用旧输入。无条件绘制整幅黑屏，已淘汰。
+
+**当前最高完整热段约59.99fps；严格全程60仍未通过**，原生/RPC尾延迟与启动/结算长帧保留。GPU最终中位11.576ms/P95 12.047ms，不再是原21ms条件等待；没有用强制显示/不限帧/慢放冒充60，未继续扩大到内部缩放或GPU回放偏差。
+
+固定1800输入短测：strict vs async双方各405个同源采样帧，位置最大0.004314/0.329906u在原生自身波动包络内，HP/墨量/alive/phase相同。HP全1，没有伤害对照；最终后台采样版相位不重叠，插值保留诊断，不冒作逐帧精确等价。截图中场地/角色/墨色/HUD正常，未宣称所有视角无闪烁。
+
+21项demo组件、11项T1组件和定向静态检查通过；r5/r2身份核验、五保护宿主/两原存档/两原资源SHA不变。最终一房峰值footprint6384MiB，新增swapout0/pressure1；所有自建native/录制进程已结束。没有训练、真人示范或GPU转换，T1/S1暂停，不动policies。游戏数据/截图/录像/生成页/宿主不提交；按新授权提交推送源码与数值报告后停止。
+
+[完整说明](notes/rl-demo-realtime-20261024.md) · [聚合数字/SHA](notes/rl-demo-realtime-20261024.json) · [操作命令](rl/demo/README.md)。原件：`work/rl-demo/async-capture-final-r1`、`async-live-full-r1`；失败/中间项全部保留。截图仅本地：
+
+- `work/rl-demo/async-live-full-r1/screenshots/frame-600.png`
+- `work/rl-demo/async-live-full-r1/screenshots/frame-1200.png`
+- `work/rl-demo/strict-ref-r1/screenshots/`（对照）
+- `work/rl-demo/always-smoke-r1/screenshots/`（淘汰黑屏）
+
+---
+
 # 录制实时性续查：瓶颈定位到条件渲染等待，60fps仍未达标（2026-10-24）
 
 按present interval线索完成三次一房1800-present短测。逐帧记录显示interval全程1，game_fps/Metal target全程60，display link未进30Hz模式；上屏30fps中位数来自16.7/33.3ms等间隔分布。这只覆盖本次夹具，不否定其他场景触发降30Hz。

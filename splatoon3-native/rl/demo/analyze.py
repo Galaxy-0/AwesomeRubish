@@ -61,6 +61,7 @@ def analyze(directory):
     # gfx enqueue's frame is the previous completed native present, i.e. the
     # input frame (origin + relative ACK - 1). Retain match/negative counts.
     latency = []
+    latency_by_native = {}
     missing = 0
     negative = 0
     ts = []
@@ -74,6 +75,7 @@ def analyze(directory):
             negative += 1
         else:
             latency.append(delta)
+            latency_by_native[native] = delta
             ts.append(displayed[native])
     visible_frames = sorted(f for f in displayed if origin <= f < origin + len(timing))
 
@@ -95,6 +97,7 @@ def analyze(directory):
         and rows[r["frame"]]["infos"]["player_0"]["phase"] == 1
     ]
     profile = {}
+    native_rates = {}
     for n in range(2):
         file = session / f"player-{n}/nvn.tsv"
         values = {}
@@ -112,6 +115,7 @@ def analyze(directory):
                 if base + 600 <= f < base + min(len(rows), 10800):
                     values.setdefault(cells[1], []).append(v)
             for key in [
+                "@frame_ms",
                 "@cpu_ms",
                 "@proc_cpu_ms",
                 "@sub_cpu_ms",
@@ -126,6 +130,7 @@ def analyze(directory):
             ]:
                 if key in values:
                     profile[f"player_{n}:" + key] = stats(values[key])
+            native_rates[f"player_{n}"] = rates(values.get("@frame_ms", []))
     warm_native_frames = {origin + r["frame"] - 1 for r in warm}
     age = []
     for r in rows:
@@ -146,6 +151,15 @@ def analyze(directory):
             visible_intervals([f for f in visible_frames if f in warm_native_frames])
         ),
         warmup_exclusion_frames=600,
+        warm_native_present_call_rates=native_rates,
+        warm_display_coverage=dict(
+            requested=len(warm_native_frames),
+            positive_callbacks=sum(f in displayed for f in warm_native_frames),
+            missing_or_zero=sum(f not in displayed for f in warm_native_frames),
+        ),
+        warm_software_input_to_presented_ms=stats(
+            [latency_by_native[f] for f in warm_native_frames if f in latency_by_native]
+        ),
         zero_presented_time_frames=sum(
             v == 0
             for f, v in raw_displayed.items()

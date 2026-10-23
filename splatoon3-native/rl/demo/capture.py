@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import signal
 import time
+import threading
 import traceback
 from tools.m5_resources import Monitor, system_sample, memory_row
 import numpy as np
@@ -66,20 +67,77 @@ class DemoMonitor(Monitor):
         return row
 
 
+class AsyncDemoMonitor(DemoMonitor):
+    """Keep identical resource limits; never run system CLI polling on input ACKs."""
+
+    def __init__(self, out):
+        super().__init__(out)
+        self.worker = None
+        self.error = None
+        self.worker_started = None
+        self.latest = None
+
+    def check_error(self):
+        if self.error is not None:
+            raise RuntimeError(
+                "demo resource monitor failed: " + str(self.error)
+            ) from self.error
+        if (
+            self.worker
+            and self.worker.is_alive()
+            and time.monotonic() - self.worker_started > 5
+        ):
+            raise RuntimeError("demo resource monitor stale for5s; stop owned room")
+
+    def sample(self, hosts):
+        self.check_error()
+        if self.worker and self.worker.is_alive():
+            return self.latest
+        snapshot = list(hosts)
+
+        def collect():
+            try:
+                self.latest = super(AsyncDemoMonitor, self).sample(snapshot)
+            except BaseException as error:
+                self.error = error
+
+        self.worker_started = time.monotonic()
+        self.worker = threading.Thread(target=collect, name="demo-resource-guard")
+        self.worker.start()
+        return self.latest
+
+    def finish(self):
+        if self.worker:
+            self.worker.join(timeout=50)
+            if self.worker.is_alive():
+                raise RuntimeError("owned resource monitor did not finish")
+        self.check_error()
+
+
 class DemoSession(NativeSession):
     def __init__(
-        self, *, demo_resolution=None, demo_present_link=1, demo_cancel=None, **kwargs
+        self,
+        *,
+        demo_resolution=None,
+        demo_present_link=1,
+        demo_cancel=None,
+        demo_predicate="strict",
+        demo_warm_session=None,
+        **kwargs,
     ):
         self.demo_cancel = demo_cancel
         self.demo_resolution = demo_resolution
         self.demo_present_link = demo_present_link
+        self.demo_predicate = demo_predicate
+        self.demo_warm_session = demo_warm_session
         super().__init__(**kwargs)
-        self.monitor = DemoMonitor(self.out)
+        self.monitor = AsyncDemoMonitor(self.out)
 
     def tick(self, sleep=True):
         if self.demo_cancel and self.demo_cancel():
             raise InterruptedError("demo cancelled during startup")
         super().tick(sleep=sleep)
+        self.monitor.check_error()
         if not hasattr(self, "demo_progress"):
             self.demo_progress = {}
         now = time.monotonic()
@@ -95,12 +153,33 @@ class DemoSession(NativeSession):
                         f"demo native startup/progress stalled player{n} at resource frame{f} for60s; preserve artifacts, only close owned room"
                     )
 
+    def close(self):
+        try:
+            if isinstance(self.monitor, AsyncDemoMonitor):
+                self.monitor.finish()
+        finally:
+            super().close()
+
     def host_options(self, n):
+        warm = {}
+        if self.demo_warm_session:
+            seed = ROOT / "upstream/dm/games/0100C2500FC20000/pso_manifest.tsv"
+            lines = (
+                seed.read_text().splitlines()
+                + (self.demo_warm_session / f"player-{n}/pso_user.tsv")
+                .read_text()
+                .splitlines()
+            )
+            path = self.out / f"warm-{n}.tsv"
+            path.write_text("\n".join(dict.fromkeys(lines)) + "\n")
+            warm["DM_PSO_MANIFEST"] = str(path)
         return (
             super().host_options(n)
+            | warm
             | ({"DM_GAME_RES": self.demo_resolution} if self.demo_resolution else {})
             | dict(
                 DM_TEST_DEMO="1",
+                DM_DEMO_PREDICATE=self.demo_predicate,
                 DM_R0_CAMERA_PLUS5="1",
                 DM_D2B_SENSOR="1",
                 DM_HEADLESS="0" if n == 0 else "1",
@@ -280,6 +359,21 @@ def run(a):
         raise ValueError("demo forbids aim/meter cheats")
     host, modules = validate_runtime(a.host, a.modules, allow_demo=True)
     manifest = json.loads(host.with_suffix(".build.json").read_text())
+    predicate = getattr(a, "render_predicate", "strict")
+    if predicate not in ("strict", "async", "always"):
+        raise ValueError("unknown demo render predicate mode")
+    if predicate != "strict" and not manifest.get("predicate_experiment"):
+        raise ValueError("render predicate variants require isolated build_render host")
+    catchup_frames = getattr(a, "max_catchup_frames", 6)
+    if catchup_frames < 0:
+        raise ValueError("max catchup frames must be nonnegative")
+    warm_from = getattr(a, "warm_from", None)
+    warm_session = None
+    if warm_from:
+        warm_from = safe_out(warm_from)
+        warm_session = Path(
+            json.loads((warm_from / "result.json").read_text())["session"]
+        )
     if (
         manifest.get("test_feature") != "demonstration_capture"
         or manifest.get("render_mode") != "none"
@@ -292,6 +386,18 @@ def run(a):
         )
     out = safe_out(a.out)
     out.mkdir(parents=True, exist_ok=False, mode=0o700)
+    fixture_path = getattr(a, "fixture_inputs", None)
+    fixture_inputs = None
+    if fixture_path:
+        if a.source != "script":
+            raise ValueError(
+                "fixed-input replay is a script fixture, not human capture"
+            )
+        fixture_path = safe_out(fixture_path)
+        fixture_inputs = [
+            json.loads(line)["actions"]
+            for line in fixture_path.read_text().splitlines()
+        ]
     stop = False
 
     def stopping(*_):
@@ -329,6 +435,9 @@ def run(a):
         render_resolution="1280x720 native output; alternative scale is unverified",
         requested_render_resolution=a.resolution,
         present_link=a.present_link,
+        max_catchup_frames=catchup_frames,
+        render_predicate=predicate,
+        warm_from=str(warm_from) if warm_from else None,
         errors=[],
         artifacts=str(out),
         measurement_limits=[
@@ -342,6 +451,11 @@ def run(a):
         for p in Path(__file__).parent.glob("*.py")
     }
     write(out / "result.json", result)
+    if fixture_inputs is not None:
+        result["fixed_input_fixture"] = str(fixture_path)
+        result["fixed_input_sha256"] = hashlib.sha256(
+            fixture_path.read_bytes()
+        ).hexdigest()
     streams = {
         name: (out / name).open("w")
         for name in [
@@ -391,6 +505,8 @@ def run(a):
                 host=host,
                 demo_resolution=a.resolution,
                 demo_present_link=a.present_link,
+                demo_predicate=predicate,
+                demo_warm_session=warm_session,
                 demo_cancel=lambda: stop or (out / "STOP").exists(),
             ),
         )
@@ -436,7 +552,11 @@ def run(a):
             if not battle:
                 control = neutral()
                 opponent = neutral()
-            if battle and frame - last_policy >= opponent_stride:
+            if (
+                battle
+                and fixture_inputs is None
+                and frame - last_policy >= opponent_stride
+            ):
                 api.update(env.process_infos)
                 obs = api.policy_observation("player_1")
                 if child:
@@ -486,6 +606,18 @@ def run(a):
             if a.loadout == "primary_only":
                 opponent["buttons"][2:4] = [0, 0]
             acts = {"player_0": control, "player_1": opponent}
+            if fixture_inputs is not None:
+                if frame >= len(fixture_inputs):
+                    if battle:
+                        raise ValueError(
+                            "fixed-input corpus shorter than requested battle"
+                        )
+                    acts = {p: neutral() for p in env.possible_agents}
+                    result["post_fixture_neutral_frames"] = (
+                        result.get("post_fixture_neutral_frames", 0) + 1
+                    )
+                else:
+                    acts = fixture_inputs[frame]
             send = time.monotonic_ns()
             if env.agents:
                 _, _, _, trunc, info = env.step(
@@ -534,7 +666,7 @@ def run(a):
             if a.pace and (wait := deadline - time.monotonic()) > 0:
                 time.sleep(wait)
             # Do not burst old inputs to recover a long stall.
-            if time.monotonic() - deadline > 0.1:
+            if time.monotonic() - deadline > catchup_frames / 60:
                 deadline = time.monotonic()
         result.update(summary(env.process_infos, origins))
         result["passed"] = result["complete"] and not result.get("cancelled")
@@ -640,7 +772,21 @@ if __name__ == "__main__":
         help="diagnostic DM_GAME_RES request only; not confirmed effective for Splatoon",
     )
     p.add_argument("--present-link", type=int, choices=[0, 1, 2], default=1)
+    p.add_argument(
+        "--render-predicate", choices=["strict", "async", "always"], default="strict"
+    )
+    p.add_argument(
+        "--warm-from",
+        type=Path,
+        help="private prior recording whose per-role PSO lists are copied into a new warm manifest",
+    )
     p.add_argument("--timeout", type=float, default=1800)
     p.add_argument("--max-frames", type=int)
     p.add_argument("--pace", action=argparse.BooleanOptionalAction, default=True)
+    p.add_argument(
+        "--max-catchup-frames",
+        type=int,
+        default=6,
+        help="wall-clock backlog cap; never changes fixed60 game ticks",
+    )
     raise SystemExit(run(p.parse_args()))

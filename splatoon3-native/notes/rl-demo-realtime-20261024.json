@@ -1,0 +1,4492 @@
+{
+  "schema": "inklab.rl.demo.render-realtime.v1",
+  "date": "2026-10-24",
+  "training_started": false,
+  "stable_whole_session_60_passed": false,
+  "gameplay_network": false,
+  "render_deviations_user_authorized": true,
+  "production_changed": false,
+  "cases": {
+    "smoke-final-r11": {
+      "complete": true,
+      "passed": true,
+      "frames": 11511,
+      "errors": [],
+      "host_sha256": "32b5b3e5e9243732713eaae3b2be99cc60fcc37b2cac86cc590f9de38516914f",
+      "controlled_wall_seconds": 309.6516346249264,
+      "controlled_presents_per_second": 37.17403272856286,
+      "present_link": 0,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": [
+          0.899999976,
+          0.600000024
+        ],
+        "player_1": [
+          0.600000024,
+          0.899999976
+        ]
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261023-234210-914941",
+      "evidence_sha256": {
+        "work/rl-demo/smoke-final-r11/result.json": "52539e13aa4b651f77f69e9aa3718bdf8d6d7c6404fb2f0015fdb8c6d49f8ce4",
+        "work/rl-demo/smoke-final-r11/latency.json": "66b9f2e94c88d3ce2490ae2b92465dd94f6922afc9d89b1d395e62c88198db25",
+        "work/rl-demo/smoke-final-r11/inputs-per-present.jsonl": "167ad0c90908d3e1504ae4e50cb77b818573983547479ed5c55f5143e292a1c2",
+        "work/rl-demo/smoke-final-r11/native-barriers.jsonl": "45a3d84bf054f511d1d59e98d31628767c91cea9d188b229a63d99b2b089c96c",
+        "work/rl-demo/smoke-final-r11/timing.jsonl": "67acaa1fe36c49087af1d47469e6c3eaa4fc7cc28732ebd7bc5fcde6a76cda18"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 11510,
+          "median_fps": 39.187064350058044,
+          "one_percent_low_fps": 7.639117950154678,
+          "average_fps": 37.17448973376122,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 11503,
+          "median_fps": 40.000067200112895,
+          "one_percent_low_fps": 13.346145938708405,
+          "average_fps": 38.026007908121755,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 10199,
+          "median_fps": 39.10807465590663,
+          "one_percent_low_fps": 15.309229556361561,
+          "average_fps": 38.13677104546782,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 10199,
+          "median_fps": 40.000067200112895,
+          "one_percent_low_fps": 14.658715987786021,
+          "average_fps": 38.13728709295115,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 10200,
+            "median_fps": 39.138943248532286,
+            "one_percent_low_fps": 14.861042694464393,
+            "average_fps": 38.13690367735318,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 10200,
+            "median_fps": 39.11138923654568,
+            "one_percent_low_fps": 14.953619589593512,
+            "average_fps": 38.13660894500221,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 10200,
+          "positive_callbacks": 10200,
+          "missing_or_zero": 0
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 30.834584,
+          "p50": 45.474501,
+          "p95": 50.2691796,
+          "max": 153.832459
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 38.112751,
+          "p50": 45.5338345,
+          "p95": 50.2186308,
+          "max": 58.401918
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 21.443,
+            "p50": 25.55,
+            "p95": 29.175,
+            "max": 73.428
+          },
+          "player_0:@cpu_ms": {
+            "min": 3.369,
+            "p50": 3.769,
+            "p95": 4.132049999999999,
+            "max": 13.421
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 13.198,
+            "p50": 15.419,
+            "p95": 36.45089999999984,
+            "max": 83.467
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 3.072,
+            "p50": 3.454,
+            "p95": 3.792,
+            "max": 13.07
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 19.341,
+            "p50": 23.253500000000003,
+            "p95": 26.36705,
+            "max": 38.311
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.481,
+            "p50": 10.223500000000001,
+            "p95": 13.573149999999998,
+            "max": 16.673
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.002
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.029,
+            "p95": 0.036,
+            "max": 0.13
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 7.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 12.0
+          },
+          "player_1:@frame_ms": {
+            "min": 21.234,
+            "p50": 25.568,
+            "p95": 29.1101,
+            "max": 72.509
+          },
+          "player_1:@cpu_ms": {
+            "min": 2.759,
+            "p50": 3.058,
+            "p95": 3.34,
+            "max": 7.862
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 10.661,
+            "p50": 12.968,
+            "p95": 33.19714999999998,
+            "max": 65.133
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 2.406,
+            "p50": 2.703,
+            "p95": 2.9870499999999995,
+            "max": 4.966
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 17.237,
+            "p50": 21.205,
+            "p95": 23.785199999999996,
+            "max": 45.166
+          },
+          "player_1:@gpu_ms": {
+            "min": 5.643,
+            "p50": 8.938500000000001,
+            "p95": 12.20905,
+            "max": 14.814
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.009
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 1.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 4.0
+          }
+        },
+        "missing_or_dropped": 4,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 4,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 171,
+        "peak_footprint_mib": 6119.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 11512,
+          "predicate_last": null,
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 11512,
+          "predicate_last": null,
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "strict-ref-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 50.779810457956046,
+      "controlled_presents_per_second": 35.4471586988364,
+      "present_link": 0,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-005218-030604",
+      "evidence_sha256": {
+        "work/rl-demo/strict-ref-r1/result.json": "94b4c2ac6d5c69cc33e3a75031881e4173367b9dfe356e0a9c9b04de88fbf79d",
+        "work/rl-demo/strict-ref-r1/latency.json": "0871be0f20e9357b40b07369be3c6bd91b71e0837b6a5ace567f8b83e14f6c02",
+        "work/rl-demo/strict-ref-r1/inputs-per-present.jsonl": "e1f28b007fbafec2535d3c92b1a5085c1c0e58ec7b738102895bbca4513171fe",
+        "work/rl-demo/strict-ref-r1/native-barriers.jsonl": "15c55d7a60db1e5687e9a9418f0e962f44583ffdc5cd27aec949447ae26d3e03",
+        "work/rl-demo/strict-ref-r1/timing.jsonl": "9d4c0b25dd081e0e5b533da849d706307652a8d761d3b69fda191fb54dbeb950"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 37.780104528482006,
+          "one_percent_low_fps": 9.906899231992073,
+          "average_fps": 35.451072713502796,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1799,
+          "median_fps": 40.000067200112895,
+          "one_percent_low_fps": 9.000019678543026,
+          "average_fps": 35.48331385789081,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 38.3332393210639,
+          "one_percent_low_fps": 13.912872087807616,
+          "average_fps": 36.98855201950811,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1200,
+          "median_fps": 40.000067200112895,
+          "one_percent_low_fps": 12.857171556186513,
+          "average_fps": 37.046648680269286,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 38.41794886571006,
+            "one_percent_low_fps": 14.531539495513385,
+            "average_fps": 37.04797991258529,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 38.406882513346396,
+            "one_percent_low_fps": 13.82721056767613,
+            "average_fps": 37.046552512654635,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1201,
+          "missing_or_zero": 0
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 39.65075,
+          "p50": 45.780938,
+          "p95": 51.6185638,
+          "max": 143.609501
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 39.65075,
+          "p50": 45.447042,
+          "p95": 50.747417,
+          "max": 143.609501
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 22.315,
+            "p50": 26.0295,
+            "p95": 31.02199999999999,
+            "max": 74.45
+          },
+          "player_0:@cpu_ms": {
+            "min": 3.453,
+            "p50": 3.97,
+            "p95": 4.44905,
+            "max": 11.849
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 13.872,
+            "p50": 16.342,
+            "p95": 38.837799999999994,
+            "max": 62.342
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 3.152,
+            "p50": 3.642,
+            "p95": 4.079249999999999,
+            "max": 11.446
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 20.22,
+            "p50": 23.397,
+            "p95": 26.9381,
+            "max": 33.029
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.878,
+            "p50": 10.0085,
+            "p95": 13.675,
+            "max": 15.305
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 43.931
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.03,
+            "p95": 0.04,
+            "max": 5.235
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 7.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 12.0
+          },
+          "player_1:@frame_ms": {
+            "min": 20.938,
+            "p50": 26.037,
+            "p95": 32.0531,
+            "max": 113.129
+          },
+          "player_1:@cpu_ms": {
+            "min": 2.829,
+            "p50": 3.183,
+            "p95": 3.56905,
+            "max": 4.786
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 11.231,
+            "p50": 13.639,
+            "p95": 33.90295,
+            "max": 70.199
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 2.496,
+            "p50": 2.8205,
+            "p95": 3.19725,
+            "max": 4.423
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 17.045,
+            "p50": 21.500500000000002,
+            "p95": 25.700449999999996,
+            "max": 33.592
+          },
+          "player_1:@gpu_ms": {
+            "min": 5.93,
+            "p50": 8.8635,
+            "p95": 12.214200000000002,
+            "max": 13.949
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 4.0
+          }
+        },
+        "missing_or_dropped": 0,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 43,
+        "peak_footprint_mib": 6029.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": null,
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": null,
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "strict-ref-r2": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 49.88251679087989,
+      "controlled_presents_per_second": 36.084787131853325,
+      "present_link": 0,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-005504-288096",
+      "evidence_sha256": {
+        "work/rl-demo/strict-ref-r2/result.json": "023539050c29cede07ce2a9e6a053828c62d5e84f24ef32974b7659b5ba0537e",
+        "work/rl-demo/strict-ref-r2/latency.json": "2b69dc2ab545a97d6ba3b09e337568d38b17dd1e80043454b1ab0abfd8d12e78",
+        "work/rl-demo/strict-ref-r2/inputs-per-present.jsonl": "d3c0230cdbe5959400899908cbfe2cd9d9d32ae91d807eedd3f3c9f9b96faee1",
+        "work/rl-demo/strict-ref-r2/native-barriers.jsonl": "b8505bfa6850f02aa53593cf9dd5ffa627922f64865bc02321b08ad5ca8da116",
+        "work/rl-demo/strict-ref-r2/timing.jsonl": "df82849f66f3c267145e42e2b0744b1a8049c6b4606769823656b49e04a8a3c9"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 38.02618688570359,
+          "one_percent_low_fps": 13.751629891878475,
+          "average_fps": 36.085153007681676,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1799,
+          "median_fps": 40.000067200112895,
+          "one_percent_low_fps": 13.416178213928525,
+          "average_fps": 36.08834439723517,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 38.40322537937058,
+          "one_percent_low_fps": 14.14509476651226,
+          "average_fps": 37.090122178245075,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1200,
+          "median_fps": 40.000067200112895,
+          "one_percent_low_fps": 13.584936423850369,
+          "average_fps": 37.09436342762845,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 38.586946036155965,
+            "one_percent_low_fps": 13.847522620505185,
+            "average_fps": 37.09005864958248,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 38.50967555598344,
+            "one_percent_low_fps": 14.189865125331982,
+            "average_fps": 37.08837696626348,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1201,
+          "missing_or_zero": 0
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 37.77296,
+          "p50": 45.7757305,
+          "p95": 51.246583400000006,
+          "max": 57.873626
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 37.77296,
+          "p50": 45.528126,
+          "p95": 50.736334,
+          "max": 55.799043
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 22.209,
+            "p50": 25.9155,
+            "p95": 31.14239999999999,
+            "max": 83.862
+          },
+          "player_0:@cpu_ms": {
+            "min": 3.549,
+            "p50": 4.015499999999999,
+            "p95": 4.44605,
+            "max": 6.58
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 13.701,
+            "p50": 16.5975,
+            "p95": 38.29054999999999,
+            "max": 82.274
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 3.276,
+            "p50": 3.665,
+            "p95": 4.06955,
+            "max": 6.265
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 20.055,
+            "p50": 23.336,
+            "p95": 26.858099999999997,
+            "max": 31.846
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.663,
+            "p50": 9.924,
+            "p95": 13.5688,
+            "max": 15.098
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.014
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.031,
+            "p95": 0.041,
+            "max": 0.07
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@frame_ms": {
+            "min": 20.727,
+            "p50": 25.9675,
+            "p95": 32.04725,
+            "max": 83.201
+          },
+          "player_1:@cpu_ms": {
+            "min": 2.838,
+            "p50": 3.193,
+            "p95": 3.54,
+            "max": 5.022
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 9.256,
+            "p50": 13.876999999999999,
+            "p95": 34.331699999999984,
+            "max": 77.332
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 2.445,
+            "p50": 2.8354999999999997,
+            "p95": 3.1940999999999997,
+            "max": 4.685
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 17.471,
+            "p50": 21.369,
+            "p95": 25.502699999999994,
+            "max": 37.429
+          },
+          "player_1:@gpu_ms": {
+            "min": 5.937,
+            "p50": 8.835,
+            "p95": 12.1607,
+            "max": 13.74
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.002
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "missing_or_dropped": 0,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 42,
+        "peak_footprint_mib": 6067.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": null,
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": null,
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-smoke-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 50.53827799996361,
+      "controlled_presents_per_second": 35.616567703420685,
+      "present_link": 0,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-005011-591200",
+      "evidence_sha256": {
+        "work/rl-demo/async-smoke-r1/result.json": "e01fd13a21272c55c64e350340d2c8fca1d3b8e38fbb4653cc4d4f73c21d4488",
+        "work/rl-demo/async-smoke-r1/latency.json": "a224c55e41b2605cd9db53a75356b0d58876678ee5344fb98b539ca3a179d94c",
+        "work/rl-demo/async-smoke-r1/inputs-per-present.jsonl": "bb06b6e32f1f35cbbbe285b0e8eb0ebe46106acf4ddb9226cccccc5a0e87e897",
+        "work/rl-demo/async-smoke-r1/native-barriers.jsonl": "538cfcba0ee8c51f6f0894cdd8d6a9453ec53264fd7791efbf4ee20c496bc3f1",
+        "work/rl-demo/async-smoke-r1/timing.jsonl": "8d75b0f67d089e8cfb6ff490f4156ede0ef603dbbe5a9a7468d5ad3f175d885f"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 61.53846153846154,
+          "one_percent_low_fps": 0.9505767636184225,
+          "average_fps": 35.61117030167753,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1788,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 2.195126513067184,
+          "average_fps": 45.964107470277725,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 61.74221083421445,
+          "one_percent_low_fps": 7.596297705789335,
+          "average_fps": 56.665134642114964,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1199,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 9.0564158102379,
+          "average_fps": 56.802332249072734,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 61.58583525789069,
+            "one_percent_low_fps": 7.574399539476507,
+            "average_fps": 56.664401822006056,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 61.63328197226502,
+            "one_percent_low_fps": 7.7004178118364415,
+            "average_fps": 56.66475501819528,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1200,
+          "missing_or_zero": 1
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 31.405501,
+          "p50": 50.615168,
+          "p95": 97.30232559999986,
+          "max": 145.139875
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 31.475126,
+          "p50": 59.9446055,
+          "p95": 100.88026175,
+          "max": 145.139875
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 7.055,
+            "p50": 16.237499999999997,
+            "p95": 18.210299999999993,
+            "max": 625.378
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.482,
+            "p50": 2.888,
+            "p95": 3.0700999999999996,
+            "max": 11.8
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 9.767,
+            "p50": 13.099,
+            "p95": 28.37445,
+            "max": 92.316
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.209,
+            "p50": 2.527,
+            "p95": 2.6891,
+            "max": 11.456
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.208,
+            "p50": 2.527,
+            "p95": 2.6893499999999997,
+            "max": 18.719
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.757,
+            "p50": 11.6115,
+            "p95": 12.1259,
+            "max": 14.394
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 2.877949999999999,
+            "max": 77.167
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.045,
+            "p95": 16.62505,
+            "max": 49.73
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 7.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 12.0
+          },
+          "player_1:@frame_ms": {
+            "min": 7.045,
+            "p50": 16.225,
+            "p95": 18.384,
+            "max": 596.157
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.972,
+            "p50": 2.187,
+            "p95": 2.3231499999999996,
+            "max": 4.349
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 7.983,
+            "p50": 10.855,
+            "p95": 24.358249999999984,
+            "max": 29.669
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.658,
+            "p50": 1.843,
+            "p95": 1.9581999999999997,
+            "max": 3.958
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.657,
+            "p50": 1.841,
+            "p95": 1.96,
+            "max": 581.841
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.009,
+            "p50": 12.205,
+            "p95": 13.219850000000001,
+            "max": 15.411
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 4.0
+          }
+        },
+        "missing_or_dropped": 7,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 6,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 49,
+        "peak_footprint_mib": 7848.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            4500,
+            136967,
+            136562,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            2400,
+            140852,
+            140326,
+            526,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-warm-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 30.88481329102069,
+      "controlled_presents_per_second": 58.28107112188124,
+      "present_link": 0,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-005628-879705",
+      "evidence_sha256": {
+        "work/rl-demo/async-warm-r1/result.json": "8410ab18b698c269aee0565ecec089cc27d9b4c5064b17669548f7d8083dffa6",
+        "work/rl-demo/async-warm-r1/latency.json": "ab8e4385afa50fcf7ce68596739fffbe651666072b9051cd47823b6b70c82f27",
+        "work/rl-demo/async-warm-r1/inputs-per-present.jsonl": "19eaa53fa2b8f2121a5ca0a37d257d7a6985dcc1b17547e3dfb45e4c2232efa2",
+        "work/rl-demo/async-warm-r1/native-barriers.jsonl": "c9f0b97c97a0f746f5a88240a86652615e2dae25e8194405ca22886fbca2dfa4",
+        "work/rl-demo/async-warm-r1/timing.jsonl": "8a69d8e7e36ac6d7f30f6e9bd3ca9bab31548f75119411febfde22a43e7e4427"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 62.10392831567129,
+          "one_percent_low_fps": 17.21176705862967,
+          "average_fps": 58.28672914900764,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1796,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 18.7826446472673,
+          "average_fps": 58.17017833643524,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 62.23081864921971,
+          "one_percent_low_fps": 19.25902892365099,
+          "average_fps": 60.00119614784568,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1197,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 59.999798100679385,
+          "average_fps": 60.025216108873316,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 62.167790867551524,
+            "one_percent_low_fps": 19.573429721600586,
+            "average_fps": 59.99871902734876,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 62.28395253962816,
+            "one_percent_low_fps": 19.500621582312938,
+            "average_fps": 60.00071700856825,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1198,
+          "missing_or_zero": 3
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 32.447918,
+          "p50": 71.892543,
+          "p95": 100.7189766,
+          "max": 100.943209
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 34.138335,
+          "p50": 75.781709,
+          "p95": 100.76163770000001,
+          "max": 100.943209
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 13.559,
+            "p50": 16.0855,
+            "p95": 18.176599999999997,
+            "max": 64.971
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.523,
+            "p50": 2.878,
+            "p95": 3.054,
+            "max": 5.791
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 9.252,
+            "p50": 12.782499999999999,
+            "p95": 26.866249999999997,
+            "max": 49.003
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.242,
+            "p50": 2.516,
+            "p95": 2.67005,
+            "max": 5.382
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.241,
+            "p50": 2.5155000000000003,
+            "p95": 2.6791499999999995,
+            "max": 5.381
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.416,
+            "p50": 11.5595,
+            "p95": 12.12035,
+            "max": 14.232
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 3.17205,
+            "max": 4.61
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 11.658999999999999,
+            "p95": 16.68805,
+            "max": 49.738
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@frame_ms": {
+            "min": 10.749,
+            "p50": 16.055500000000002,
+            "p95": 18.930249999999997,
+            "max": 66.615
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.946,
+            "p50": 2.185,
+            "p95": 2.351,
+            "max": 3.964
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 6.995,
+            "p50": 10.436,
+            "p95": 23.902999999999995,
+            "max": 58.562
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.672,
+            "p50": 1.849,
+            "p95": 1.9761999999999997,
+            "max": 3.623
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.67,
+            "p50": 1.848,
+            "p95": 1.9781,
+            "max": 3.622
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.112,
+            "p50": 12.0245,
+            "p95": 13.06085,
+            "max": 15.524
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.001
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "missing_or_dropped": 3,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 33,
+        "peak_footprint_mib": 6118.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3300,
+            137233,
+            136828,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3000,
+            152437,
+            152024,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-link1-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 30.89550070790574,
+      "controlled_presents_per_second": 58.26091044834254,
+      "present_link": 1,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-005930-737086",
+      "evidence_sha256": {
+        "work/rl-demo/async-link1-r1/result.json": "a0c414312db5eb517e796ba6f57ba7f01f1937094c7ceff354b7d0f5bbbf2dd9",
+        "work/rl-demo/async-link1-r1/latency.json": "b513bee9a17300c62c9f88407e7565673a66da3e7abebbca42196213ac04dc5d",
+        "work/rl-demo/async-link1-r1/inputs-per-present.jsonl": "d281b4a8516506d95b79aa0094ae5e76fd499336242fa27fde6d6fe47d193d67",
+        "work/rl-demo/async-link1-r1/native-barriers.jsonl": "d470f123b727ed2c5c7e6a740b6ca2a43af8ef60d77fb3fed0a597f3a1ff02ef",
+        "work/rl-demo/async-link1-r1/timing.jsonl": "f7a8cf08c895e3e0d91310c698526c045b33bfb7617f3be7a7d097265f353bce"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 61.92877286959912,
+          "one_percent_low_fps": 16.22392503612135,
+          "average_fps": 58.264048424776064,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1698,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 16.45164936751058,
+          "average_fps": 56.91632846235689,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 61.90952245223123,
+          "one_percent_low_fps": 18.90407434977483,
+          "average_fps": 60.002729875197986,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1133,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 18.461582201287058,
+          "average_fps": 58.452409769525836,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 61.91375414048231,
+            "one_percent_low_fps": 18.932730431050942,
+            "average_fps": 60.00074400922571,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 61.86587478346943,
+            "one_percent_low_fps": 18.92720596585532,
+            "average_fps": 60.00045600346564,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1166,
+          "missing_or_zero": 35
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 61.299334,
+          "p50": 72.044063,
+          "p95": 78.86974685,
+          "max": 83.371084
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 61.299334,
+          "p50": 72.057396,
+          "p95": 78.64047,
+          "max": 83.371084
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 13.87,
+            "p50": 16.1515,
+            "p95": 17.789049999999996,
+            "max": 71.299
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.507,
+            "p50": 2.915,
+            "p95": 3.096,
+            "max": 5.853
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 11.089,
+            "p50": 13.1815,
+            "p95": 27.777849999999987,
+            "max": 61.824
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.201,
+            "p50": 2.544,
+            "p95": 2.703,
+            "max": 5.405
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.2,
+            "p50": 2.544,
+            "p95": 2.7020999999999997,
+            "max": 5.404
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.365,
+            "p50": 11.681,
+            "p95": 12.1829,
+            "max": 14.25
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.015
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@frame_ms": {
+            "min": 10.352,
+            "p50": 16.164,
+            "p95": 17.99645,
+            "max": 71.217
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.906,
+            "p50": 2.1734999999999998,
+            "p95": 2.3360999999999996,
+            "max": 3.963
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 6.647,
+            "p50": 11.023,
+            "p95": 24.948699999999995,
+            "max": 38.832
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.661,
+            "p50": 1.837,
+            "p95": 1.9640499999999999,
+            "max": 3.568
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.659,
+            "p50": 1.835,
+            "p95": 1.9620499999999998,
+            "max": 3.566
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.148,
+            "p50": 12.2865,
+            "p95": 13.19035,
+            "max": 14.482
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.001
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "missing_or_dropped": 52,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 32,
+        "peak_footprint_mib": 6028.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3300,
+            148917,
+            148512,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            2700,
+            136002,
+            135589,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-replay-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 30.003418124979362,
+      "controlled_presents_per_second": 59.99316452885776,
+      "present_link": 1,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-010203-811273",
+      "evidence_sha256": {
+        "work/rl-demo/async-replay-r1/result.json": "f2935a0af459b248c61783d00f2bbe5cfc7980ea8dff62af427021a68b44ca03",
+        "work/rl-demo/async-replay-r1/latency.json": "7dcdaedf35e4723771f3a60714b68d86ca4c27d8ee50568f33459c9c37702b99",
+        "work/rl-demo/async-replay-r1/inputs-per-present.jsonl": "eb76d1e27571961901d7a0ef9d915323efd15a9738fffd9686f4d39f1d750262",
+        "work/rl-demo/async-replay-r1/native-barriers.jsonl": "ee15353b62b5077258db4e5dff8a72a9c60ef174fa684430539d9be4159543df",
+        "work/rl-demo/async-replay-r1/timing.jsonl": "4315a0da4d92c28ad9dd4ae5ffbc2c3192181fd1378d18825b4b7da4af957645"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 62.02864817927619,
+          "one_percent_low_fps": 19.8413208443124,
+          "average_fps": 59.997465365554326,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1721,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 21.17651206928541,
+          "average_fps": 58.83773951520078,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 61.95323175316247,
+          "one_percent_low_fps": 19.77474772724004,
+          "average_fps": 59.9953831032896,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1152,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 20.571472700176294,
+          "average_fps": 58.825665461670326,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 61.595318755774564,
+            "one_percent_low_fps": 19.944951932665845,
+            "average_fps": 60.00231008893842,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 61.52331733727083,
+            "one_percent_low_fps": 19.74856781740474,
+            "average_fps": 60.00246310111031,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1176,
+          "missing_or_zero": 25
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 60.105293,
+          "p50": 72.737522,
+          "p95": 77.7865548,
+          "max": 87.478626
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 60.105293,
+          "p50": 72.746084,
+          "p95": 77.687355,
+          "max": 85.633542
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 14.186,
+            "p50": 16.235,
+            "p95": 18.04725,
+            "max": 56.295
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.571,
+            "p50": 2.89,
+            "p95": 3.067,
+            "max": 5.619
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 10.708,
+            "p50": 13.05,
+            "p95": 27.30759999999999,
+            "max": 68.158
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.192,
+            "p50": 2.526,
+            "p95": 2.682,
+            "max": 5.251
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.192,
+            "p50": 2.526,
+            "p95": 2.68205,
+            "max": 5.25
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.196,
+            "p50": 11.616,
+            "p95": 12.0809,
+            "max": 14.726
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.01
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@frame_ms": {
+            "min": 9.589,
+            "p50": 16.253999999999998,
+            "p95": 18.114549999999998,
+            "max": 56.524
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.944,
+            "p50": 2.185,
+            "p95": 2.325,
+            "max": 3.875
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 7.006,
+            "p50": 10.7555,
+            "p95": 23.4991,
+            "max": 45.526
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.689,
+            "p50": 1.843,
+            "p95": 1.967,
+            "max": 3.577
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.687,
+            "p50": 1.842,
+            "p95": 1.96505,
+            "max": 3.576
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.547,
+            "p50": 12.214,
+            "p95": 13.023449999999999,
+            "max": 17.059
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.001
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "missing_or_dropped": 40,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 33,
+        "peak_footprint_mib": 6151.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3300,
+            138258,
+            137853,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3000,
+            152692,
+            152279,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "always-smoke-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 33.89108524983749,
+      "controlled_presents_per_second": 53.11131191966275,
+      "present_link": 1,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-010310-448842",
+      "evidence_sha256": {
+        "work/rl-demo/always-smoke-r1/result.json": "4afeb222c13afe2bc47d6046552971c7f2adfb0a9d5f52948483e2b7b7c664b6",
+        "work/rl-demo/always-smoke-r1/latency.json": "e61b4caa9415df78fa70748c6bf5bae0ee551a91fa1c1685c269258b181dc285",
+        "work/rl-demo/always-smoke-r1/inputs-per-present.jsonl": "22c35595e4cb2cf8f0a72169debe5a8e9fd5dc6ff048faeb53b8e0a359f3e814",
+        "work/rl-demo/always-smoke-r1/native-barriers.jsonl": "3c43e8ae21bc938832894cf48a68858885da26616c36a4d93f540c0495ad1682",
+        "work/rl-demo/always-smoke-r1/timing.jsonl": "46b65850eade6167375ef71284aa1517b1b175a8e15e8d286df7947cbb0e7e97"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 56.728067992900826,
+          "one_percent_low_fps": 9.380574377009243,
+          "average_fps": 53.11427871058621,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1773,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 16.615423592612146,
+          "average_fps": 54.638033835112964,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 56.86125906805591,
+          "one_percent_low_fps": 7.582836148515071,
+          "average_fps": 52.288849240289906,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1176,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 16.00003729075358,
+          "average_fps": 54.52872298092751,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 56.955716930086865,
+            "one_percent_low_fps": 7.515133600287579,
+            "average_fps": 52.2885773467669,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 56.9459867315851,
+            "one_percent_low_fps": 7.647393959323512,
+            "average_fps": 52.28906493164577,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1187,
+          "missing_or_zero": 14
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 61.655126,
+          "p50": 73.132835,
+          "p95": 81.0350758,
+          "max": 146.497334
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 61.655126,
+          "p50": 72.632875,
+          "p95": 81.04503410000001,
+          "max": 146.497334
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 5.745,
+            "p50": 17.557499999999997,
+            "p95": 20.039150000000003,
+            "max": 740.219
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.764,
+            "p50": 3.0805,
+            "p95": 3.2802999999999995,
+            "max": 15.999
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 11.406,
+            "p50": 13.544,
+            "p95": 30.591449999999995,
+            "max": 102.067
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.435,
+            "p50": 2.709,
+            "p95": 2.8931999999999998,
+            "max": 15.643
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.435,
+            "p50": 2.71,
+            "p95": 2.8922,
+            "max": 78.691
+          },
+          "player_0:@gpu_ms": {
+            "min": 7.129,
+            "p50": 12.196,
+            "p95": 12.8609,
+            "max": 14.87
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 14.694
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 17.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 11.0
+          },
+          "player_1:@frame_ms": {
+            "min": 11.168,
+            "p50": 17.560499999999998,
+            "p95": 20.5628,
+            "max": 713.506
+          },
+          "player_1:@cpu_ms": {
+            "min": 2.153,
+            "p50": 2.411,
+            "p95": 2.565,
+            "max": 9.799
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 6.951,
+            "p50": 11.3175,
+            "p95": 25.460649999999994,
+            "max": 100.969
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.897,
+            "p50": 2.068,
+            "p95": 2.213,
+            "max": 9.467
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.896,
+            "p50": 2.066,
+            "p95": 2.217,
+            "max": 696.957
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.582,
+            "p50": 13.888,
+            "p95": 14.88745,
+            "max": 35.585
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 1.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 10.0
+          }
+        },
+        "missing_or_dropped": 15,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 5,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 33,
+        "peak_footprint_mib": 6169.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3300,
+            149755,
+            0,
+            0,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            2700,
+            136703,
+            0,
+            0,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-guard-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 29.99979258305393,
+      "controlled_presents_per_second": 60.00041483676028,
+      "present_link": 0,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-010455-301869",
+      "evidence_sha256": {
+        "work/rl-demo/async-guard-r1/result.json": "c904464ce148158eef9526f105e471e725fe98ce7b895704a5320942ffc45a4e",
+        "work/rl-demo/async-guard-r1/latency.json": "d72a98fea37cce7566e58c52368a425fdebc0ec8cc12ba60a2b1bbed2a25280f",
+        "work/rl-demo/async-guard-r1/inputs-per-present.jsonl": "df1b96a8aeb375448f6a4eaad6575297f35229bc36a383ce39d6e3dd14a691da",
+        "work/rl-demo/async-guard-r1/native-barriers.jsonl": "fa15bef535fbdade6106fc5c3e49ed89936d49cdde8a51afa00918edd0831695",
+        "work/rl-demo/async-guard-r1/timing.jsonl": "c607e740d2a1063a20acbdd331ef724f47ea262f7205cd48d55f744ff17fdaa3"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 60.55162652870907,
+          "one_percent_low_fps": 45.09342320138594,
+          "average_fps": 60.012927882178516,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1798,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 56.8419696801018,
+          "average_fps": 59.966786970799554,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 60.419081856527335,
+          "one_percent_low_fps": 46.82953492406421,
+          "average_fps": 59.998841647363435,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1199,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 59.99981070059723,
+          "average_fps": 60.000140491404856,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 60.186578393018365,
+            "one_percent_low_fps": 46.68243495580729,
+            "average_fps": 59.998887020645775,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 60.16304184339561,
+            "one_percent_low_fps": 44.5843070669842,
+            "average_fps": 59.99959500273374,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1200,
+          "missing_or_zero": 1
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 32.917709,
+          "p50": 56.106959,
+          "p95": 56.4097463,
+          "max": 56.488293
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 46.84271,
+          "p50": 56.125501,
+          "p95": 56.40126765,
+          "max": 56.447959
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 14.673,
+            "p50": 16.615,
+            "p95": 17.62935,
+            "max": 25.406
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.595,
+            "p50": 2.872,
+            "p95": 3.0463499999999994,
+            "max": 5.556
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 7.705,
+            "p50": 13.176,
+            "p95": 27.651199999999985,
+            "max": 34.286
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.224,
+            "p50": 2.497,
+            "p95": 2.6531499999999997,
+            "max": 5.194
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.223,
+            "p50": 2.4975,
+            "p95": 2.6531499999999997,
+            "max": 5.19
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.533,
+            "p50": 11.67,
+            "p95": 12.132449999999999,
+            "max": 14.416
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.036,
+            "p95": 0.049,
+            "max": 0.08
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@frame_ms": {
+            "min": 12.419,
+            "p50": 16.621499999999997,
+            "p95": 17.813149999999997,
+            "max": 25.778
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.98,
+            "p50": 2.192,
+            "p95": 2.346,
+            "max": 3.98
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 8.165,
+            "p50": 11.024000000000001,
+            "p95": 24.364799999999992,
+            "max": 31.992
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.667,
+            "p50": 1.846,
+            "p95": 1.974,
+            "max": 3.596
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.666,
+            "p50": 1.844,
+            "p95": 1.97315,
+            "max": 3.595
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.435,
+            "p50": 12.2285,
+            "p95": 13.0969,
+            "max": 14.167
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "missing_or_dropped": 1,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 32,
+        "peak_footprint_mib": 6259.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3300,
+            148577,
+            148172,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            2700,
+            136367,
+            135954,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-live-full-r1": {
+      "complete": true,
+      "passed": true,
+      "frames": 11510,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 195.93393729114905,
+      "controlled_presents_per_second": 58.744289831202934,
+      "present_link": 0,
+      "render_predicate": null,
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": [
+          0.600000024,
+          0.400000006
+        ],
+        "player_1": [
+          0.400000006,
+          0.600000024
+        ]
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-010659-075543",
+      "evidence_sha256": {
+        "work/rl-demo/async-live-full-r1/result.json": "82a80b4db8f7cab651c868b5b8d56351afc845d30762a07709a80a70beaf37ed",
+        "work/rl-demo/async-live-full-r1/latency.json": "34fe2147e59b34bd2e478c6cb5bc41eed49937cd67073773cb83239853d00b8a",
+        "work/rl-demo/async-live-full-r1/inputs-per-present.jsonl": "0279c2f10ad90ea4428f570397c2c78fb6cf44ccb73c70ca6490c695e5f44aae",
+        "work/rl-demo/async-live-full-r1/native-barriers.jsonl": "0984e79e15d5b5f9d00f6128fd630daa95022a698cc45ad588b0356ef729a952",
+        "work/rl-demo/async-live-full-r1/timing.jsonl": "d776f1c2ad5023425dfa8ca3b412a9618635e0b8e0372acf67f35cbe2600000b"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 11509,
+          "median_fps": 60.470156677571254,
+          "one_percent_low_fps": 29.71402780589233,
+          "average_fps": 58.74516834197713,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 11509,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 30.864798665193245,
+          "average_fps": 58.744515246747255,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 10199,
+          "median_fps": 60.55529325021028,
+          "one_percent_low_fps": 42.95701186325477,
+          "average_fps": 59.98946543472539,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 10199,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 59.41663956874702,
+          "average_fps": 59.99427250004011,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 10200,
+            "median_fps": 60.16847172081829,
+            "one_percent_low_fps": 47.14643868744315,
+            "average_fps": 59.98821161067484,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 10200,
+            "median_fps": 60.69065970747102,
+            "one_percent_low_fps": 40.467229875289526,
+            "average_fps": 59.98997002989318,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 10200,
+          "positive_callbacks": 10200,
+          "missing_or_zero": 0
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 31.690542,
+          "p50": 102.117459,
+          "p95": 104.9048196,
+          "max": 118.600042
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 46.251375,
+          "p50": 102.2302925,
+          "p95": 104.68807389999999,
+          "max": 118.600042
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 10.474,
+            "p50": 16.62,
+            "p95": 17.751,
+            "max": 63.229
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.376,
+            "p50": 2.812,
+            "p95": 2.989,
+            "max": 8.555
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 8.197,
+            "p50": 11.058,
+            "p95": 25.87639999999998,
+            "max": 64.399
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.103,
+            "p50": 2.475,
+            "p95": 2.626,
+            "max": 5.313
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.102,
+            "p50": 2.478,
+            "p95": 2.63,
+            "max": 5.312
+          },
+          "player_0:@gpu_ms": {
+            "min": 5.953,
+            "p50": 8.217500000000001,
+            "p95": 11.364,
+            "max": 14.44
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 5.2105,
+            "p95": 6.388049999999999,
+            "max": 46.7
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 16.564,
+            "p95": 16.749049999999997,
+            "max": 49.747
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@frame_ms": {
+            "min": 10.087,
+            "p50": 16.477,
+            "p95": 18.244199999999996,
+            "max": 65.875
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.975,
+            "p50": 2.267,
+            "p95": 2.392,
+            "max": 6.93
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 6.083,
+            "p50": 10.071,
+            "p95": 23.380999999999986,
+            "max": 46.964
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.693,
+            "p50": 1.893,
+            "p95": 1.9960499999999992,
+            "max": 3.584
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.692,
+            "p50": 1.892,
+            "p95": 1.997,
+            "max": 3.583
+          },
+          "player_1:@gpu_ms": {
+            "min": 5.293,
+            "p50": 10.911,
+            "p95": 12.112,
+            "max": 15.711
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.001
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "missing_or_dropped": 0,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 116,
+        "peak_footprint_mib": 6158.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 11511,
+          "predicate_last": [
+            12600,
+            938053,
+            937648,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 11511,
+          "predicate_last": [
+            12300,
+            968933,
+            968520,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-live-link1-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 3600,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 60.81230541598052,
+      "controlled_presents_per_second": 59.19854502102097,
+      "present_link": 1,
+      "render_predicate": "async",
+      "max_catchup_frames": null,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-011417-421447",
+      "evidence_sha256": {
+        "work/rl-demo/async-live-link1-r1/result.json": "26eeb758e2afd709885890e755ee86698ca69fe28364afdff305d9668e85f5f0",
+        "work/rl-demo/async-live-link1-r1/latency.json": "605e18d7f8100d24d8a49a3937e3ed54ab35cb1e1441f081eaaedf3ef87bcc2d",
+        "work/rl-demo/async-live-link1-r1/inputs-per-present.jsonl": "d9aa2b375187feccfc738eecea2bdc6f2e56226b85bcee027831b24bb3fa3e11",
+        "work/rl-demo/async-live-link1-r1/native-barriers.jsonl": "0eaac0a0620a3457c3949218afe3719b47bfc77aad6a71d2adfb501f65312fb3",
+        "work/rl-demo/async-live-link1-r1/timing.jsonl": "92e6bf6406c0a14cc8d446454e6c97042f6fe65fb79c2cc614ce28aad526d227"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 3599,
+          "median_fps": 60.838200744282375,
+          "one_percent_low_fps": 23.70627077089118,
+          "average_fps": 59.20047930981979,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 3579,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 23.73587315334181,
+          "average_fps": 59.092049178404416,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 3000,
+          "median_fps": 60.749111878358896,
+          "one_percent_low_fps": 45.92678821101355,
+          "average_fps": 59.999886050616404,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 2992,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 59.99639937608786,
+          "average_fps": 60.00014223121951,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 3000,
+            "median_fps": 60.45035514583648,
+            "one_percent_low_fps": 45.37692341434122,
+            "average_fps": 59.99981640056181,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 3000,
+            "median_fps": 60.42843762274527,
+            "one_percent_low_fps": 45.00389283673038,
+            "average_fps": 59.999662801895056,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 3001,
+          "positive_callbacks": 2995,
+          "missing_or_zero": 6
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 64.3755,
+          "p50": 74.926959,
+          "p95": 75.40177775,
+          "max": 90.110917
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 64.849042,
+          "p50": 74.936917,
+          "p95": 75.3607465,
+          "max": 75.465792
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 8.608,
+            "p50": 16.5425,
+            "p95": 18.130349999999996,
+            "max": 24.921
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.541,
+            "p50": 2.926,
+            "p95": 3.081,
+            "max": 10.451
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 9.63,
+            "p50": 13.064499999999999,
+            "p95": 27.743399999999998,
+            "max": 43.804
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.201,
+            "p50": 2.556,
+            "p95": 2.684,
+            "max": 10.05
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.204,
+            "p50": 2.557,
+            "p95": 2.6870499999999997,
+            "max": 10.049
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.422,
+            "p50": 11.659,
+            "p95": 12.13445,
+            "max": 14.136
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.001
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 7.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 12.0
+          },
+          "player_1:@frame_ms": {
+            "min": 12.2,
+            "p50": 16.548499999999997,
+            "p95": 18.157,
+            "max": 25.26
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.958,
+            "p50": 2.174,
+            "p95": 2.29505,
+            "max": 7.046
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 7.984,
+            "p50": 10.8765,
+            "p95": 24.223799999999994,
+            "max": 44.199
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.67,
+            "p50": 1.838,
+            "p95": 1.937,
+            "max": 3.504
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.669,
+            "p50": 1.836,
+            "p95": 1.936,
+            "max": 3.503
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.327,
+            "p50": 12.316,
+            "p95": 13.09745,
+            "max": 17.686
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.004
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 4.0
+          }
+        },
+        "missing_or_dropped": 12,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 48,
+        "peak_footprint_mib": 6055.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 3601,
+          "predicate_last": [
+            5100,
+            302125,
+            301720,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 3601,
+          "predicate_last": [
+            4500,
+            293880,
+            293467,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-live-cap1-r1": {
+      "complete": false,
+      "passed": false,
+      "frames": 1800,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 31.00576291582547,
+      "controlled_presents_per_second": 58.053723912120624,
+      "present_link": 0,
+      "render_predicate": "async",
+      "max_catchup_frames": 1,
+      "warm_from": null,
+      "score_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-011650-516662",
+      "evidence_sha256": {
+        "work/rl-demo/async-live-cap1-r1/result.json": "5f8deadfb0d321eba703e63022f4d4e6b2461492f70aa9ce210cf53904518c49",
+        "work/rl-demo/async-live-cap1-r1/latency.json": "ce31cde7e5d7bbd0bcf88b5e3f943f835ec6aa701e585a1cb55e4bf3d903d992",
+        "work/rl-demo/async-live-cap1-r1/inputs-per-present.jsonl": "f4c260ad766f1e24166cb8ebb9f2370bbcd96ff6fa3b5554595a08ac47b90e78",
+        "work/rl-demo/async-live-cap1-r1/native-barriers.jsonl": "2f510d5898d252d2cf0f3f28c1e27960caaf5b6e94044262d817bb610f426528",
+        "work/rl-demo/async-live-cap1-r1/timing.jsonl": "8722724664931797e538408e05b9c6e26b9ae2ec4e929ebed683f5a9d23d1837"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 1799,
+          "median_fps": 60.49622146650342,
+          "one_percent_low_fps": 19.04861687262691,
+          "average_fps": 58.05719956105322,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 1798,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 19.45949450758686,
+          "average_fps": 58.03133809255664,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 1200,
+          "median_fps": 60.48859724916612,
+          "one_percent_low_fps": 44.010970453231316,
+          "average_fps": 59.93533775993755,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 1199,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 55.3769267669078,
+          "average_fps": 59.95014488151513,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 1200,
+            "median_fps": 60.3081747730905,
+            "one_percent_low_fps": 40.948923043323965,
+            "average_fps": 59.93479992789844,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 1200,
+            "median_fps": 60.30271965265634,
+            "one_percent_low_fps": 42.07396603228475,
+            "average_fps": 59.93530583088614,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 1201,
+          "positive_callbacks": 1200,
+          "missing_or_zero": 1
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 31.440792,
+          "p50": 43.266542,
+          "p95": 49.253362599999996,
+          "max": 67.184834
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 32.264043,
+          "p50": 44.2397715,
+          "p95": 49.3105492,
+          "max": 49.459168
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 7.894,
+            "p50": 16.5815,
+            "p95": 18.1836,
+            "max": 33.419
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.544,
+            "p50": 2.902,
+            "p95": 3.0654999999999997,
+            "max": 12.243
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 11.061,
+            "p50": 13.182,
+            "p95": 27.710799999999995,
+            "max": 47.786
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.197,
+            "p50": 2.533,
+            "p95": 2.68505,
+            "max": 11.836
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.197,
+            "p50": 2.533,
+            "p95": 2.6851,
+            "max": 18.71
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.364,
+            "p50": 11.52,
+            "p95": 12.0129,
+            "max": 14.518
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.001
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.037,
+            "p95": 0.05,
+            "max": 0.07
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 7.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 12.0
+          },
+          "player_1:@frame_ms": {
+            "min": 12.106,
+            "p50": 16.583,
+            "p95": 18.2522,
+            "max": 27.338
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.953,
+            "p50": 2.19,
+            "p95": 2.333,
+            "max": 3.982
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 7.911,
+            "p50": 10.846,
+            "p95": 23.395499999999995,
+            "max": 33.919
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.695,
+            "p50": 1.853,
+            "p95": 1.9721,
+            "max": 3.61
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.693,
+            "p50": 1.852,
+            "p95": 1.9721,
+            "max": 4.643
+          },
+          "player_1:@gpu_ms": {
+            "min": 6.183,
+            "p50": 12.065,
+            "p95": 13.098,
+            "max": 13.887
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 4.0
+          }
+        },
+        "missing_or_dropped": 1,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 33,
+        "peak_footprint_mib": 6065.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            3300,
+            148409,
+            148004,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 1801,
+          "predicate_last": [
+            2700,
+            136385,
+            135972,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    },
+    "async-capture-final-r1": {
+      "complete": true,
+      "passed": true,
+      "frames": 11510,
+      "errors": [],
+      "host_sha256": "01739614d0de7559cc8fb5608812e4f8ce55cd8f734655f0b66842b229edcfc3",
+      "controlled_wall_seconds": 196.2669227081351,
+      "controlled_presents_per_second": 58.64462458157714,
+      "present_link": 0,
+      "render_predicate": "async",
+      "max_catchup_frames": 1,
+      "warm_from": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/async-live-full-r1",
+      "score_by_role": {
+        "player_0": [
+          0.600000024,
+          0.400000006
+        ],
+        "player_1": [
+          0.400000006,
+          0.600000024
+        ]
+      },
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-011902-495619",
+      "evidence_sha256": {
+        "work/rl-demo/async-capture-final-r1/result.json": "ce0d7740ceb8d009c7695b8b8a1bd160d94159056c15610410c770d1a8b3f97d",
+        "work/rl-demo/async-capture-final-r1/latency.json": "d9bc1abd59d84e46740a68cf5315709097fad1b994b849810ffcd21252b428ec",
+        "work/rl-demo/async-capture-final-r1/inputs-per-present.jsonl": "f7a719bbce2de2c1a976d5f2cc8272c164bc87e1f0b6ad9d984dedb44eabaa8a",
+        "work/rl-demo/async-capture-final-r1/native-barriers.jsonl": "709b6c70188daf6dce6892cca97f0cda8c6c0c12f8e0b5b5b963a38c25c460b8",
+        "work/rl-demo/async-capture-final-r1/timing.jsonl": "86e6eeff93b78544cc2ff6a8b5a9a9c0c7d7879f6ad4723e1f6483006e6381a6"
+      },
+      "performance": {
+        "logic_frame_rates": {
+          "samples": 11509,
+          "median_fps": 60.50247303858545,
+          "one_percent_low_fps": 29.725170282681564,
+          "average_fps": 58.64527165134168,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "display_frame_rates": {
+          "samples": 11509,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 29.30525509802415,
+          "average_fps": 58.64473724346861,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_logic_frame_rates": {
+          "samples": 10199,
+          "median_fps": 60.73043285190902,
+          "one_percent_low_fps": 43.89371612757427,
+          "average_fps": 59.9507530047985,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 10199,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 55.635270443761414,
+          "average_fps": 59.95312848660982,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_native_present_call_rates": {
+          "player_0": {
+            "samples": 10200,
+            "median_fps": 60.4266118798719,
+            "one_percent_low_fps": 43.29300151652837,
+            "average_fps": 59.95101719772512,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          },
+          "player_1": {
+            "samples": 10200,
+            "median_fps": 60.43026347594876,
+            "one_percent_low_fps": 42.45584592024295,
+            "average_fps": 59.95095764807504,
+            "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+          }
+        },
+        "warm_display_coverage": {
+          "requested": 10200,
+          "positive_callbacks": 10200,
+          "missing_or_zero": 0
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 31.334667,
+          "p50": 43.6439795,
+          "p95": 46.1266866,
+          "max": 81.411126
+        },
+        "warm_software_input_to_presented_ms": {
+          "min": 31.390501,
+          "p50": 43.921876,
+          "p95": 45.82459955,
+          "max": 47.455876
+        },
+        "cpu_gpu_profile": {
+          "player_0:@frame_ms": {
+            "min": 6.934,
+            "p50": 16.549,
+            "p95": 18.11105,
+            "max": 56.314
+          },
+          "player_0:@cpu_ms": {
+            "min": 2.451,
+            "p50": 2.878,
+            "p95": 3.034,
+            "max": 9.877
+          },
+          "player_0:@proc_cpu_ms": {
+            "min": 10.593,
+            "p50": 13.15,
+            "p95": 27.941449999999982,
+            "max": 49.185
+          },
+          "player_0:@sub_cpu_ms": {
+            "min": 2.146,
+            "p50": 2.505,
+            "p95": 2.633,
+            "max": 9.499
+          },
+          "player_0:@sub_wall_ms": {
+            "min": 2.145,
+            "p50": 2.508,
+            "p95": 2.638,
+            "max": 12.92
+          },
+          "player_0:@gpu_ms": {
+            "min": 6.275,
+            "p50": 11.576,
+            "p95": 12.04705,
+            "max": 14.374
+          },
+          "player_0:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_0:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.012
+          },
+          "player_0:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.034,
+            "p95": 0.049,
+            "max": 0.085
+          },
+          "player_0:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 7.0
+          },
+          "player_0:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 12.0
+          },
+          "player_1:@frame_ms": {
+            "min": 11.496,
+            "p50": 16.548,
+            "p95": 18.233,
+            "max": 56.28
+          },
+          "player_1:@cpu_ms": {
+            "min": 1.976,
+            "p50": 2.221,
+            "p95": 2.328,
+            "max": 7.04
+          },
+          "player_1:@proc_cpu_ms": {
+            "min": 6.335,
+            "p50": 11.068,
+            "p95": 24.749449999999992,
+            "max": 42.555
+          },
+          "player_1:@sub_cpu_ms": {
+            "min": 1.693,
+            "p50": 1.881,
+            "p95": 1.966,
+            "max": 4.387
+          },
+          "player_1:@sub_wall_ms": {
+            "min": 1.691,
+            "p50": 1.879,
+            "p95": 1.965,
+            "max": 4.88
+          },
+          "player_1:@gpu_ms": {
+            "min": 5.636,
+            "p50": 12.131499999999999,
+            "p95": 12.90105,
+            "max": 20.576
+          },
+          "player_1:@wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pq_wait_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.004
+          },
+          "player_1:@drawable_ms": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "player_1:@pso_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 1.0
+          },
+          "player_1:@lib_new": {
+            "min": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 4.0
+          }
+        },
+        "missing_or_dropped": 0,
+        "negative_clock_or_mapping_mismatch": 0,
+        "zero_presented_time_frames": 0,
+        "human_full_render_verified": true,
+        "plus5_gyro_readback": true
+      },
+      "resources": {
+        "samples": 116,
+        "peak_footprint_mib": 6384.0,
+        "new_swapout_bytes": 0,
+        "max_pressure": 1
+      },
+      "native": {
+        "0": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 11511,
+          "predicate_last": [
+            12600,
+            936646,
+            936241,
+            405,
+            0
+          ],
+          "direct_aim_log_present": false
+        },
+        "1": {
+          "fixed60_deltas_ns": [
+            16666666,
+            16666667
+          ],
+          "controlled_ticks": 11511,
+          "predicate_last": [
+            12300,
+            968175,
+            967762,
+            413,
+            0
+          ],
+          "direct_aim_log_present": false
+        }
+      }
+    }
+  },
+  "logic_comparisons": {
+    "logic-strict-self-r1": {
+      "reference": "work/rl-demo/strict-ref-r1",
+      "candidate": "work/rl-demo/strict-ref-r2",
+      "input_frames": 1800,
+      "inputs_identical": true,
+      "input_sha256": "f4ebfb1fb9475af0585c4c9428a87f10fd0fae1d0283becd000a6d218d071ab0",
+      "start_frame": 180,
+      "roles": {
+        "player_0": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 405,
+          "position_l2_units": {
+            "n": 405,
+            "mean": 0.0016140877313007666,
+            "p95": 0.004421421669434285,
+            "max": 0.004591379231659029
+          },
+          "hp_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "ink_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [
+            1
+          ],
+          "hp_values_candidate": [
+            1
+          ],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.0016055851771680648,
+              "p95": 0.004404039745247564,
+              "max": 0.004591379231659029
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1617,
+            "mean": 0.0016128225508780787,
+            "p95": 0.004421421640118129,
+            "max": 0.004591379231659029
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        },
+        "player_1": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 0,
+          "position_l2_units": null,
+          "hp_fraction_abs": null,
+          "ink_fraction_abs": null,
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [],
+          "hp_values_candidate": [],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.1176508461521671,
+              "p95": 0.21082638297413253,
+              "max": 0.7770719236522875
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 6.172833333333376e-06,
+              "p95": 0.0,
+              "max": 0.0033333300000000232
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1615,
+            "mean": 0.06311423386287146,
+            "p95": 0.13073593745610443,
+            "max": 0.48028262194329624
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        }
+      },
+      "scope": "Measured fixed-input short test only; no state correction, no inferred unseen combat equivalence"
+    },
+    "logic-strict-async-warm": {
+      "reference": "work/rl-demo/strict-ref-r1",
+      "candidate": "work/rl-demo/async-warm-r1",
+      "input_frames": 1800,
+      "inputs_identical": true,
+      "input_sha256": "f4ebfb1fb9475af0585c4c9428a87f10fd0fae1d0283becd000a6d218d071ab0",
+      "start_frame": 180,
+      "roles": {
+        "player_0": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 405,
+          "position_l2_units": {
+            "n": 405,
+            "mean": 0.0015172613193992022,
+            "p95": 0.004153838088040103,
+            "max": 0.00431396300035324
+          },
+          "hp_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "ink_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [
+            1
+          ],
+          "hp_values_candidate": [
+            1
+          ],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.0015092724990281774,
+              "p95": 0.004136445720955354,
+              "max": 0.00431396300035324
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1617,
+            "mean": 0.001516073870612426,
+            "p95": 0.004153838038289228,
+            "max": 0.00431396300035324
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        },
+        "player_1": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 405,
+          "position_l2_units": {
+            "n": 405,
+            "mean": 0.04642949931388792,
+            "p95": 0.0571394027845573,
+            "max": 0.32990600151477806
+          },
+          "hp_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "ink_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [
+            1
+          ],
+          "hp_values_candidate": [
+            1
+          ],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.046403446065931296,
+              "p95": 0.05714111495710871,
+              "max": 0.32990600151477806
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1617,
+            "mean": 0.046414235041932525,
+            "p95": 0.05713939701267831,
+            "max": 0.32990600151477806
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        }
+      },
+      "scope": "Measured fixed-input short test only; no state correction, no inferred unseen combat equivalence"
+    },
+    "logic-strict-async-guard": {
+      "reference": "work/rl-demo/strict-ref-r1",
+      "candidate": "work/rl-demo/async-guard-r1",
+      "input_frames": 1800,
+      "inputs_identical": true,
+      "input_sha256": "f4ebfb1fb9475af0585c4c9428a87f10fd0fae1d0283becd000a6d218d071ab0",
+      "start_frame": 180,
+      "roles": {
+        "player_0": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 0,
+          "position_l2_units": null,
+          "hp_fraction_abs": null,
+          "ink_fraction_abs": null,
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [],
+          "hp_values_candidate": [],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.023840687020601485,
+              "p95": 0.13945768137908449,
+              "max": 0.3384024845991871
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0013757227493086418,
+              "p95": 0.010933339000000014,
+              "max": 0.0186677128
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1615,
+            "mean": 0.0028693902569762847,
+            "p95": 0.016415024805543684,
+            "max": 0.12769274962554047
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        },
+        "player_1": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 0,
+          "position_l2_units": null,
+          "hp_fraction_abs": null,
+          "ink_fraction_abs": null,
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [],
+          "hp_values_candidate": [],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.10599344704410164,
+              "p95": 0.2102000580958871,
+              "max": 0.6463427512050616
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 6.172833333333376e-06,
+              "p95": 0.0,
+              "max": 0.0033333300000000232
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1615,
+            "mean": 0.039363165686801,
+            "p95": 0.06030503143790806,
+            "max": 0.3198016001171315
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        }
+      },
+      "scope": "Measured fixed-input short test only; no state correction, no inferred unseen combat equivalence"
+    },
+    "logic-strict2-async-guard": {
+      "reference": "work/rl-demo/strict-ref-r2",
+      "candidate": "work/rl-demo/async-guard-r1",
+      "input_frames": 1800,
+      "inputs_identical": true,
+      "input_sha256": "f4ebfb1fb9475af0585c4c9428a87f10fd0fae1d0283becd000a6d218d071ab0",
+      "start_frame": 180,
+      "roles": {
+        "player_0": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 0,
+          "position_l2_units": null,
+          "hp_fraction_abs": null,
+          "ink_fraction_abs": null,
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [],
+          "hp_values_candidate": [],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.024361416480886147,
+              "p95": 0.1394540254851772,
+              "max": 0.33840701446865773
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0013757227493086418,
+              "p95": 0.010933339000000014,
+              "max": 0.0186677128
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1615,
+            "mean": 0.0038714326388718844,
+            "p95": 0.016427297914269327,
+            "max": 0.12769578210001314
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        },
+        "player_1": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 405,
+          "position_l2_units": {
+            "n": 405,
+            "mean": 0.03566824049522135,
+            "p95": 0.11511769029939099,
+            "max": 0.5287048070682154
+          },
+          "hp_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "ink_fraction_abs": {
+            "n": 405,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [
+            1
+          ],
+          "hp_values_candidate": [
+            1
+          ],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.035516374386685555,
+              "p95": 0.11589178595898501,
+              "max": 0.5287048070682154
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1617,
+            "mean": 0.03557605865723341,
+            "p95": 0.11805297223400067,
+            "max": 0.5287048070682154
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        }
+      },
+      "scope": "Measured fixed-input short test only; no state correction, no inferred unseen combat equivalence"
+    },
+    "logic-strict-always": {
+      "reference": "work/rl-demo/strict-ref-r1",
+      "candidate": "work/rl-demo/always-smoke-r1",
+      "input_frames": 1800,
+      "inputs_identical": true,
+      "input_sha256": "f4ebfb1fb9475af0585c4c9428a87f10fd0fae1d0283becd000a6d218d071ab0",
+      "start_frame": 180,
+      "roles": {
+        "player_0": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 0,
+          "position_l2_units": null,
+          "hp_fraction_abs": null,
+          "ink_fraction_abs": null,
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [],
+          "hp_values_candidate": [],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.05478610464375696,
+              "p95": 0.20031119312834705,
+              "max": 0.338401921513618
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0013757227493086418,
+              "p95": 0.010933339000000014,
+              "max": 0.0186677128
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1615,
+            "mean": 0.03979282147346665,
+            "p95": 0.17016346856425504,
+            "max": 0.20300014702416627
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        },
+        "player_1": {
+          "source_samples_reference": 405,
+          "source_samples_candidate": 405,
+          "matched_source_frames": 0,
+          "position_l2_units": null,
+          "hp_fraction_abs": null,
+          "ink_fraction_abs": null,
+          "alive_mismatches": 0,
+          "phase_mismatches": 0,
+          "hp_values_reference": [],
+          "hp_values_candidate": [],
+          "same_ack_frame": {
+            "position_l2_units": {
+              "n": 1620,
+              "mean": 0.07658718651714891,
+              "p95": 0.2188552247362495,
+              "max": 0.6192456231019751
+            },
+            "hp_fraction_abs": {
+              "n": 1620,
+              "mean": 0.0,
+              "p95": 0.0,
+              "max": 0.0
+            },
+            "ink_fraction_abs": {
+              "n": 1620,
+              "mean": 4.115222222222251e-06,
+              "p95": 0.0,
+              "max": 0.004999995000000035
+            },
+            "alive_mismatches": 0,
+            "phase_mismatches": 0,
+            "hp_values_reference": [
+              1
+            ],
+            "hp_values_candidate": [
+              1
+            ],
+            "scope": "Raw same-ACK comparison, retains up to three-frame sampling phase error"
+          },
+          "sample_clock_interpolated_position_l2": {
+            "n": 1616,
+            "mean": 0.008963179316896011,
+            "p95": 0.01819246042136906,
+            "max": 0.15743605620536785
+          },
+          "interpolation_scope": "Diagnostic linear interpolation only between actual 4-frame samples, no native state correction or bitwise/per-frame equivalence claim"
+        }
+      },
+      "scope": "Measured fixed-input short test only; no state correction, no inferred unseen combat equivalence"
+    }
+  },
+  "protected": {
+    "work/rl-stage0/camera-host-r9/dmhost-aim": {
+      "expected": "b133db55fa807357ea4b1b99d5ef29ba62fc6e08d468eccaf0df4f2e5139e772",
+      "actual": "b133db55fa807357ea4b1b99d5ef29ba62fc6e08d468eccaf0df4f2e5139e772",
+      "unchanged": true
+    },
+    "upstream/dm/host/dmhost": {
+      "expected": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+      "actual": "628f8c00c57073cc8578a0c2addc24defaadd76b5f1e3e648fcd1a63e76fb95d",
+      "unchanged": true
+    },
+    "work/a8/dmhost-arena-v15": {
+      "expected": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "actual": "ae4b9835cb54161ff8c81874803b3d7f2500959fcee9fe65229885042ee61b9f",
+      "unchanged": true
+    },
+    "work/a8/dmhost-arena-special-v15": {
+      "expected": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+      "actual": "7ae7dd7e6e1e74766315cc8016051801d452e976689f47e8354f31847adc6b29",
+      "unchanged": true
+    },
+    "work/rl-demo/host-r5/dmhost-demo": {
+      "expected": "32b5b3e5e9243732713eaae3b2be99cc60fcc37b2cac86cc590f9de38516914f",
+      "actual": "32b5b3e5e9243732713eaae3b2be99cc60fcc37b2cac86cc590f9de38516914f",
+      "unchanged": true
+    }
+  },
+  "saves": {
+    "work/save_ref/save.dat": "89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd",
+    "../splatoon-rl-lab/saves/bis/user/save/0000000000000001/0/save.dat": "89286f20dcf3305017dac3575e20ae094808d97fe8261d4e40a41e67fa21f1cd"
+  },
+  "host_manifest_checks": [
+    "host-r5",
+    "render-host-r2"
+  ],
+  "screenshots": {
+    "work/rl-demo/strict-ref-r1/screenshots/frame-1200.png": "e008b171730eb9500934c67aef8dd2f24ec77d137d63a50642246f4a0de15e5b",
+    "work/rl-demo/strict-ref-r1/screenshots/frame-600.png": "d89d5698119f3e1ee15b73f926608739ca2be28c69fcb5cb365481a59fc87b1a",
+    "work/rl-demo/async-smoke-r1/screenshots/frame-1200.png": "e40cfd05325b93ded3c7909d3eb94cc7f37efb36cd108086f512e5af6bcf268e",
+    "work/rl-demo/async-smoke-r1/screenshots/frame-600.png": "06fb004ca743fe2398022d1f27a091736a4c2510be0239e5e7e2ed3a43c81e10",
+    "work/rl-demo/async-live-full-r1/screenshots/frame-1200.png": "29e474bb0335063845af395b20b55d916cc611e721eceff429893c7209b17033",
+    "work/rl-demo/async-live-full-r1/screenshots/frame-600.png": "7bb36f5679bd056a4161d138004d33ad16b39b9db81190825379098122dcde8e",
+    "work/rl-demo/always-smoke-r1/screenshots/frame-1200.png": "6bc1068e35068b0d02eb8e57d32ffd9213809c487474458ddfa8fc300b8b9e9c",
+    "work/rl-demo/always-smoke-r1/screenshots/frame-600.png": "6bc1068e35068b0d02eb8e57d32ffd9213809c487474458ddfa8fc300b8b9e9c"
+  },
+  "limitations": [
+    "Short exact source-frame comparison covers positions/HP/ink/alive/phase; HP constant1 so no damage proof.",
+    "Final resource monitor and pacing runs retain mismatched sensor sample phases; interpolation diagnostic only.",
+    "Whole-session60 not certified; warm rates do not include startup/judging and conditional display intervals omit missing callbacks.",
+    "Physical USB-to-photon delay and manual gyro sign remain unmeasured.",
+    "No GPU replay reconstruction/drift changes or training."
+  ],
+  "remaining_jitter": {
+    "ack_interval_ms": {
+      "all": {
+        "min": 14.720458,
+        "p50": 16.466229499999997,
+        "p95": 18.4691542,
+        "max": 57.009417
+      },
+      "slowest_ack_1_percent": {
+        "min": 20.554,
+        "p50": 21.53525,
+        "p95": 25.405806249999998,
+        "max": 57.009417
+      }
+    },
+    "input_and_opponent_prep_ms": {
+      "all": {
+        "min": 0.004916,
+        "p50": 0.007208,
+        "p95": 0.947375,
+        "max": 7.8335
+      },
+      "slowest_ack_1_percent": {
+        "min": 0.005583,
+        "p50": 0.010667,
+        "p95": 2.0382544999999994,
+        "max": 7.8335
+      }
+    },
+    "native_step_rpc_ms": {
+      "all": {
+        "min": 14.530709,
+        "p50": 15.758708500000001,
+        "p95": 16.94298335,
+        "max": 56.175417
+      },
+      "slowest_ack_1_percent": {
+        "min": 15.766,
+        "p50": 20.3618335,
+        "p95": 24.626624999999997,
+        "max": 56.175417
+      }
+    },
+    "post_write_and_pace_ms": {
+      "all": {
+        "min": 0.062375,
+        "p50": 0.47331199999999995,
+        "p95": 1.7479398999999995,
+        "max": 10.551667
+      },
+      "slowest_ack_1_percent": {
+        "min": 0.06725,
+        "p50": 1.1701670000000002,
+        "p95": 2.4561455,
+        "max": 10.551667
+      }
+    },
+    "slow_frame_mod6_counts": {
+      "0": 19,
+      "1": 30,
+      "2": 7,
+      "3": 16,
+      "4": 12,
+      "5": 18
+    }
+  },
+  "original_romfs": {
+    "work/data/v720896/RomFS/Pack/Scene/Vss_Yunohana.pack.zs": {
+      "sha256": "782655acf53279b3ff4801c934884c000f8d41491658dadd01b200a5bac5bcf9",
+      "unchanged": true
+    },
+    "work/data/v720896/RomFS/Pack/Bootup.Nin_NX_NVN.pack.zs": {
+      "sha256": "5862c49fc7ebbb1b99c7e79a62f1ab24df44e732f3fc173f08a84d1d22e80929",
+      "unchanged": true
+    }
+  },
+  "closeout": {
+    "owned_native_or_recorders": [],
+    "tests": {
+      "demo": 21,
+      "t1_components": 11
+    },
+    "static_checks": [
+      "ruff F,E9",
+      "compileall rl/demo",
+      "git diff --check"
+    ],
+    "no_training": true,
+    "production_default_unchanged": true
+  },
+  "decision": {
+    "stable_whole_session_60_passed": false,
+    "best_warm_average_fps": 59.98821161067484,
+    "low_latency_complete_native_warm_average_fps": 59.95101719772512,
+    "low_latency_configuration": {
+      "host": "work/rl-demo/render-host-r2/dmhost-demo",
+      "predicate": "async",
+      "present_link": 0,
+      "max_catchup_frames": 1,
+      "warm_from": "work/rl-demo/async-live-full-r1"
+    },
+    "reason": "Near60 mean, residual native/RPC tail jitter; no exact lock60 claim; no further GPU reconstruction work this round"
+  }
+}

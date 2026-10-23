@@ -1,6 +1,6 @@
 # 人工示范录制准备（只录制，不训练）
 
-当前为**诊断夹具**：USB Pro Controller摇杆/按键/200Hz IMU已读通；原生1v1、私有输入/状态记录和近似BC转换已实现。实时60fps、物理陀螺仪方向确认、原生全图墨色/完整武器阶段仍未通过，暂不建议开始正式录示范。`--allow-unqualified`是显式诊断入口，不会把低速运行标成实时60。最终数值见`notes/rl-demo-20261023.md`。
+当前为**诊断夹具**：USB Pro Controller摇杆/按键/200Hz IMU已读通；原生1v1、私有输入/状态记录和近似BC转换已实现。2026-10-24的私有异步条件渲染已将热段平均帧率提高到约60；全程锁60、物理陀螺仪方向、原生全图墨色/完整武器阶段仍未签收，暂不开始正式示范或训练。`--allow-unqualified`仍是诊断入口。最新性能与边界见`notes/rl-demo-realtime-20261024.md/.json`，原转换偏差见`notes/rl-demo-20261023.md`。
 
 在项目根运行。完全离线，只用本机已有SDL2和Python环境，不下载依赖，不训练。
 
@@ -27,7 +27,7 @@ USB接好后，先平放3秒，再推四向摇杆、按ZR/ZL/B，分别抬头/�
 
 只影响headless对手的A8减绘；人玩窗口完整渲染，原生720p上屏，不是几何画面。原宿主及存档不覆盖。构建依赖本机私有阶段0诊断产物，不把它们放git。
 
-诊断录制（当前尚未达到60fps，显式确认使用未合格夹具）：
+原strict宿主诊断录制（保留原语义和原性能；最新近60方案见下方）：
 
 ```sh
 .venv/bin/python -m rl.demo.capture --fixture --allow-unqualified \
@@ -70,7 +70,7 @@ BC观测用当前/过去原生位置/镜头/HP/墨量锚定，墨图/弹体/内�
 
 ## 实时性诊断续查（2026-10-24）
 
-本次逐帧证明interval一直为1、game/Metal目标一直60，30fps上屏中位数不代表被钉30Hz。持续超时主要在条件渲染CPU↔GPU等待；原生画质参数覆盖层未确认减掉实际pass，仍未达到实时60，未激活为默认。详细计时/失败原件见`notes/rl-demo-fps-20261024.md/.json`。
+历史run66逐帧证明interval一直为1、game/Metal目标一直60，30fps上屏中位数不代表被钉30Hz。持续超时主要在条件渲染CPU↔GPU等待；原生画质参数覆盖层未确认减掉实际pass。下方为历史归因命令，结果见`notes/rl-demo-fps-20261024.md/.json`；异步条件渲染续查见下一节。
 
 以下仅为脚本短测，不是人的示范，也不是Winners/等价性验收。每次用新输出目录，一次一房；GPU counter诊断有开销。
 
@@ -84,3 +84,30 @@ BC观测用当前/过去原生位置/镜头/HP/墨量锚定，墨图/弹体/内�
 ```
 
 `render_overlay --out work/rl-demo/overlay-new`只生成私有资源覆盖层，可用`profile_run --overlay ...`测试游戏已有颜色分级/bloom强度/默认DOF字段。它不是已确认有效的降分辨率方案，不修改原RomFS。不要将`DM_PRESENT_INTERVAL=display`或`DM_PRESENT_HZ=0`当作达到60fps的证据。
+
+
+## 私有近60fps方案：异步条件渲染（2026-10-24）
+
+仅限用户授权的人玩研究夹具。`work/rl-demo/render-host-r2/dmhost-demo`默认仍strict，必须显式选择`--render-predicate async`；正式arena/T1/A8默认宿主不变，仍拒绝demo宿主。首次重建必须用新的输出目录：
+
+```sh
+.venv/bin/python -m rl.demo.build_render --out work/rl-demo/render-host-new
+```
+
+构建复用本机私有r5基底和原模块，保护旧二进制；不提交/下载私有材料。异步模式不写游戏predicate、counter或fence；原查询照常执行，只让渲染条件消费最近已完成的值，缺测默认绘制。可能短暂多画/晚一帧裁剪，属于本夹具获准的渲染偏差，不是正式对战语义认证。`always`整幅黑屏，已淘汰，不用于录制。
+
+当前低延迟诊断命令（先保留已有成功整局作为shader预热来源；新机器没有该私有产物时，先脚本冒烟一局）：
+
+```sh
+.venv/bin/python -m rl.demo.capture --fixture --allow-unqualified \
+  --source controller --opponent 52 --present-link 0 \
+  --host work/rl-demo/render-host-r2/dmhost-demo \
+  --modules work/rl-demo/render-host-r2/modules \
+  --render-predicate async --max-catchup-frames 1 \
+  --warm-from work/rl-demo/async-live-full-r1 \
+  --out work/rl-demo/my-demo-async-001
+```
+
+`--warm-from`只复制上一局双方PSO列表并合并原seed清单到本次私有目录，原文件不改；不保证所有地图/动作已预热。`--max-catchup-frames 1`限制墙钟卡顿后的追帧积欠，减少输入在显示队列中排队；底层仍逐帧输入、原fixed60，不改变游戏时间。兼容旧行为的默认值为6。资源采样已移到独立线程，原swap/内存压力阈值保持；异常或采样滞后超过5秒停止本房，不在输入ACK路径等待系统CLI。
+
+以`--source script`替换controller可测试完全相同的录制入口，不需`--allow-unqualified`；这是脚本冒烟，不是人的示范。独立对拍用`profile_run --fixture-inputs ... --predicate async|strict`，用`logic_compare`保留四帧状态采样时钟/差分，不能把插值当逐帧真值。具体完整局和短测的中位/1%low/平均、软件输入→呈现延迟及原件路径见最新报告；一切60数值都同时报告长帧和缺失回调，不以fixed60或强制display/不限帧冒充墙钟60。
