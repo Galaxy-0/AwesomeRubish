@@ -318,3 +318,8 @@ D3-R已由用户验收。停止把“对均匀敌人分布平均后的全图最�
 逐帧GPU环境近似重建/动作转换导出5316样本21分片，17档移动/9档相机与toggle有误差报告；自由回放位置均值偏差水刀19.89u/.52 24.28u，原生全图墨色、完整武器阶段/弹体真值缺测，ready_for_training=false，默认拒绝近似BC导出。FOV/粗几何旧假设仍保留。未把链路passed当实时或训练真实性通过。
 
 11新增组件+11既有T1组件、2策略沙箱worker、12帧观测调度物理对照通过；最终host/存档SHA一致，所有本轮进程结束。源码与数字汇总本地提交，严格离线不push；不动policies，不恢复T1/S1，不开始BC/RL。详细证据与后续待办见notes/rl-demo-20261023.md/.json及rl/demo/README.md。到此停止等待下一方向。
+
+
+**示范实时性续查/停止（2026-10-24）**：三次一房1800-present诊断，逐帧interval均1、game_fps/Metal target均60、game模式；没有触发interval≥2一秒后钉30Hz。详细baseline上屏33.3ms714次/16.7ms440次，30fps中位数来自间隔分布，不能据此断言30Hz。阶段拆分将持续超时定位到重放：低开销人玩侧中位23.617ms、提交CPU3.659ms、GPU10.185ms，begin/最终commit合计<0.05ms；48帧叶操作抽样OP_RENDER_ENABLE占83.60%、21.621ms/帧，CPU仅0.938ms；独立窗口大量阻塞fence等待，主要是条件渲染CPU↔GPU往返。编译有少数秒级尖峰，P95为0，不能解释持续超时。
+
+已找到原生FrameBufferBase3DRenderScale、ResolutionModeController及MiniMap .65示例，但普通对战应用/重建入口未闭合，0.25–0.5缩放未接通。私有RomFS原生颜色分级关闭/Bloom强度0/默认DOF0候选正常短测，draw/pass几乎不变，逻辑中位37.27→37.46fps，无可靠减载收益，不激活默认。首次重压缩缺Zstd content size导致0帧启动失败，修复后1800帧错误0，原件保留，新增格式回归。没有盲改条件判定/fence/counter或删除判定消费pass，没有强制display/不限帧冒充60。现有最佳完整局仍暖机均值38.14fps，实时60未达标，真人录制/BC真实性仍未签收；本轮停止、不训练、不恢复T1/S1。报告notes/rl-demo-fps-20261024.md/.json；14项demo/格式组件及定向静态检查通过，保护文件/存档/原资源SHA一致，所有本轮进程结束，源码/数字报告本地提交，离线不push。后续优先研究条件predicate依赖/设备端执行，再研究原生内部尺寸，不从显示节奏制造60。

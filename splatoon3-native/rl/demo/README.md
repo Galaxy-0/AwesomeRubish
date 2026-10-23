@@ -67,3 +67,20 @@ USB接好后，先平放3秒，再推四向摇杆、按ZR/ZL/B，分别抬头/�
 BC观测用当前/过去原生位置/镜头/HP/墨量锚定，墨图/弹体/内部动作阶段由GPU近似重建；另做一次初始化后不校正的自由回放报告漂移。**没有原生全图墨色真值，minimap和射线墨色尚不能作合格BC标签**；明确`ready_for_training=false`，默认不加`--allow-approximate`就拒绝导出。FOV纵55°/横85.56559°仍是已接受的假设，几何近似偏差保留。
 
 所有数据/网格/生成页/截图/权重不提交，正式arena/T1/proficiency拒绝`DM_TEST_DEMO`及demo宿主。T1/S1保持暂停。
+
+## 实时性诊断续查（2026-10-24）
+
+本次逐帧证明interval一直为1、game/Metal目标一直60，30fps上屏中位数不代表被钉30Hz。持续超时主要在条件渲染CPU↔GPU等待；原生画质参数覆盖层未确认减掉实际pass，仍未达到实时60，未激活为默认。详细计时/失败原件见`notes/rl-demo-fps-20261024.md/.json`。
+
+以下仅为脚本短测，不是人的示范，也不是Winners/等价性验收。每次用新输出目录，一次一房；GPU counter诊断有开销。
+
+```sh
+.venv/bin/python -m rl.demo.build_profile --out work/rl-demo/profile-host-new
+.venv/bin/python -m rl.demo.profile_run \
+  --host work/rl-demo/profile-host-new/dmhost-demo \
+  --out work/rl-demo/profile-new --gpu-profile
+.venv/bin/python -m rl.demo.profile_report work/rl-demo/profile-new
+.venv/bin/python -m rl.demo.render_research --out work/rl-demo/render-research-new
+```
+
+`render_overlay --out work/rl-demo/overlay-new`只生成私有资源覆盖层，可用`profile_run --overlay ...`测试游戏已有颜色分级/bloom强度/默认DOF字段。它不是已确认有效的降分辨率方案，不修改原RomFS。不要将`DM_PRESENT_INTERVAL=display`或`DM_PRESENT_HZ=0`当作达到60fps的证据。

@@ -1,3 +1,24 @@
+# 录制实时性续查：瓶颈定位到条件渲染等待，60fps仍未达标（2026-10-24）
+
+按present interval线索完成三次一房1800-present短测。逐帧记录显示interval全程1，game_fps/Metal target全程60，display link未进30Hz模式；上屏30fps中位数来自16.7/33.3ms等间隔分布。这只覆盖本次夹具，不否定其他场景触发降30Hz。
+
+重放墙钟中位23.62ms，而提交CPU3.66ms、GPU活跃10.19ms；详细叶操作抽样中OP_RENDER_ENABLE占83.6%墙钟、21.62ms/帧、CPU仅0.94ms，事件记录确认大量阻塞fence等待。持续大头是条件渲染CPU↔GPU往返，不是最后commit调用；编译P95为0但会有少数严重尖峰。
+
+原生内部缩放参数名字/解析引用与MiniMap .65示例已找到，普通对战setter/rebuild尚未闭合，未接通0.25–0.5。私有原生颜色分级/bloom强度/默认DOF候选没有有效减掉pass或提速：
+
+| 详细归因短测（link1，稀疏GPU计数） | 逻辑中位 / 1% low fps | 上屏有效样本中位 / 1% low fps | 软件输入→呈现P50 / P95 |
+|---|---:|---:|---:|
+| baseline | 37.27 / 14.34 | 30.00 / 14.12 | 84.12 / 92.82ms |
+| 原生画质参数候选 | 37.46 / 13.29 | 30.00 / 13.33 | 84.17 / 93.14ms |
+
+没有以强制display或不限帧冒充60，没有改条件判定/fence/counter或盲删pass。候选不激活默认；此前完整局仍是当前最好可完整复测证据（逻辑均值38.14、中位39.11fps，link0软件呈现P50 45.47ms），尚非稳定60。真人轴向、物理按钮→光子延迟、原生墨图/武器/弹体真值及BC真实性缺口保留，未训练。
+
+详细报告：[notes/rl-demo-fps-20261024.md](notes/rl-demo-fps-20261024.md)；[数字JSON](notes/rl-demo-fps-20261024.json)；[用法](rl/demo/README.md)。原件`work/rl-demo/pacing-profile-r1/r2`、`quality-profile-r1/r2`及对应session均保留；r1画质覆盖层首次缺Zstd content size启动失败，修复后r2跑完1800帧错误0，失败不混性能。14项demo/格式组件、ruff/compileall/diff检查通过。
+
+保护宿主/存档/原始资源SHA一致，本轮进程结束；不动policies，T1/S1保持暂停，没有网络请求/发布/训练，离线仅本地commit不push。到此停止；更有针对性的后续是分析条件predicate依赖以减少CPU读回往返，并保留相同判定语义。
+
+---
+
 # 示范录制准备：整局链路通过，实时60/BC真实性未达标（2026-10-24）
 
 完成独立USB Pro自检、隔离原生录制夹具、私有trace/输入/状态保存、GPU环境近似回放转换和中文说明；没有训练。已修复摘要字段覆盖、脚本对手出生导航和结算live-agent/API问题，最终一房原生整局双方到Winners，11,511输入区间、错误0，结算0.9%:0.6%。
