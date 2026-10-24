@@ -535,7 +535,7 @@ def run(a):
         if a.source == "controller":
             from .controller import Controller
 
-            controller = Controller()
+            controller = Controller(profile=getattr(a, "controller_profile", None))
             result["controller"] = controller.device
         spec = PolicySpec.load(a.policy) if a.opponent == "policy" else None
         opponent_stride = a.opponent_stride or (spec.step_frames if spec else 6)
@@ -606,7 +606,7 @@ def run(a):
                 control = {k: raw[k] for k in ["sticks", "gyro", "buttons"]}
                 sample_ages.append((before - raw["sample_monotonic_ns"]) / 1e6)
                 append("usb-inputs.jsonl", dict(frame=frame, **raw))
-                if raw["all_buttons"][4] and raw["all_buttons"][6]:
+                if raw["physical_buttons"].get("Minus") and raw["physical_buttons"].get("Plus"):
                     result["cancelled"] = True
                     break  # Minus+Plus
             else:
@@ -834,6 +834,7 @@ if __name__ == "__main__":
     )
     p.add_argument("--out", required=True)
     p.add_argument("--source", choices=["controller", "script"], default="controller")
+    p.add_argument("--controller-profile", type=Path, help="private profile.json from guided USB controller check")
     p.add_argument("--opponent", choices=["52", "policy"], default="52")
     p.add_argument("--policy", default="arena/policies/alpha")
     p.add_argument(

@@ -1,0 +1,97 @@
+{
+  "schema": "rl-demo-controller-audit-v1",
+  "date": "2026-10-24",
+  "source": "work/rl-demo/controller-check-001",
+  "sources": {
+    "work/rl-demo/controller-check-001/samples.jsonl": "2a41f0e99fcc6e4285fdb8edc04f9b3010bc8a205c7ca4e32bf396d35a0e6530",
+    "work/rl-demo/controller-check-001/summary.json": "22d4fe760375639909d36988d35031474e74d932ed242a0115dc395bed1f2310"
+  },
+  "polls": 24776,
+  "trigger_axis_events": [
+    {
+      "seconds": 24.607622,
+      "type": "axis",
+      "index": 4,
+      "value": 32767,
+      "timestamp_ms": 25760
+    },
+    {
+      "seconds": 24.607622,
+      "type": "axis",
+      "index": 4,
+      "value": 0,
+      "timestamp_ms": 25760
+    },
+    {
+      "seconds": 25.59238,
+      "type": "axis",
+      "index": 5,
+      "value": 32767,
+      "timestamp_ms": 26745
+    },
+    {
+      "seconds": 25.59238,
+      "type": "axis",
+      "index": 5,
+      "value": 0,
+      "timestamp_ms": 26745
+    }
+  ],
+  "controller_button_downs": [
+    {
+      "seconds": 26.942471,
+      "type": "button",
+      "index": 1,
+      "down": true,
+      "timestamp_ms": 28095
+    },
+    {
+      "seconds": 27.798241,
+      "type": "button",
+      "index": 9,
+      "down": true,
+      "timestamp_ms": 28951
+    },
+    {
+      "seconds": 28.40076,
+      "type": "button",
+      "index": 0,
+      "down": true,
+      "timestamp_ms": 29553
+    },
+    {
+      "seconds": 29.402682,
+      "type": "button",
+      "index": 2,
+      "down": true,
+      "timestamp_ms": 30555
+    },
+    {
+      "seconds": 29.863455,
+      "type": "button",
+      "index": 3,
+      "down": true,
+      "timestamp_ms": 31016
+    },
+    {
+      "seconds": 30.889244,
+      "type": "button",
+      "index": 10,
+      "down": true,
+      "timestamp_ms": 32042
+    }
+  ],
+  "legacy_game_button_seen": {
+    "ZR": true,
+    "ZL": true,
+    "R": true,
+    "RS": false,
+    "B": true,
+    "Y": true
+  },
+  "interpretation": "Both trigger axes and legacy ZR/ZL outputs were present. Physical left/right mapping is unconfirmed; guided printed-label calibration required.",
+  "old_controller_button_count": 15,
+  "installed_sdl_button_enum_count": 21,
+  "installed_sdl_revision": "SDL-release-2.32.10-0-g5d2495703",
+  "hardware_validation": "pending user rerun; no live SDL init/controller read or game started in this task"
+}

@@ -1,6 +1,6 @@
 # 人工示范录制准备（只录制，不训练）
 
-**run70 最新入口见[开录清单](开录清单.md)**：新的隔离宿主支持每30帧异步原生墨图，逐局核对片区矩阵；旧host/strict/稀疏调查命令作为历史保留。下面旧段落中的状态以最新 `notes/rl-demo-ready-20261024.md` 为准。物理手柄轴向仍待用户回来确认，不启动训练。
+**最新入口见[开录清单](开录清单.md)**：run71增加引导式USB手柄自检/印字映射；run70隔离宿主支持每30帧异步原生墨图。旧host/strict/稀疏调查命令作为历史保留。物理手柄轴向等用户重跑引导确认，不启动训练。
 
 当前为**诊断夹具**：USB Pro Controller摇杆/按键/200Hz IMU已读通；原生1v1、私有输入/状态记录和近似BC转换已实现。2026-10-24的私有异步条件渲染已将热段平均帧率提高到约60；全程锁60、物理陀螺仪方向、原生全图墨色/完整武器阶段仍未签收，暂不开始正式示范或训练。`--allow-unqualified`仍是诊断入口。最新性能与边界见`notes/rl-demo-realtime-20261024.md/.json`，原转换偏差见`notes/rl-demo-20261023.md`。
 
@@ -9,14 +9,17 @@
 ## 先验手柄（不启动游戏）
 
 ```sh
-.venv/bin/python -m rl.demo.controller --seconds 15 --out work/rl-demo/my-controller-check
+.venv/bin/python -m rl.demo.controller --out work/rl-demo/controller-check-002
 ```
 
-USB接好后，先平放3秒，再推四向摇杆、按ZR/ZL/B，分别抬头/左右转动/侧倾。实时打印`raw_sticks`、`sticks`、`buttons`、`gyro_rad_s`和传感事件时间戳。SDL负责USB0x80握手、全量报告与IMU子命令。
+USB接好后，按终端逐步提示操作；先平放3秒，逐项检查18个印字按键、8个摇杆方向、6个转动方向。识别/超时自动进入下一项，项目之间等松开回中，不能把一串动作连续提前做完。SDL负责USB0x80握手、全量报告与IMU子命令。原件001保留；输出目录必须全新且位于私有work/。
 
-- SDL IMU为rad/s；宿主为turns/s，除以`2π`。现有宿主坐标约定用`SDL(x,y,z)→native(x,-z,y)`，物理方向/正负仍须人工对照画面确认；原始数值完整保留。
+- SDL IMU为rad/s；宿主为turns/s，除以`2π`。引导按正反方向积分判断yaw/pitch/roll轴与符号，去静置零偏；重复轴、反向不一致、无运动均标未确认。宿主键盘夹具约定pitch抬头+X/yaw右转+Y/roll右倾+Z，游戏画面仍需开录前核验。未载入profile时保留旧的临时换轴，不能当物理校准结论。
+- SDL以 `SDL_GAMECONTROLLER_USE_BUTTON_LABELS=1` 按Nintendo印字解释面键；标准映射B=1、A=0、X=2、Y=3。扳机是独立axis4/5（0或32767），不在 `all_buttons` 内。引导实测映射覆盖默认值，包括可能的左右互换；SDL映射/版本变化会拒绝旧profile。完整读取运行时21按钮枚举和raw joystick通道，包含misc1截图键；不把不存在的paddle/touchpad当成实体按键。
+- 游戏语义按印字：ZR开火、ZL潜墨、B跳跃、R副武器/出钩、RS大招、Y回正；阶段1仍屏蔽R/RS。
 - 传感事件200Hz，“最新值”约66.7Hz，三子样本随一份USB报告到达，不混称轮询频率。
-- 默认**不加软件死区**，保留游戏原生死区；可在自检显式加`--deadzone .15`。摇杆范围±1，陀螺仪用物理单位，独立demo传输支持±8turns/s，不再误当归一化摇杆截到±1。
+- 默认**0.15径向死区**，profile另含静置中心校正和噪声建议，按方向保留满推；每条记录同时保留raw/processed。摇杆范围±1，陀螺仪独立支持±8turns/s，不截为摇杆±1。
+- 终端和 `report.md` 给出结论表，`summary.json` 含逐项证据，`profile.json` 仅 `complete=true` 可加载。人玩命令加 `--controller-profile work/rl-demo/controller-check-002/profile.json`；脚本源不受影响。自由实时数值监视另用 `--raw --seconds 40`，该模式不生成校准profile。
 - 本轮未遇权限拒绝。若提示设备不可访问：系统设置→隐私与安全性→输入监控，允许启动脚本的终端/App，完全退出重开。不要给无关程序额外权限。
 
 ## 开一局、结束、换对手
