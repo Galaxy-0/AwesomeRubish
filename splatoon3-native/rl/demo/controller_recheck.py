@@ -12,6 +12,7 @@ import time
 
 from .controller_check import (
     DEFAULT_BINDINGS,
+    NATIVE_GYRO_MATRIX,
     gyro_gesture,
     gyro_mapping,
     load_base_profile,
@@ -72,6 +73,8 @@ def recheck(source, out, threshold=0.35):
     ]
     profile.update(
         gyro_mapping=mapping,
+        gyro_native_matrix=NATIVE_GYRO_MATRIX,
+        gyro_native_basis="11.3.0 camera transfer and direction-check-001; game-view recheck pending",
         complete=all(agreed.values())
         and len(sticks) == 8
         and all(v["valid"] for v in sticks)
@@ -120,7 +123,7 @@ class DirectionMonitor:
         if now - self.last < 0.25:
             return
         self.last = now
-        pitch, yaw, roll = row["gyro"]
+        pitch, yaw, roll = row.get("physical_gyro_turns_s", row["gyro"])
 
         def label(v, pos, neg):
             return pos if v > 0.015 else neg if v < -0.015 else "静止"
@@ -129,16 +132,20 @@ class DirectionMonitor:
             f"[方向短测] 手柄 yaw={label(yaw, '右', '左')} pitch={label(pitch, '抬头', '低头')} "
             f"roll={label(roll, '右倾', '左倾')}；SDL rad/s="
             + ",".join(f"{v:+.2f}" for v in row["gyro_rad_s"])
+            + "；HID turns/s="
+            + ",".join(f"{v:+.3f}" for v in row["gyro"])
         )
         view = info.get("own_view", {})
         if info.get("phase") == 1 and view.get("valid"):
             current = (view["yaw"], view["pitch"])
             if self.view is not None:
-                delta = [
-                    math.degrees(math.atan2(math.sin(a - b), math.cos(a - b)))
-                    for a, b in zip(current, self.view)
-                ]
-                msg += f"；原生镜头 Δyaw={delta[0]:+.1f}° Δpitch={delta[1]:+.1f}°"
+                yaw_delta = math.degrees(
+                    math.atan2(
+                        math.sin(current[0] - self.view[0]),
+                        math.cos(current[0] - self.view[0]),
+                    )
+                )
+                msg += f"；原生镜头 Δyaw={yaw_delta:+.1f}° Δpitch_ctl={current[1] - self.view[1]:+.3f}"
             self.view = current
         else:
             self.view = None

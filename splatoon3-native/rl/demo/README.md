@@ -1,6 +1,6 @@
 # 人工示范录制准备（只录制，不训练）
 
-**最新入口见[开录清单](开录清单.md)**：run72为003复核、首次动作锁定、`--only gyro/buttons`和游戏内方向短测；003关键键/pitch通过，yaw/roll仍未闭合，暂用明确标注SDL假设的 `--direction-check` 专用profile。run70隔离宿主支持每30帧异步原生墨图。旧host/strict/稀疏调查命令作为历史保留，不启动训练。
+**最新入口见[开录清单](开录清单.md)**：run73用方向短测001定位pitch反向/yaw错HID轴；002使用 `direction-check-001-audit-r2/profile.json`，注入 `[-SDLx, SDLz, SDLy]/2π`，无额外增益。物理识别和原生XYZ分开；终端另列HID值，俯仰控制字段不再冒充真实角度。002仍等用户画面复测，不启动训练。
 
 当前为**诊断夹具**：USB Pro Controller摇杆/按键/200Hz IMU已读通；原生1v1、私有输入/状态记录和近似BC转换已实现。2026-10-24的私有异步条件渲染已将热段平均帧率提高到约60；全程锁60、物理陀螺仪方向、原生全图墨色/完整武器阶段仍未签收，暂不开始正式示范或训练。`--allow-unqualified`仍是诊断入口。最新性能与边界见`notes/rl-demo-realtime-20261024.md/.json`，原转换偏差见`notes/rl-demo-20261023.md`。
 
@@ -14,13 +14,13 @@
 
 USB接好后，按终端逐步提示操作；先平放3秒，逐项检查18个印字按键、8个摇杆方向、6个转动方向。识别/超时自动进入下一项，项目之间等松开回中，不能把一串动作连续提前做完；转到位后保持不动，等✓再回正。SDL负责USB0x80握手、全量报告与IMU子命令。001/003原件保留；输出目录必须全新且位于私有work/。单项重测用 `--only gyro` 或 `--only buttons` 加 `--base-profile`，不会重复其他组的提示。
 
-- SDL IMU为rad/s；宿主为turns/s，除以`2π`。引导锁定首次超过0.35rad/s动作的方向，要求30ms同号、主轴明确；回位/后来的峰值不会改写。混轴/错误轴、反向不一致、无运动均标未确认。宿主键盘夹具约定pitch抬头+X/yaw右转+Y/roll右倾+Z，游戏画面仍需开录前核验。未载入profile时保留旧的临时换轴，不能当物理校准结论。
+- SDL IMU为rad/s；宿主为turns/s，除以`2π`。引导锁定首次超过0.35rad/s动作的方向，要求30ms同号、主轴明确；回位/后来的峰值不会改写。混轴/错误轴、反向不一致、无运动均标未确认。旧宿主测试键名不能证明游戏消费轴：本构建单轴数据是X负对应抬头、Z对应水平转动。新profile用独立`gyro_native_matrix`分离SDL物理识别与HID XYZ；游戏画面仍需复测。未载入profile时保留旧的临时换轴，不能当物理校准结论。
 - SDL以 `SDL_GAMECONTROLLER_USE_BUTTON_LABELS=1` 按Nintendo印字解释面键；标准映射B=1、A=0、X=2、Y=3。扳机是独立axis4/5（0或32767），不在 `all_buttons` 内。引导实测映射覆盖默认值，包括可能的左右互换；SDL映射/版本变化会拒绝旧profile。完整读取运行时21按钮枚举和raw joystick通道，包含misc1截图键；不把不存在的paddle/touchpad当成实体按键。
 - 游戏语义按印字：ZR开火、ZL潜墨、B跳跃、R副武器/出钩、RS大招、Y回正；阶段1仍屏蔽R/RS。
 - 传感事件200Hz，“最新值”约66.7Hz，三子样本随一份USB报告到达，不混称轮询频率。
 - 默认**0.15径向死区**，profile另含静置中心校正和噪声建议，按方向保留满推；每条记录同时保留raw/processed。摇杆范围±1，陀螺仪独立支持±8turns/s，不截为摇杆±1。
 - 终端和 `report.md` 给出结论表，`summary.json` 含逐项证据，普通录制profile仅关键六键/8方向摇杆/三轴通过且 `complete=true` 可加载；可选未确认键不回填默认值，Minus+Plus需两键均确认。人玩命令加 `--controller-profile .../profile.json`；脚本源不受影响。自由实时数值监视另用 `--raw --seconds 40`，该模式不生成校准profile。
-- 离线复核工具：`python -m rl.demo.controller_recheck --source work/rl-demo/controller-check-003 --out work/rl-demo/controller-check-003-rechecked`。如果首次动作证据冲突，仅生成 `scope=direction_check_only`、`complete=false` 的SDL约定假设profile；只有 `capture --direction-check` 显式接受，普通录制拒绝。详见[方向短测命令](开录清单.md)。
+- 离线复核工具：`python -m rl.demo.controller_recheck --source work/rl-demo/controller-check-003 --out work/rl-demo/controller-check-003-rechecked`。如果首次动作证据冲突，仅生成 `scope=direction_check_only`、`complete=false` 的SDL约定假设profile；只有 `capture --direction-check` 显式接受，普通录制拒绝。已有003-rechecked旧profile保留原样；当前002应使用新版gyro_audit输出，详见[方向短测命令](开录清单.md)。
 - 本轮未遇权限拒绝。若提示设备不可访问：系统设置→隐私与安全性→输入监控，允许启动脚本的终端/App，完全退出重开。不要给无关程序额外权限。
 
 ## 开一局、结束、换对手

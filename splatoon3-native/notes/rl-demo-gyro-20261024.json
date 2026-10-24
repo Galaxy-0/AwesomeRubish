@@ -1,0 +1,172 @@
+{
+  "schema": "gyro-native-transfer-audit-v1",
+  "source": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/direction-check-001",
+  "source_sha256": {
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/direction-check-001/usb-inputs.jsonl": "9811d1d16b7757b8244485da509a95332fe8f5b632c5bc4b52b1b4cafb34d076",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/direction-check-001/inputs-per-present.jsonl": "ec8abd8533f6eea684ca114afe1fceb73c4f996d3d1cfe9611561bb7e441aaee",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/direction-check-001/native-barriers.jsonl": "0e79133b66005fd945964e10b108120cd0f6aa8cf6a8668a03b92cdcb9ea8e6f",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/direction-check-001/result.json": "95447657088d7ee7ccd37240521100801c45b87fd162a29bba516aa3735ededa",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/controller-check-003-rechecked/profile.json": "7072a6adf7a47d2cdd1e587cf280ce4f054d974b2ae707d7dd7905d80c319cdf",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/run70/bc-periodic-full-r1/camera-response.json": "67c64e5bdcba0b2cf83cd703d8918dc076e4cf8b5ba0fa35fd1268fb30aa4002",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261024-101950-890143/player-0/host.log": "29d6e654c5df615b3db3aa0019f3f60ad94eeccef3321f7502c05ec56f796a21"
+  },
+  "frames": 5400,
+  "controlled_fps": 57.58548126711651,
+  "raw_bias_corrected_peak_rad_s": [
+    4.057942210696638,
+    7.902900606859475,
+    1.1445396952331066
+  ],
+  "injected_peak_turns_s": [
+    0.6458415616136234,
+    1.2577856963456249,
+    0.1821591500612403
+  ],
+  "conversion_max_abs_error": 0.0,
+  "injection_max_abs_error": 0.0,
+  "clipped_components": 0,
+  "gyro_software_deadzone": 0,
+  "native_options": [
+    "R0_INPUT_OPTIONS frame=987 object=0x7a249c2880 stick_digital=8 gyro_digital=8 gyro_on=1 before=1",
+    "R0_INPUT_OPTIONS frame=987 object=0x7a249c2880 stick_digital=20 gyro_digital=20 gyro_on=1 normalized_by_native=1 fixture_only=1 save_writes=0"
+  ],
+  "native_single_axis_transfer": [
+    [
+      0.0,
+      0.0,
+      2.3933121521685847
+    ],
+    [
+      -2.4087871752255823,
+      0.0,
+      0.0
+    ]
+  ],
+  "native_single_axis_units": "yaw rad/s and pitch CONTROL-value/s per HID axis rad/s; pitch field is not identical to eye->at elevation",
+  "eye_at_elevation_vs_pitch": {
+    "slope": 1.1789340799310262,
+    "intercept_rad": -0.13157485210626768,
+    "correlation": 0.9996590271925306
+  },
+  "motion_windows": {
+    "0": {
+      "yaw": {
+        "windows": 16,
+        "median_abs_gain": 0.3455235520426061,
+        "median_wall_abs_gain": 0.34247456014079897,
+        "slope_camera_per_hand": 0.038408807233229716,
+        "camera_hand_same_sign_fraction": 0.1875
+      },
+      "pitch": {
+        "windows": 3,
+        "median_abs_gain": 2.532125687294305,
+        "median_wall_abs_gain": 2.4790173879158113,
+        "slope_camera_per_hand": -2.5213541536551007,
+        "camera_hand_same_sign_fraction": 0.0
+      }
+    },
+    "2": {
+      "yaw": {
+        "windows": 14,
+        "median_abs_gain": 0.3437891363636518,
+        "median_wall_abs_gain": 0.33740354886801655,
+        "slope_camera_per_hand": 0.03278655528423887,
+        "camera_hand_same_sign_fraction": 0.07142857142857142
+      },
+      "pitch": {
+        "windows": 3,
+        "median_abs_gain": 2.510506512831721,
+        "median_wall_abs_gain": 2.459518396816024,
+        "slope_camera_per_hand": -2.428146948225215,
+        "camera_hand_same_sign_fraction": 0.0
+      }
+    },
+    "4": {
+      "yaw": {
+        "windows": 14,
+        "median_abs_gain": 0.3215054029499017,
+        "median_wall_abs_gain": 0.31735687456961503,
+        "slope_camera_per_hand": 0.057431142202883714,
+        "camera_hand_same_sign_fraction": 0.07142857142857142
+      },
+      "pitch": {
+        "windows": 3,
+        "median_abs_gain": 2.4087433063132857,
+        "median_wall_abs_gain": 2.3313564779489195,
+        "slope_camera_per_hand": -2.3442126299366164,
+        "camera_hand_same_sign_fraction": 0.0
+      }
+    },
+    "6": {
+      "yaw": {
+        "windows": 14,
+        "median_abs_gain": 0.3142931116331431,
+        "median_wall_abs_gain": 0.3078096221540165,
+        "slope_camera_per_hand": 0.07077909231841757,
+        "camera_hand_same_sign_fraction": 0.07142857142857142
+      },
+      "pitch": {
+        "windows": 3,
+        "median_abs_gain": 2.2854521049481624,
+        "median_wall_abs_gain": 2.236366769605961,
+        "slope_camera_per_hand": -2.352041360674367,
+        "camera_hand_same_sign_fraction": 0.0
+      }
+    },
+    "8": {
+      "yaw": {
+        "windows": 14,
+        "median_abs_gain": 0.3070063770565171,
+        "median_wall_abs_gain": 0.30138986199916473,
+        "slope_camera_per_hand": 0.0848764383278215,
+        "camera_hand_same_sign_fraction": 0.07142857142857142
+      },
+      "pitch": {
+        "windows": 3,
+        "median_abs_gain": 2.1558606691065028,
+        "median_wall_abs_gain": 2.035907544040926,
+        "slope_camera_per_hand": -2.1195872372558,
+        "camera_hand_same_sign_fraction": 0.0
+      }
+    }
+  },
+  "corrected_native_matrix": [
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      0
+    ]
+  ],
+  "predicted_corrected_gain": {
+    "yaw": 2.3933121521685847,
+    "pitch_control": 2.4087871752255823
+  },
+  "limitations": [
+    "human free motion, mixed axes and native camera transients; not an independent Switch hardware gain measurement",
+    "single-axis calibration predicts corrected response; direction-check-002 not yet run",
+    "native Y/roll projection at large pose changes remains unqualified"
+  ],
+  "date": "2026-10-24",
+  "corrected_profile": "work/rl-demo/direction-check-001-audit-r2/profile.json",
+  "corrected_profile_sha256": "a854f575809410c52ca6412c550865435080ad98bf498f70797bcdc2d83b593d",
+  "HID_source_identity": {
+    "same_between_reference_and_human_host": true,
+    "source": "upstream/dm/host/hle_hid.c",
+    "sha256": "c11161f4efc49905aa8995f3c041068d180b8429402755061dc7e3197bc680fd"
+  },
+  "tests": {
+    "component_tests": 32,
+    "passed": true,
+    "hardware_or_game_started": false
+  }
+}

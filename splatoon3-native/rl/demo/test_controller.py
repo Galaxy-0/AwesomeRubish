@@ -12,6 +12,7 @@ from unittest.mock import patch
 from rl.demo.controller import Controller
 from rl.demo.controller_check import (
     DEFAULT_BINDINGS,
+    NATIVE_GYRO_MATRIX,
     GuidedCheck,
     active_channels,
     baseline_report,
@@ -218,6 +219,11 @@ class MappingTests(unittest.TestCase):
         r = c.sample()
         self.assertEqual(r["buttons"][:2], [1, 0])  # profile + expired tap edge
         self.assertAlmostEqual(r["gyro"][1], 0.3 / (2 * math.pi))
+        c.calibration["gyro_native_matrix"] = NATIVE_GYRO_MATRIX
+        r = c.sample()
+        for actual, expected in zip(r["gyro"], [0.1, -0.3, -0.2]):
+            self.assertAlmostEqual(actual, expected / (2 * math.pi))
+        self.assertAlmostEqual(r["physical_gyro_turns_s"][1], 0.3 / (2 * math.pi))
 
     def test_invalid_profile_is_rejected_before_device_access(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -280,6 +286,12 @@ class GuidedTests(unittest.TestCase):
             profile = json.loads((out / "profile.json").read_text())
             self.assertTrue(summary["profile"]["complete"])
             self.assertEqual(validate_profile(profile), profile)
+            for matrix in (
+                [[2, 0, 0], [0, 1, 0], [0, 0, 1]],
+                [[-1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            ):
+                with self.assertRaises(ValueError):
+                    validate_profile(dict(profile, gyro_native_matrix=matrix))
             self.assertIn("ZR", (out / "report.md").read_text())
             self.assertEqual(len(summary["stages"]), 32)
             # Re-run only one group; inherited evidence remains, USB prompts don't repeat it.

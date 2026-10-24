@@ -303,6 +303,19 @@ class Controller:
                     for k in ("pitch", "yaw", "roll")
                 )
             ]
+            row["physical_gyro_turns_s"] = list(row["gyro"])
+            if "gyro_native_matrix" in self.calibration:
+                matrix = self.calibration["gyro_native_matrix"]
+                row["gyro"] = [
+                    max(
+                        -8,
+                        min(
+                            8, sum(v * x for v, x in zip(r, corrected)) / (2 * math.pi)
+                        ),
+                    )
+                    for r in matrix
+                ]
+                row["gyro_native_matrix"] = matrix
             row["gyro_axis_mapping"] = self.calibration["gyro_mapping"]
         return row
 

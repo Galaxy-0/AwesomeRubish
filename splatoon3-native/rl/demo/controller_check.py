@@ -8,6 +8,9 @@ from pathlib import Path
 
 
 GAME_BUTTONS = ("ZR", "ZL", "R", "RS", "B", "Y")
+# SDL physical axes are NOT the native game's yaw/pitch slots. This proper
+# rotation matches our 11.3.0 isolated HID host: -SDLx, SDLz, SDLy.
+NATIVE_GYRO_MATRIX = [[-1, 0, 0], [0, 0, 1], [0, 1, 0]]
 DEFAULT_BINDINGS = {
     "ZR": ["axis", 5],
     "ZL": ["axis", 4],
@@ -197,7 +200,7 @@ def gyro_gesture(rows, bias, threshold=0.35, expected_axis=None):
 
 
 def gyro_mapping(results):
-    """Native fixture: pitch up +X, yaw right +Y, roll right +Z (hle_hid.c)."""
+    """Physical gesture -> SDL axis/sign; separate from native HID coordinates."""
     mapping = {}
     for name, positive, negative in (
         ("pitch", "up", "down"),
@@ -271,6 +274,36 @@ def validate_profile(profile, allow_direction_check=False):
         or {v.get("axis") for v in mapping.values()} != {0, 1, 2}
     ):
         raise ValueError("gyro axes/signs are unconfirmed")
+    if "gyro_native_matrix" in profile:
+        m = profile["gyro_native_matrix"]
+        if (
+            not isinstance(m, list)
+            or len(m) != 3
+            or any(not isinstance(r, list) or len(r) != 3 for r in m)
+        ):
+            raise ValueError("gyro_native_matrix must be 3x3")
+        if any(
+            not isinstance(x, (int, float)) or not math.isfinite(x)
+            for r in m
+            for x in r
+        ):
+            raise ValueError("nonfinite gyro transform")
+        det = sum(
+            m[0][i]
+            * (
+                m[1][(i + 1) % 3] * m[2][(i + 2) % 3]
+                - m[1][(i + 2) % 3] * m[2][(i + 1) % 3]
+            )
+            for i in range(3)
+        )
+        if abs(det - 1) > 1e-6 or any(
+            abs(sum(m[i][k] * m[j][k] for k in range(3)) - int(i == j)) > 1e-6
+            for i in range(3)
+            for j in range(3)
+        ):
+            raise ValueError(
+                "gyro transform must be a proper rotation, not gain/reflection"
+            )
     return profile
 
 
@@ -405,6 +438,8 @@ class GuidedCheck:
             only=self.only,
             stage_evidence=self.results,
             inherited_from=self.prior.get("profile_source"),
+            gyro_native_matrix=self.prior.get("gyro_native_matrix", NATIVE_GYRO_MATRIX),
+            gyro_native_basis="11.3.0 single-axis camera transfer; user pitch inversion in direction-check-001",
             native_camera_validation="pending visual check; physical axes only",
         )
         buttons_ok = set(GAME_BUTTONS).issubset(self.bindings)
