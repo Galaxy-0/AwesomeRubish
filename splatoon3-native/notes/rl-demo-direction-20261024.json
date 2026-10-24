@@ -1,0 +1,177 @@
+{
+  "date": "2026-10-24",
+  "schema": "controller-onset-recheck-v1",
+  "threshold_rad_s": 0.35,
+  "source_sha256": {
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/controller-check-003/profile.json": "8990ad404f941ffd967b48c78a10827094267b4dd996a316ae6ad0aa4db8f3e6",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/controller-check-003/summary.json": "6cc4479a2acf9682128f1603f704b6181cc122a30df66299ad394477427f8cb3",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/controller-check-003/report.md": "c7dddf6cbaa5c6cdf1d2d1792bbe7f9a153c63c57f1196e0c870338026c94dc7",
+    "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/rl-demo/controller-check-003/samples.jsonl": "59e89aca7a77c6ae65218c524bdfc7937586fabf27c9fc65f5c366fd648d4a57"
+  },
+  "first_onsets": {
+    "gyro_yaw_left": {
+      "valid": false,
+      "pending": false,
+      "axis": 0,
+      "sign": -1,
+      "method": "first_threshold_onset_v1",
+      "threshold_rad_s": 0.35,
+      "onset_timestamp_us": 147394064,
+      "onset_vector_rad_s": [
+        -0.47991430666297674,
+        -0.16191412461921573,
+        -0.09679656848311424
+      ],
+      "onset_offset_seconds": 3.172592,
+      "sensor_updates": 682,
+      "reason": "unexpected_axis"
+    },
+    "gyro_yaw_right": {
+      "valid": false,
+      "pending": false,
+      "axis": 0,
+      "sign": -1,
+      "method": "first_threshold_onset_v1",
+      "threshold_rad_s": 0.35,
+      "onset_timestamp_us": 151778004,
+      "onset_vector_rad_s": [
+        -0.36900076176971197,
+        -0.1810881639830768,
+        0.21167601272463799
+      ],
+      "onset_offset_seconds": 0.032886,
+      "sensor_updates": 502,
+      "reason": "unexpected_axis"
+    },
+    "gyro_pitch_up": {
+      "valid": false,
+      "pending": false,
+      "axis": 0,
+      "sign": 1,
+      "method": "first_threshold_onset_v1",
+      "threshold_rad_s": 0.35,
+      "onset_timestamp_us": 157681708,
+      "onset_vector_rad_s": [
+        0.36686781141906977,
+        -0.03621763316914439,
+        0.3297465555369854
+      ],
+      "onset_offset_seconds": 1.647998,
+      "sensor_updates": 561,
+      "reason": "mixed_axis_onset"
+    },
+    "gyro_pitch_down": {
+      "valid": true,
+      "pending": false,
+      "axis": 0,
+      "sign": -1,
+      "method": "first_threshold_onset_v1",
+      "threshold_rad_s": 0.35,
+      "onset_timestamp_us": 161800465,
+      "onset_vector_rad_s": [
+        -0.35193714406341314,
+        0.013847918715327978,
+        -0.036165751516819
+      ],
+      "onset_offset_seconds": 1.611196,
+      "sensor_updates": 367,
+      "reason": "first_onset_confirmed"
+    },
+    "gyro_roll_left": {
+      "valid": false,
+      "pending": false,
+      "axis": 0,
+      "sign": -1,
+      "method": "first_threshold_onset_v1",
+      "threshold_rad_s": 0.35,
+      "onset_timestamp_us": 164534774,
+      "onset_vector_rad_s": [
+        -0.3530036201700568,
+        0.2258276049979031,
+        -0.08722328022122383
+      ],
+      "onset_offset_seconds": 0.194258,
+      "sensor_updates": 4252,
+      "reason": "unexpected_axis"
+    },
+    "gyro_roll_right": {
+      "valid": false,
+      "pending": false,
+      "axis": 1,
+      "sign": 1,
+      "method": "first_threshold_onset_v1",
+      "threshold_rad_s": 0.35,
+      "onset_timestamp_us": 187777108,
+      "onset_vector_rad_s": [
+        -0.3306076219305396,
+        0.35152408527210355,
+        -0.13296231999993324
+      ],
+      "onset_offset_seconds": 1.221182,
+      "sensor_updates": 513,
+      "reason": "unexpected_axis"
+    }
+  },
+  "agrees_with_SDL": {
+    "pitch": true,
+    "yaw": false,
+    "roll": false
+  },
+  "generated_profile_complete": false,
+  "conclusion": "conflict; SDL yaw/roll assumptions for direction check ONLY",
+  "generated_profile": "work/rl-demo/controller-check-003-rechecked/profile.json",
+  "generated_profile_sha256": "7072a6adf7a47d2cdd1e587cf280ce4f054d974b2ae707d7dd7905d80c319cdf",
+  "critical_buttons": {
+    "ZR": [
+      "axis",
+      5
+    ],
+    "ZL": [
+      "axis",
+      4
+    ],
+    "R": [
+      "button",
+      10
+    ],
+    "RS": [
+      "button",
+      8
+    ],
+    "B": [
+      "button",
+      1
+    ],
+    "Y": [
+      "button",
+      3
+    ]
+  },
+  "unconfirmed_buttons": [
+    "Minus",
+    "Plus",
+    "Up"
+  ],
+  "effective_gyro_mapping": {
+    "pitch": {
+      "valid": true,
+      "axis": 0,
+      "sign": 1,
+      "basis": "previous accepted pitch pair"
+    },
+    "yaw": {
+      "valid": false,
+      "axis": 1,
+      "sign": -1,
+      "basis": "SDL convention assumption"
+    },
+    "roll": {
+      "valid": false,
+      "axis": 2,
+      "sign": -1,
+      "basis": "SDL convention assumption"
+    }
+  },
+  "game_launch": "not started by agent; user terminal direction check pending",
+  "checks": "29 component tests passed; no USB initialization or game runtime used"
+}

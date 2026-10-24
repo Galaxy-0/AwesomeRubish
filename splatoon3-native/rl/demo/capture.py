@@ -439,6 +439,12 @@ def run(a):
         raise ValueError(
             "Human recording is not qualified yet: realtime60/physical gyro axes/dense paint remain unverified. Use --allow-unqualified only for explicit diagnostic capture; see notes/rl-demo-20261023.md."
         )
+    direction_check = bool(getattr(a, "direction_check", False))
+    if direction_check:
+        if a.source != "controller" or not getattr(a, "controller_profile", None):
+            raise ValueError("--direction-check requires controller source and explicit --controller-profile")
+        if a.max_frames is None:
+            a.max_frames = 3600
     out = safe_out(a.out)
     out.mkdir(parents=True, exist_ok=False, mode=0o700)
     fixture_path = getattr(a, "fixture_inputs", None)
@@ -462,6 +468,7 @@ def run(a):
     old = signal.signal(signal.SIGINT, stopping)
     old_term = signal.signal(signal.SIGTERM, stopping)
     controller = None
+    direction_monitor = None
     child = None
     env = None
     barriers = []
@@ -535,8 +542,17 @@ def run(a):
         if a.source == "controller":
             from .controller import Controller
 
-            controller = Controller(profile=getattr(a, "controller_profile", None))
+            controller = Controller(profile=getattr(a, "controller_profile", None),
+                                    allow_direction_check=direction_check)
             result["controller"] = controller.device
+            if direction_check:
+                from .controller_recheck import DirectionMonitor
+
+                direction_monitor = DirectionMonitor()
+                result["direction_check_only"] = True
+                print("方向短测：窗口内先按ZR从出生点发射，再水平左右转/抬头低头。"
+                      "终端每0.25秒提示输入方向及原生镜头变化；请看画面核对。"
+                      "Minus/Plus未确认时用Ctrl-C或输出目录STOP文件结束；默认最多3600帧。", flush=True)
         spec = PolicySpec.load(a.policy) if a.opponent == "policy" else None
         opponent_stride = a.opponent_stride or (spec.step_frames if spec else 6)
         if opponent_stride < 1:
@@ -694,6 +710,8 @@ def run(a):
                 _, info = env.advance_settlement()
             info = env.process_infos  # PettingZoo returns active agents only; retain both native peers through settlement
             ack = time.monotonic_ns()
+            if direction_monitor:
+                direction_monitor.update(raw, info["player_0"])
             times.append((ack - send) / 1e6)
             interval = dict(
                 frame_interval=[frame, frame + 1],
@@ -835,6 +853,7 @@ if __name__ == "__main__":
     p.add_argument("--out", required=True)
     p.add_argument("--source", choices=["controller", "script"], default="controller")
     p.add_argument("--controller-profile", type=Path, help="private profile.json from guided USB controller check")
+    p.add_argument("--direction-check", action="store_true", help="human in-game gyro visual check; permits explicitly scoped SDL-assumption profile, prints directions; defaults to3600 frames")
     p.add_argument("--opponent", choices=["52", "policy"], default="52")
     p.add_argument("--policy", default="arena/policies/alpha")
     p.add_argument(

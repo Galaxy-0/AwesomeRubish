@@ -1,3 +1,19 @@
+# run72：003复核与游戏内方向短测已备好，等用户启动（2026-10-24）
+
+本轮未打开SDL设备、未启动游戏、未训练。原003四文件SHA一致，全部保留。关键按键/pitch通过；**yaw/roll按首次动作仍有轴向冲突**，不能据后段峰值升级确认。
+
+- 首次越0.35rad/s：yaw_left先x−、yaw_right先x−、roll_left先x−、roll_right先y+。后段y−/z−可与SDL约定相容，但不等于首个动作闭合。
+- 临时短测profile：`work/rl-demo/controller-check-003-rechecked/profile.json`。pitch=x+沿用已确认；yaw=y−、roll=z−明确为SDL假设，`complete=false / scope=direction_check_only`，只有显式`--direction-check`可用，普通录制拒绝。
+- 引导已锁定首次动作/30ms确认，不被大幅回位改写；首次混轴/错误轴直接记未确认。提示“到位保持，等✓再回正”。支持`--only gyro/buttons --base-profile ...`，保留其余项目证据。
+- Minus/Plus/十字上未确认，未回填默认值。短测用Ctrl-C或`touch work/rl-demo/direction-check-001/STOP`；不依赖组合键。
+- 29项组件、静态检查、三项CLI帮助通过；用户画面方向实测仍待完成，不冒领物理/性能验收。T1/S1暂停，policies/宿主/原存档未改。
+
+**下一步直接命令见[开录清单顶部](rl/demo/开录清单.md)**：capture完整渲染隔离宿主，1房水刀vs.52脚本，主武器only，最多5400帧（约90秒，不含起机），每0.25秒打印输入方向/原始IMU/原生镜头角度变化。用户独立终端运行，画面出现ZR发射出生后核对左右/抬头低头。
+
+[完整报告](notes/rl-demo-direction-20261024.md) · [003复核数值与SHA](notes/rl-demo-direction-20261024.json)。本轮停下等待用户。
+
+---
+
 # run71：USB Pro 引导自检已修好，等待用户重跑（2026-10-24）
 
 只修手柄工具和录制端校准接入；未读取实时手柄、未启动游戏、未训练，T1/S1暂停。

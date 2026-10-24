@@ -20,16 +20,24 @@ from .controller_check import (
     mapped_buttons,
     radial_sticks,
     validate_profile,
+    load_base_profile,
 )
 
 
 class Controller:
-    def __init__(self, library=None, deadzone=0.15, profile=None):
+    def __init__(
+        self, library=None, deadzone=0.15, profile=None, allow_direction_check=False
+    ):
         if not 0 <= deadzone < 0.5:
             raise ValueError("extra deadzone must be in [0,.5)")
         self.deadzone = deadzone
         self.calibration = (
-            validate_profile(json.loads(Path(profile).read_text())) if profile else {}
+            validate_profile(
+                json.loads(Path(profile).read_text()),
+                allow_direction_check=allow_direction_check,
+            )
+            if profile
+            else {}
         )
         path = (
             library
@@ -161,7 +169,10 @@ class Controller:
             controller_button_names=self.button_names,
             joystick_axis_button_hat_counts=self.joy_counts,
             calibration_file=str(profile) if profile else None,
-            physical_mapping_verified=bool(profile),
+            physical_mapping_verified=bool(self.calibration.get("complete")),
+            profile_scope=self.calibration.get(
+                "scope", "calibrated" if profile else "unverified"
+            ),
         )
         if profile:
             saved = self.calibration["device"]
@@ -321,10 +332,23 @@ def main(a):
         raise ValueError(
             "guided check requires --out work/rl-demo/controller-check-002"
         )
+    if a.only != "all" and not a.base_profile:
+        raise ValueError("--only requires --base-profile from the previous check")
+    if not 0.05 <= a.gyro_threshold <= 3:
+        raise ValueError("gyro onset threshold must be .05–3 rad/s")
+    base = load_base_profile(a.base_profile) if a.base_profile else None
     c = Controller(a.library, a.deadzone, a.profile)
     if not a.raw:
         try:
-            GuidedCheck(c, a.out, a.timeout, a.baseline_seconds).run()
+            GuidedCheck(
+                c,
+                a.out,
+                a.timeout,
+                a.baseline_seconds,
+                only=a.only,
+                base_profile=base,
+                gyro_threshold=a.gyro_threshold,
+            ).run()
         finally:
             c.close()
         return
@@ -404,6 +428,17 @@ if __name__ == "__main__":
         "--timeout", type=float, default=12, help="per-step timeout in guided mode"
     )
     p.add_argument("--baseline-seconds", type=float, default=3)
+    p.add_argument("--only", choices=["all", "gyro", "buttons"], default="all")
+    p.add_argument(
+        "--base-profile",
+        help="previous profile.json (may be incomplete) to preserve other checks",
+    )
+    p.add_argument(
+        "--gyro-threshold",
+        type=float,
+        default=0.35,
+        help="first-motion onset threshold, rad/s",
+    )
     p.add_argument(
         "--deadzone",
         type=float,

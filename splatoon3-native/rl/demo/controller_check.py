@@ -143,8 +143,12 @@ def baseline_report(rows):
     )
 
 
-def gyro_gesture(rows, bias):
-    """Signed integrated angle from unique IMU events, not duplicated poll values."""
+def gyro_gesture(rows, bias, threshold=0.35, expected_axis=None):
+    """Lock the FIRST threshold crossing; never relabel a return/larger later motion.
+
+    Require a dominant, same-sign 30ms onset. Mixed-axis onset is a failed
+    attempt, not permission to scan ahead until the desired answer appears.
+    """
     events = {}
     for r in rows:
         for e in r.get("sensor_events", []):
@@ -152,30 +156,44 @@ def gyro_gesture(rows, bias):
                 events[e["timestamp_us"]] = e["gyro_rad_s"]
         if r.get("sensor_timestamp_us"):
             events.setdefault(r["sensor_timestamp_us"], r["gyro_rad_s"])
-    angle, energy = [0.0] * 3, [0.0] * 3
-    stamps = sorted(events)
-    for a, b in zip(stamps, stamps[1:]):
-        dt = min(0.05, (b - a) / 1e6)
-        for i in range(3):
-            v = events[b][i] - bias[i]
-            angle[i] += v * dt
-            energy[i] += abs(v) * dt
-    axis = max(range(3), key=energy.__getitem__)
-    runner = sorted(energy)[1]
-    valid = (
-        len(stamps) >= 10
-        and energy[axis] > 0.12
-        and energy[axis] > 1.8 * runner
-        and abs(angle[axis]) > 0.7 * energy[axis]
-    )
-    return dict(
-        valid=valid,
+    samples = [(t, [x - b for x, b in zip(v, bias)]) for t, v in sorted(events.items())]
+    first = next(((t, v) for t, v in samples if max(map(abs, v)) >= threshold), None)
+    if first is None:
+        return dict(
+            valid=False, pending=True, reason="no_onset", sensor_updates=len(samples)
+        )
+    stamp, vector = first
+    axis = max(range(3), key=lambda i: abs(vector[i]))
+    sign = 1 if vector[axis] > 0 else -1
+    result = dict(
+        valid=False,
+        pending=False,
         axis=axis,
-        sign=1 if angle[axis] > 0 else -1,
-        angle_rad=angle,
-        absolute_angle_rad=energy,
-        sensor_updates=len(stamps),
+        sign=sign,
+        method="first_threshold_onset_v1",
+        threshold_rad_s=threshold,
+        onset_timestamp_us=stamp,
+        onset_vector_rad_s=vector,
+        onset_offset_seconds=(stamp - samples[0][0]) / 1e6,
+        sensor_updates=len(samples),
     )
+    if expected_axis is not None and axis != expected_axis:
+        return dict(result, reason="unexpected_axis")
+    if abs(vector[axis]) < 1.8 * max(abs(vector[i]) for i in range(3) if i != axis):
+        return dict(result, reason="mixed_axis_onset")
+    if samples[-1][0] < stamp + 30000:
+        return dict(result, pending=True, reason="onset_debounce")
+    window = [(t, v) for t, v in samples if stamp <= t <= stamp + 30000]
+    if len(window) < 5:
+        return dict(result, reason="insufficient_fresh_updates")
+    if any(v[axis] * sign < threshold * 0.5 for _, v in window):
+        return dict(result, reason="onset_reversed_or_too_short")
+    if any(
+        abs(v[axis]) < 1.5 * max(abs(v[i]) for i in range(3) if i != axis)
+        for _, v in window
+    ):
+        return dict(result, reason="mixed_axis_onset")
+    return dict(result, valid=True, reason="first_onset_confirmed")
 
 
 def gyro_mapping(results):
@@ -201,14 +219,21 @@ def gyro_mapping(results):
     return mapping
 
 
-def validate_profile(profile):
-    if profile.get("schema") != "pro-controller-physical-v1" or not profile.get(
-        "complete"
+def validate_profile(profile, allow_direction_check=False):
+    provisional = bool(
+        allow_direction_check
+        and profile.get("usable_for_direction_check")
+        and profile.get("scope") == "direction_check_only"
+    )
+    if profile.get("schema") != "pro-controller-physical-v1" or not (
+        profile.get("complete") or provisional
     ):
         raise ValueError("手柄校准未通过；先重跑引导式自检，不能使用不完整 profile")
     bindings = profile.get("bindings", {})
-    if set(bindings) != set(DEFAULT_BINDINGS):
-        raise ValueError("profile 缺少印字按键映射")
+    if not set(GAME_BUTTONS).issubset(bindings) or not set(bindings).issubset(
+        DEFAULT_BINDINGS
+    ):
+        raise ValueError("profile 缺少关键印字按键映射")
     values = []
     for kind, index in bindings.values():
         if (
@@ -236,7 +261,12 @@ def validate_profile(profile):
     if (
         set(mapping) != {"pitch", "yaw", "roll"}
         or not all(
-            v.get("valid") and v.get("sign") in (-1, 1) for v in mapping.values()
+            (
+                v.get("valid")
+                or (provisional and v.get("basis") == "SDL convention assumption")
+            )
+            and v.get("sign") in (-1, 1)
+            for v in mapping.values()
         )
         or {v.get("axis") for v in mapping.values()} != {0, 1, 2}
     ):
@@ -244,11 +274,57 @@ def validate_profile(profile):
     return profile
 
 
+def load_base_profile(path):
+    path = Path(path).resolve()
+    if "work" not in path.parts:
+        raise ValueError("calibration profiles must stay in private work/")
+    profile = json.loads(path.read_text())
+    if profile.get("schema") != "pro-controller-physical-v1":
+        raise ValueError("invalid base profile")
+    summary = path.with_name("summary.json")
+    if "stage_evidence" not in profile and summary.exists():
+        saved = json.loads(summary.read_text())
+        if saved.get("profile") != profile:
+            raise ValueError("base profile and summary disagree")
+        profile["stage_evidence"] = saved.get("stages", {})
+    profile["profile_source"] = str(path)
+    return profile
+
+
 class GuidedCheck:
-    def __init__(self, controller, out, timeout=12, baseline_seconds=3, emit=print):
+    def __init__(
+        self,
+        controller,
+        out,
+        timeout=12,
+        baseline_seconds=3,
+        emit=print,
+        only="all",
+        base_profile=None,
+        gyro_threshold=0.35,
+    ):
         self.c, self.out = controller, Path(out)
         self.timeout, self.baseline_seconds, self.emit = timeout, baseline_seconds, emit
-        self.results, self.bindings = {}, {}
+        self.only, self.prior = only, base_profile or {}
+        self.gyro_threshold = gyro_threshold
+        if only != "all" and not base_profile:
+            raise ValueError(
+                "--only requires --base-profile to preserve the other checks"
+            )
+        if base_profile:
+            if base_profile.get("schema") != "pro-controller-physical-v1":
+                raise ValueError("invalid base profile schema")
+            if any(
+                base_profile["device"].get(k) != controller.device.get(k)
+                for k in ("vendor", "product", "sdl_mapping", "sdl_revision")
+            ):
+                raise ValueError("base profile SDL/device mapping changed")
+        self.results = {
+            k: v
+            for k, v in self.prior.get("stage_evidence", {}).items()
+            if not k.startswith("gyro_" if only == "gyro" else "button_")
+        }
+        self.bindings = dict(self.prior.get("bindings", {})) if only == "gyro" else {}
 
     def read(self, stage):
         row = dict(self.c.sample(), check_stage=stage)
@@ -292,7 +368,13 @@ class GuidedCheck:
             result = detect(rows)
             if result:
                 self.emit(
-                    "  ✓ 已识别 " + json.dumps(result, ensure_ascii=False), flush=True
+                    (
+                        "  ✓ 已识别；现在可以回正。 "
+                        if result.get("valid")
+                        else "  ✗ 本次动作未确认。 "
+                    )
+                    + json.dumps(result, ensure_ascii=False),
+                    flush=True,
                 )
                 return result
             time.sleep(0.004)
@@ -304,7 +386,7 @@ class GuidedCheck:
             raise ValueError("controller diagnostics must stay in private work/")
         self.out.mkdir(parents=True, exist_ok=False)
         self.emit(
-            "引导式 USB Pro 自检：不启动游戏。按手柄印字操作；每项完成后松开并静止。\n"
+            "引导式 USB Pro 自检：不启动游戏。按手柄印字操作。转到位后保持不动，等出现 ✓ 再回正。\n"
             "先把手柄平放，不碰摇杆/按键，采集中心与 IMU 零偏。Ctrl-C 可中止并保留原件。",
             flush=True,
         )
@@ -315,18 +397,33 @@ class GuidedCheck:
             device=self.c.device,
             bindings=self.bindings,
             **self.base,
-            gyro_mapping=gyro_mapping(self.results),
+            gyro_mapping=(
+                self.prior.get("gyro_mapping", {})
+                if self.only == "buttons"
+                else gyro_mapping(self.results)
+            ),
+            only=self.only,
+            stage_evidence=self.results,
+            inherited_from=self.prior.get("profile_source"),
             native_camera_validation="pending visual check; physical axes only",
         )
-        buttons_ok = len(self.bindings) == len(DEFAULT_BINDINGS)
+        buttons_ok = set(GAME_BUTTONS).issubset(self.bindings)
+        stick_checks = [v for k, v in self.results.items() if k.startswith("stick_")]
+        sticks_ok = len(stick_checks) == 8 and all(v["valid"] for v in stick_checks)
+        profile["unconfirmed_buttons"] = sorted(
+            set(DEFAULT_BINDINGS) - self.bindings.keys()
+        )
+        profile["all_buttons_confirmed"] = not profile["unconfirmed_buttons"]
+        profile["stick_directions_verified"] = sticks_ok
         unique = len({tuple(v) for v in self.bindings.values()}) == len(self.bindings)
         profile["complete"] = bool(
             buttons_ok
             and unique
             and self.base["stable"]
-            and all(v["valid"] for v in self.results.values())
+            and sticks_ok
             and all(v["valid"] for v in profile["gyro_mapping"].values())
         )
+        profile["stop_combo_enabled"] = {"Minus", "Plus"}.issubset(self.bindings)
         if profile["complete"]:
             validate_profile(profile)
         summary = dict(
@@ -365,6 +462,14 @@ class GuidedCheck:
             + str(self.base["deadzone"]),
             flush=True,
         )
+        if self.only in ("all", "buttons"):
+            self.check_buttons()
+        if self.only == "all":
+            self.check_sticks()
+        if self.only in ("all", "gyro"):
+            self.check_gyro()
+
+    def check_buttons(self):
         for label, prompt in BUTTON_LABELS.items():
 
             def detect(rows):
@@ -379,6 +484,8 @@ class GuidedCheck:
             self.results["button_" + label] = result
             if result["valid"]:
                 self.bindings[label] = result["binding"]
+
+    def check_sticks(self):
         for name, axis, sign in (
             ("左摇杆左", 0, -1),
             ("左摇杆右", 0, 1),
@@ -405,6 +512,8 @@ class GuidedCheck:
             self.results["stick_" + name] = self.measure(
                 "stick_" + name, "请将 " + name + " 推到底", detect
             )
+
+    def check_gyro(self):
         for name, direction, text in (
             ("yaw", "left", "向左水平转动手柄（平放方向转弯，不侧倾）"),
             ("yaw", "right", "向右水平转动手柄（平放方向转弯，不侧倾）"),
@@ -414,13 +523,21 @@ class GuidedCheck:
             ("roll", "right", "向右侧倾手柄（右握把降低，左握把升高）"),
         ):
 
-            def detect(rows):
-                result = gyro_gesture(rows, self.base["gyro_bias_rad_s"])
-                return result if result["valid"] else None
+            def detect(rows, name=name):
+                result = gyro_gesture(
+                    rows,
+                    self.base["gyro_bias_rad_s"],
+                    threshold=self.gyro_threshold,
+                    expected_axis=dict(pitch=0, yaw=1, roll=2)[name],
+                )
+                return None if result.get("pending") else result
 
             stage = f"gyro_{name}_{direction}"
             self.results[stage] = self.measure(
-                stage, "请从正常握姿 " + text + " 约30–60°", detect, gyro=True
+                stage,
+                "请从正常握姿 " + text + " 约30–60°；到位保持，等 ✓ 再回正",
+                detect,
+                gyro=True,
             )
 
 
@@ -488,7 +605,9 @@ def report_markdown(summary):
         f"- 未校中心建议径向死区 ≥ {p['recommended_uncentered_deadzone']:.3f}；校中心后采用 {p['deadzone']:.3f}。原始值和处理值均保留。",
         f"- 静置稳定：{p['stable']}；按键绑定唯一：{summary['button_bindings_unique']}。",
         f"- IMU 事件 {summary['sensor_event_hz']:.1f} Hz；最新状态 {summary['observed_latest_hz']:.1f} Hz（不是轮询率），单位 rad/s。",
-        f"- 校准文件可用：{p['complete']}；原生画面方向仍需开录前短测确认。本工具不启动游戏。",
+        f"- 关键操作校准可用：{p['complete']}；未确认按键：{p.get('unconfirmed_buttons', [])}。",
+        f"- Minus+Plus提前结束：{p.get('stop_combo_enabled', False)}；未确认时用STOP文件或Ctrl-C。",
+        "- 原生画面方向仍需开录前短测确认。本工具不启动游戏。",
         "",
     ]
     return "\n".join(lines)

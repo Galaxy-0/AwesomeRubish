@@ -22,6 +22,7 @@ from rl.demo.controller_check import (
     resolve_binding,
     validate_profile,
 )
+from rl.demo.controller_recheck import DirectionMonitor
 
 
 def row(us=1000, sticks=None, gyro=None, channels=()):
@@ -128,6 +129,41 @@ class MappingTests(unittest.TestCase):
         results["gyro_roll_left"]["sign"] = -1
         results["gyro_roll_left"]["axis"] = results["gyro_roll_right"]["axis"] = 0
         self.assertFalse(any(v["valid"] for v in gyro_mapping(results).values()))
+
+    def test_first_onset_is_not_replaced_by_larger_return(self):
+        rows = [
+            row(1000 + i * 5000, gyro=[0, 0.6 if i < 12 else -7, 0]) for i in range(60)
+        ]
+        result = gyro_gesture(rows, [0, 0, 0])
+        self.assertTrue(result["valid"])
+        self.assertEqual((result["axis"], result["sign"]), (1, 1))
+        self.assertEqual(result["onset_timestamp_us"], 1000)
+
+    def test_first_mixed_or_wrong_axis_cannot_scan_ahead_to_success(self):
+        mixed = [
+            row(1000 + i * 5000, gyro=[0.6, 0.5, 0] if i < 10 else [0, -5, 0])
+            for i in range(60)
+        ]
+        self.assertEqual(gyro_gesture(mixed, [0, 0, 0])["reason"], "mixed_axis_onset")
+        wrong = [row(1000 + i * 5000, gyro=[0, 0, 1]) for i in range(15)]
+        result = gyro_gesture(wrong, [0, 0, 0], expected_axis=1)
+        self.assertFalse(result["valid"])
+        self.assertEqual(result["reason"], "unexpected_axis")
+
+    def test_direction_monitor_labels_and_rate_limit(self):
+        lines = []
+        monitor = DirectionMonitor(emit=lambda line, **kw: lines.append(line))
+        r = dict(gyro=[0.1, 0.2, -0.1], gyro_rad_s=[0.6, -1.2, 0.6])
+        monitor.update(
+            r, dict(phase=1, own_view=dict(valid=True, yaw=0, pitch=0)), now=1
+        )
+        monitor.update(r, {}, now=1.1)
+        monitor.update(
+            r, dict(phase=1, own_view=dict(valid=True, yaw=0.1, pitch=0.05)), now=1.3
+        )
+        self.assertEqual(len(lines), 2)
+        self.assertIn("yaw=右 pitch=抬头", lines[0])
+        self.assertIn("Δyaw=+5.7°", lines[1])
 
     def test_real_sample_polls_axes_extended_buttons_and_edge_events(self):
         class FakeSDL:
@@ -246,6 +282,54 @@ class GuidedTests(unittest.TestCase):
             self.assertEqual(validate_profile(profile), profile)
             self.assertIn("ZR", (out / "report.md").read_text())
             self.assertEqual(len(summary["stages"]), 32)
+            # Re-run only one group; inherited evidence remains, USB prompts don't repeat it.
+            for group in ("gyro", "buttons"):
+                only_out = Path(tmp) / "work" / group
+                reused = FakeCheck(
+                    FakeController(),
+                    only_out,
+                    only=group,
+                    base_profile=profile,
+                    emit=lambda *a, **kw: None,
+                ).run()
+                self.assertTrue(reused["profile"]["complete"])
+                recorded = {
+                    json.loads(line)["check_stage"]
+                    for line in (only_out / "samples.jsonl").read_text().splitlines()
+                }
+                self.assertFalse(any(s.startswith("stick_") for s in recorded))
+                self.assertFalse(
+                    any(
+                        s.startswith("button_" if group == "gyro" else "gyro_")
+                        for s in recorded
+                    )
+                )
+            partial = dict(
+                profile,
+                bindings={
+                    k: v
+                    for k, v in profile["bindings"].items()
+                    if k not in ("Minus", "Plus", "Up")
+                },
+            )
+            self.assertEqual(validate_profile(partial), partial)
+            provisional = dict(
+                partial,
+                complete=False,
+                scope="direction_check_only",
+                usable_for_direction_check=True,
+                gyro_mapping=dict(
+                    profile["gyro_mapping"],
+                    yaw=dict(
+                        valid=False, axis=1, sign=-1, basis="SDL convention assumption"
+                    ),
+                ),
+            )
+            with self.assertRaises(ValueError):
+                validate_profile(provisional)
+            self.assertEqual(
+                validate_profile(provisional, allow_direction_check=True), provisional
+            )
             profile["complete"] = False
             with self.assertRaises(ValueError):
                 validate_profile(profile)
