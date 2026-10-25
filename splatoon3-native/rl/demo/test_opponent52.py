@@ -67,26 +67,28 @@ class OpponentTests(unittest.TestCase):
                 delays.append(first)
             means.append(sum(delays) / len(delays))
         self.assertGreater(means[0], means[1])
-        self.assertGreater(means[1], means[2])
+        self.assertGreaterEqual(means[1], means[2])
         a, b = self.bot(seed=7), self.bot(seed=7)
         self.assertEqual(
             [a.act(view(f)) for f in range(0, 200, 6)],
             [b.act(view(f)) for f in range(0, 200, 6)],
         )
 
-    def test_hidden_truth_poison_never_updates_memory_or_fires(self):
+    def test_hidden_truth_poison_never_updates_memory_or_combat_aim(self):
         b = self.bot()
         b.act(view(0))
         old = b.last_seen.copy()
         v = view(6, False, position=object())
         v["enemies"][0].update(last_seen_position=[100, 100, 100], last_seen_frame=6)
-        a = b.act(v)
+        b.act(v)
         np.testing.assert_equal(b.last_seen, old)
         self.assertEqual(b.seen_frame, 0)
-        self.assertEqual(a["buttons"][0], 0)
+        self.assertFalse(
+            b.debug["fire"]
+        )  # path painting is allowed, target firing is not
         self.assertEqual(b.debug["mode"], "memory_search")
         b._patrol = Mock(return_value=neutral())
-        b.act(view(200, False, position=object()))
+        b.act(view(b.p.memory_frames + 12, False, position=object()))
         self.assertIsNone(b.last_seen)
 
     def test_outside_view_cone_or_stale_sample_is_not_perceived(self):
@@ -124,6 +126,58 @@ class OpponentTests(unittest.TestCase):
                 self.assertEqual(a["buttons"][2:4], [0, 0])
                 self.assertLessEqual(max(abs(g) for g in a["gyro"]), 8)
                 self.assertLessEqual(math.hypot(*a["sticks"][:2]), 1)
+
+    def test_new_easy_motor_settings_exceed_old_hard(self):
+        p = LEVELS["easy"]
+        self.assertLess(p.aim_tau, 0.20)
+        self.assertGreater(p.yaw_degrees_s, 200)
+        self.assertLess(p.error_degrees, 2)
+        self.assertLessEqual(p.reaction_frames, 10)
+        self.assertLess(p.settle_frames, 9)
+        self.assertGreater(p.paint_duty, 0.70)
+
+    def test_policy_and_legacy_cadence_preserved_and_explicit_zero_rejected(self):
+        from .capture import resolve_opponent_stride
+
+        self.assertEqual(resolve_opponent_stride(None, "hard", None), 2)
+        self.assertEqual(resolve_opponent_stride(None, "turret", None), 6)
+        self.assertEqual(
+            resolve_opponent_stride(argparse.Namespace(step_frames=12), None, None), 12
+        )
+        self.assertEqual(resolve_opponent_stride(None, "hard", 4), 4)
+        with self.assertRaisesRegex(ValueError, "positive"):
+            resolve_opponent_stride(None, "hard", 0)
+
+    def test_far_visible_target_triggers_route_approach_not_static_strafe(self):
+        b = self.bot()
+        b.act(view(0, position=(0, 0, 25)))
+        self.assertEqual(b.debug["mode"], "approach")
+        self.assertFalse(b.debug["fire"])
+
+    def test_approach_painting_keeps_yaw_tracking_the_visible_target(self):
+        b = self.bot("hard")
+        a = b.act(view(0, position=(10, 0, 25)))
+        self.assertEqual(b.debug["mode"], "approach")
+        self.assertGreater(a["gyro"][2], 0)  # must not be replaced by path-sweep yaw
+
+    def test_brief_sight_break_does_not_restart_first_detection_delay(self):
+        b = self.bot("hard")
+        b.act(view(0))
+        deadline = b.reaction_at
+        b.act(view(6, False))
+        b.act(view(20))
+        self.assertEqual(b.reaction_at, deadline)
+        self.assertEqual(b.acquired_at, 0)
+        b.act(view(80, False))
+        b.act(view(90))
+        self.assertEqual(b.acquired_at, 90)
+        self.assertGreater(b.reaction_at, 90)
+
+    def test_idle_fixture_never_launches_or_shoots(self):
+        from .capture import scripted
+
+        for f in (0, 60, 180, 2000, 10800):
+            self.assertEqual(scripted(f, "idle"), neutral())
 
     def test_low_health_or_ink_recovers_then_reengages(self):
         for hp, ink in [(0.2, 0.6), (1.0, 0.1)]:
@@ -213,14 +267,30 @@ class OpponentTests(unittest.TestCase):
         self.assertEqual(masked["player_0"]["observer_buttons"], [1])
         self.assertEqual(original["player_0"]["buttons"], [1] * 6)
 
+    def test_player_replay_preserves_launch_gyro_X_without_overwriting_opponent(self):
+        from .capture import replay_actions, run
+
+        current = dict(
+            player_0=neutral(), player_1=dict(neutral(), buttons=[1, 0, 0, 0, 0, 0])
+        )
+        recorded = dict(
+            player_0=dict(neutral(), gyro=[0.1, 0.2, 0.3], observer_buttons=[1]),
+            player_1=neutral(),
+        )
+        result = replay_actions(current, recorded, True)
+        self.assertEqual(result["player_0"], recorded["player_0"])
+        self.assertEqual(result["player_1"], current["player_1"])
+        self.assertEqual(replay_actions(current, recorded, False), recorded)
+        with self.assertRaisesRegex(ValueError, "script-only"):
+            run(argparse.Namespace(source="controller", fixture_player_replay="unused"))
+
     def test_hard_cover_uses_static_occlusion_from_last_seen(self):
         mesh = Mock(clear=lambda a, b: a[2] < 5)
         b = Opponent52("hard", Atlas(), mesh, 0)
         goal = b._cover_goal(view()["own"], [0, 0, 10], 0)
         self.assertIsNotNone(goal)
-        self.assertEqual(
+        self.assertIsNotNone(
             Opponent52("easy", Atlas(), mesh, 0)._cover_goal(
                 view()["own"], [0, 0, 10], 0
             ),
-            None,
         )

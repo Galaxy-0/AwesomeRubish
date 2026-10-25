@@ -9,6 +9,8 @@ import math
 import random
 import numpy as np
 from arena.lib.skills import Skills, aim_at, neutral, own_state, wrap
+from .opponent_nav import CoverageRoute, NavigationAtlas
+from arena.lib.atlas import MapAtlas
 
 
 @dataclass(frozen=True)
@@ -33,76 +35,82 @@ class Parameters:
     cover: bool = False
     half_fov_degrees: float = 43.0
     sense_range: float = 35.0
-    fire_range: float = 13.4
+    fire_range: float = 14.0
+    reacquire_grace_frames: int = 45
     gun_pitch_bias: float = 0.0870194305
     gun_pitch_scale: float = 1.27970519
     burst_frames: int = 24
     settle_frames: int = 18
 
 
-# 60 native frames/s; delays ~350/250/170ms plus uniform jitter and decision cadence.
+# Design values, not human ranks. New easy exceeds old hard in motor controls.
+# Keep reaction >0, finite turn rate, and visible-sample-only noisy prediction.
 LEVELS = {
     "easy": Parameters(
-        21,
-        4,
-        60,
-        0.45,
-        90,
-        7.5,
-        1.8,
-        0.22,
-        0.0,
-        0.65,
-        (66, 120),
-        (7.0, 10.0),
-        22,
-        0.30,
-        0.22,
-        0.03,
-        0.48,
-        burst_frames=6,
-        settle_frames=42,
+        10,
+        1,
+        180,
+        0.10,
+        260,
+        1.0,
+        0.4,
+        0.04,
+        0.35,
+        0.80,
+        (48, 90),
+        (7.5, 10.5),
+        16,
+        0.32,
+        0.10,
+        0.01,
+        0.95,
+        cover=True,
+        burst_frames=90,
+        settle_frames=3,
     ),
     "medium": Parameters(
-        15,
-        3,
-        108,
-        0.30,
-        140,
-        4.0,
-        1.2,
-        0.13,
-        0.0,
-        0.80,
-        (42, 84),
+        9,
+        1,
+        240,
+        0.07,
+        340,
+        0.55,
+        0.25,
+        0.025,
+        0.60,
+        0.88,
+        (36, 72),
         (8.0, 11.0),
-        16,
-        0.42,
-        0.24,
-        0.05,
-        0.62,
+        14,
+        0.38,
+        0.10,
+        0.015,
+        1.0,
+        cover=True,
+        burst_frames=120,
+        settle_frames=2,
     ),
     "hard": Parameters(
-        10,
-        2,
-        150,
-        0.20,
-        200,
-        2.0,
-        0.8,
-        0.08,
-        0.35,
+        9,
+        1,
+        300,
+        0.045,
+        420,
+        0.25,
+        0.15,
+        0.015,
+        0.85,
         0.95,
-        (30, 66),
-        (8.5, 11.5),
+        (24, 54),
+        (8.5, 11.0),
         12,
-        0.48,
-        0.26,
-        0.07,
-        0.70,
-        True,
-        burst_frames=45,
-        settle_frames=9,
+        0.44,
+        0.10,
+        0.02,
+        1.0,
+        cover=True,
+        burst_frames=180,
+        settle_frames=1,
     ),
 }
 
@@ -127,6 +135,8 @@ class Opponent52:
     def __init__(self, level, atlas, mesh=None, seed=0):
         if level not in (*LEVELS, "turret"):
             raise ValueError("unknown .52 level")
+        if level != "turret" and isinstance(atlas, MapAtlas):
+            atlas = NavigationAtlas(atlas)
         self.level, self.p = level, LEVELS.get(level)
         self.atlas, self.mesh = atlas, mesh
         self.rng = random.Random(seed)
@@ -153,6 +163,11 @@ class Opponent52:
         self.debug = {}
         self.teleports = 0
         self.previous_position = None
+        self.coverage = CoverageRoute(atlas)
+        self.patrol_started = 0
+        self.previous_action = neutral()
+        self.chase_goal = None
+        self.chase_until = 0
 
     def parameters(self):
         return asdict(self.p) if self.p else dict(legacy=True, reaction_frames=0)
@@ -246,37 +261,57 @@ class Opponent52:
         self.cover, self.cover_until = None, frame + 30
         return None
 
-    def _patrol(self, obs, own):
+    def _paint_look(self, own, move, frame):
         pos = np.asarray(own["position"])
-        if self.patrol is None or math.dist(pos, self.patrol) < 2 or self.skills.failed:
-            center = np.asarray(self.atlas.objective())
-            if math.dist(pos[[0, 2]], center[[0, 2]]) > 22:
-                self.patrol = center.tolist()
-            else:
-                # Public terrain-only route; no inferred hidden enemy position.
-                angles = (0.0, math.pi / 2, math.pi, -math.pi / 2)
-                angle = angles[self.patrol_index % 4]
-                q = center + [10 * math.sin(angle), 0, 10 * math.cos(angle)]
-                self.patrol = list(self.atlas.points[self.atlas.nearest(q)])
-                self.patrol_index += 1
-            self.skills = Skills(self.atlas)
-        move = self.skills.move_to(obs, self.patrol).action
         sx, sy = move["sticks"][:2]
-        # Spray a few units ahead along the path while advancing, not just when
-        # an enemy happens to enter range. Keep navigation jump recovery input.
         yaw = own["view_yaw"]
         dx, dz = (
             -sx * math.cos(yaw) + sy * math.sin(yaw),
             sx * math.sin(yaw) + sy * math.cos(yaw),
         )
-        norm = max(0.001, math.hypot(dx, dz))
-        target = pos + np.array([dx / norm * 5, -0.3, dz / norm * 5])
-        action, _ = self._look(own, target, 6)
+        direction = math.atan2(dx, dz) if math.hypot(dx, dz) > 0.01 else yaw
+        # Sweep a broad fan across the route, rather than repeatedly painting
+        # the same five-unit strip. Still ordinary bounded camera input.
+        direction += 0.40 * math.sin(frame / 42)
+        target = pos + [12 * math.sin(direction), -0.4, 12 * math.cos(direction)]
+        if self.mesh is not None:
+            floor = self.mesh.floor(
+                target[0], target[2], top=pos[1] + 1, bottom=pos[1] - 8
+            )
+            if floor is not None:
+                target[1] = floor
+        return self._look(own, target, 2)[0]
+
+    def _patrol(self, obs, own):
+        pos = np.asarray(own["position"])
+        failed = self.skills.failed or obs["frame"] - self.patrol_started > 360
+        if self.patrol is None or math.dist(pos, self.patrol) < 2 or failed:
+            self.patrol = self.coverage.choose(pos, obs["frame"], failed=failed)
+            self.patrol_started = obs["frame"]
+            self.skills = Skills(self.atlas, waypoint_radius=0.44, stall_frames=60)
+        result = self.skills.move_to(obs, self.patrol)
+        move = result.action
+        action = self._paint_look(own, move, obs["frame"])
         action["sticks"][:2] = move["sticks"][:2]
         action["buttons"][4] = move["buttons"][4]
         action["buttons"][0] = int(obs["frame"] % 90 < int(90 * self.p.paint_duty))
-        self.debug["mode"] = "paint_advance"
+        self.debug.update(
+            mode="paint_advance",
+            fire=bool(action["buttons"][0]),
+            patrol_goal=self.patrol,
+            navigation=result.status,
+        )
         return action
+
+    def _chase(self, obs, goal):
+        # Moving a goal by one grid vertex every 2f must not reset A* and its
+        # stall recovery every decision. Camera tracking remains independent.
+        if self.chase_goal is None or (
+            obs["frame"] >= self.chase_until and math.dist(goal, self.chase_goal) > 2
+        ):
+            self.chase_goal = list(self.atlas.points[self.atlas.nearest(goal)])
+            self.chase_until = obs["frame"] + 24
+        return self.skills.move_to(obs, self.chase_goal).action
 
     def act(self, obs):
         frame = obs["frame"]
@@ -285,6 +320,7 @@ class Opponent52:
             self.debug = dict(frame=frame, mode="unavailable", visible=False)
             if obs["own"]["public"].get("alive") is False:
                 self.last_seen, self.was_visible = None, False
+            self.previous_action = neutral()
             return neutral()
         if self.level == "turret":
             visible = [
@@ -303,6 +339,12 @@ class Opponent52:
         dt = max(1, frame - self.last_frame) if self.last_frame is not None else 6
         self.last_frame = frame
         pos = np.asarray(own["position"])
+        if pos[1] > 20:
+            self.debug = dict(frame=frame, mode="spawn", visible=False, fire=False)
+            self.previous_action = neutral()
+            return (
+                neutral()
+            )  # capture owns the launcher pulse, no route planning in flight
         if (
             self.previous_position is not None
             and math.dist(pos, self.previous_position) > 20
@@ -312,6 +354,13 @@ class Opponent52:
             self.patrol = None
             self.teleports += 1
         self.previous_position = pos.copy()
+        self.coverage.mark(
+            pos,
+            own["view_yaw"],
+            frame,
+            self.previous_action["buttons"][0] and (own.get("ink") or 0) > 0.02,
+        )
+
         enemy = self._perceive(obs, own)
         visible = enemy is not None
         if visible:
@@ -327,7 +376,8 @@ class Opponent52:
                 if np.linalg.norm(estimate) < 30:
                     self.velocity = 0.6 * self.velocity + 0.4 * estimate
             if not self.was_visible and (
-                frame - self.seen_frame > 12 or identity != self.target_id
+                frame - self.seen_frame > p.reacquire_grace_frames
+                or identity != self.target_id
             ):
                 self.reaction_at = (
                     frame
@@ -357,7 +407,7 @@ class Opponent52:
         )
         hp, ink = own.get("hp"), own.get("ink")
         if (hp is not None and hp < p.retreat_hp) or (
-            ink is not None and ink < p.low_ink
+            ink is not None and ink <= p.low_ink
         ):
             if not self.recovering:
                 self.recover_at = frame
@@ -393,9 +443,12 @@ class Opponent52:
                 look, _ = self._look(own, pos + [0, -1, 3], dt)
                 action["gyro"] = look["gyro"]
                 action["buttons"][0] = 1
+            self.previous_action = action
             return action
         if self.last_seen is None:
-            return self._patrol(obs, own)
+            action = self._patrol(obs, own)
+            self.previous_action = action
+            return action
         target = self.last_seen.copy() + [0, 1.0, 0]
         distance = float(np.linalg.norm(target - pos))
         delta = self.last_seen - pos
@@ -418,15 +471,50 @@ class Opponent52:
                 self.next_strafe = frame + self.rng.randint(*p.strafe_period)
             d = max(0.001, math.hypot(delta[0], delta[2]))
             ux, uz = delta[0] / d, delta[2] / d
+            if distance > 14:
+                # Close the range gap before choosing a gunfight strafe. A
+                # static route can turn around a wall/ramp; straight sticks can't.
+                flank = (
+                    0.0
+                    if self.level == "easy"
+                    else 3.0
+                    if self.level == "medium"
+                    else 5.0
+                )
+                goal = self.last_seen + [
+                    self.strafe * uz * flank,
+                    0,
+                    -self.strafe * ux * flank,
+                ]
+                move = self._chase(obs, goal)
+                action["sticks"][:2] = move["sticks"][:2]
+                action["buttons"][4] = move["buttons"][4]
+                # Ink a path during approach, swim on the prepared path in
+                # short intervals; target state still comes only from sightings.
+                if own.get("submerged") is not True and frame % 90 < 30:
+                    action["gyro"][0] = self._paint_look(own, move, frame)["gyro"][0]
+                    action["buttons"][0] = 1
+                else:
+                    action["buttons"][1] = 1
+                self.debug.update(mode="approach", fire=False, distance=distance)
+                self.previous_action = action
+                return action
             radial = (
-                -0.7
+                -1.2
                 if distance < p.comfort[0]
-                else 0.65
+                else 0.9
                 if distance > p.comfort[1]
                 else 0
             )
-            vector = (radial * ux + self.strafe * uz, radial * uz - self.strafe * ux)
+            vector = (
+                radial * ux + self.strafe * uz * 0.55,
+                radial * uz - self.strafe * ux * 0.55,
+            )
             action["sticks"][:2] = self._safe_move(own, vector, p.strafe_speed)
+            if not any(action["sticks"][:2]):
+                action["sticks"][:2] = self._safe_move(
+                    own, (-vector[0], -vector[1]), p.strafe_speed
+                )
             if frame >= self.next_jump:
                 action["buttons"][4] = int(self.rng.random() < p.jump_chance)
                 self.next_jump = frame + 60
@@ -446,18 +534,37 @@ class Opponent52:
                 reaction_elapsed_frames=frame - self.acquired_at,
             )
         else:
+            if (
+                self.level != "easy"
+                and own.get("submerged") is True
+                and frame - self.seen_frame <= (30 if self.level == "hard" else 18)
+                and distance < 13
+            ):
+                # Briefly hold prepared ink when a nearby sighting disappears,
+                # instead of exposing immediately. No hidden-location update.
+                action["buttons"][1] = 1
+                self.debug["mode"] = "ambush"
+                self.previous_action = action
+                return action
             # Only stored, time-stamped position is chased; no firing at memory.
             goal = list(self.atlas.points[self.atlas.nearest(self.last_seen)])
             move = self.skills.move_to(obs, goal).action
             action["sticks"][:2] = move["sticks"][:2]
             action["buttons"][4] = move["buttons"][4]
             self.debug["mode"] = "memory_search"
+            # Pre-ink the route while pursuing a remembered location. No
+            # shooting at the hidden target's current state is possible.
+            action["gyro"] = self._paint_look(own, move, frame)["gyro"]
+            action["buttons"][0] = int(frame % 90 < 70)
+            if own.get("submerged") is True and frame % 90 >= 70:
+                action["buttons"][1] = 1
         if p.cover and visible and hp is not None and hp < 0.72:
             goal = self._cover_goal(own, self.last_seen, frame)
             if goal is not None:
                 q = np.asarray(goal) - pos
                 action["sticks"][:2] = self._safe_move(own, (q[0], q[2]), 0.65)
                 self.debug["mode"] = "cover"
+        self.previous_action = action
         return action
 
 

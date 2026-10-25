@@ -16,6 +16,15 @@ def run(a):
     out.mkdir(parents=True, exist_ok=False)
     src = Path(__file__).with_name("opponent52.py")
     digest = hashlib.sha256(src.read_bytes()).hexdigest()
+    components = {
+        name: hashlib.sha256(src.with_name(name).read_bytes()).hexdigest()
+        for name in (
+            "opponent52.py",
+            "opponent_nav.py",
+            "opponent_vision.py",
+            "capture.py",
+        )
+    }
     write(
         out / "plan.json",
         dict(
@@ -25,6 +34,7 @@ def run(a):
             fixture_player=str(a.player_policy),
             native_duration_seconds=180,
             opponent_sha256=digest,
+            source_components=components,
             parameters={k: vars(v) for k, v in LEVELS.items()},
             host=str(a.host),
             warm_from=str(a.warm_from),
@@ -73,7 +83,10 @@ def run(a):
             raise RuntimeError(
                 f"{level} fixture failed; original artifacts preserved: {path}"
             )
-        if hashlib.sha256(src.read_bytes()).hexdigest() != digest:
+        if any(
+            hashlib.sha256(src.with_name(name).read_bytes()).hexdigest() != sha
+            for name, sha in components.items()
+        ):
             raise RuntimeError("opponent source changed during native comparison")
         value = analyze(path)
         results.append(value)

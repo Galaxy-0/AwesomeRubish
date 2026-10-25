@@ -92,6 +92,47 @@ def collect_shaders(corpus, output):
     return dict(files=len(files), shaders=len(keys), output=str(output))
 
 
+def pack(recordings, output, seed):
+    """Private coverage-only directory accepted by --warm-from, no fake match.
+
+    Union both perspectives and every recording's ancestors, preserving each
+    original. A branch (003 and 004 both derived from R5) must not lose 003's
+    newly encountered effects just because 004 was recorded later.
+    """
+    output = Path(output)
+    if output.exists():
+        raise ValueError("fresh warm pack output required")
+    sessions = []
+    sources = []
+    for recording in recordings:
+        current = Path(recording).resolve()
+        seen = set()
+        while current:
+            if current in seen or len(seen) >= 100:
+                raise ValueError("cyclic/oversized warm inheritance")
+            seen.add(current)
+            result = json.loads((current / "result.json").read_text())
+            sessions.append(Path(result["session"]))
+            sources.append(str(current))
+            current = (
+                Path(result["warm_from"]).resolve() if result.get("warm_from") else None
+            )
+    output.mkdir(parents=True, mode=0o700)
+    audits = [
+        assemble(seed, sessions, role, output / f"warm-{role}.tsv") for role in (0, 1)
+    ]
+    result = dict(
+        schema="inklab.demo.warm-pack.v1",
+        scope="warm coverage only; not a native recording",
+        session=str(output.resolve()),
+        warm_from=None,
+        recordings=sources,
+        audits=audits,
+    )
+    (output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
+    return result
+
+
 def wait_ready(hosts, timeout, cancelled=lambda: False, check=lambda: None):
     """Called with native clients at their initial barrier and clock paused.
 
@@ -129,13 +170,22 @@ if __name__ == "__main__":
     import argparse
 
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--shader-corpus", type=Path, required=True)
+    group = p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--shader-corpus", type=Path)
+    group.add_argument("--recordings", type=Path, nargs="+")
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args()
-    from .capture import safe_out
+    from .capture import ROOT, safe_out
 
     print(
         json.dumps(
-            collect_shaders(safe_out(a.shader_corpus), safe_out(a.out)), indent=2
+            pack(
+                [safe_out(x) for x in a.recordings],
+                safe_out(a.out),
+                ROOT / "upstream/dm/games/0100C2500FC20000/pso_manifest.tsv",
+            )
+            if a.recordings
+            else collect_shaders(safe_out(a.shader_corpus), safe_out(a.out)),
+            indent=2,
         )
     )

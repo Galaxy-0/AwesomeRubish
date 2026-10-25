@@ -6,10 +6,35 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 from .stall_report import summarize
-from .warmup import assemble, collect_shaders, wait_ready
+from .warmup import assemble, collect_shaders, wait_ready, pack
 
 
 class StallTests(unittest.TestCase):
+    def test_warm_pack_preserves_both_recording_branches_and_ancestor(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            seed = root / "seed.tsv"
+            seed.write_text("S\tseed\t0\n")
+            for name, parent in (("base", None), ("a", "base"), ("b", "base")):
+                p = root / name
+                p.mkdir()
+                (p / "warm-0.tsv").write_text(f"S\t{name}\t0\n")
+                (p / "result.json").write_text(
+                    json.dumps(
+                        dict(
+                            session=str(p),
+                            warm_from=str(root / parent) if parent else None,
+                        )
+                    )
+                )
+            before = (root / "a/warm-0.tsv").read_bytes()
+            r = pack([root / "a", root / "b"], root / "pack", seed)
+            self.assertEqual(r["audits"][0]["counts"]["S"], 4)
+            self.assertEqual((root / "a/warm-0.tsv").read_bytes(), before)
+            self.assertNotIn("passed", r)
+            with self.assertRaises(ValueError):
+                pack([root / "a"], root / "pack", seed)
+
     def test_ack_vs_client_work_and_tail_definition(self):
         rows = [
             dict(frame=i, sample_ns=s, send_ns=s + 1_000_000, ack_ns=s + ack)

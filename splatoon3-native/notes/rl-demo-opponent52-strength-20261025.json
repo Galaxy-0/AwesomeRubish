@@ -1,0 +1,2074 @@
+{
+  "schema": "inklab.demo.opponent52.strength.v1",
+  "parameters": {
+    "easy": {
+      "reaction_frames": 10,
+      "reaction_jitter": 1,
+      "memory_frames": 180,
+      "aim_tau": 0.1,
+      "yaw_degrees_s": 260,
+      "error_degrees": 1.0,
+      "error_distance": 0.4,
+      "error_lateral": 0.04,
+      "lead_fraction": 0.35,
+      "strafe_speed": 0.8,
+      "strafe_period": [
+        48,
+        90
+      ],
+      "comfort": [
+        7.5,
+        10.5
+      ],
+      "fire_cone_degrees": 16,
+      "retreat_hp": 0.32,
+      "low_ink": 0.1,
+      "jump_chance": 0.01,
+      "paint_duty": 0.95,
+      "cover": true,
+      "half_fov_degrees": 43.0,
+      "sense_range": 35.0,
+      "fire_range": 14.0,
+      "reacquire_grace_frames": 45,
+      "gun_pitch_bias": 0.0870194305,
+      "gun_pitch_scale": 1.27970519,
+      "burst_frames": 90,
+      "settle_frames": 3
+    },
+    "medium": {
+      "reaction_frames": 9,
+      "reaction_jitter": 1,
+      "memory_frames": 240,
+      "aim_tau": 0.07,
+      "yaw_degrees_s": 340,
+      "error_degrees": 0.55,
+      "error_distance": 0.25,
+      "error_lateral": 0.025,
+      "lead_fraction": 0.6,
+      "strafe_speed": 0.88,
+      "strafe_period": [
+        36,
+        72
+      ],
+      "comfort": [
+        8.0,
+        11.0
+      ],
+      "fire_cone_degrees": 14,
+      "retreat_hp": 0.38,
+      "low_ink": 0.1,
+      "jump_chance": 0.015,
+      "paint_duty": 1.0,
+      "cover": true,
+      "half_fov_degrees": 43.0,
+      "sense_range": 35.0,
+      "fire_range": 14.0,
+      "reacquire_grace_frames": 45,
+      "gun_pitch_bias": 0.0870194305,
+      "gun_pitch_scale": 1.27970519,
+      "burst_frames": 120,
+      "settle_frames": 2
+    },
+    "hard": {
+      "reaction_frames": 9,
+      "reaction_jitter": 1,
+      "memory_frames": 300,
+      "aim_tau": 0.045,
+      "yaw_degrees_s": 420,
+      "error_degrees": 0.25,
+      "error_distance": 0.15,
+      "error_lateral": 0.015,
+      "lead_fraction": 0.85,
+      "strafe_speed": 0.95,
+      "strafe_period": [
+        24,
+        54
+      ],
+      "comfort": [
+        8.5,
+        11.0
+      ],
+      "fire_cone_degrees": 12,
+      "retreat_hp": 0.44,
+      "low_ink": 0.1,
+      "jump_chance": 0.02,
+      "paint_duty": 1.0,
+      "cover": true,
+      "half_fov_degrees": 43.0,
+      "sense_range": 35.0,
+      "fire_range": 14.0,
+      "reacquire_grace_frames": 45,
+      "gun_pitch_bias": 0.0870194305,
+      "gun_pitch_scale": 1.27970519,
+      "burst_frames": 180,
+      "settle_frames": 1
+    }
+  },
+  "original_audits": {
+    "003": {
+      "recording": "work/rl-demo/my-demo-003",
+      "mode_effects": {
+        "unavailable": {
+          "presents": 4929,
+          "seconds": 82.15,
+          "actual_ZR_fraction": 0.006289308176100629,
+          "zero_movement_input_fraction": 1.0,
+          "travel_stall_presents": 0,
+          "native_ink_spent_estimate": 0,
+          "visited_2u_cells": 0,
+          "bounds": null
+        },
+        "paint_advance": {
+          "presents": 2706,
+          "seconds": 45.1,
+          "actual_ZR_fraction": 0.5262379896526238,
+          "zero_movement_input_fraction": 0.30376940133037694,
+          "travel_stall_presents": 79,
+          "native_ink_spent_estimate": 2.214997900999999,
+          "visited_2u_cells": 42,
+          "bounds": [
+            [
+              14.9459057,
+              2.99999952,
+              -87.3601532
+            ],
+            [
+              24.2403164,
+              19.911335,
+              -43.0181084
+            ]
+          ]
+        },
+        "recover": {
+          "presents": 1326,
+          "seconds": 22.1,
+          "actual_ZR_fraction": 0.1493212669683258,
+          "zero_movement_input_fraction": 0.7104072398190046,
+          "travel_stall_presents": 77,
+          "native_ink_spent_estimate": 0.3699996449999998,
+          "visited_2u_cells": 11,
+          "bounds": [
+            [
+              12.9816256,
+              3.23050737,
+              -76.0863419
+            ],
+            [
+              24.2124596,
+              11.2343254,
+              -41.1315804
+            ]
+          ]
+        },
+        "engage": {
+          "presents": 1860,
+          "seconds": 31.0,
+          "actual_ZR_fraction": 0.02258064516129032,
+          "zero_movement_input_fraction": 0.1967741935483871,
+          "travel_stall_presents": 37,
+          "native_ink_spent_estimate": 0.14999985699999985,
+          "visited_2u_cells": 38,
+          "bounds": [
+            [
+              13.3874331,
+              3.0,
+              -86.2307587
+            ],
+            [
+              26.1319466,
+              19.1962719,
+              -41.168457
+            ]
+          ]
+        },
+        "memory_search": {
+          "presents": 702,
+          "seconds": 11.7,
+          "actual_ZR_fraction": 0.0,
+          "zero_movement_input_fraction": 0.1452991452991453,
+          "travel_stall_presents": 42,
+          "native_ink_spent_estimate": 0,
+          "visited_2u_cells": 18,
+          "bounds": [
+            [
+              13.2453651,
+              3.48659039,
+              -76.067215
+            ],
+            [
+              25.1951885,
+              11.231164,
+              -41.0692787
+            ]
+          ]
+        }
+      },
+      "combat_decisions": 310,
+      "combat_range_ready": 21,
+      "combat_reaction_ready": 259,
+      "combat_fire_decisions": 7,
+      "combat_distances_u": {
+        "0": 4.387924944266487,
+        "10": 13.871910003415119,
+        "50": 18.334434572286384,
+        "90": 29.552073668945226,
+        "100": 36.14441680857146
+      },
+      "python_input_work_ms": {
+        "50": 0.172959,
+        "99": 34.58861974000004,
+        "100": 66.542041
+      },
+      "turf": {
+        "player_0": [
+          0.187999994,
+          0.0149999997
+        ],
+        "player_1": [
+          0.0149999997,
+          0.187999994
+        ]
+      },
+      "limits": "2s displacement stall proxy; ink spent is positive own ink decrements, not exact paint. No live truth is fed back into the controller."
+    },
+    "004": {
+      "recording": "work/rl-demo/my-demo-004",
+      "mode_effects": {
+        "unavailable": {
+          "presents": 3928,
+          "seconds": 65.46666666666667,
+          "actual_ZR_fraction": 0.006109979633401222,
+          "zero_movement_input_fraction": 1.0,
+          "travel_stall_presents": 0,
+          "native_ink_spent_estimate": 0,
+          "visited_2u_cells": 0,
+          "bounds": null
+        },
+        "paint_advance": {
+          "presents": 3960,
+          "seconds": 66.0,
+          "actual_ZR_fraction": 0.6555555555555556,
+          "zero_movement_input_fraction": 0.13333333333333333,
+          "travel_stall_presents": 171,
+          "native_ink_spent_estimate": 4.464995800000001,
+          "visited_2u_cells": 75,
+          "bounds": [
+            [
+              1.19508374,
+              2.99999857,
+              -86.9776611
+            ],
+            [
+              24.4607334,
+              19.6691647,
+              -17.2722301
+            ]
+          ]
+        },
+        "recover": {
+          "presents": 1044,
+          "seconds": 17.4,
+          "actual_ZR_fraction": 0.06896551724137931,
+          "zero_movement_input_fraction": 0.6781609195402298,
+          "travel_stall_presents": 54,
+          "native_ink_spent_estimate": 0.11499993500000008,
+          "visited_2u_cells": 19,
+          "bounds": [
+            [
+              5.44549894,
+              2.99999857,
+              -79.9502563
+            ],
+            [
+              23.8531361,
+              11.0740137,
+              -21.2434349
+            ]
+          ]
+        },
+        "engage": {
+          "presents": 774,
+          "seconds": 12.9,
+          "actual_ZR_fraction": 0.025839793281653745,
+          "zero_movement_input_fraction": 0.3333333333333333,
+          "travel_stall_presents": 38,
+          "native_ink_spent_estimate": 0.04499995599999995,
+          "visited_2u_cells": 38,
+          "bounds": [
+            [
+              1.33677447,
+              3.2769928,
+              -87.3601532
+            ],
+            [
+              23.9199009,
+              19.911335,
+              -17.2722301
+            ]
+          ]
+        },
+        "memory_search": {
+          "presents": 1776,
+          "seconds": 29.6,
+          "actual_ZR_fraction": 0.0,
+          "zero_movement_input_fraction": 0.5608108108108109,
+          "travel_stall_presents": 126,
+          "native_ink_spent_estimate": 0,
+          "visited_2u_cells": 33,
+          "bounds": [
+            [
+              1.19508374,
+              3.39023256,
+              -86.9776611
+            ],
+            [
+              23.9126396,
+              19.6691647,
+              -17.3224678
+            ]
+          ]
+        },
+        "cover": {
+          "presents": 30,
+          "seconds": 0.5,
+          "actual_ZR_fraction": 0.2,
+          "zero_movement_input_fraction": 0.0,
+          "travel_stall_presents": 15,
+          "native_ink_spent_estimate": 0.014999985999999965,
+          "visited_2u_cells": 4,
+          "bounds": [
+            [
+              21.190506,
+              10.5,
+              -76.1894913
+            ],
+            [
+              23.9182549,
+              11.0449238,
+              -72.0122375
+            ]
+          ]
+        }
+      },
+      "combat_decisions": 134,
+      "combat_range_ready": 23,
+      "combat_reaction_ready": 86,
+      "combat_fire_decisions": 4,
+      "combat_distances_u": {
+        "0": 1.8349764969742541,
+        "10": 7.48868590666581,
+        "50": 18.856925543767268,
+        "90": 30.96414086274408,
+        "100": 39.42818147684652
+      },
+      "python_input_work_ms": {
+        "50": 0.173708,
+        "99": 23.090834629999925,
+        "100": 70.070375
+      },
+      "turf": {
+        "player_0": [
+          0.237000003,
+          0.0109999999
+        ],
+        "player_1": [
+          0.0109999999,
+          0.237000003
+        ]
+      },
+      "limits": "2s displacement stall proxy; ink spent is positive own ink decrements, not exact paint. No live truth is fed back into the controller."
+    }
+  },
+  "camera_visibility": {
+    "003": {
+      "old_visible": 359,
+      "camera_visible": 450,
+      "camera_added": 91
+    },
+    "004": {
+      "old_visible": 137,
+      "camera_visible": 239,
+      "camera_added": 102
+    }
+  },
+  "paint": [
+    {
+      "recording": "work/rl-demo/run76/solo-before",
+      "passed": true,
+      "complete": true,
+      "turf": [
+        0.101999998,
+        0
+      ],
+      "errors": [],
+      "frames": 11511,
+      "opponent_level": "hard",
+      "opponent_parameters": {
+        "reaction_frames": 10,
+        "reaction_jitter": 2,
+        "memory_frames": 150,
+        "aim_tau": 0.2,
+        "yaw_degrees_s": 200,
+        "error_degrees": 2.0,
+        "error_distance": 0.8,
+        "error_lateral": 0.08,
+        "lead_fraction": 0.35,
+        "strafe_speed": 0.95,
+        "strafe_period": [
+          30,
+          66
+        ],
+        "comfort": [
+          8.5,
+          11.5
+        ],
+        "fire_cone_degrees": 12,
+        "retreat_hp": 0.48,
+        "low_ink": 0.26,
+        "jump_chance": 0.07,
+        "paint_duty": 0.7,
+        "cover": true,
+        "half_fov_degrees": 43.0,
+        "sense_range": 35.0,
+        "fire_range": 13.4,
+        "gun_pitch_bias": 0.0870194305,
+        "gun_pitch_scale": 1.27970519,
+        "burst_frames": 45,
+        "settle_frames": 9
+      },
+      "source_sha256": {
+        "rl/demo/opponent52.py": "88b77927324eca22f6b7ec4556bcde87974bd3936c0f66494b6e7b0383f30c3e",
+        "rl/demo/capture.py": "2de2adff3cd8e9f98f21c1696785fc9309c0ba9e468b7bec46b2ef4ca5d06729"
+      }
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r1",
+      "passed": true,
+      "complete": true,
+      "turf": [
+        0.231999993,
+        0
+      ],
+      "errors": [],
+      "frames": 11511,
+      "opponent_level": "hard",
+      "opponent_parameters": {
+        "reaction_frames": 9,
+        "reaction_jitter": 1,
+        "memory_frames": 300,
+        "aim_tau": 0.045,
+        "yaw_degrees_s": 420,
+        "error_degrees": 0.25,
+        "error_distance": 0.15,
+        "error_lateral": 0.015,
+        "lead_fraction": 0.85,
+        "strafe_speed": 0.95,
+        "strafe_period": [
+          24,
+          54
+        ],
+        "comfort": [
+          8.5,
+          11.0
+        ],
+        "fire_cone_degrees": 12,
+        "retreat_hp": 0.44,
+        "low_ink": 0.1,
+        "jump_chance": 0.02,
+        "paint_duty": 1.0,
+        "cover": true,
+        "half_fov_degrees": 43.0,
+        "sense_range": 35.0,
+        "fire_range": 13.4,
+        "gun_pitch_bias": 0.0870194305,
+        "gun_pitch_scale": 1.27970519,
+        "burst_frames": 180,
+        "settle_frames": 1
+      },
+      "source_sha256": {
+        "rl/demo/opponent_nav.py": "b37378d181a6afe58da12bb1289942030c10a47f1be60ef5e08c53d35ca7c97e",
+        "rl/demo/opponent52.py": "44dcb002526733d3bc501800f6c9bc70870d848a21136efde98576019414ba37",
+        "rl/demo/capture.py": "4d684f26c99e85ed45d0967eb841d9e51a0904966b9d47b325c13c92e583569f"
+      }
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r2",
+      "passed": true,
+      "complete": true,
+      "turf": [
+        0.224000007,
+        0
+      ],
+      "errors": [],
+      "frames": 11534,
+      "opponent_level": "hard",
+      "opponent_parameters": {
+        "reaction_frames": 9,
+        "reaction_jitter": 1,
+        "memory_frames": 300,
+        "aim_tau": 0.045,
+        "yaw_degrees_s": 420,
+        "error_degrees": 0.25,
+        "error_distance": 0.15,
+        "error_lateral": 0.015,
+        "lead_fraction": 0.85,
+        "strafe_speed": 0.95,
+        "strafe_period": [
+          24,
+          54
+        ],
+        "comfort": [
+          8.5,
+          11.0
+        ],
+        "fire_cone_degrees": 12,
+        "retreat_hp": 0.44,
+        "low_ink": 0.1,
+        "jump_chance": 0.02,
+        "paint_duty": 1.0,
+        "cover": true,
+        "half_fov_degrees": 43.0,
+        "sense_range": 35.0,
+        "fire_range": 13.4,
+        "gun_pitch_bias": 0.0870194305,
+        "gun_pitch_scale": 1.27970519,
+        "burst_frames": 180,
+        "settle_frames": 1
+      },
+      "source_sha256": {
+        "rl/demo/opponent_nav.py": "16716182d32be7bd2cfd98e425e7ec8f763c841d89ca2f6c58a0cac4698bfcf0",
+        "rl/demo/opponent52.py": "608ecf2e38e1b10723e3823f2339b215a80565e0be8354199f35d0f055ebac27",
+        "rl/demo/capture.py": "4d684f26c99e85ed45d0967eb841d9e51a0904966b9d47b325c13c92e583569f"
+      }
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r3",
+      "passed": true,
+      "complete": true,
+      "turf": [
+        0.153999999,
+        0
+      ],
+      "errors": [],
+      "frames": 11511,
+      "opponent_level": "hard",
+      "opponent_parameters": {
+        "reaction_frames": 9,
+        "reaction_jitter": 1,
+        "memory_frames": 300,
+        "aim_tau": 0.045,
+        "yaw_degrees_s": 420,
+        "error_degrees": 0.25,
+        "error_distance": 0.15,
+        "error_lateral": 0.015,
+        "lead_fraction": 0.85,
+        "strafe_speed": 0.95,
+        "strafe_period": [
+          24,
+          54
+        ],
+        "comfort": [
+          8.5,
+          11.0
+        ],
+        "fire_cone_degrees": 12,
+        "retreat_hp": 0.44,
+        "low_ink": 0.1,
+        "jump_chance": 0.02,
+        "paint_duty": 1.0,
+        "cover": true,
+        "half_fov_degrees": 43.0,
+        "sense_range": 35.0,
+        "fire_range": 13.4,
+        "gun_pitch_bias": 0.0870194305,
+        "gun_pitch_scale": 1.27970519,
+        "burst_frames": 180,
+        "settle_frames": 1
+      },
+      "source_sha256": {
+        "rl/demo/opponent_vision.py": "3b9dc01e61f71d384c67142a1d85fe8012638b39066f759041194a8211d06ea8",
+        "rl/demo/opponent_nav.py": "0d721507e86eaa369e43fba369f64fef7e40ac3e19d11b13db047fa2394b8a0c",
+        "rl/demo/opponent52.py": "8fb251b3a56ea9a29b2c20caf30480c48a0e4aeabbab9ee13682cbaf86da32b8",
+        "rl/demo/capture.py": "11dfc718778fea9a317a99b28f6a68049828260e2c2642326882ae29c976a38a"
+      }
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r4",
+      "passed": true,
+      "complete": true,
+      "turf": [
+        0.199000001,
+        0
+      ],
+      "errors": [],
+      "frames": 11509,
+      "opponent_level": "hard",
+      "opponent_parameters": {
+        "reaction_frames": 9,
+        "reaction_jitter": 1,
+        "memory_frames": 300,
+        "aim_tau": 0.045,
+        "yaw_degrees_s": 420,
+        "error_degrees": 0.25,
+        "error_distance": 0.15,
+        "error_lateral": 0.015,
+        "lead_fraction": 0.85,
+        "strafe_speed": 0.95,
+        "strafe_period": [
+          24,
+          54
+        ],
+        "comfort": [
+          8.5,
+          11.0
+        ],
+        "fire_cone_degrees": 12,
+        "retreat_hp": 0.44,
+        "low_ink": 0.1,
+        "jump_chance": 0.02,
+        "paint_duty": 1.0,
+        "cover": true,
+        "half_fov_degrees": 43.0,
+        "sense_range": 35.0,
+        "fire_range": 13.4,
+        "gun_pitch_bias": 0.0870194305,
+        "gun_pitch_scale": 1.27970519,
+        "burst_frames": 180,
+        "settle_frames": 1
+      },
+      "source_sha256": {
+        "rl/demo/opponent_vision.py": "3b9dc01e61f71d384c67142a1d85fe8012638b39066f759041194a8211d06ea8",
+        "rl/demo/opponent_nav.py": "a3e9166996a2aef55b78c2211e138bfe6179ca0c85614bc0ea7690368e72ec62",
+        "rl/demo/opponent52.py": "fbb58c5894e139633a10d59a69e7f6b380a7ac7dd6c6cc17cea9cfa98b9f8266",
+        "rl/demo/capture.py": "11dfc718778fea9a317a99b28f6a68049828260e2c2642326882ae29c976a38a"
+      }
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-final",
+      "passed": true,
+      "complete": true,
+      "turf": [
+        0.187000006,
+        0
+      ],
+      "errors": [],
+      "frames": 11526,
+      "opponent_level": "hard",
+      "opponent_parameters": {
+        "reaction_frames": 9,
+        "reaction_jitter": 1,
+        "memory_frames": 300,
+        "aim_tau": 0.045,
+        "yaw_degrees_s": 420,
+        "error_degrees": 0.25,
+        "error_distance": 0.15,
+        "error_lateral": 0.015,
+        "lead_fraction": 0.85,
+        "strafe_speed": 0.95,
+        "strafe_period": [
+          24,
+          54
+        ],
+        "comfort": [
+          8.5,
+          11.0
+        ],
+        "fire_cone_degrees": 12,
+        "retreat_hp": 0.44,
+        "low_ink": 0.1,
+        "jump_chance": 0.02,
+        "paint_duty": 1.0,
+        "cover": true,
+        "half_fov_degrees": 43.0,
+        "sense_range": 35.0,
+        "fire_range": 14.0,
+        "reacquire_grace_frames": 45,
+        "gun_pitch_bias": 0.0870194305,
+        "gun_pitch_scale": 1.27970519,
+        "burst_frames": 180,
+        "settle_frames": 1
+      },
+      "source_sha256": {
+        "rl/demo/opponent_vision.py": "3b9dc01e61f71d384c67142a1d85fe8012638b39066f759041194a8211d06ea8",
+        "rl/demo/opponent_nav.py": "16716182d32be7bd2cfd98e425e7ec8f763c841d89ca2f6c58a0cac4698bfcf0",
+        "rl/demo/opponent52.py": "e1e2b801e0c6eeb01263f50d02c39e2b02172e7e784d38bca53f19f07406a8f2",
+        "rl/demo/capture.py": "11dfc718778fea9a317a99b28f6a68049828260e2c2642326882ae29c976a38a"
+      }
+    }
+  ],
+  "initial_full_alpha_v6": [
+    {
+      "recording": "work/rl-demo/run76/final-tiers/easy",
+      "level": "easy",
+      "seed": 0,
+      "frames": 11510,
+      "complete": true,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": [
+          0.122000001,
+          0.187000006
+        ],
+        "player_1": [
+          0.187000006,
+          0.122000001
+        ]
+      },
+      "opponent_turf_percent": 18.7000006,
+      "hud_downs": {
+        "player_0": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "hud_downs_by_player_from_opponent_view": {
+        "player_0": 1,
+        "player_1": 0
+      },
+      "modes": {
+        "unavailable": 62,
+        "spawn": 22,
+        "paint_advance": 3920,
+        "recover": 1344,
+        "approach": 16,
+        "memory_search": 114,
+        "engage": 48
+      },
+      "combat_shots_from_native_ink": 10,
+      "likely_bullet_damage_edges": 2,
+      "hit_fraction_proxy": 0.2,
+      "hit_fraction_scope": ">=20HP target damage edges within18f after a .015 native ink combat shot; NOT exact native collision attribution",
+      "damage_to_player": 100.0,
+      "damage_to_opponent": 69.99999880000001,
+      "first_fire_after_acquisition_ms": {
+        "n": 1,
+        "median": 466.6666666666667,
+        "min": 466.6666666666667,
+        "max": 466.6666666666667
+      },
+      "engagements": [
+        {
+          "start": 9054,
+          "end": 9338,
+          "seconds": 4.733333333333333,
+          "down": false,
+          "censored": true
+        }
+      ],
+      "engagement_survival_seconds": {
+        "n": 1,
+        "median": 4.733333333333333,
+        "min": 4.733333333333333,
+        "max": 4.733333333333333
+      },
+      "engagement_uncensored_down_seconds": null,
+      "first_fire_to_target_down_seconds": {
+        "n": 1,
+        "median": 1.7333333333333334,
+        "min": 1.7333333333333334,
+        "max": 1.7333333333333334
+      },
+      "fire_windows": [
+        {
+          "start": 9054,
+          "end": 9158,
+          "seconds": 1.7333333333333334,
+          "target_down": true,
+          "censored": false
+        }
+      ],
+      "combat_horizontal_speed_units_s": {
+        "n": 25,
+        "median": 1.4811174820013406,
+        "min": 1.145603700088631,
+        "max": 4.81601122126216
+      },
+      "moving_fraction": 0.7267431597528685,
+      "squid_input_fraction": 0.2319505736981465
+    },
+    {
+      "recording": "work/rl-demo/run76/final-tiers/medium",
+      "level": "medium",
+      "seed": 0,
+      "frames": 11510,
+      "complete": true,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": [
+          0.074000001,
+          0.152999997
+        ],
+        "player_1": [
+          0.152999997,
+          0.074000001
+        ]
+      },
+      "opponent_turf_percent": 15.2999997,
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "hud_downs_by_player_from_opponent_view": {
+        "player_0": 0,
+        "player_1": 0
+      },
+      "modes": {
+        "unavailable": 63,
+        "spawn": 22,
+        "paint_advance": 4124,
+        "recover": 1318
+      },
+      "combat_shots_from_native_ink": 0,
+      "likely_bullet_damage_edges": 0,
+      "hit_fraction_proxy": null,
+      "hit_fraction_scope": ">=20HP target damage edges within18f after a .015 native ink combat shot; NOT exact native collision attribution",
+      "damage_to_player": 0,
+      "damage_to_opponent": 139.99999760000003,
+      "first_fire_after_acquisition_ms": null,
+      "engagements": [],
+      "engagement_survival_seconds": null,
+      "engagement_uncensored_down_seconds": null,
+      "first_fire_to_target_down_seconds": null,
+      "fire_windows": [],
+      "combat_horizontal_speed_units_s": null,
+      "moving_fraction": 0.7159752868490733,
+      "squid_input_fraction": 0.22488967343336275
+    },
+    {
+      "recording": "work/rl-demo/run76/final-tiers/hard",
+      "level": "hard",
+      "seed": 0,
+      "frames": 11511,
+      "complete": true,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": [
+          0.155000001,
+          0.166999996
+        ],
+        "player_1": [
+          0.166999996,
+          0.155000001
+        ]
+      },
+      "opponent_turf_percent": 16.6999996,
+      "hud_downs": {
+        "player_0": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "hud_downs_by_player_from_opponent_view": {
+        "player_0": 0,
+        "player_1": 1
+      },
+      "modes": {
+        "unavailable": 294,
+        "spawn": 46,
+        "paint_advance": 3865,
+        "recover": 1209,
+        "engage": 10,
+        "memory_search": 94,
+        "approach": 8
+      },
+      "combat_shots_from_native_ink": 0,
+      "likely_bullet_damage_edges": 0,
+      "hit_fraction_proxy": null,
+      "hit_fraction_scope": ">=20HP target damage edges within18f after a .015 native ink combat shot; NOT exact native collision attribution",
+      "damage_to_player": 0,
+      "damage_to_opponent": 169.99999880000001,
+      "first_fire_after_acquisition_ms": null,
+      "engagements": [
+        {
+          "start": 5894,
+          "end": 6106,
+          "seconds": 3.533333333333333,
+          "down": false,
+          "censored": true
+        }
+      ],
+      "engagement_survival_seconds": {
+        "n": 1,
+        "median": 3.533333333333333,
+        "min": 3.533333333333333,
+        "max": 3.533333333333333
+      },
+      "engagement_uncensored_down_seconds": null,
+      "first_fire_to_target_down_seconds": null,
+      "fire_windows": [],
+      "combat_horizontal_speed_units_s": {
+        "n": 5,
+        "median": 1.6980095136072522,
+        "min": 1.2011989588143388,
+        "max": 2.8959525901487657
+      },
+      "moving_fraction": 0.6993204483275969,
+      "squid_input_fraction": 0.21021975112523167
+    }
+  ],
+  "final_70s_player_input_replay": [
+    {
+      "recording": "work/rl-demo/run76/contact-r2-easy",
+      "level": "easy",
+      "seed": 0,
+      "frames": 4200,
+      "complete": false,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "opponent_turf_percent": null,
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "hud_downs_by_player_from_opponent_view": {
+        "player_0": 0,
+        "player_1": 0
+      },
+      "modes": {
+        "unavailable": 2,
+        "spawn": 22,
+        "paint_advance": 1387,
+        "recover": 404,
+        "engage": 30,
+        "memory_search": 193,
+        "approach": 62
+      },
+      "combat_shots_from_native_ink": 1,
+      "likely_bullet_damage_edges": 0,
+      "hit_fraction_proxy": 0.0,
+      "hit_fraction_scope": ">=20HP target damage edges within18f after a .015 native ink combat shot; NOT exact native collision attribution",
+      "damage_to_player": 0,
+      "damage_to_opponent": 0,
+      "first_fire_after_acquisition_ms": {
+        "n": 1,
+        "median": 166.66666666666666,
+        "min": 166.66666666666666,
+        "max": 166.66666666666666
+      },
+      "engagements": [
+        {
+          "start": 2322,
+          "end": 2566,
+          "seconds": 4.066666666666666,
+          "down": false,
+          "censored": true
+        }
+      ],
+      "engagement_survival_seconds": {
+        "n": 1,
+        "median": 4.066666666666666,
+        "min": 4.066666666666666,
+        "max": 4.066666666666666
+      },
+      "engagement_uncensored_down_seconds": null,
+      "first_fire_to_target_down_seconds": null,
+      "fire_windows": [
+        {
+          "start": 2332,
+          "end": 2524,
+          "seconds": 3.2,
+          "target_down": false,
+          "censored": true
+        }
+      ],
+      "combat_horizontal_speed_units_s": {
+        "n": 15,
+        "median": 1.474428475577298,
+        "min": 1.093318735946586,
+        "max": 2.7586357288106087
+      },
+      "moving_fraction": 0.7990049751243781,
+      "squid_input_fraction": 0.21940298507462686
+    },
+    {
+      "recording": "work/rl-demo/run76/contact-r2-medium",
+      "level": "medium",
+      "seed": 0,
+      "frames": 4200,
+      "complete": false,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "opponent_turf_percent": null,
+      "hud_downs": {
+        "player_0": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "hud_downs_by_player_from_opponent_view": {
+        "player_0": 2,
+        "player_1": 0
+      },
+      "modes": {
+        "unavailable": 1,
+        "spawn": 24,
+        "paint_advance": 1265,
+        "recover": 498,
+        "approach": 40,
+        "memory_search": 236,
+        "engage": 36
+      },
+      "combat_shots_from_native_ink": 6,
+      "likely_bullet_damage_edges": 2,
+      "hit_fraction_proxy": 0.3333333333333333,
+      "hit_fraction_scope": ">=20HP target damage edges within18f after a .015 native ink combat shot; NOT exact native collision attribution",
+      "damage_to_player": 100.0,
+      "damage_to_opponent": 0,
+      "first_fire_after_acquisition_ms": {
+        "n": 1,
+        "median": 133.33333333333334,
+        "min": 133.33333333333334,
+        "max": 133.33333333333334
+      },
+      "engagements": [
+        {
+          "start": 1870,
+          "end": 2162,
+          "seconds": 4.866666666666666,
+          "down": false,
+          "censored": true
+        }
+      ],
+      "engagement_survival_seconds": {
+        "n": 1,
+        "median": 4.866666666666666,
+        "min": 4.866666666666666,
+        "max": 4.866666666666666
+      },
+      "engagement_uncensored_down_seconds": null,
+      "first_fire_to_target_down_seconds": {
+        "n": 1,
+        "median": 1.8666666666666667,
+        "min": 1.8666666666666667,
+        "max": 1.8666666666666667
+      },
+      "fire_windows": [
+        {
+          "start": 1870,
+          "end": 1982,
+          "seconds": 1.8666666666666667,
+          "target_down": true,
+          "censored": false
+        }
+      ],
+      "combat_horizontal_speed_units_s": {
+        "n": 19,
+        "median": 2.1579836693772876,
+        "min": 1.653567628346981,
+        "max": 5.852420062951981
+      },
+      "moving_fraction": 0.7621890547263681,
+      "squid_input_fraction": 0.24875621890547264
+    },
+    {
+      "recording": "work/rl-demo/run76/contact-r2-hard",
+      "level": "hard",
+      "seed": 0,
+      "frames": 4200,
+      "complete": false,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": null,
+        "player_1": null
+      },
+      "opponent_turf_percent": null,
+      "hud_downs": {
+        "player_0": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "player_1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "hud_downs_by_player_from_opponent_view": {
+        "player_0": 0,
+        "player_1": 0
+      },
+      "modes": {
+        "unavailable": 1,
+        "spawn": 24,
+        "paint_advance": 1623,
+        "recover": 452
+      },
+      "combat_shots_from_native_ink": 0,
+      "likely_bullet_damage_edges": 0,
+      "hit_fraction_proxy": null,
+      "hit_fraction_scope": ">=20HP target damage edges within18f after a .015 native ink combat shot; NOT exact native collision attribution",
+      "damage_to_player": 0,
+      "damage_to_opponent": 0,
+      "first_fire_after_acquisition_ms": null,
+      "engagements": [],
+      "engagement_survival_seconds": null,
+      "engagement_uncensored_down_seconds": null,
+      "first_fire_to_target_down_seconds": null,
+      "fire_windows": [],
+      "combat_horizontal_speed_units_s": null,
+      "moving_fraction": 0.7751243781094528,
+      "squid_input_fraction": 0.2208955223880597
+    }
+  ],
+  "original_stalls": {
+    "003": {
+      "source": "work/rl-demo/my-demo-003",
+      "all_frames": {
+        "intervals": {
+          "samples": 11522,
+          "median_fps": 56.183785477497146,
+          "one_percent_low_fps": 11.947582299667205,
+          "average_fps": 52.61949094984458,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.7987295,
+          "p99": 51.58183060999998,
+          "max": 1016.468375
+        },
+        "ack_ms": {
+          "p50": 17.395334,
+          "p99": 24.984912500000007,
+          "max": 1016.222625
+        },
+        "over_ms": {
+          "100": 6,
+          "200": 4,
+          "500": 4,
+          "1000": 1
+        },
+        "input_processing_ms": {
+          "p50": 0.172959,
+          "p99": 34.58861974000004,
+          "max": 66.542041
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.084209,
+          "p99": 0.7858880399999925,
+          "max": 4.622833
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11061,
+          "median_fps": 56.31806460492991,
+          "one_percent_low_fps": 11.74496962419298,
+          "average_fps": 53.231598497282704,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.756292,
+          "p99": 51.746116399999984,
+          "max": 1016.468375
+        },
+        "ack_ms": {
+          "p50": 17.360083,
+          "p99": 20.9294475,
+          "max": 1016.222625
+        },
+        "over_ms": {
+          "100": 6,
+          "200": 4,
+          "500": 4,
+          "1000": 1
+        },
+        "input_processing_ms": {
+          "p50": 0.17291649999999997,
+          "p99": 34.77686387999998,
+          "max": 66.542041
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.084459,
+          "p99": 0.8072167999999998,
+          "max": 4.622833
+        }
+      },
+      "ack_over100": 6,
+      "compilation_nearby": 6,
+      "events": [
+        {
+          "frame": 610,
+          "ack_ms": 191.760666,
+          "native": [
+            {
+              "role": 0,
+              "native_frame": 2239,
+              "submit_ms": 44.613,
+              "compile_ms": 33.3,
+              "libraries": 0.0,
+              "pipelines": 5.0,
+              "gpu_ms": 15.223
+            },
+            {
+              "role": 0,
+              "native_frame": 2240,
+              "submit_ms": 186.191,
+              "compile_ms": 179.0,
+              "libraries": 2.0,
+              "pipelines": 1.0,
+              "gpu_ms": 16.973
+            },
+            {
+              "role": 0,
+              "native_frame": 2241,
+              "submit_ms": 20.55,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 1.0,
+              "gpu_ms": 16.263
+            },
+            {
+              "role": 1,
+              "native_frame": 1792,
+              "submit_ms": 1.824,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 13.045
+            },
+            {
+              "role": 1,
+              "native_frame": 1793,
+              "submit_ms": 2.03,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 15.793
+            },
+            {
+              "role": 1,
+              "native_frame": 1794,
+              "submit_ms": 2.144,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 17.702
+            }
+          ],
+          "compilation_nearby": true
+        },
+        {
+          "frame": 6335,
+          "ack_ms": 839.727959,
+          "native": [
+            {
+              "role": 0,
+              "native_frame": 7964,
+              "submit_ms": 2.764,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 12.795
+            },
+            {
+              "role": 0,
+              "native_frame": 7965,
+              "submit_ms": 830.593,
+              "compile_ms": 1203.4,
+              "libraries": 7.0,
+              "pipelines": 5.0,
+              "gpu_ms": 12.206
+            },
+            {
+              "role": 0,
+              "native_frame": 7966,
+              "submit_ms": 138.402,
+              "compile_ms": 175.7,
+              "libraries": 2.0,
+              "pipelines": 2.0,
+              "gpu_ms": 11.724
+            },
+            {
+              "role": 1,
+              "native_frame": 7517,
+              "submit_ms": 1.972,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 13.729
+            },
+            {
+              "role": 1,
+              "native_frame": 7518,
+              "submit_ms": 2.011,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 10.529
+            },
+            {
+              "role": 1,
+              "native_frame": 7519,
+              "submit_ms": 2.169,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 8.768
+            }
+          ],
+          "compilation_nearby": true
+        },
+        {
+          "frame": 6336,
+          "ack_ms": 145.987458,
+          "native": [
+            {
+              "role": 0,
+              "native_frame": 7965,
+              "submit_ms": 830.593,
+              "compile_ms": 1203.4,
+              "libraries": 7.0,
+              "pipelines": 5.0,
+              "gpu_ms": 12.206
+            },
+            {
+              "role": 0,
+              "native_frame": 7966,
+              "submit_ms": 138.402,
+              "compile_ms": 175.7,
+              "libraries": 2.0,
+              "pipelines": 2.0,
+              "gpu_ms": 11.724
+            },
+            {
+              "role": 0,
+              "native_frame": 7967,
+              "submit_ms": 3.166,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 14.963
+            },
+            {
+              "role": 1,
+              "native_frame": 7518,
+              "submit_ms": 2.011,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 10.529
+            },
+            {
+              "role": 1,
+              "native_frame": 7519,
+              "submit_ms": 2.169,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 8.768
+            },
+            {
+              "role": 1,
+              "native_frame": 7520,
+              "submit_ms": 2.078,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 15.477
+            }
+          ],
+          "compilation_nearby": true
+        },
+        {
+          "frame": 6340,
+          "ack_ms": 578.825291,
+          "native": [
+            {
+              "role": 0,
+              "native_frame": 7969,
+              "submit_ms": 3.027,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 12.542
+            },
+            {
+              "role": 0,
+              "native_frame": 7970,
+              "submit_ms": 2.868,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 11.478
+            },
+            {
+              "role": 0,
+              "native_frame": 7971,
+              "submit_ms": 2.798,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 14.549
+            },
+            {
+              "role": 1,
+              "native_frame": 7522,
+              "submit_ms": 2.015,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 13.523
+            },
+            {
+              "role": 1,
+              "native_frame": 7523,
+              "submit_ms": 572.173,
+              "compile_ms": 982.8,
+              "libraries": 9.0,
+              "pipelines": 1.0,
+              "gpu_ms": 13.159
+            },
+            {
+              "role": 1,
+              "native_frame": 7524,
+              "submit_ms": 2.052,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 17.778
+            }
+          ],
+          "compilation_nearby": true
+        },
+        {
+          "frame": 6365,
+          "ack_ms": 1016.222625,
+          "native": [
+            {
+              "role": 0,
+              "native_frame": 7994,
+              "submit_ms": 2.859,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 13.135
+            },
+            {
+              "role": 0,
+              "native_frame": 7995,
+              "submit_ms": 1007.591,
+              "compile_ms": 1775.6,
+              "libraries": 12.0,
+              "pipelines": 6.0,
+              "gpu_ms": 12.435
+            },
+            {
+              "role": 0,
+              "native_frame": 7996,
+              "submit_ms": 3.092,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 13.243
+            },
+            {
+              "role": 1,
+              "native_frame": 7547,
+              "submit_ms": 1.891,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 13.702
+            },
+            {
+              "role": 1,
+              "native_frame": 7548,
+              "submit_ms": 2.002,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 10.466
+            },
+            {
+              "role": 1,
+              "native_frame": 7549,
+              "submit_ms": 2.198,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 14.108
+            }
+          ],
+          "compilation_nearby": true
+        },
+        {
+          "frame": 6370,
+          "ack_ms": 791.286375,
+          "native": [
+            {
+              "role": 0,
+              "native_frame": 7999,
+              "submit_ms": 2.808,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 12.876
+            },
+            {
+              "role": 0,
+              "native_frame": 8000,
+              "submit_ms": 2.781,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 12.121
+            },
+            {
+              "role": 0,
+              "native_frame": 8001,
+              "submit_ms": 2.764,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 16.629
+            },
+            {
+              "role": 1,
+              "native_frame": 7552,
+              "submit_ms": 1.98,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 14.349
+            },
+            {
+              "role": 1,
+              "native_frame": 7553,
+              "submit_ms": 786.387,
+              "compile_ms": 783.9,
+              "libraries": 12.0,
+              "pipelines": 0.0,
+              "gpu_ms": 12.764
+            },
+            {
+              "role": 1,
+              "native_frame": 7554,
+              "submit_ms": 1.968,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 17.853
+            }
+          ],
+          "compilation_nearby": true
+        }
+      ],
+      "scope": "Adjacent native frame evidence; overlapping compile time across threads/peers must not be added as exclusive wall time."
+    },
+    "004": {
+      "source": "work/rl-demo/my-demo-004",
+      "all_frames": {
+        "intervals": {
+          "samples": 11511,
+          "median_fps": 56.21543734373514,
+          "one_percent_low_fps": 17.027767255808254,
+          "average_fps": 52.81428632998217,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.788708,
+          "p99": 40.61116189999996,
+          "max": 87.554708
+        },
+        "ack_ms": {
+          "p50": 17.364771,
+          "p99": 25.39498026,
+          "max": 54.313791
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.173708,
+          "p99": 23.090834629999925,
+          "max": 70.070375
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.083583,
+          "p99": 0.6584041999999992,
+          "max": 6.022834
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11053,
+          "median_fps": 56.35496323233134,
+          "one_percent_low_fps": 16.797780041346066,
+          "average_fps": 53.47391250078614,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.744666,
+          "p99": 41.42642867999989,
+          "max": 87.554708
+        },
+        "ack_ms": {
+          "p50": 17.327333,
+          "p99": 20.84008726,
+          "max": 54.313791
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.173625,
+          "p99": 23.28653975999998,
+          "max": 70.070375
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.083833,
+          "p99": 0.6788764799999978,
+          "max": 6.022834
+        }
+      },
+      "ack_over100": 0,
+      "compilation_nearby": 0,
+      "events": [],
+      "scope": "Adjacent native frame evidence; overlapping compile time across threads/peers must not be added as exclusive wall time."
+    }
+  },
+  "warm_replay_stalls": {
+    "replay-003-warm": {
+      "source": "work/rl-demo/run76/replay-003-warm",
+      "all_frames": {
+        "intervals": {
+          "samples": 11509,
+          "median_fps": 59.800715312236285,
+          "one_percent_low_fps": 34.256555294848994,
+          "average_fps": 58.3684500300159,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 16.722208,
+          "p99": 25.29276364,
+          "max": 221.901209
+        },
+        "ack_ms": {
+          "p50": 16.465937500000003,
+          "p99": 25.1958545,
+          "max": 221.788584
+        },
+        "over_ms": {
+          "100": 1,
+          "200": 1,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.008875,
+          "p99": 0.03854646999999994,
+          "max": 0.103167
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.086416,
+          "p99": 2.049982000000001,
+          "max": 4.268458
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11050,
+          "median_fps": 59.90811473086924,
+          "one_percent_low_fps": 42.06421215672785,
+          "average_fps": 59.391028672442715,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 16.6922295,
+          "p99": 19.805266420000002,
+          "max": 221.901209
+        },
+        "ack_ms": {
+          "p50": 16.433333,
+          "p99": 19.5771875,
+          "max": 221.788584
+        },
+        "over_ms": {
+          "100": 1,
+          "200": 1,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.008833,
+          "p99": 0.0383755,
+          "max": 0.103167
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.0871665,
+          "p99": 2.0707854100000023,
+          "max": 4.268458
+        }
+      },
+      "ack_over100": 1,
+      "compilation_nearby": 1,
+      "events": [
+        {
+          "frame": 2530,
+          "ack_ms": 221.788584,
+          "native": [
+            {
+              "role": 0,
+              "native_frame": 4114,
+              "submit_ms": 2.914,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 12.441
+            },
+            {
+              "role": 0,
+              "native_frame": 4115,
+              "submit_ms": 216.173,
+              "compile_ms": 267.3,
+              "libraries": 3.0,
+              "pipelines": 4.0,
+              "gpu_ms": 14.804
+            },
+            {
+              "role": 0,
+              "native_frame": 4116,
+              "submit_ms": 5.476,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 16.612
+            },
+            {
+              "role": 1,
+              "native_frame": 3729,
+              "submit_ms": 1.721,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 12.39
+            },
+            {
+              "role": 1,
+              "native_frame": 3730,
+              "submit_ms": 1.767,
+              "compile_ms": 0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 11.175
+            },
+            {
+              "role": 1,
+              "native_frame": 3731,
+              "submit_ms": 1.925,
+              "compile_ms": 0.0,
+              "libraries": 0.0,
+              "pipelines": 0.0,
+              "gpu_ms": 16.406
+            }
+          ],
+          "compilation_nearby": true
+        }
+      ],
+      "scope": "Adjacent native frame evidence; overlapping compile time across threads/peers must not be added as exclusive wall time."
+    },
+    "replay-003-final": {
+      "source": "work/rl-demo/run76/replay-003-final",
+      "all_frames": {
+        "intervals": {
+          "samples": 11510,
+          "median_fps": 59.77427798051884,
+          "one_percent_low_fps": 37.14720469889748,
+          "average_fps": 58.541902095775264,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 16.729604000000002,
+          "p99": 24.688008719999992,
+          "max": 93.92075
+        },
+        "ack_ms": {
+          "p50": 16.464209,
+          "p99": 24.514808599999995,
+          "max": 93.718208
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.008708,
+          "p99": 0.03048329999999994,
+          "max": 0.626542
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.086333,
+          "p99": 1.8893557799999996,
+          "max": 5.347958
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11051,
+          "median_fps": 59.90280889063113,
+          "one_percent_low_fps": 45.688024618762384,
+          "average_fps": 59.493938027472694,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 16.693708,
+          "p99": 19.6758335,
+          "max": 93.92075
+        },
+        "ack_ms": {
+          "p50": 16.431520499999998,
+          "p99": 19.424014829999997,
+          "max": 93.718208
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.008667,
+          "p99": 0.03026924999999997,
+          "max": 0.626542
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.087,
+          "p99": 1.9197295,
+          "max": 5.347958
+        }
+      },
+      "ack_over100": 0,
+      "compilation_nearby": 0,
+      "events": [],
+      "scope": "Adjacent native frame evidence; overlapping compile time across threads/peers must not be added as exclusive wall time."
+    }
+  },
+  "warm_for_005_counts": {
+    "S": 1707,
+    "R": 1460,
+    "C": 8
+  },
+  "audits": [
+    {
+      "recording": "work/rl-demo/run76/solo-before",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r1",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r2",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r3",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-r4",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/solo-final",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/replay-003-warm",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/replay-003-final",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/final-tiers/easy",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/final-tiers/medium",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/final-tiers/hard",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/contact-r2-easy",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/contact-r2-medium",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    },
+    {
+      "recording": "work/rl-demo/run76/contact-r2-hard",
+      "forbidden_equipment_inputs": 0,
+      "replay_prefix_exact": true,
+      "full_aim_write_log_entries": 0,
+      "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+    }
+  ],
+  "tests": 110,
+  "acceptance": {
+    "paint_target_25_percent": false,
+    "final_solo_turf_percent": 18.7000006,
+    "best_diagnostic_turf_percent": 23.1999993,
+    "hard_human_50_percent": "not calibrated",
+    "strict_native_difficulty_order": false,
+    "observed_003_long_compile_cluster_cleared": true,
+    "full_replay_over100": 0,
+    "global_zero_stall_guarantee": false
+  },
+  "excluded": {
+    "first_contact_group": "forced neutral launcher window erased first180f gyro; replaced with exact player-only replay; not included in difficulty evidence"
+  }
+}

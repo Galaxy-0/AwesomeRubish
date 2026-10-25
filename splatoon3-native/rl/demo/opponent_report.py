@@ -134,7 +134,7 @@ def analyze(recording):
     fire_last = None
     for d in decisions:
         f = d["frame"]
-        if d.get("fire"):
+        if d.get("fire") and d.get("mode") in ("engage", "cover"):
             if fire_start is None:
                 fire_start = f
             fire_last = f
@@ -171,7 +171,11 @@ def analyze(recording):
     reaction = []
     seen = set()
     for d in decisions:
-        if d.get("fire") and d.get("acquired_at") not in seen:
+        if (
+            d.get("fire")
+            and d.get("mode") in ("engage", "cover")
+            and d.get("acquired_at") not in seen
+        ):
             seen.add(d.get("acquired_at"))
             reaction.append((d["frame"] - d["acquired_at"]) * 1000 / 60)
     modes = collections.Counter(d["mode"] for d in decisions)

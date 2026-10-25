@@ -20,7 +20,7 @@ from .protocol import DemoEnv
 from rl.native_start import NativeSession, validate_runtime
 from rl.session import ROOT
 from rl.loadout import uniform_loadout
-from arena.referee_api import RefereeAPI
+from .opponent_vision import DemoRefereeAPI as RefereeAPI
 from arena.config import PolicySpec
 from arena.control_process import ControlProcess, own_special
 from arena.lib.atlas import MapAtlas
@@ -230,6 +230,8 @@ class DemoSession(NativeSession):
 
 def scripted(frame, pattern="legacy"):
     a = neutral()
+    if pattern == "idle":
+        return a  # noncombat paint fixture: player stays in the spawn launcher
     if pattern == "minimap" and frame >= 180:
         a["observer_buttons"] = [int(540 <= frame < 660 or 900 <= frame < 904)]
         return a
@@ -280,6 +282,19 @@ def primary_actions(actions):
         buttons[2:4] = [0, 0]
         result[player] = dict(action, buttons=buttons)
     return result
+
+
+def resolve_opponent_stride(spec, level, override):
+    value = override if override is not None else (
+        spec.step_frames if spec else 6 if level == "turret" else 2
+    )
+    if not isinstance(value, int) or value < 1:
+        raise ValueError("opponent stride must be positive")
+    return value
+
+
+def replay_actions(current, recorded, player_only):
+    return dict(current, player_0=recorded["player_0"]) if player_only else recorded
 
 
 def summary(infos, origins):
@@ -405,6 +420,10 @@ def trace(barriers, actions, out):
 
 
 def run(a):
+    player_replay = getattr(a, "fixture_player_replay", None)
+    if player_replay and (a.source != "script" or getattr(a, "fixture_inputs", None)
+                          or getattr(a, "fixture_player_policy", None)):
+        raise ValueError("player replay is a script-only fixture, exclusive with other player fixtures")
     fixture_headless = bool(getattr(a, "fixture_headless", False))
     if fixture_headless and a.source != "script":
         raise ValueError("headless is script-fixture only; human recording must display full rendering")
@@ -508,7 +527,7 @@ def run(a):
         return 0
     out = safe_out(a.out)
     out.mkdir(parents=True, exist_ok=False, mode=0o700)
-    fixture_path = getattr(a, "fixture_inputs", None)
+    fixture_path = getattr(a, "fixture_inputs", None) or player_replay
     fixture_inputs = None
     if fixture_path:
         if a.source != "script":
@@ -588,6 +607,7 @@ def run(a):
     write(out / "result.json", result)
     if fixture_inputs is not None:
         result["fixed_input_fixture"] = str(fixture_path)
+        result["fixed_input_roles"] = ["player_0"] if player_replay else ["player_0", "player_1"]
         result["fixed_input_sha256"] = hashlib.sha256(
             fixture_path.read_bytes()
         ).hexdigest()
@@ -628,9 +648,8 @@ def run(a):
             )
             result["fixture_player_policy"] = str(player_spec.root)
             result["fixture_player_policy_sha256"] = player_spec.source_sha256
-        opponent_stride = a.opponent_stride or (spec.step_frames if spec else 6)
-        if opponent_stride < 1:
-            raise ValueError("opponent stride must be positive")
+        opponent_stride = resolve_opponent_stride(spec, result["opponent_level"], a.opponent_stride)
+        result["opponent_stride"] = opponent_stride
         result["opponent_stride"] = opponent_stride
         if spec:
             child = ControlProcess(
@@ -692,6 +711,7 @@ def run(a):
             dict(zip(env.possible_agents, [0, 1])),
             ROOT / "work/arena/maps/Yunohana/sight.npz",
             stage_id=1,
+            camera_agent="player_1" if not spec and result["opponent_level"] != "turret" else None,
         )
         atlas = MapAtlas.load(1)
         bot = None
@@ -732,7 +752,7 @@ def run(a):
                 opponent = neutral()
             opponent_due = frame - last_policy >= opponent_stride
             fixture_due = fixture_child and frame - last_fixture >= player_spec.step_frames
-            if battle and fixture_inputs is None and (opponent_due or fixture_due):
+            if battle and (fixture_inputs is None or player_replay) and (opponent_due or fixture_due):
                 api.update(env.process_infos)
                 if fixture_due:
                     fixture_control = fixture_child.act(
@@ -785,7 +805,7 @@ def run(a):
                         result.get("post_fixture_neutral_frames", 0) + 1
                     )
                 else:
-                    acts = fixture_inputs[frame]
+                    acts = replay_actions(acts, fixture_inputs[frame], bool(player_replay))
             if a.loadout == 'primary_only':
                 acts = primary_actions(acts)
             send = time.monotonic_ns()
@@ -956,7 +976,7 @@ if __name__ == "__main__":
     p.add_argument(
         "--opponent-stride",
         type=int,
-        help="default: policy config cadence, or6 for .52 script",
+        help="default: policy cadence;2 for human-like .52;6 for legacy turret",
     )
     p.add_argument(
         "--loadout", choices=["primary_only", "full"], default="primary_only"
@@ -983,6 +1003,8 @@ if __name__ == "__main__":
         type=Path,
         help="private fixed per-present script inputs, never human demonstration",
     )
+    p.add_argument("--fixture-player-replay", type=Path,
+                   help="script-only: replay player0 inputs unchanged, including launch gyro/X; opponent stays reactive")
     p.add_argument(
         "--ink-every",
         type=int,
@@ -997,7 +1019,7 @@ if __name__ == "__main__":
         help="private passive field/paint survey; extra readback may stall rendering",
     )
     p.add_argument(
-        "--script-pattern", choices=["legacy", "calibration", "minimap", "hunter"], default="legacy"
+        "--script-pattern", choices=["legacy", "calibration", "minimap", "hunter", "idle"], default="legacy"
     )
     p.add_argument("--pace", action=argparse.BooleanOptionalAction, default=True)
     p.add_argument(

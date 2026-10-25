@@ -1,5 +1,8 @@
 # 人工示范录制准备（只录制，不训练）
 
+2026-10-25（run76）：按003/004反馈整体调强三档；默认medium，下一局清单明确选hard。修正身体/镜头双重FOV过滤，保留遮挡与潜墨信息边界；决策从6f改2f，有限速跟枪、短反应、主动接近/侧向路线与更连续射击。巡路最终默认18.7%（旧10.2%、候选最好23.2%），尚未达到25–30%，不作已完成承诺；hard的人类水平也未标定。003新编译效果与004清单做分支合并并验证原输入回放。[本轮证据与未达项](../../notes/rl-demo-opponent52-strength-20261025.md)，005命令见[开录清单](开录清单.md)。
+
+
 2026-10-25（run75）：`.52` 陪练已独立为 `opponent52.py`，新增 `--opponent-level easy|medium|hard`，默认 `medium`；旧行为为 `turret`，仅供回归。只接收经过可见性过滤的观测，另加相机视锥、反应等待、带噪限速瞄准和短期目击记忆；有交火横移、距离控制、低墨/残血恢复及巡路涂地，hard 受压寻找静态掩体。所有档位只用主武器。统一参数表在 `LEVELS`，实测及其样本局限见 [run75 报告](../../notes/rl-demo-opponent52-20261025.md)。最新人工命令沿用 `run74/replay-final-r5` 预热、等 `DEMO_WARM_READY`；见[开录清单](开录清单.md)。
 
 2026-10-25（run74）：人工录制的秒级停顿定位为首次shader/pipeline编译和对端帧屏障。`warmup`合并双方与继承清单，可用S-only历史清单补库覆盖，并在初始暂停屏障等待双方原生预热完成。原有NVN计时和每帧日志保留。X现通过demo专属 `observer_buttons` 注入原生bit2，primary_only允许；BC仍六键，记录未表示X。最新003命令见[开录清单](开录清单.md)，证据见[run74报告](../../notes/rl-demo-stalls-20261025.md)。
@@ -241,3 +244,18 @@ UV表恢复/资格验证：
 ```
 
 新版镜头模型会显式选择`native_plus5`动作档，报告保存档名/数值。没有该标记的旧矩阵仍用legacy；物理轴向/动态镜头响应资格不因换了曲线而升级。周期图像f对应动作前观测f+1，转换自动选一个固定采样相位，避免stride2与30帧读回恰好永远错开；`--sample-offset`可显式指定。没有持有过去墨图，也没有用未来图像。训练就绪仍由各通道mask及完整性门共同决定。
+
+
+## .52 决策与预热离线审计
+
+`python -m rl.demo.opponent_audit work/rl-demo/my-demo-003`按实际输入/原生位置核对模式，不把paint_advance标签当作涂地成功。`opponent_report`只将engage/cover中的发射计为战斗弹；接近/追踪喷涂不混入命中率。
+
+两份录制从同一祖先分叉时，合并全部分支：
+
+```sh
+.venv/bin/python -m rl.demo.warmup \
+  --recordings work/rl-demo/my-demo-003 work/rl-demo/my-demo-004 \
+  --out work/rl-demo/warm-pack-new
+```
+
+输出仅为私有coverage pack，可作为`--warm-from`；不是passed对局。清单按内容地址去重，原件保留；未遇过的效果仍可能首次编译。人工005请使用开录清单里已验证的最终目录。

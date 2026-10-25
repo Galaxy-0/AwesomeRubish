@@ -85,6 +85,20 @@ class ReportTests(unittest.TestCase):
             self.assertEqual(r["combat_shots_from_native_ink"], 0)
             self.assertEqual(r["likely_bullet_damage_edges"], 0)
 
+    def test_path_painting_is_not_classified_as_combat_or_reaction(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.fixture(root)
+            path = root / "opponent-decisions.jsonl"
+            decisions = [json.loads(line) for line in path.read_text().splitlines()]
+            for d in decisions:
+                d["mode"] = "paint_advance"
+            path.write_text("".join(json.dumps(d) + "\n" for d in decisions))
+            r = analyze(root)
+            self.assertEqual(r["combat_shots_from_native_ink"], 0)
+            self.assertIsNone(r["first_fire_after_acquisition_ms"])
+            self.assertIsNone(r["first_fire_to_target_down_seconds"])
+
     def test_damage_edges_cannot_reuse_a_single_shot(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
