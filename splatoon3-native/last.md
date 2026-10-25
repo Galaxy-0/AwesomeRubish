@@ -1,3 +1,18 @@
+# run74：Stage1录制profile已签发，fixture dry-run通过（2026-10-25）
+
+新profile：`work/rl-demo/recording-profile-r1/profile.json`，`scope=primary_only_recording / complete=true`。
+基于audit-r2、002实际使用同一矩阵的逐帧记录和用户“正常”确认；不是覆写旧profile或将中断局冒充完整对局。
+
+- ZR/ZL/B、八个摇杆方向、已接受的陀螺仪矩阵严格校验；full仍要求R/RS证据和full scope。
+- Minus/Plus/Up未确认且忽略，R/RS在Stage1实际输出为0，物理原始值仍保留；用Ctrl-C/STOP提前结束。
+- 真实capture `--fixture --dry-run`通过，结果`work/rl-demo/recording-profile-r1/dry-run/result.json`；没有打开SDL/手柄或启动游戏。
+- 36项组件/静态检查通过。控制complete不代表全套BC ready_for_training，训练/T1/S1继续暂停。
+- 原audit-r2、002和失败my-demo-001均保留、SHA不变；下一局输出my-demo-002，避免覆盖已存在的失败目录。
+
+[完整录制命令](rl/demo/开录清单.md) · [本轮报告](notes/rl-demo-recording-profile-20261025.md)。仅提交源码和文档，不提交work数据；停下等用户录制。
+
+---
+
 # run73：方向001定位到错轴/反向，002复测已准备（2026-10-24）
 
 本轮仅离线分析和修Python/profile，不开SDL设备或游戏、不训练；policies/宿主/原存档未改，T1/S1暂停。

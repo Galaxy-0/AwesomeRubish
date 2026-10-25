@@ -26,15 +26,22 @@ from .controller_check import (
 
 class Controller:
     def __init__(
-        self, library=None, deadzone=0.15, profile=None, allow_direction_check=False
+        self,
+        library=None,
+        deadzone=0.15,
+        profile=None,
+        allow_direction_check=False,
+        loadout="full",
     ):
         if not 0 <= deadzone < 0.5:
             raise ValueError("extra deadzone must be in [0,.5)")
         self.deadzone = deadzone
+        self.loadout = loadout
         self.calibration = (
             validate_profile(
                 json.loads(Path(profile).read_text()),
                 allow_direction_check=allow_direction_check,
+                loadout=loadout,
             )
             if profile
             else {}
@@ -292,6 +299,13 @@ class Controller:
             row, self.calibration.get("bindings", DEFAULT_BINDINGS)
         )
         row["buttons"] = [row["physical_buttons"].get(b, 0) for b in GAME_BUTTONS]
+        disabled = set(self.calibration.get("disabled_buttons", []))
+        if getattr(self, "loadout", "full") == "primary_only":
+            disabled.update(("R", "RS"))
+        row["buttons"] = [
+            0 if b in disabled else v for b, v in zip(GAME_BUTTONS, row["buttons"])
+        ]
+        row["ignored_buttons"] = sorted(disabled)
         if "gyro_mapping" in self.calibration:
             corrected = [
                 x - b for x, b in zip(raw, self.calibration["gyro_bias_rad_s"])

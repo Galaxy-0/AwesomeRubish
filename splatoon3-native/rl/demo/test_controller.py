@@ -224,6 +224,11 @@ class MappingTests(unittest.TestCase):
         for actual, expected in zip(r["gyro"], [0.1, -0.3, -0.2]):
             self.assertAlmostEqual(actual, expected / (2 * math.pi))
         self.assertAlmostEqual(r["physical_gyro_turns_s"][1], 0.3 / (2 * math.pi))
+        c.lib.SDL_GameControllerGetButton = lambda _, i: int(i in (8, 10))
+        c.loadout = "primary_only"
+        r = c.sample()
+        self.assertEqual([r["physical_buttons"][k] for k in ("R", "RS")], [1, 1])
+        self.assertEqual(r["buttons"][2:4], [0, 0])
 
     def test_invalid_profile_is_rejected_before_device_access(self):
         with tempfile.TemporaryDirectory() as tmp:

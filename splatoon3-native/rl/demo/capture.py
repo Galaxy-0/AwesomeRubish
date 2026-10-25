@@ -445,6 +445,32 @@ def run(a):
             raise ValueError("--direction-check requires controller source and explicit --controller-profile")
         if a.max_frames is None:
             a.max_frames = 3600
+    checked_profile = None
+    if a.source == "controller" and getattr(a, "controller_profile", None):
+        from .controller_check import validate_profile
+
+        checked_profile = validate_profile(
+            json.loads(Path(a.controller_profile).read_text()),
+            allow_direction_check=direction_check, loadout=a.loadout,
+        )
+    if getattr(a, "dry_run", False):
+        if checked_profile is None:
+            raise ValueError("dry-run requires controller source and --controller-profile")
+        out = safe_out(a.out)
+        out.mkdir(parents=True, exist_ok=False, mode=0o700)
+        check = dict(
+            passed=True, dry_run=True, scope="runtime/profile validation only",
+            controller_opened=False, game_processes_started=False,
+            profile=str(a.controller_profile), profile_scope=checked_profile.get("scope"),
+            profile_complete=checked_profile["complete"], loadout=a.loadout,
+            ignored_buttons=sorted(
+                set(checked_profile.get("disabled_buttons", []))
+                | ({"R", "RS"} if a.loadout == "primary_only" else set())
+            ),
+        )
+        write(out / "result.json", check)
+        print(json.dumps(check, ensure_ascii=False, indent=2), flush=True)
+        return 0
     out = safe_out(a.out)
     out.mkdir(parents=True, exist_ok=False, mode=0o700)
     fixture_path = getattr(a, "fixture_inputs", None)
@@ -543,7 +569,7 @@ def run(a):
             from .controller import Controller
 
             controller = Controller(profile=getattr(a, "controller_profile", None),
-                                    allow_direction_check=direction_check)
+                                    allow_direction_check=direction_check, loadout=a.loadout)
             result["controller"] = controller.device
             if direction_check:
                 from .controller_recheck import DirectionMonitor
@@ -839,6 +865,7 @@ def run(a):
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--fixture", action="store_true")
+    p.add_argument("--dry-run", action="store_true", help="validate runtime/profile then exit; never opens SDL/controller or launches a game")
     p.add_argument(
         "--allow-unqualified",
         action="store_true",

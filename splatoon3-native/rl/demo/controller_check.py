@@ -222,7 +222,9 @@ def gyro_mapping(results):
     return mapping
 
 
-def validate_profile(profile, allow_direction_check=False):
+def validate_profile(profile, allow_direction_check=False, loadout="full"):
+    if loadout not in ("primary_only", "full"):
+        raise ValueError("unknown controller loadout")
     provisional = bool(
         allow_direction_check
         and profile.get("usable_for_direction_check")
@@ -233,10 +235,36 @@ def validate_profile(profile, allow_direction_check=False):
     ):
         raise ValueError("手柄校准未通过；先重跑引导式自检，不能使用不完整 profile")
     bindings = profile.get("bindings", {})
-    if not set(GAME_BUTTONS).issubset(bindings) or not set(bindings).issubset(
-        DEFAULT_BINDINGS
-    ):
+    required = {"ZR", "ZL", "B"} if loadout == "primary_only" else set(GAME_BUTTONS)
+    if not required.issubset(bindings) or not set(bindings).issubset(DEFAULT_BINDINGS):
         raise ValueError("profile 缺少关键印字按键映射")
+    if profile.get("scope") == "primary_only_recording" and loadout != "primary_only":
+        raise ValueError("该profile仅签收primary_only；full需要另行确认R/RS并签收")
+    disabled = set(profile.get("disabled_buttons", []))
+    if disabled & required:
+        raise ValueError("Stage1/full required button cannot be disabled")
+    evidence = profile.get("stage_evidence", {})
+    recording_scope = profile.get("scope") in (
+        "primary_only_recording",
+        "full_recording",
+    )
+    if evidence or recording_scope:
+        for label in required:
+            item = evidence.get("button_" + label, {})
+            if not item.get("valid") or item.get("binding") != bindings[label]:
+                raise ValueError("required button lacks confirmed evidence: " + label)
+    if recording_scope:
+        sticks = [v for k, v in evidence.items() if k.startswith("stick_")]
+        if len(sticks) != 8 or not all(v.get("valid") for v in sticks):
+            raise ValueError("eight stick directions must be confirmed")
+        accepted = profile.get("in_game_direction_validation", {})
+        if (
+            not accepted.get("accepted")
+            or not accepted.get("user_feedback")
+            or not profile.get("gyro_native_matrix")
+            or accepted.get("gyro_native_matrix") != profile["gyro_native_matrix"]
+        ):
+            raise ValueError("recording gyro requires accepted in-game matrix")
     values = []
     for kind, index in bindings.values():
         if (
