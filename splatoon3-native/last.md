@@ -1,3 +1,27 @@
+# run81：BC warm-start PPO已启动，30min健康检查完成，后台继续（2026-10-25启动）
+
+用户授权跳过补录/BC联合门，以b736240无反馈单步seed80权重为actor；旧BC未通过结论不变。
+asuka0私有`~/splatoon3-native-rl-stage0/bcppo81-r3/`、tmux **bcppo81-main**、同项目venv，未碰VPT。
+2026-10-25 23:27 UTC+8启动，128局GPU、主武器only；.52先固定，easy→D4→冻结历史池按能力晋级。
+critic两批完整BC rollout单独拟合，MSE .05876→.01406，actor逐值不变。
+
+32.70min快照：1658次PPO更新/54.33M环境帧；无NaN/塌缩告警，68份启动源码SHA一致。
+近20更新出刀49.49/min、满蓄.685/min、ZR占比.411/熵.537、joint KL .00342、峰allocated4.15GiB。
+近距混合训练4992局平均.094武器KO/12.51伤害，不能当正常出生成绩。
+30min自动评估D4 sampled/greedy各32局仍0KO/0伤害/0可见敌人；涂地2.69%/.76%。
+sampled刀频43.94/min维持，满蓄从.792降到.385/min；总出刀未塌缩不等于蓄斩已学会。
+双方未相遇、脚本0涂地的100%涂地胜不算通过。**第二关未过，不启动原生预检，训练继续后台。**
+
+BC KL与全部奖励辅助在前6h线性1→0；新增接近/角差/对准出刀有命/局预算，只针对已见/90f目击记忆，
+不输入隐藏敌位。每1h正常出生180s、sampled/greedy各32局评估；胜率≥70%且平均武器KO≥2才通过。
+约2026-10-26 05:27 UTC+8到6h零正式伤害诊断点；最长24h，checkpoint每15min，所有权重/trace留私有。
+保护宿主9个SHA不变，65项本机/16项远端测试及静态检查通过；不改policies/原存档/宿主，不录新局，不恢复T1/S1。
+
+[本轮报告](notes/rl-bcppo-start-20261025.md) / [数值与源码哈希](notes/rl-bcppo-start-20261025.json) / [监控、系数、停止与恢复命令](rl/gpu/bcppo/README.md)。
+快速监控：`ssh asuka0 'cd ~/splatoon3-native-rl-stage0/bcppo81-r3 && PYTHONPATH="$PWD/src" ../.venv/bin/python -m gpu.bcppo.monitor --root train-r1'`。
+
+---
+
 # run80：BC去捷径/动作块已对照，能出刀但接敌失败，不启PPO（2026-10-25）
 
 只用原有人类002–005，002–004训练16,195样本，005开发验证5,396；未录新人类局。
