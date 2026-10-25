@@ -1,3 +1,17 @@
+# run75：.52 三档陪练已接入，实战严格排序未证实（2026-10-25）
+
+默认`--opponent-level medium`；可选easy/hard，旧炮台保留turret。独立模块`rl/demo/opponent52.py`集中参数：可见性+相机视锥、短期最后目击记忆、带抖动反应等待、限速带噪跟随、横移/距离控制、低墨残血潜墨恢复、巡路推进涂地；hard少量提前量/受压找静态掩体。只发手柄输入，不直接写瞄准，不读取隐藏坐标；双方主武器屏蔽在fixture/policy/replay覆盖之后统一执行，X继续允许。
+
+最终参数两组seed共六局180秒，固定只读alpha v6作玩家，串行峰值1房，均到Winners。easy/medium/hard平均涂地10.8/10.1/10.05%；战斗弹命中代理5/11、4/20、4/20（稀疏样本，不是逐弹原生归因）。交火实际移速中位数逐档提高；easy确实被击倒一次，hard发现后最早200ms才按ZR，保留反应/瞄准过程。
+
+**未闭合项：严格easy < medium < hard实战难度。** 两组中.52自身倒下合计1/0/1，medium/hard没有可靠强弱顺序；没有以参数顺序或小样本命中率伪装通过。可见交火窗口中位数8.5/9.0/4.0秒，大多右删失，不冒称死亡时间。原始HUD经native槽位映射复核；中途对第二组medium的倒下误读已纠正。两组后停止继续按小样本调参，证据与限制完整保留。
+
+95项录制组件测试、Ruff、diff检查通过，9个保护宿主SHA一致。当前宿主与完整人玩渲染不变；fixture全部输入R/RS=0。003正式profile/宿主/R5预热命令dry-run通过，没有打开手柄或创建my-demo-003；不训练，T1/S1仍暂停，不改policies/原存档。
+
+[报告](notes/rl-demo-opponent52-20261025.md) / [数值JSON](notes/rl-demo-opponent52-20261025.json)。私有原件：`work/rl-demo/run75/final-tiers-seed0`、`final-tiers-seed1`，早期诊断/失败均保留。下一局完整命令见[开录清单顶部](rl/demo/开录清单.md)：带`--opponent-level medium`、沿用`work/rl-demo/run74/replay-final-r5`，等`DEMO_WARM_READY`；输出`work/rl-demo/my-demo-003`。本轮到此停下。
+
+---
+
 # run74：002 卡顿归因 / X 修复（2026-10-25）
 
 原002的55次ACK>100ms全部对齐到本机首次shader/pipeline编译及对端帧屏障。旧预热仅14 shader/1管线；现在合并双方、继承清单和1681个历史已遇shader，并在初始暂停屏障等双方预热完成。既有宿主/原存档/policies/正式默认均未改，不训练，T1/S1暂停。

@@ -24,7 +24,8 @@ from arena.referee_api import RefereeAPI
 from arena.config import PolicySpec
 from arena.control_process import ControlProcess, own_special
 from arena.lib.atlas import MapAtlas
-from arena.lib.skills import Skills, neutral, aim_at
+from arena.lib.skills import Skills, neutral
+from .opponent52 import LEVELS, Opponent52, SaberFixture
 
 
 def write(path, data):
@@ -128,6 +129,7 @@ class DemoSession(NativeSession):
         demo_warm_chain=(),
         demo_map_check=False,
         demo_warm_shaders=None,
+        demo_fixture_headless=False,
         **kwargs,
     ):
         self.demo_cancel = demo_cancel
@@ -140,6 +142,7 @@ class DemoSession(NativeSession):
         self.demo_warm_chain = demo_warm_chain
         self.demo_map_check = demo_map_check
         self.demo_warm_shaders = demo_warm_shaders
+        self.demo_fixture_headless = demo_fixture_headless
         super().__init__(**kwargs)
         self.monitor = AsyncDemoMonitor(self.out)
 
@@ -213,8 +216,8 @@ class DemoSession(NativeSession):
                 DM_DEMO_PREDICATE=self.demo_predicate,
                 DM_R0_CAMERA_PLUS5="1",
                 DM_D2B_SENSOR="1",
-                DM_HEADLESS="0" if n == 0 else "1",
-                DM_WINDOW="1",
+                DM_HEADLESS="1" if getattr(self, "demo_fixture_headless", False) or n else "0",
+                DM_WINDOW="0" if getattr(self, "demo_fixture_headless", False) else "1",
                 DM_RL_PIXELS="0",
                 DM_HID_TRACE="0",
                 DM_PRESENT_LINK=str(self.demo_present_link),
@@ -267,6 +270,16 @@ def as_native(a):
         k: np.asarray(v, dtype=np.int8 if k in ("buttons", "observer_buttons") else np.float32)
         for k, v in (dict(a, observer_buttons=a.get("observer_buttons", [0]))).items()
     }
+
+
+def primary_actions(actions):
+    """Apply the equipment mask after all fixture/policy/replay overrides."""
+    result = {}
+    for player, action in actions.items():
+        buttons = list(action["buttons"])
+        buttons[2:4] = [0, 0]
+        result[player] = dict(action, buttons=buttons)
+    return result
 
 
 def summary(infos, origins):
@@ -392,6 +405,12 @@ def trace(barriers, actions, out):
 
 
 def run(a):
+    fixture_headless = bool(getattr(a, "fixture_headless", False))
+    if fixture_headless and a.source != "script":
+        raise ValueError("headless is script-fixture only; human recording must display full rendering")
+    player_policy = getattr(a, "fixture_player_policy", None)
+    if player_policy and (a.source != "script" or getattr(a, "fixture_inputs", None) or getattr(a, "script_pattern", "legacy") == "hunter"):
+        raise ValueError('player policy is a script-only fixture and cannot be combined with fixed input replay')
     if not a.fixture:
         raise ValueError(
             "explicit --fixture required; formal arena/T1 cannot use this host"
@@ -512,6 +531,7 @@ def run(a):
     controller = None
     direction_monitor = None
     child = None
+    fixture_child = None
     env = None
     barriers = []
     inputs = []
@@ -535,7 +555,10 @@ def run(a):
         mode="turf",
         loadout_mode=a.loadout,
         opponent=a.opponent,
+        opponent_level=getattr(a, "opponent_level", "medium") if a.opponent == "52" else None,
+        opponent_seed=getattr(a, "opponent_seed", 0),
         decision_frames=1,
+        fixture_headless=fixture_headless,
         frames=0,
         host_sha256=hashlib.sha256(host.read_bytes()).hexdigest(),
         host=str(host),
@@ -575,6 +598,7 @@ def run(a):
             "native-barriers.jsonl",
             "usb-inputs.jsonl",
             "timing.jsonl",
+            "opponent-decisions.jsonl",
         ]
     }
 
@@ -597,6 +621,13 @@ def run(a):
                       "终端每0.25秒提示输入方向及原生镜头变化；请看画面核对。"
                       "Minus/Plus未确认时用Ctrl-C或输出目录STOP文件结束；默认最多3600帧。", flush=True)
         spec = PolicySpec.load(a.policy) if a.opponent == "policy" else None
+        player_spec = PolicySpec.load(player_policy) if player_policy else None
+        if player_spec:
+            fixture_child = ControlProcess(
+                player_spec.root, out / "fixture-player.stderr.log", timeout=player_spec.step_timeout
+            )
+            result["fixture_player_policy"] = str(player_spec.root)
+            result["fixture_player_policy_sha256"] = player_spec.source_sha256
         opponent_stride = a.opponent_stride or (spec.step_frames if spec else 6)
         if opponent_stride < 1:
             raise ValueError("opponent stride must be positive")
@@ -619,7 +650,7 @@ def run(a):
             timeout=a.timeout,
             state_dump=False,
             clock_mode="fixed60",
-            loadouts=[uniform_loadout(), spec.loadout if spec else uniform_loadout()],
+            loadouts=[player_spec.loadout if player_spec else uniform_loadout(), spec.loadout if spec else uniform_loadout()],
             patched=modules,
             session_factory=partial(
                 DemoSession,
@@ -633,6 +664,7 @@ def run(a):
                 demo_ink_every=ink_every,
                 demo_map_check=getattr(a, "script_pattern", "legacy") == "minimap",
                 demo_warm_shaders=warm_shaders,
+                demo_fixture_headless=fixture_headless,
                 demo_cancel=lambda: stop or (out / "STOP").exists(),
             ),
         )
@@ -661,9 +693,19 @@ def run(a):
             ROOT / "work/arena/maps/Yunohana/sight.npz",
             stage_id=1,
         )
-        skills = Skills(MapAtlas.load(1))
+        atlas = MapAtlas.load(1)
+        bot = None
+        if not child:
+            from arena.geometry import CollisionMesh
+
+            mesh = CollisionMesh.load(ROOT / "work/arena/maps/Yunohana/sight.npz")
+            bot = Opponent52(result["opponent_level"], atlas, mesh, result["opponent_seed"])
+            result["opponent_parameters"] = bot.parameters()
+        hunter = SaberFixture(atlas) if a.source == "script" and getattr(a, "script_pattern", "legacy") == "hunter" else None
+        fixture_control = neutral()
         opponent = neutral()
         last_policy = -1000
+        last_fixture = -1000
         row = dict(frame=0, infos=origins)
         barriers.append(row)
         append("native-barriers.jsonl", row)
@@ -684,65 +726,53 @@ def run(a):
                     break  # Minus+Plus
             else:
                 control = scripted(frame, getattr(a, "script_pattern", "legacy"))
-            if a.loadout == "primary_only":
-                control["buttons"][2:4] = [0, 0]
             battle = all(i["phase"] == 1 for i in env.process_infos.values())
             if not battle:
                 control = neutral()
                 opponent = neutral()
-            if (
-                battle
-                and fixture_inputs is None
-                and frame - last_policy >= opponent_stride
-            ):
+            opponent_due = frame - last_policy >= opponent_stride
+            fixture_due = fixture_child and frame - last_fixture >= player_spec.step_frames
+            if battle and fixture_inputs is None and (opponent_due or fixture_due):
                 api.update(env.process_infos)
-                obs = api.policy_observation("player_1")
-                if child:
-                    opponent = child.act(
-                        obs,
-                        own_special(
-                            env.process_infos["player_1"],
-                            "player_1",
-                            origins["player_1"]["frame"],
-                        ),
+                if fixture_due:
+                    fixture_control = fixture_child.act(
+                        api.policy_observation("player_0"),
+                        own_special(env.process_infos["player_0"], "player_0", origins["player_0"]["frame"]),
                     )
-                else:
+                    last_fixture = frame
+                if hunter:
                     from arena.policy import encode_policy
 
-                    view = json.loads(encode_policy(obs))
-                    own = view["own"]
-                    enemies = view.get("enemies", [])
-                    opponent = neutral()
-                    visible = [e for e in enemies if e.get("position") is not None]
-                    if visible:
-                        enemy = visible[0]
-                        target = list(enemy["position"])
-                        target[1] += 1
-                        opponent = aim_at(view, target).action
-                        distance = (
-                            np.linalg.norm(
-                                np.asarray(target) - np.asarray(own["position"])
-                            )
-                            if own.get("position") is not None
-                            else 100
+                    fixture_control = hunter.act(
+                        json.loads(encode_policy(api.policy_observation("player_0")))
+                    )
+                if opponent_due:
+                    if child:
+                        opponent = child.act(
+                            api.policy_observation("player_1"),
+                            own_special(env.process_infos["player_1"], "player_1", origins["player_1"]["frame"]),
                         )
-                        opponent["buttons"][0] = int(distance <= 14)
                     else:
-                        r = skills.move_to(view, skills.atlas.objective())
-                        opponent = r.action
-                last_policy = frame
+                        from arena.policy import encode_policy
+
+                        view = json.loads(encode_policy(api.policy_observation("player_1")))
+                        opponent = bot.act(view)
+                        append("opponent-decisions.jsonl", bot.debug)
+                    last_policy = frame
+            if (hunter or fixture_child) and battle:
+                control = fixture_control
+                if frame < 180 or (env.process_infos['player_0'].get('position_valid') and env.process_infos['player_0']['position'][1]>20):
+                    control = neutral()
+                    control["buttons"][0] = int(frame % 30 == 0)
             own_info = env.process_infos["player_1"]
             if battle and (
                 frame < 180
                 or (own_info.get("position_valid") and own_info["position"][1] > 20)
             ):
-                skills = Skills(
-                    skills.atlas
-                )  # do not retain failed navigation from the ignored launch window
+                if bot:
+                    bot.skills = Skills(atlas)
                 opponent = neutral()
                 opponent["buttons"][0] = int(frame % 30 == 0)
-            if a.loadout == "primary_only":
-                opponent["buttons"][2:4] = [0, 0]
             acts = {"player_0": control, "player_1": opponent}
             if fixture_inputs is not None:
                 if frame >= len(fixture_inputs):
@@ -756,6 +786,8 @@ def run(a):
                     )
                 else:
                     acts = fixture_inputs[frame]
+            if a.loadout == 'primary_only':
+                acts = primary_actions(acts)
             send = time.monotonic_ns()
             if env.agents:
                 _, _, _, trunc, info = env.step(
@@ -835,6 +867,8 @@ def run(a):
                 result["passed"] = False
         if child:
             child.close()
+        if fixture_child:
+            fixture_child.close()
         if controller:
             controller.close()
         for s in streams.values():
@@ -913,6 +947,11 @@ if __name__ == "__main__":
     p.add_argument("--controller-profile", type=Path, help="private profile.json from guided USB controller check")
     p.add_argument("--direction-check", action="store_true", help="human in-game gyro visual check; permits explicitly scoped SDL-assumption profile, prints directions; defaults to3600 frames")
     p.add_argument("--opponent", choices=["52", "policy"], default="52")
+    p.add_argument("--opponent-level", choices=[*LEVELS, "turret"], default="medium",
+                   help="human-like .52 tier; turret preserves the legacy regression baseline")
+    p.add_argument("--opponent-seed", type=int, default=0, help="reproducible .52 decision noise, not a native game RNG seed")
+    p.add_argument("--fixture-headless", action="store_true", help="script-only noninteractive fixture; never enabled for human recording")
+    p.add_argument('--fixture-player-policy',type=Path,help='script fixture player policy, read-only sandbox; never used for human recording')
     p.add_argument("--policy", default="arena/policies/alpha")
     p.add_argument(
         "--opponent-stride",
@@ -958,7 +997,7 @@ if __name__ == "__main__":
         help="private passive field/paint survey; extra readback may stall rendering",
     )
     p.add_argument(
-        "--script-pattern", choices=["legacy", "calibration", "minimap"], default="legacy"
+        "--script-pattern", choices=["legacy", "calibration", "minimap", "hunter"], default="legacy"
     )
     p.add_argument("--pace", action=argparse.BooleanOptionalAction, default=True)
     p.add_argument(

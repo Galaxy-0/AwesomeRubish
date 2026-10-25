@@ -1,5 +1,7 @@
 # 人工示范录制准备（只录制，不训练）
 
+2026-10-25（run75）：`.52` 陪练已独立为 `opponent52.py`，新增 `--opponent-level easy|medium|hard`，默认 `medium`；旧行为为 `turret`，仅供回归。只接收经过可见性过滤的观测，另加相机视锥、反应等待、带噪限速瞄准和短期目击记忆；有交火横移、距离控制、低墨/残血恢复及巡路涂地，hard 受压寻找静态掩体。所有档位只用主武器。统一参数表在 `LEVELS`，实测及其样本局限见 [run75 报告](../../notes/rl-demo-opponent52-20261025.md)。最新人工命令沿用 `run74/replay-final-r5` 预热、等 `DEMO_WARM_READY`；见[开录清单](开录清单.md)。
+
 2026-10-25（run74）：人工录制的秒级停顿定位为首次shader/pipeline编译和对端帧屏障。`warmup`合并双方与继承清单，可用S-only历史清单补库覆盖，并在初始暂停屏障等待双方原生预热完成。原有NVN计时和每帧日志保留。X现通过demo专属 `observer_buttons` 注入原生bit2，primary_only允许；BC仍六键，记录未表示X。最新003命令见[开录清单](开录清单.md)，证据见[run74报告](../../notes/rl-demo-stalls-20261025.md)。
 
 
@@ -51,6 +53,8 @@ USB接好后，按终端逐步提示操作；先平放3秒，逐项检查18个�
 - 换T1策略：加`--opponent policy --policy arena/policies/alpha`（或bravo/其版本目录）。策略仍走公开观测与原沙箱，不读写策略目录。**T1策略的原武器是水刀8000**，此选项对手按其原武器，不能冒充.52；源码哈希随局记录。当前GPU转换仅支持水刀vs.52，对策略水刀局明确拒绝转换。
 - `--loadout full`只开启原生完整按键供今后录制；GPU .52副特未实现，转换器拒绝把它标成阶段1样本。本轮没有运行全装备对局。
 - `--source script`代替人输入，用于链路/性能冒烟，标`scripted_smoke`，不是人的示范。
+- 无手柄三档原生对照：`python -m rl.demo.bench_opponent --out work/rl-demo/opponent-tiers-new`。默认串行单房、每档180秒，玩家读取固定alpha v6（不改策略），每局参数/源码哈希与原始记录留在work。`--seed 1`可换决策噪声；它不固定游戏全部随机数。`--fixture-headless`仅用于脚本比较，controller源会拒绝，人工录制仍显示完整画面。
+- `python -m rl.demo.opponent_report work/rl-demo/opponent-tiers-new/easy`离线计算涂地、战斗弹命中代理、交战存活/删失窗口和实际移动速度。命中代理不是逐弹原生归因，报告始终保留发数和口径；少量对局不能证明所有玩家下严格难度排序。
 
 ## 数据与转换
 
