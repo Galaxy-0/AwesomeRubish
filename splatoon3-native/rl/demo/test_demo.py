@@ -120,6 +120,36 @@ class DemoTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             c.send_step(dict(sticks=[0] * 4, gyro=[9, 0, 0], buttons=[0] * 6), 1)
 
+    def test_human_X_is_native_bit2_and_not_a_BC_action(self):
+        from collections import deque
+        from .protocol import DemoClient, DemoEnv
+        from .capture import as_native, scripted
+        from rl.env import NativeParallelEnv
+
+        c = object.__new__(DemoClient)
+        c.socket = type("Sink", (), {"sendall": lambda self, data: setattr(self, "data", data)})()
+        c.sequence, c.pending = 0, deque()
+        action = scripted(600, "minimap")
+        self.assertEqual(scripted(900, "minimap")["observer_buttons"], [1])
+        self.assertEqual(scripted(1200, "minimap")["observer_buttons"], [0])
+        c.send_step(action, 1)
+        self.assertEqual(c.socket.data.split()[3], b"4")
+        native = as_native(action)
+        self.assertTrue(DemoEnv().action_space("player_0").contains(native))
+        self.assertFalse(NativeParallelEnv().action_space("player_0").contains(native))
+        self.assertEqual(len(action["buttons"]), 6)
+        cfg = fixture_config()
+        cam = dict(matrix=[[0] * 5, [0] * 5])
+        x = quantize(action, cfg, cam, [0] * 8)
+        action["observer_buttons"] = [0]
+        y = quantize(action, cfg, cam, [0] * 8)
+        self.assertEqual(x[:2], y[:2])
+        self.assertTrue(x[2]["unrepresented_X"])
+        self.assertFalse(y[2]["unrepresented_X"])
+        for bad in ([2], [0, 1], [float("nan")]):
+            with self.assertRaises(ValueError):
+                c.send_step(dict(action, observer_buttons=bad), 1)
+
     def test_asymmetric_settlement_uses_live_agents_but_retains_both(self):
         from rl.demo.protocol import DemoEnv
         from rl.demo.capture import as_native

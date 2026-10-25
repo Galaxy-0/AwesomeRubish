@@ -1,0 +1,672 @@
+{
+  "schema": "rl-demo-stall-fix-v1",
+  "date": "2026-10-25",
+  "runs": {
+    "original": {
+      "recording": "work/rl-demo/my-demo-002",
+      "complete": true,
+      "passed": true,
+      "frames": 11509,
+      "controlled_seconds": 236.7860237089917,
+      "controlled_presents_per_second": 48.60506468973218,
+      "all_frames": {
+        "intervals": {
+          "samples": 11508,
+          "median_fps": 56.18312890867783,
+          "one_percent_low_fps": 3.7641075798810832,
+          "average_fps": 48.605622234946566,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.7989375,
+          "p99": 29.33316750000009,
+          "max": 1698.653458
+        },
+        "ack_ms": {
+          "p50": 17.406125,
+          "p99": 24.75833336,
+          "max": 1698.214875
+        },
+        "over_ms": {
+          "100": 56,
+          "200": 45,
+          "500": 24,
+          "1000": 5
+        },
+        "input_processing_ms": {
+          "p50": 0.170625,
+          "p99": 1.41662172,
+          "max": 47.494834
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.083084,
+          "p99": 0.6172451300000008,
+          "max": 5.175
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11050,
+          "median_fps": 56.33386422366978,
+          "one_percent_low_fps": 3.638829675943747,
+          "average_fps": 48.925397360816,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.751312,
+          "p99": 28.11849692000041,
+          "max": 1698.653458
+        },
+        "ack_ms": {
+          "p50": 17.368667,
+          "p99": 21.920625,
+          "max": 1698.214875
+        },
+        "over_ms": {
+          "100": 56,
+          "200": 45,
+          "500": 24,
+          "1000": 5
+        },
+        "input_processing_ms": {
+          "p50": 0.170666,
+          "p99": 1.4270625,
+          "max": 47.494834
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.0833545,
+          "p99": 0.6213229100000002,
+          "max": 5.175
+        }
+      },
+      "ack_over100": 55,
+      "compilation_nearby": 55,
+      "display": {
+        "display_frame_rates": {
+          "samples": 11495,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 5.030999605860422,
+          "average_fps": 50.35421220475802,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 10186,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 5.138550021197372,
+          "average_fps": 51.03644732398626,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_coverage": {
+          "requested": 10200,
+          "positive_callbacks": 10193,
+          "missing_or_zero": 7
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 30.299418,
+          "p50": 36.165376,
+          "p95": 40.9602138,
+          "max": 941.20896
+        },
+        "display_interval_ms": {
+          "min": 8.333292,
+          "p50": 16.666625,
+          "p95": 24.999959,
+          "max": 924.997834
+        },
+        "zero_presented_time_frames": 7
+      }
+    },
+    "warm_r1": {
+      "recording": "work/rl-demo/run74/replay-warm-r1",
+      "complete": true,
+      "passed": true,
+      "frames": 11512,
+      "controlled_seconds": 204.51862249989063,
+      "controlled_presents_per_second": 56.288272721992136,
+      "all_frames": {
+        "intervals": {
+          "samples": 11511,
+          "median_fps": 57.691060677842266,
+          "one_percent_low_fps": 25.438305032963868,
+          "average_fps": 56.289963942044494,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.333708,
+          "p99": 25.122583399999996,
+          "max": 552.257625
+        },
+        "ack_ms": {
+          "p50": 17.173021,
+          "p99": 24.995048259999997,
+          "max": 552.144292
+        },
+        "over_ms": {
+          "100": 4,
+          "200": 3,
+          "500": 1,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007583,
+          "p99": 0.028828379999999976,
+          "max": 0.397291
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.085291,
+          "p99": 3.099883299999997,
+          "max": 5.959209
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11050,
+          "median_fps": 57.84651705108521,
+          "one_percent_low_fps": 28.7702174366801,
+          "average_fps": 57.170115067604584,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.287125500000002,
+          "p99": 21.17792567,
+          "max": 552.257625
+        },
+        "ack_ms": {
+          "p50": 17.127667,
+          "p99": 20.8612915,
+          "max": 552.144292
+        },
+        "over_ms": {
+          "100": 4,
+          "200": 3,
+          "500": 1,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007542,
+          "p99": 0.0283545,
+          "max": 0.397291
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.085729,
+          "p99": 3.109491250000001,
+          "max": 5.959209
+        }
+      },
+      "ack_over100": 4,
+      "compilation_nearby": 4,
+      "display": {
+        "display_frame_rates": {
+          "samples": 10002,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 26.177124477787586,
+          "average_fps": 56.894333445846996,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 9403,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 25.79187386013102,
+          "average_fps": 56.96787477759552,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_coverage": {
+          "requested": 10200,
+          "positive_callbacks": 9404,
+          "missing_or_zero": 796
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 24.300876,
+          "p50": 36.224001,
+          "p95": 40.930188099999995,
+          "max": 570.121793
+        },
+        "display_interval_ms": {
+          "min": 8.33325,
+          "p50": 16.666625,
+          "p95": 24.999917,
+          "max": 549.998667
+        },
+        "zero_presented_time_frames": 1509
+      }
+    },
+    "warm_r2": {
+      "recording": "work/rl-demo/run74/replay-warm-r2",
+      "complete": true,
+      "passed": true,
+      "frames": 11512,
+      "controlled_seconds": 203.27521695801988,
+      "controlled_presents_per_second": 56.63258006694167,
+      "all_frames": {
+        "intervals": {
+          "samples": 11511,
+          "median_fps": 57.71256258206005,
+          "one_percent_low_fps": 33.187193972891556,
+          "average_fps": 56.63326141304647,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.32725,
+          "p99": 24.911695499999997,
+          "max": 251.331
+        },
+        "ack_ms": {
+          "p50": 17.210875,
+          "p99": 24.795064499999995,
+          "max": 251.227208
+        },
+        "over_ms": {
+          "100": 2,
+          "200": 2,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007375,
+          "p99": 0.029477119999999878,
+          "max": 0.183833
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.08275,
+          "p99": 0.9828038999999998,
+          "max": 10.03075
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11052,
+          "median_fps": 57.84930793282065,
+          "one_percent_low_fps": 38.30786285923557,
+          "average_fps": 57.48436121349455,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.286291499999997,
+          "p99": 20.645462669999997,
+          "max": 251.331
+        },
+        "ack_ms": {
+          "p50": 17.170041,
+          "p99": 20.425822999999998,
+          "max": 251.227208
+        },
+        "over_ms": {
+          "100": 2,
+          "200": 2,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007375,
+          "p99": 0.02893615999999998,
+          "max": 0.183833
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.083,
+          "p99": 1.0094059999999998,
+          "max": 10.03075
+        }
+      },
+      "ack_over100": 2,
+      "compilation_nearby": 2
+    },
+    "broad_r3": {
+      "recording": "work/rl-demo/run74/replay-warm-r3",
+      "complete": true,
+      "passed": true,
+      "frames": 11509,
+      "controlled_seconds": 200.43261295813136,
+      "controlled_presents_per_second": 57.42079509986796,
+      "all_frames": {
+        "intervals": {
+          "samples": 11508,
+          "median_fps": 58.30160317165385,
+          "one_percent_low_fps": 40.49852689506158,
+          "average_fps": 57.421208773585086,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.152187,
+          "p99": 23.45699094,
+          "max": 49.713792
+        },
+        "ack_ms": {
+          "p50": 17.021542,
+          "p99": 23.33903664,
+          "max": 49.396333
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007459,
+          "p99": 0.030563000000000017,
+          "max": 0.094958
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.081958,
+          "p99": 1.3569708100000037,
+          "max": 4.504708
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11050,
+          "median_fps": 58.43482439721703,
+          "one_percent_low_fps": 46.02369149874776,
+          "average_fps": 58.172370038027104,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.113083,
+          "p99": 20.21172642,
+          "max": 49.713792
+        },
+        "ack_ms": {
+          "p50": 16.980584,
+          "p99": 19.980125,
+          "max": 49.396333
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007458,
+          "p99": 0.030458,
+          "max": 0.094958
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.08225,
+          "p99": 1.36360491,
+          "max": 4.504708
+        }
+      },
+      "ack_over100": 0,
+      "compilation_nearby": 0,
+      "display": {
+        "display_frame_rates": {
+          "samples": 11508,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 38.774374887792675,
+          "average_fps": 57.42053333842609,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 10199,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 39.48387720874187,
+          "average_fps": 58.105845933202936,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_coverage": {
+          "requested": 10200,
+          "positive_callbacks": 10200,
+          "missing_or_zero": 0
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 30.664376,
+          "p50": 36.354376,
+          "p95": 45.5159924,
+          "max": 57.228209
+        },
+        "display_interval_ms": {
+          "min": 16.653541,
+          "p50": 16.666625,
+          "p95": 24.999917,
+          "max": 49.999791
+        },
+        "zero_presented_time_frames": 0
+      }
+    },
+    "rejected_no_prof_r4": {
+      "recording": "work/rl-demo/run74/replay-final-r4",
+      "complete": false,
+      "passed": false,
+      "frames": 9793,
+      "controlled_seconds": 278.87983283400536,
+      "controlled_presents_per_second": 35.11548289628021,
+      "all_frames": {
+        "intervals": {
+          "samples": 9792,
+          "median_fps": 57.88586354854815,
+          "one_percent_low_fps": 1.375509460151692,
+          "average_fps": 35.128453269918694,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.275375,
+          "p99": 291.6148718400006,
+          "max": 3009.294833
+        },
+        "ack_ms": {
+          "p50": 17.018375,
+          "p99": 291.47469435999966,
+          "max": 3009.201417
+        },
+        "over_ms": {
+          "100": 303,
+          "200": 150,
+          "500": 54,
+          "1000": 18
+        },
+        "input_processing_ms": {
+          "p50": 0.00775,
+          "p99": 0.03625663999999999,
+          "max": 1.614917
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.0963125,
+          "p99": 3.5632187200000005,
+          "max": 8.492708
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 9792,
+          "median_fps": 57.88586354854815,
+          "one_percent_low_fps": 1.375509460151692,
+          "average_fps": 35.128453269918694,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.275375,
+          "p99": 291.6148718400006,
+          "max": 3009.294833
+        },
+        "ack_ms": {
+          "p50": 17.018375,
+          "p99": 291.47469435999966,
+          "max": 3009.201417
+        },
+        "over_ms": {
+          "100": 303,
+          "200": 150,
+          "500": 54,
+          "1000": 18
+        },
+        "input_processing_ms": {
+          "p50": 0.00775,
+          "p99": 0.03625663999999999,
+          "max": 1.614917
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.0963125,
+          "p99": 3.5632187200000005,
+          "max": 8.492708
+        }
+      },
+      "ack_over100": 302,
+      "compilation_nearby": 0,
+      "display": {
+        "display_frame_rates": {
+          "samples": 6712,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 39.043056611635144,
+          "average_fps": 57.24127862236288,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 6113,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 38.95287756620718,
+          "average_fps": 57.30504320863478,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_coverage": {
+          "requested": 9194,
+          "positive_callbacks": 6114,
+          "missing_or_zero": 3080
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 30.540501,
+          "p50": 36.044209,
+          "p95": 40.5057926,
+          "max": 54.865709
+        },
+        "display_interval_ms": {
+          "min": 16.658,
+          "p50": 16.666625,
+          "p95": 24.999917,
+          "max": 49.999874
+        },
+        "zero_presented_time_frames": 3080
+      }
+    },
+    "final_r5": {
+      "recording": "work/rl-demo/run74/replay-final-r5",
+      "complete": true,
+      "passed": true,
+      "frames": 11513,
+      "controlled_seconds": 203.4643631670624,
+      "controlled_presents_per_second": 56.5848476892575,
+      "all_frames": {
+        "intervals": {
+          "samples": 11512,
+          "median_fps": 57.59366414404498,
+          "one_percent_low_fps": 37.00161989455532,
+          "average_fps": 56.586183239037325,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.363021,
+          "p99": 25.457784999999998,
+          "max": 52.525167
+        },
+        "ack_ms": {
+          "p50": 17.243209,
+          "p99": 25.36297499999999,
+          "max": 52.417958
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007375,
+          "p99": 0.030667,
+          "max": 0.091542
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.083416,
+          "p99": 1.1221078799999993,
+          "max": 6.4545
+        }
+      },
+      "battle": {
+        "intervals": {
+          "samples": 11053,
+          "median_fps": 57.71769904006232,
+          "one_percent_low_fps": 45.632390839904815,
+          "average_fps": 57.50062204074601,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "interval_ms": {
+          "p50": 17.325708,
+          "p99": 20.41422816,
+          "max": 52.525167
+        },
+        "ack_ms": {
+          "p50": 17.209833500000002,
+          "p99": 20.276768509999997,
+          "max": 52.417958
+        },
+        "over_ms": {
+          "100": 0,
+          "200": 0,
+          "500": 0,
+          "1000": 0
+        },
+        "input_processing_ms": {
+          "p50": 0.007375,
+          "p99": 0.030455479999999945,
+          "max": 0.091542
+        },
+        "between_ack_and_next_sample_ms": {
+          "p50": 0.083625,
+          "p99": 1.1332948399999987,
+          "max": 6.4545
+        }
+      },
+      "ack_over100": 0,
+      "compilation_nearby": 0,
+      "display": {
+        "display_frame_rates": {
+          "samples": 11512,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 36.439811527853934,
+          "average_fps": 56.58638990093934,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_frame_rates": {
+          "samples": 10199,
+          "median_fps": 60.000150000375,
+          "one_percent_low_fps": 39.356907437930545,
+          "average_fps": 57.4943925408483,
+          "definition": "1% low = 1000 / mean of slowest1% frame intervals"
+        },
+        "warm_display_coverage": {
+          "requested": 10200,
+          "positive_callbacks": 10200,
+          "missing_or_zero": 0
+        },
+        "software_input_to_corresponding_drawable_presented_ms": {
+          "min": 24.818751,
+          "p50": 36.216501,
+          "p95": 42.792650599999995,
+          "max": 54.558584
+        },
+        "display_interval_ms": {
+          "min": 8.333334,
+          "p50": 16.666625,
+          "p95": 24.999958,
+          "max": 58.333125
+        },
+        "zero_presented_time_frames": 0
+      }
+    }
+  },
+  "final_scope": "No >100ms ACK/display stalls in R3 and final R5. Strict display1% low >=40 not fully passed; no threshold relaxation.",
+  "tests": 44,
+  "host_integrity": {
+    "protected_paths": 9,
+    "mismatches": [],
+    "host_sha256": "9a304a650a65ae35bf92f85eb93a24121f7a3d7080559b69aa89800ff05740bc"
+  },
+  "acceptance": {
+    "no_ack_interval_over100ms": true,
+    "no_display_interval_over100ms": true,
+    "battle_logic_one_percent_low_ge40": true,
+    "display_one_percent_low_ge40": false,
+    "X_native_open_close_verified": true,
+    "threshold_lowered": false,
+    "training_started": false
+  }
+}

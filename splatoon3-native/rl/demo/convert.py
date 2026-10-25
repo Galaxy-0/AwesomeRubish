@@ -61,6 +61,7 @@ def quantize(action, cfg, camera, previous):
         ).tolist(),
         camera_clipped=(abs(delta) > turn).tolist(),
         unrepresented_Y=bool(b[5]),
+        unrepresented_X=bool(action.get("observer_buttons", [0])[0]),
     )
     return levels, command, err
 

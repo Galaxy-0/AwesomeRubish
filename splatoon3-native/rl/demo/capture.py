@@ -126,6 +126,8 @@ class DemoSession(NativeSession):
         demo_native_survey=False,
         demo_ink_every=0,
         demo_warm_chain=(),
+        demo_map_check=False,
+        demo_warm_shaders=None,
         **kwargs,
     ):
         self.demo_cancel = demo_cancel
@@ -136,6 +138,8 @@ class DemoSession(NativeSession):
         self.demo_native_survey = demo_native_survey
         self.demo_ink_every = demo_ink_every
         self.demo_warm_chain = demo_warm_chain
+        self.demo_map_check = demo_map_check
+        self.demo_warm_shaders = demo_warm_shaders
         super().__init__(**kwargs)
         self.monitor = AsyncDemoMonitor(self.out)
 
@@ -168,6 +172,10 @@ class DemoSession(NativeSession):
 
     def host_options(self, n):
         warm = {}
+        if getattr(self, "demo_map_check", False) and n == 0:
+            path = self.out / "player-0/screenshots"
+            path.mkdir(parents=True, exist_ok=True)
+            warm.update(DM_DEMO_SHOT_DIR=str(path), DM_NVN_SHOT_OUT="1280x720")
         if self.demo_native_survey:
             warm["DM_DEMO_NATIVE_CAPTURE"] = "1"
             if n == 0:
@@ -185,16 +193,16 @@ class DemoSession(NativeSession):
             warm.update(
                 DM_DEMO_INK_DIR=str(path), DM_DEMO_INK_EVERY=str(self.demo_ink_every)
             )
-        if self.demo_warm_session:
+        if self.demo_warm_session or getattr(self, "demo_warm_shaders", None):
+            from .warmup import assemble
+
             seed = ROOT / "upstream/dm/games/0100C2500FC20000/pso_manifest.tsv"
-            lines = seed.read_text().splitlines()
-            for session in self.demo_warm_chain or (self.demo_warm_session,):
-                for name in (f"warm-{n}.tsv", f"player-{n}/pso_user.tsv"):
-                    file = session / name
-                    if file.is_file():
-                        lines.extend(file.read_text().splitlines())
             path = self.out / f"warm-{n}.tsv"
-            path.write_text("\n".join(dict.fromkeys(lines)) + "\n")
+            sessions = self.demo_warm_chain or ((self.demo_warm_session,) if self.demo_warm_session else ())
+            audit = assemble(seed, sessions, n, path, getattr(self, "demo_warm_shaders", None))
+            print(f"DEMO_WARM role={n} shaders={audit['counts']['S']} "
+                  f"render_pipelines={audit['counts']['R']} compute={audit['counts']['C']} "
+                  "(observed coverage, not a zero-stall guarantee)", flush=True)
             warm["DM_PSO_MANIFEST"] = str(path)
         return (
             super().host_options(n)
@@ -219,6 +227,9 @@ class DemoSession(NativeSession):
 
 def scripted(frame, pattern="legacy"):
     a = neutral()
+    if pattern == "minimap" and frame >= 180:
+        a["observer_buttons"] = [int(540 <= frame < 660 or 900 <= frame < 904)]
+        return a
     if pattern == "calibration" and 180 <= frame < 1080:
         block, offset = divmod(frame - 360, 60)
         if 0 <= block < 10 and offset < 50:
@@ -253,8 +264,8 @@ def scripted(frame, pattern="legacy"):
 
 def as_native(a):
     return {
-        k: np.asarray(v, dtype=np.int8 if k == "buttons" else np.float32)
-        for k, v in a.items()
+        k: np.asarray(v, dtype=np.int8 if k in ("buttons", "observer_buttons") else np.float32)
+        for k, v in (dict(a, observer_buttons=a.get("observer_buttons", [0]))).items()
     }
 
 
@@ -411,6 +422,11 @@ def run(a):
     if catchup_frames < 0:
         raise ValueError("max catchup frames must be nonnegative")
     warm_from = getattr(a, "warm_from", None)
+    warm_shaders = getattr(a, "warm_shaders", None)
+    if warm_shaders:
+        warm_shaders = safe_out(warm_shaders)
+        if not warm_shaders.is_file():
+            raise ValueError("private warm shader manifest required")
     warm_session = None
     warm_chain = []
     if warm_from:
@@ -531,6 +547,7 @@ def run(a):
         native_survey=native_survey,
         ink_every_frames=ink_every,
         warm_from=str(warm_from) if warm_from else None,
+        warm_shaders=str(warm_shaders) if warm_shaders else None,
         errors=[],
         artifacts=str(out),
         measurement_limits=[
@@ -614,14 +631,28 @@ def run(a):
                 demo_warm_chain=warm_chain,
                 demo_native_survey=native_survey,
                 demo_ink_every=ink_every,
+                demo_map_check=getattr(a, "script_pattern", "legacy") == "minimap",
+                demo_warm_shaders=warm_shaders,
                 demo_cancel=lambda: stop or (out / "STOP").exists(),
             ),
         )
         _, origins = env.reset()
         result["session"] = str(env.session.out)
         result["owned_pids"] = [p.pid for _, p, _ in env.session.hosts]
-        write(out / "result.json", result)
         result["origins"] = origins
+        write(out / "result.json", result)
+        if warm_from or warm_shaders:
+            from .warmup import wait_ready
+
+            print("DEMO_WARM_WAIT 等待双方着色器预热完成；游戏时钟暂停，尚未开始录制输入。", flush=True)
+            result["warmup_barrier"] = wait_ready(
+                env.session.hosts,
+                max(0, a.timeout - (time.monotonic() - env.session.started)),
+                cancelled=lambda: stop or (out / "STOP").exists(),
+                check=env.session.monitor.check_error,
+            )
+            print("DEMO_WARM_READY " + json.dumps(result["warmup_barrier"]), flush=True)
+        write(out / "result.json", result)
         api = RefereeAPI(
             out.name,
             origins,
@@ -645,7 +676,7 @@ def run(a):
             before = time.monotonic_ns()
             if controller:
                 raw = controller.sample()
-                control = {k: raw[k] for k in ["sticks", "gyro", "buttons"]}
+                control = {k: raw[k] for k in ["sticks", "gyro", "buttons", "observer_buttons"]}
                 sample_ages.append((before - raw["sample_monotonic_ns"]) / 1e6)
                 append("usb-inputs.jsonl", dict(frame=frame, **raw))
                 if raw["physical_buttons"].get("Minus") and raw["physical_buttons"].get("Plus"):
@@ -905,6 +936,10 @@ if __name__ == "__main__":
         help="private prior recording whose per-role PSO lists are copied into a new warm manifest",
     )
     p.add_argument(
+        "--warm-shaders", type=Path,
+        help="additional private S-only manifest of previously observed shader libraries",
+    )
+    p.add_argument(
         "--fixture-inputs",
         type=Path,
         help="private fixed per-present script inputs, never human demonstration",
@@ -923,7 +958,7 @@ if __name__ == "__main__":
         help="private passive field/paint survey; extra readback may stall rendering",
     )
     p.add_argument(
-        "--script-pattern", choices=["legacy", "calibration"], default="legacy"
+        "--script-pattern", choices=["legacy", "calibration", "minimap"], default="legacy"
     )
     p.add_argument("--pace", action=argparse.BooleanOptionalAction, default=True)
     p.add_argument(

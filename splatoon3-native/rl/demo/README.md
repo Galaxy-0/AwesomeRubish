@@ -1,5 +1,8 @@
 # 人工示范录制准备（只录制，不训练）
 
+2026-10-25（run74）：人工录制的秒级停顿定位为首次shader/pipeline编译和对端帧屏障。`warmup`合并双方与继承清单，可用S-only历史清单补库覆盖，并在初始暂停屏障等待双方原生预热完成。原有NVN计时和每帧日志保留。X现通过demo专属 `observer_buttons` 注入原生bit2，primary_only允许；BC仍六键，记录未表示X。最新003命令见[开录清单](开录清单.md)，证据见[run74报告](../../notes/rl-demo-stalls-20261025.md)。
+
+
 **最新入口见[开录清单](开录清单.md)**：002方向已由用户确认“正常”；当前Stage1录制用 `work/rl-demo/recording-profile-r1/profile.json`，`scope=primary_only_recording / complete=true`。关键三键/双摇杆/陀螺仪严格校验，Minus/Plus/Up忽略、R/RS屏蔽；full仍需对应scope和R/RS确认。已通过无手柄/无游戏的 `--fixture --dry-run`。控制签收不代表BC训练就绪，不启动训练。
 
 当前为**诊断夹具**：USB Pro Controller摇杆/按键/200Hz IMU已读通；原生1v1、私有输入/状态记录和近似BC转换已实现。2026-10-24的私有异步条件渲染已将热段平均帧率提高到约60；全程锁60、物理陀螺仪方向、原生全图墨色/完整武器阶段仍未签收，暂不开始正式示范或训练。`--allow-unqualified`仍是诊断入口。最新性能与边界见`notes/rl-demo-realtime-20261024.md/.json`，原转换偏差见`notes/rl-demo-20261023.md`。

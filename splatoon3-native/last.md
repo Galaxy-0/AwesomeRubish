@@ -1,3 +1,17 @@
+# run74：002 卡顿归因 / X 修复（2026-10-25）
+
+原002的55次ACK>100ms全部对齐到本机首次shader/pipeline编译及对端帧屏障。旧预热仅14 shader/1管线；现在合并双方、继承清单和1681个历史已遇shader，并在初始暂停屏障等双方预热完成。既有宿主/原存档/policies/正式默认均未改，不训练，T1/S1暂停。
+
+两份完整复现R3/R5均无>100ms。最终R5：11513 present、到Winners，56.58 present/s；ACK最大52.5ms、实际显示间隔最大58.3ms；输入→呈现p50 36.2 / p95 42.8ms。对战逻辑1%low45.6fps；**严格显示1%low≥40尚未完全达标：热段39.4、全程含结算36.4fps**。没有改阈值或宣称全程60；R4无NVN计时候选失败已撤回并保留，R4/R5未改善显示尾部后按两轮无安全收益收尾。
+
+X原来从物理profile到六键训练动作之间丢失，现为demo专属observer_buttons→native X bit2，主武器模式允许。脚本原生截图确认X打开/再次按X关闭；BC动作头不增X，保留unrepresented_X。44项组件测试、Ruff、diff检查通过，9保护路径及录制宿主冻结输入复验通过。
+
+报告：[notes/rl-demo-stalls-20261025.md](notes/rl-demo-stalls-20261025.md) / 同名JSON。003完整命令见[rl/demo/开录清单.md](rl/demo/开录清单.md)顶部，profile不变，warm-from改为`work/rl-demo/run74/replay-final-r5`，输出`work/rl-demo/my-demo-003`（尚未创建）。本轮不启动003或训练。
+
+原件/中间失败均保留`work/rl-demo/run74/`；最终原生日志`work/tests/m6-2p-20261025-163051-877123`。私有截图`work/tests/m6-2p-20261025-162404-891082/player-0/screenshots/frame-600.png`（地图开）/`frame-1200.png`（地图关），不提交。只提交源码、测试、数值/文字报告和本清单。
+
+---
+
 # run74：Stage1录制profile已签发，fixture dry-run通过（2026-10-25）
 
 新profile：`work/rl-demo/recording-profile-r1/profile.json`，`scope=primary_only_recording / complete=true`。

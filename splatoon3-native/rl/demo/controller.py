@@ -305,6 +305,10 @@ class Controller:
         row["buttons"] = [
             0 if b in disabled else v for b, v in zip(GAME_BUTTONS, row["buttons"])
         ]
+        # Human observation key, separate from the six BC/gameplay labels.
+        row["observer_buttons"] = [
+            int(row["physical_buttons"].get("X", 0) and "X" not in disabled)
+        ]
         row["ignored_buttons"] = sorted(disabled)
         if "gyro_mapping" in self.calibration:
             corrected = [
