@@ -420,6 +420,12 @@ def trace(barriers, actions, out):
 
 
 def run(a):
+    bc_path = getattr(a, "fixture_bc_checkpoint", None)
+    if bc_path and (a.source != "script" or a.loadout != "primary_only" or a.opponent != "52"
+                    or getattr(a, "fixture_inputs", None) or getattr(a, "fixture_player_replay", None)
+                    or getattr(a, "fixture_player_policy", None) or getattr(a, "script_pattern", "legacy") == "hunter"):
+        raise ValueError("BC is a script-only primary fixture, exclusive with replay/policy/hunter")
+    bc_actor = None
     player_replay = getattr(a, "fixture_player_replay", None)
     if player_replay and (a.source != "script" or getattr(a, "fixture_inputs", None)
                           or getattr(a, "fixture_player_policy", None)):
@@ -722,6 +728,12 @@ def run(a):
             bot = Opponent52(result["opponent_level"], atlas, mesh, result["opponent_seed"])
             result["opponent_parameters"] = bot.parameters()
         hunter = SaberFixture(atlas) if a.source == "script" and getattr(a, "script_pattern", "legacy") == "hunter" else None
+        if bc_path:
+            from .bc_native import NativeBC
+            bc_actor = NativeBC(bc_path, out, env.session.out, origins,
+                                a.bc_data, a.bc_calibration, a.bc_camera)
+            result["bc_checkpoint"] = str(bc_path)
+            result["bc_checkpoint_sha256"] = hashlib.sha256(Path(bc_path).read_bytes()).hexdigest()
         fixture_control = neutral()
         opponent = neutral()
         last_policy = -1000
@@ -784,6 +796,10 @@ def run(a):
                 if frame < 180 or (env.process_infos['player_0'].get('position_valid') and env.process_infos['player_0']['position'][1]>20):
                     control = neutral()
                     control["buttons"][0] = int(frame % 30 == 0)
+            if bc_actor and battle:
+                if frame % 2 == 0:
+                    fixture_control = bc_actor.act(frame, env.process_infos)
+                control = fixture_control
             own_info = env.process_infos["player_1"]
             if battle and (
                 frame < 180
@@ -889,6 +905,8 @@ def run(a):
             child.close()
         if fixture_child:
             fixture_child.close()
+        if bc_actor:
+            bc_actor.close()
         if controller:
             controller.close()
         for s in streams.values():
@@ -950,6 +968,10 @@ def run(a):
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--fixture", action="store_true")
+    p.add_argument("--fixture-bc-checkpoint", help="script-only primary Stamper BC checkpoint; never formal arena")
+    p.add_argument("--bc-data", default="work/rl-stage0/data-v5")
+    p.add_argument("--bc-calibration", default="work/rl-stage0/native-camera-calibration-v1.json")
+    p.add_argument("--bc-camera", default="work/rl-demo/run70/camera-nonlinear-r2.json")
     p.add_argument("--dry-run", action="store_true", help="validate runtime/profile then exit; never opens SDL/controller or launches a game")
     p.add_argument(
         "--allow-unqualified",
