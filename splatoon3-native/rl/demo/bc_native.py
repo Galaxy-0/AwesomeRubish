@@ -45,12 +45,22 @@ def native_action(action, cfg, camera):
 
 
 class NativeBC:
-    def __init__(self, checkpoint, out, session, origins, data, calibration, camera):
+    def __init__(
+        self,
+        checkpoint,
+        out,
+        session,
+        origins,
+        data,
+        calibration,
+        camera,
+        model_loader=None,
+    ):
         import json
         from dataclasses import replace
 
         torch.set_num_threads(1)
-        self.policy, _ = load(checkpoint, "cpu")
+        self.policy, _ = (model_loader or load)(checkpoint, "cpu")
         self.camera_model = json.loads(Path(camera).read_text())
         cfg, _ = configuration(calibration)
         self.cfg = replace(cfg, camera_codebook="native_plus5")
@@ -64,10 +74,7 @@ class NativeBC:
         self.last_frame = None
         self.history = (Path(out) / "bc-decisions.jsonl").open("w")
 
-    @torch.no_grad()
-    def act(self, frame, infos):
-        import json
-
+    def read_cameras(self):
         for n, stream in enumerate(self.logs):
             for line in stream:
                 m = CAMERA.search(line)
@@ -83,6 +90,12 @@ class NativeBC:
                     )
             self.camera_rows[n] = self.camera_rows[n][-16:]
             self.rebuilder.camera[n] = CausalIndex(self.camera_rows[n])
+
+    @torch.no_grad()
+    def act(self, frame, infos):
+        import json
+
+        self.read_cameras()
         raw, quality = self.rebuilder.observe(dict(frame=frame, infos=infos))
         validity = dict(
             hud_valid=torch.ones_like(raw["hud"], dtype=torch.bool),

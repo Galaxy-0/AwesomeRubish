@@ -1,0 +1,3454 @@
+{
+  "schema": "inklab.bc2.summary.v1",
+  "recordings": {
+    "data-002": {
+      "schema": "inklab.bc2.dataset.v1",
+      "samples": 5398,
+      "source": "work/rl-demo/my-demo-002",
+      "source_bc": "work/rl-bc/run79/bc-002",
+      "observation": "past ink snapshot max29f; geometry-expanded floors, no current-truth promotion",
+      "ink_map_available_fraction": 0.08821061832788975,
+      "screen_ink_available_fraction": 0.0670371099353018,
+      "ink_age_mean": 14.0,
+      "ink_age_max": 28,
+      "attack_birth_proxy_count": 119,
+      "attacks_per_minute": 39.666666666666664,
+      "light": 56,
+      "full": 63,
+      "event_semantics": "local-world0 pooled-object setter runs separated>4f, same-kind births clustered3f; observed Stamper projectile birth proxy, not complete lifecycle truth",
+      "ready_for_current_native_truth": false,
+      "ink_available_among_paintable": 0.28539696791603747,
+      "prepared_sha256": "06fb5d3024c220900d68611d74a4caecb230103c42fa4bf25fb952b2631b37d2"
+    },
+    "data-003": {
+      "schema": "inklab.bc2.dataset.v1",
+      "samples": 5398,
+      "source": "work/rl-demo/my-demo-003",
+      "source_bc": "work/rl-bc/run79/bc-003",
+      "observation": "past ink snapshot max29f; geometry-expanded floors, no current-truth promotion",
+      "ink_map_available_fraction": 0.09042789973721542,
+      "screen_ink_available_fraction": 0.03716943781702924,
+      "ink_age_mean": 14.0,
+      "ink_age_max": 28,
+      "attack_birth_proxy_count": 119,
+      "attacks_per_minute": 39.666666666666664,
+      "light": 4,
+      "full": 115,
+      "event_semantics": "local-world0 pooled-object setter runs separated>4f, same-kind births clustered3f; observed Stamper projectile birth proxy, not complete lifecycle truth",
+      "ready_for_current_native_truth": false,
+      "ink_available_among_paintable": 0.2925707685676317,
+      "prepared_sha256": "941ad5b9b145e72c3d607ebf26c173865751ec9186efab0adc94d2e699365010"
+    },
+    "data-004": {
+      "schema": "inklab.bc2.dataset.v1",
+      "samples": 5399,
+      "source": "work/rl-demo/my-demo-004",
+      "source_bc": "work/rl-bc/run79/bc-004",
+      "observation": "past ink snapshot max29f; geometry-expanded floors, no current-truth promotion",
+      "ink_map_available_fraction": 0.08063570862757477,
+      "screen_ink_available_fraction": 0.049789312848820245,
+      "ink_age_mean": 13.997406927208742,
+      "ink_age_max": 28,
+      "attack_birth_proxy_count": 116,
+      "attacks_per_minute": 38.666666666666664,
+      "light": 18,
+      "full": 98,
+      "event_semantics": "local-world0 pooled-object setter runs separated>4f, same-kind births clustered3f; observed Stamper projectile birth proxy, not complete lifecycle truth",
+      "ready_for_current_native_truth": false,
+      "ink_available_among_paintable": 0.2608890764434736,
+      "prepared_sha256": "c57f263b7bed6c85f4f2da77b9fa8b961a55086f0dc9e6317fdec0ce01ab87b0"
+    },
+    "data-005": {
+      "schema": "inklab.bc2.dataset.v1",
+      "samples": 5396,
+      "source": "work/rl-demo/my-demo-005",
+      "source_bc": "work/rl-bc/run79/bc-005",
+      "observation": "past ink snapshot max29f; geometry-expanded floors, no current-truth promotion",
+      "ink_map_available_fraction": 0.07637058485169185,
+      "screen_ink_available_fraction": 0.047427750055153844,
+      "ink_age_mean": 14.00074128984433,
+      "ink_age_max": 28,
+      "attack_birth_proxy_count": 143,
+      "attacks_per_minute": 47.666666666666664,
+      "light": 63,
+      "full": 80,
+      "event_semantics": "local-world0 pooled-object setter runs separated>4f, same-kind births clustered3f; observed Stamper projectile birth proxy, not complete lifecycle truth",
+      "ready_for_current_native_truth": false,
+      "ink_available_among_paintable": 0.247089678859626,
+      "prepared_sha256": "fc82256662a9352133c9cbbc59fdf748093521961b32832baebb0e5e01b8092e"
+    }
+  },
+  "fits": {
+    "fit-chunk8-80": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 7,
+      "epochs": 19,
+      "seconds": 5.984015451977029,
+      "parameters": 2056325,
+      "peak_cuda_mib": 228.08056640625,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-chunk8-80",
+        "horizon": 8,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 80,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.3877739906311035,
+            "ce": 2.001143455505371
+          },
+          "yaw": {
+            "accuracy": 0.31923434138298035,
+            "ce": 1.6637581586837769
+          },
+          "pitch": {
+            "accuracy": 0.3993825316429138,
+            "ce": 1.3963911533355713
+          },
+          "ZR": {
+            "accuracy": 0.7783883810043335,
+            "ce": 0.465526282787323
+          },
+          "ZL": {
+            "accuracy": 0.9499228000640869,
+            "ce": 0.22359009087085724
+          },
+          "B": {
+            "accuracy": 0.8946588635444641,
+            "ce": 0.3891182839870453
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.29392141103744507,
+            "ce": 2.1031908988952637
+          },
+          "yaw": {
+            "accuracy": 0.2959599792957306,
+            "ce": 1.705512285232544
+          },
+          "pitch": {
+            "accuracy": 0.3825055658817291,
+            "ce": 1.4215996265411377
+          },
+          "ZR": {
+            "accuracy": 0.7112675905227661,
+            "ce": 0.5168293118476868
+          },
+          "ZL": {
+            "accuracy": 0.9468124508857727,
+            "ce": 0.24295926094055176
+          },
+          "B": {
+            "accuracy": 0.9532987475395203,
+            "ce": 0.31569376587867737
+          }
+        }
+      }
+    },
+    "fit-feedback1-79": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 15,
+      "epochs": 27,
+      "seconds": 7.765719587914646,
+      "parameters": 1741133,
+      "peak_cuda_mib": 215.078125,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-feedback1-79",
+        "horizon": 1,
+        "feedback": true,
+        "hidden": 384,
+        "seed": 79,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.9078727960586548,
+            "ce": 0.42032426595687866
+          },
+          "yaw": {
+            "accuracy": 0.7113924026489258,
+            "ce": 0.8417261838912964
+          },
+          "pitch": {
+            "accuracy": 0.6356900334358215,
+            "ce": 0.9364581108093262
+          },
+          "ZR": {
+            "accuracy": 0.9606051445007324,
+            "ce": 0.1125897541642189
+          },
+          "ZL": {
+            "accuracy": 0.9863538146018982,
+            "ce": 0.04843244329094887
+          },
+          "B": {
+            "accuracy": 0.9766594767570496,
+            "ce": 0.07619208842515945
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.909006655216217,
+            "ce": 0.46608102321624756
+          },
+          "yaw": {
+            "accuracy": 0.7151593565940857,
+            "ce": 0.8914644718170166
+          },
+          "pitch": {
+            "accuracy": 0.6247220039367676,
+            "ce": 1.006225824356079
+          },
+          "ZR": {
+            "accuracy": 0.9162342548370361,
+            "ce": 0.2231498509645462
+          },
+          "ZL": {
+            "accuracy": 0.9797998666763306,
+            "ce": 0.07041183114051819
+          },
+          "B": {
+            "accuracy": 0.9770200252532959,
+            "ce": 0.08167744427919388
+          }
+        }
+      }
+    },
+    "fit-chunk8-81": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 8,
+      "epochs": 20,
+      "seconds": 6.252201268915087,
+      "parameters": 2056325,
+      "peak_cuda_mib": 228.08056640625,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-chunk8-81",
+        "horizon": 8,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 81,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.41957393288612366,
+            "ce": 1.9054661989212036
+          },
+          "yaw": {
+            "accuracy": 0.3105279505252838,
+            "ce": 1.6300263404846191
+          },
+          "pitch": {
+            "accuracy": 0.39882680773735046,
+            "ce": 1.3648051023483276
+          },
+          "ZR": {
+            "accuracy": 0.7514047622680664,
+            "ce": 0.462692528963089
+          },
+          "ZL": {
+            "accuracy": 0.9494906067848206,
+            "ce": 0.19475626945495605
+          },
+          "B": {
+            "accuracy": 0.9023155570030212,
+            "ce": 0.3300522267818451
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.2931801378726959,
+            "ce": 2.0998523235321045
+          },
+          "yaw": {
+            "accuracy": 0.2648257911205292,
+            "ce": 1.7063138484954834
+          },
+          "pitch": {
+            "accuracy": 0.3838028311729431,
+            "ce": 1.4151164293289185
+          },
+          "ZR": {
+            "accuracy": 0.7058932781219482,
+            "ce": 0.5172262787818909
+          },
+          "ZL": {
+            "accuracy": 0.9468124508857727,
+            "ce": 0.2238297015428543
+          },
+          "B": {
+            "accuracy": 0.9475537538528442,
+            "ce": 0.2733056843280792
+          }
+        }
+      }
+    },
+    "fit-nofeedback1-79": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 7,
+      "epochs": 19,
+      "seconds": 5.4529118679929525,
+      "parameters": 1689805,
+      "peak_cuda_mib": 214.43505859375,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-nofeedback1-79",
+        "horizon": 1,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 79,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.41531336307525635,
+            "ce": 1.8764772415161133
+          },
+          "yaw": {
+            "accuracy": 0.3071935772895813,
+            "ce": 1.6352819204330444
+          },
+          "pitch": {
+            "accuracy": 0.40907686948776245,
+            "ce": 1.359810471534729
+          },
+          "ZR": {
+            "accuracy": 0.7662241458892822,
+            "ce": 0.46142688393592834
+          },
+          "ZL": {
+            "accuracy": 0.9473294019699097,
+            "ce": 0.19690805673599243
+          },
+          "B": {
+            "accuracy": 0.9007718563079834,
+            "ce": 0.26010653376579285
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.29280948638916016,
+            "ce": 2.1357297897338867
+          },
+          "yaw": {
+            "accuracy": 0.28910303115844727,
+            "ce": 1.6894252300262451
+          },
+          "pitch": {
+            "accuracy": 0.3838028311729431,
+            "ce": 1.4087295532226562
+          },
+          "ZR": {
+            "accuracy": 0.725908100605011,
+            "ce": 0.5104250907897949
+          },
+          "ZL": {
+            "accuracy": 0.9468124508857727,
+            "ce": 0.22649863362312317
+          },
+          "B": {
+            "accuracy": 0.9421793818473816,
+            "ce": 0.21251410245895386
+          }
+        }
+      }
+    },
+    "fit-chunk16-79": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 7,
+      "epochs": 19,
+      "seconds": 6.582510086009279,
+      "parameters": 2475205,
+      "peak_cuda_mib": 239.119140625,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-chunk16-79",
+        "horizon": 16,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 79,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.34702068567276,
+            "ce": 2.044525623321533
+          },
+          "yaw": {
+            "accuracy": 0.3135535717010498,
+            "ce": 1.642163634300232
+          },
+          "pitch": {
+            "accuracy": 0.3858598470687866,
+            "ce": 1.3953438997268677
+          },
+          "ZR": {
+            "accuracy": 0.7342389822006226,
+            "ce": 0.4958411455154419
+          },
+          "ZL": {
+            "accuracy": 0.9494906067848206,
+            "ce": 0.20501194894313812
+          },
+          "B": {
+            "accuracy": 0.8912627100944519,
+            "ce": 0.34642332792282104
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.30522608757019043,
+            "ce": 2.1490516662597656
+          },
+          "yaw": {
+            "accuracy": 0.2935507893562317,
+            "ce": 1.695231556892395
+          },
+          "pitch": {
+            "accuracy": 0.35303929448127747,
+            "ce": 1.4356751441955566
+          },
+          "ZR": {
+            "accuracy": 0.7016308307647705,
+            "ce": 0.5318986177444458
+          },
+          "ZL": {
+            "accuracy": 0.9471830725669861,
+            "ce": 0.23272134363651276
+          },
+          "B": {
+            "accuracy": 0.9545959830284119,
+            "ce": 0.2727394104003906
+          }
+        }
+      }
+    },
+    "fit-feedback1-80": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 15,
+      "epochs": 27,
+      "seconds": 7.722164603997953,
+      "parameters": 1741133,
+      "peak_cuda_mib": 215.078125,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-feedback1-80",
+        "horizon": 1,
+        "feedback": true,
+        "hidden": 384,
+        "seed": 80,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.9065143465995789,
+            "ce": 0.40561965107917786
+          },
+          "yaw": {
+            "accuracy": 0.7098487019538879,
+            "ce": 0.8573166728019714
+          },
+          "pitch": {
+            "accuracy": 0.6347020864486694,
+            "ce": 0.9428871273994446
+          },
+          "ZR": {
+            "accuracy": 0.9646186828613281,
+            "ce": 0.10552483052015305
+          },
+          "ZL": {
+            "accuracy": 0.9866625666618347,
+            "ce": 0.04482089728116989
+          },
+          "B": {
+            "accuracy": 0.9680765867233276,
+            "ce": 0.10200418531894684
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.9106745719909668,
+            "ce": 0.4494800269603729
+          },
+          "yaw": {
+            "accuracy": 0.7120088934898376,
+            "ce": 0.893742561340332
+          },
+          "pitch": {
+            "accuracy": 0.6223128437995911,
+            "ce": 1.0128986835479736
+          },
+          "ZR": {
+            "accuracy": 0.9167901873588562,
+            "ce": 0.2182566225528717
+          },
+          "ZL": {
+            "accuracy": 0.9799851775169373,
+            "ce": 0.07145939767360687
+          },
+          "B": {
+            "accuracy": 0.967568576335907,
+            "ce": 0.1032661646604538
+          }
+        }
+      }
+    },
+    "fit-chunk8-79": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 9,
+      "epochs": 21,
+      "seconds": 6.520231197006069,
+      "parameters": 2056325,
+      "peak_cuda_mib": 228.08056640625,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-chunk8-79",
+        "horizon": 8,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 79,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.42290830612182617,
+            "ce": 1.8442111015319824
+          },
+          "yaw": {
+            "accuracy": 0.3195430636405945,
+            "ce": 1.614701509475708
+          },
+          "pitch": {
+            "accuracy": 0.3843161463737488,
+            "ce": 1.3785974979400635
+          },
+          "ZR": {
+            "accuracy": 0.7652361989021301,
+            "ce": 0.45389997959136963
+          },
+          "ZL": {
+            "accuracy": 0.9494906067848206,
+            "ce": 0.2005060613155365
+          },
+          "B": {
+            "accuracy": 0.8963877558708191,
+            "ce": 0.31091269850730896
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.2959599792957306,
+            "ce": 2.0648419857025146
+          },
+          "yaw": {
+            "accuracy": 0.3128243088722229,
+            "ce": 1.6624449491500854
+          },
+          "pitch": {
+            "accuracy": 0.34747961163520813,
+            "ce": 1.4320812225341797
+          },
+          "ZR": {
+            "accuracy": 0.7338769435882568,
+            "ce": 0.4967976212501526
+          },
+          "ZL": {
+            "accuracy": 0.9468124508857727,
+            "ce": 0.23866117000579834
+          },
+          "B": {
+            "accuracy": 0.9553372859954834,
+            "ce": 0.2476566880941391
+          }
+        }
+      }
+    },
+    "fit-feedback1-81": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 10,
+      "epochs": 22,
+      "seconds": 6.425269964965992,
+      "parameters": 1741133,
+      "peak_cuda_mib": 215.078125,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-feedback1-81",
+        "horizon": 1,
+        "feedback": true,
+        "hidden": 384,
+        "seed": 81,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.9018215537071228,
+            "ce": 0.45129987597465515
+          },
+          "yaw": {
+            "accuracy": 0.7110836505889893,
+            "ce": 0.8723524212837219
+          },
+          "pitch": {
+            "accuracy": 0.6290212869644165,
+            "ce": 0.9795946478843689
+          },
+          "ZR": {
+            "accuracy": 0.9557888507843018,
+            "ce": 0.13542480766773224
+          },
+          "ZL": {
+            "accuracy": 0.9853041172027588,
+            "ce": 0.057110585272312164
+          },
+          "B": {
+            "accuracy": 0.9748070240020752,
+            "ce": 0.09116807579994202
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.9086360335350037,
+            "ce": 0.4678172767162323
+          },
+          "yaw": {
+            "accuracy": 0.7190511226654053,
+            "ce": 0.8839626908302307
+          },
+          "pitch": {
+            "accuracy": 0.6284284591674805,
+            "ce": 1.008821964263916
+          },
+          "ZR": {
+            "accuracy": 0.9251297116279602,
+            "ce": 0.20609454810619354
+          },
+          "ZL": {
+            "accuracy": 0.9805411696434021,
+            "ce": 0.07222557812929153
+          },
+          "B": {
+            "accuracy": 0.9866567850112915,
+            "ce": 0.07738668471574783
+          }
+        }
+      }
+    },
+    "fit-nofeedback1-81": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 9,
+      "epochs": 21,
+      "seconds": 6.041471377015114,
+      "parameters": 1689805,
+      "peak_cuda_mib": 214.43505859375,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-nofeedback1-81",
+        "horizon": 1,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 81,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.46038901805877686,
+            "ce": 1.760101556777954
+          },
+          "yaw": {
+            "accuracy": 0.32639703154563904,
+            "ce": 1.6114879846572876
+          },
+          "pitch": {
+            "accuracy": 0.4140166640281677,
+            "ce": 1.3400018215179443
+          },
+          "ZR": {
+            "accuracy": 0.7850571274757385,
+            "ce": 0.44113433361053467
+          },
+          "ZL": {
+            "accuracy": 0.9455387592315674,
+            "ce": 0.20273910462856293
+          },
+          "B": {
+            "accuracy": 0.8582278490066528,
+            "ce": 0.340279757976532
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.3226464092731476,
+            "ce": 2.0272862911224365
+          },
+          "yaw": {
+            "accuracy": 0.2887323796749115,
+            "ce": 1.6672883033752441
+          },
+          "pitch": {
+            "accuracy": 0.3478502631187439,
+            "ce": 1.4053715467453003
+          },
+          "ZR": {
+            "accuracy": 0.7418457865715027,
+            "ce": 0.4935043156147003
+          },
+          "ZL": {
+            "accuracy": 0.9227205514907837,
+            "ce": 0.2814244031906128
+          },
+          "B": {
+            "accuracy": 0.9104892611503601,
+            "ce": 0.2809829115867615
+          }
+        }
+      }
+    },
+    "fit-nofeedback1-80": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 9,
+      "epochs": 21,
+      "seconds": 6.013007125933655,
+      "parameters": 1689805,
+      "peak_cuda_mib": 214.43505859375,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-nofeedback1-80",
+        "horizon": 1,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 80,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.4647730886936188,
+            "ce": 1.7681165933609009
+          },
+          "yaw": {
+            "accuracy": 0.32775548100471497,
+            "ce": 1.6166094541549683
+          },
+          "pitch": {
+            "accuracy": 0.41636306047439575,
+            "ce": 1.3413320779800415
+          },
+          "ZR": {
+            "accuracy": 0.773819088935852,
+            "ce": 0.4541481137275696
+          },
+          "ZL": {
+            "accuracy": 0.9507873058319092,
+            "ce": 0.19841507077217102
+          },
+          "B": {
+            "accuracy": 0.9019450545310974,
+            "ce": 0.24915312230587006
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.30263158679008484,
+            "ce": 2.07344388961792
+          },
+          "yaw": {
+            "accuracy": 0.2739065885543823,
+            "ce": 1.6711138486862183
+          },
+          "pitch": {
+            "accuracy": 0.35711637139320374,
+            "ce": 1.4020724296569824
+          },
+          "ZR": {
+            "accuracy": 0.7272053360939026,
+            "ce": 0.5038883090019226
+          },
+          "ZL": {
+            "accuracy": 0.9453298449516296,
+            "ce": 0.2590371072292328
+          },
+          "B": {
+            "accuracy": 0.9416234493255615,
+            "ce": 0.19716787338256836
+          }
+        }
+      }
+    },
+    "fit-chunk16-80": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 10,
+      "epochs": 22,
+      "seconds": 7.67121598799713,
+      "parameters": 2475205,
+      "peak_cuda_mib": 239.119140625,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-chunk16-80",
+        "horizon": 16,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 80,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.4292065501213074,
+            "ce": 1.8393408060073853
+          },
+          "yaw": {
+            "accuracy": 0.3125655949115753,
+            "ce": 1.6243256330490112
+          },
+          "pitch": {
+            "accuracy": 0.40506330132484436,
+            "ce": 1.3571187257766724
+          },
+          "ZR": {
+            "accuracy": 0.7730780839920044,
+            "ce": 0.4513503313064575
+          },
+          "ZL": {
+            "accuracy": 0.9549243450164795,
+            "ce": 0.19190990924835205
+          },
+          "B": {
+            "accuracy": 0.9013275504112244,
+            "ce": 0.29932665824890137
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.30114901065826416,
+            "ce": 2.078402042388916
+          },
+          "yaw": {
+            "accuracy": 0.26278725266456604,
+            "ce": 1.698012113571167
+          },
+          "pitch": {
+            "accuracy": 0.3710155785083771,
+            "ce": 1.4176362752914429
+          },
+          "ZR": {
+            "accuracy": 0.7257227301597595,
+            "ce": 0.5022345185279846
+          },
+          "ZL": {
+            "accuracy": 0.9538546800613403,
+            "ce": 0.221426323056221
+          },
+          "B": {
+            "accuracy": 0.9505189061164856,
+            "ce": 0.23656785488128662
+          }
+        }
+      }
+    },
+    "fit-chunk16-81": {
+      "schema": "inklab.bc2.fit.v1",
+      "best_epoch": 9,
+      "epochs": 21,
+      "seconds": 7.234203523956239,
+      "parameters": 2475205,
+      "peak_cuda_mib": 239.119140625,
+      "config": {
+        "train": [
+          "dataset/data-002",
+          "dataset/data-003",
+          "dataset/data-004"
+        ],
+        "val": "dataset/data-005",
+        "out": "fit-chunk16-81",
+        "horizon": 16,
+        "feedback": false,
+        "hidden": 384,
+        "seed": 81,
+        "length": 64,
+        "batch": 16,
+        "epochs": 100,
+        "patience": 12,
+        "lr": 0.0003,
+        "device": "cuda"
+      },
+      "splits": {
+        "train": {
+          "move": {
+            "accuracy": 0.43192341923713684,
+            "ce": 1.8356367349624634
+          },
+          "yaw": {
+            "accuracy": 0.32645878195762634,
+            "ce": 1.623881459236145
+          },
+          "pitch": {
+            "accuracy": 0.39956775307655334,
+            "ce": 1.3734197616577148
+          },
+          "ZR": {
+            "accuracy": 0.7775856852531433,
+            "ce": 0.44647297263145447
+          },
+          "ZL": {
+            "accuracy": 0.9501698017120361,
+            "ce": 0.1985427439212799
+          },
+          "B": {
+            "accuracy": 0.9003396034240723,
+            "ce": 0.304775208234787
+          }
+        },
+        "val": {
+          "move": {
+            "accuracy": 0.2922535240650177,
+            "ce": 2.1171164512634277
+          },
+          "yaw": {
+            "accuracy": 0.2811341881752014,
+            "ce": 1.6850680112838745
+          },
+          "pitch": {
+            "accuracy": 0.3535952568054199,
+            "ce": 1.4312570095062256
+          },
+          "ZR": {
+            "accuracy": 0.7197924256324768,
+            "ce": 0.5041921138763428
+          },
+          "ZL": {
+            "accuracy": 0.9471830725669861,
+            "ce": 0.23361031711101532
+          },
+          "B": {
+            "accuracy": 0.9553372859954834,
+            "ce": 0.24747896194458008
+          }
+        }
+      }
+    }
+  },
+  "evaluations": {
+    "eval-chunk16-79-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 25.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 324.0,
+      "attacks_per_minute": 6.75,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.2525877356529236,
+      "enemy_turf_percent": 0.1284344494342804,
+      "seconds": 18.834188929991797,
+      "scheme": "chunk16",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 251.0
+    },
+    "eval-chunk16-79-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 27.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 340.0,
+      "attacks_per_minute": 7.083333333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.2544904351234436,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.362087856978178,
+      "scheme": "chunk16",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 272.0
+    },
+    "eval-chunk16-79-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 26.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 330.0,
+      "attacks_per_minute": 6.875,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.2516363561153412,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.363795696990564,
+      "scheme": "chunk16",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 255.0
+    },
+    "eval-chunk16-80-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 40.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 448.0,
+      "attacks_per_minute": 9.333333333333334,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.18028390407562256,
+      "enemy_turf_percent": 0.08705001324415207,
+      "seconds": 19.548743330989964,
+      "scheme": "chunk16",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 344.0
+    },
+    "eval-chunk16-80-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 38.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 467.0,
+      "attacks_per_minute": 9.729166666666666,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.17314864695072174,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.931695961975493,
+      "scheme": "chunk16",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 369.0
+    },
+    "eval-chunk16-80-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 41.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 447.0,
+      "attacks_per_minute": 9.3125,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.17695412039756775,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.427840673015453,
+      "scheme": "chunk16",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 344.0
+    },
+    "eval-chunk16-81-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 44.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 262.0,
+      "attacks_per_minute": 5.458333333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.5808091163635254,
+      "enemy_turf_percent": 0.2625770568847656,
+      "seconds": 18.70123295590747,
+      "scheme": "chunk16",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 203.0
+    },
+    "eval-chunk16-81-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 42.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 253.0,
+      "attacks_per_minute": 5.270833333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.5774792432785034,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.498124108067714,
+      "scheme": "chunk16",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 206.0
+    },
+    "eval-chunk16-81-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 45.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 267.0,
+      "attacks_per_minute": 5.5625,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.5808090567588806,
+      "enemy_turf_percent": 0.0,
+      "seconds": 18.04572686890606,
+      "scheme": "chunk16",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 209.0
+    },
+    "eval-chunk8-79-history-expected": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 35.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 445.0,
+      "attacks_per_minute": 9.270833333333334,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6816538572311401,
+      "enemy_turf_percent": 0.1293857991695404,
+      "seconds": 19.016151493997313,
+      "scheme": "chunk8",
+      "training_seed": 79,
+      "mode": "expected",
+      "full_releases": 386.0
+    },
+    "eval-chunk8-79-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 32.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 425.0,
+      "attacks_per_minute": 8.854166666666666,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.445715069770813,
+      "enemy_turf_percent": 0.21167898178100586,
+      "seconds": 18.580139501951635,
+      "scheme": "chunk8",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 384.0
+    },
+    "eval-chunk8-79-random-expected": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 34.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 380.0,
+      "attacks_per_minute": 7.916666666666667,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6298044323921204,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.496254498022608,
+      "scheme": "chunk8",
+      "training_seed": 79,
+      "mode": "expected",
+      "full_releases": 321.0
+    },
+    "eval-chunk8-79-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 25.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 392.0,
+      "attacks_per_minute": 8.166666666666666,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.4119415879249573,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.561914210906252,
+      "scheme": "chunk8",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 335.0
+    },
+    "eval-chunk8-79-script-expected": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 35.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 427.0,
+      "attacks_per_minute": 8.895833333333334,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6711888313293457,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.254527545999736,
+      "scheme": "chunk8",
+      "training_seed": 79,
+      "mode": "expected",
+      "full_releases": 372.0
+    },
+    "eval-chunk8-79-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 32.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 415.0,
+      "attacks_per_minute": 8.645833333333334,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.446190744638443,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.068448113976046,
+      "scheme": "chunk8",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 371.0
+    },
+    "eval-chunk8-80-history-expected": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 58.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 246.0,
+      "attacks_per_minute": 5.125,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.39671969413757324,
+      "enemy_turf_percent": 0.23498745262622833,
+      "seconds": 19.041111058089882,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "expected",
+      "full_releases": 167.0
+    },
+    "eval-chunk8-80-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 87.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 406.0,
+      "attacks_per_minute": 8.458333333333334,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.3291727304458618,
+      "enemy_turf_percent": 0.3153778910636902,
+      "seconds": 18.959305141936056,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 261.0
+    },
+    "eval-chunk8-80-history-sampled": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": false,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 47.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 2111.0,
+      "attacks_per_minute": 43.979166666666664,
+      "hit_decisions": 0.0,
+      "turf_percent": 1.0945467948913574,
+      "enemy_turf_percent": 0.7744120359420776,
+      "seconds": 19.30019470001571,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "sampled",
+      "full_releases": 1.0
+    },
+    "eval-chunk8-80-random-expected": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 54.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 247.0,
+      "attacks_per_minute": 5.145833333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.43810412287712097,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.586987891001627,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "expected",
+      "full_releases": 148.0
+    },
+    "eval-chunk8-80-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 74.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 408.0,
+      "attacks_per_minute": 8.5,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.3129994869232178,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.103553521912545,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 276.0
+    },
+    "eval-chunk8-80-random-sampled": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": false,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 57.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 2147.0,
+      "attacks_per_minute": 44.729166666666664,
+      "hit_decisions": 0.0,
+      "turf_percent": 1.3385722637176514,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.57876690197736,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "sampled",
+      "full_releases": 2.0
+    },
+    "eval-chunk8-80-script-expected": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 58.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 263.0,
+      "attacks_per_minute": 5.479166666666667,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.3895844519138336,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.22851751500275,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "expected",
+      "full_releases": 187.0
+    },
+    "eval-chunk8-80-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 81.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 401.0,
+      "attacks_per_minute": 8.354166666666666,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.33297818899154663,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.48979473102372,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 255.0
+    },
+    "eval-chunk8-80-script-sampled": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": false,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 55.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 2124.0,
+      "attacks_per_minute": 44.25,
+      "hit_decisions": 0.0,
+      "turf_percent": 1.5255156755447388,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.598234683973715,
+      "scheme": "chunk8",
+      "training_seed": 80,
+      "mode": "sampled",
+      "full_releases": 1.0
+    },
+    "eval-chunk8-81-history-expected": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 32.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 289.0,
+      "attacks_per_minute": 6.020833333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.4790128469467163,
+      "enemy_turf_percent": 0.3253672420978546,
+      "seconds": 18.69781709893141,
+      "scheme": "chunk8",
+      "training_seed": 81,
+      "mode": "expected",
+      "full_releases": 215.0
+    },
+    "eval-chunk8-81-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 64.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 306.0,
+      "attacks_per_minute": 6.375,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.2825557589530945,
+      "enemy_turf_percent": 0.24164701998233795,
+      "seconds": 18.38087909494061,
+      "scheme": "chunk8",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 227.0
+    },
+    "eval-chunk8-81-random-expected": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 34.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 315.0,
+      "attacks_per_minute": 6.5625,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.3862546682357788,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.625750574981794,
+      "scheme": "chunk8",
+      "training_seed": 81,
+      "mode": "expected",
+      "full_releases": 208.0
+    },
+    "eval-chunk8-81-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 63.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 295.0,
+      "attacks_per_minute": 6.145833333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.2259494662284851,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.607559322961606,
+      "scheme": "chunk8",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 213.0
+    },
+    "eval-chunk8-81-script-expected": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 33.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 289.0,
+      "attacks_per_minute": 6.020833333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.4785372018814087,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.434082550927997,
+      "scheme": "chunk8",
+      "training_seed": 81,
+      "mode": "expected",
+      "full_releases": 216.0
+    },
+    "eval-chunk8-81-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 67.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 306.0,
+      "attacks_per_minute": 6.375,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.3163292706012726,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.045622317004018,
+      "scheme": "chunk8",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 227.0
+    },
+    "eval-feedback1-79-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 18.18936010496691,
+      "scheme": "feedback1",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-79-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 2.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 13.856259800028056,
+      "scheme": "feedback1",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-79-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 16.532566390000284,
+      "scheme": "feedback1",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-80-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 18.092151424032636,
+      "scheme": "feedback1",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-80-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 13.97062729706522,
+      "scheme": "feedback1",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-80-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.32264547504019,
+      "scheme": "feedback1",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-81-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 18.817393783014268,
+      "scheme": "feedback1",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-81-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 13.822903713095002,
+      "scheme": "feedback1",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-feedback1-81-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 0.0,
+      "attacks_per_minute": 0.0,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.294601976987906,
+      "scheme": "feedback1",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 0.0
+    },
+    "eval-nofeedback1-79-history-expected": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 67.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 380.0,
+      "attacks_per_minute": 7.916666666666667,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.7035353183746338,
+      "enemy_turf_percent": 0.30301016569137573,
+      "seconds": 18.404244855977595,
+      "scheme": "nofeedback1",
+      "training_seed": 79,
+      "mode": "expected",
+      "full_releases": 206.0
+    },
+    "eval-nofeedback1-79-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 33.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 234.0,
+      "attacks_per_minute": 4.875,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.3581893742084503,
+      "enemy_turf_percent": 0.24117131531238556,
+      "seconds": 17.994540493935347,
+      "scheme": "nofeedback1",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 145.0
+    },
+    "eval-nofeedback1-79-random-expected": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 79.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 380.0,
+      "attacks_per_minute": 7.916666666666667,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.5679656267166138,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.583209577947855,
+      "scheme": "nofeedback1",
+      "training_seed": 79,
+      "mode": "expected",
+      "full_releases": 196.0
+    },
+    "eval-nofeedback1-79-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 32.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 202.0,
+      "attacks_per_minute": 4.208333333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.2568688690662384,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 13.860500134993345,
+      "scheme": "nofeedback1",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 126.0
+    },
+    "eval-nofeedback1-79-script-expected": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 65.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 367.0,
+      "attacks_per_minute": 7.645833333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.7339789867401123,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.536910090013407,
+      "scheme": "nofeedback1",
+      "training_seed": 79,
+      "mode": "expected",
+      "full_releases": 203.0
+    },
+    "eval-nofeedback1-79-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 32.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 232.0,
+      "attacks_per_minute": 4.833333333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.3548595905303955,
+      "enemy_turf_percent": 0.0,
+      "seconds": 16.59162813902367,
+      "scheme": "nofeedback1",
+      "training_seed": 79,
+      "mode": "greedy",
+      "full_releases": 148.0
+    },
+    "eval-nofeedback1-80-history-expected": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 75.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 442.0,
+      "attacks_per_minute": 9.208333333333334,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6631022691726685,
+      "enemy_turf_percent": 0.40433064103126526,
+      "seconds": 18.512438736041076,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "expected",
+      "full_releases": 273.0
+    },
+    "eval-nofeedback1-80-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 39.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 428.0,
+      "attacks_per_minute": 8.916666666666666,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6122041940689087,
+      "enemy_turf_percent": 0.27922600507736206,
+      "seconds": 18.076063427026384,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 266.0
+    },
+    "eval-nofeedback1-80-history-sampled": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": false,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 89.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 2040.0,
+      "attacks_per_minute": 42.5,
+      "hit_decisions": 0.0,
+      "turf_percent": 2.1496119499206543,
+      "enemy_turf_percent": 0.7154273986816406,
+      "seconds": 18.95723550801631,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "sampled",
+      "full_releases": 30.0
+    },
+    "eval-nofeedback1-80-random-expected": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 69.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 417.0,
+      "attacks_per_minute": 8.6875,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.7277951240539551,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.493604197981767,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "expected",
+      "full_releases": 248.0
+    },
+    "eval-nofeedback1-80-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 33.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 359.0,
+      "attacks_per_minute": 7.479166666666667,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6193394064903259,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 13.675368217984214,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 233.0
+    },
+    "eval-nofeedback1-80-random-sampled": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": false,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 79.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 2013.0,
+      "attacks_per_minute": 41.9375,
+      "hit_decisions": 0.0,
+      "turf_percent": 1.782860279083252,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.154529780964367,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "sampled",
+      "full_releases": 19.0
+    },
+    "eval-nofeedback1-80-script-expected": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 76.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 392.0,
+      "attacks_per_minute": 8.166666666666666,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6188637018203735,
+      "enemy_turf_percent": 0.0,
+      "seconds": 16.875226968084462,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "expected",
+      "full_releases": 230.0
+    },
+    "eval-nofeedback1-80-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 44.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 414.0,
+      "attacks_per_minute": 8.625,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.6578696966171265,
+      "enemy_turf_percent": 0.0,
+      "seconds": 16.670428009936586,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "greedy",
+      "full_releases": 264.0
+    },
+    "eval-nofeedback1-80-script-sampled": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": false,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 100.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 2076.0,
+      "attacks_per_minute": 43.25,
+      "hit_decisions": 0.0,
+      "turf_percent": 1.9997718334197998,
+      "enemy_turf_percent": 0.0,
+      "seconds": 17.113651656080037,
+      "scheme": "nofeedback1",
+      "training_seed": 80,
+      "mode": "sampled",
+      "full_releases": 31.0
+    },
+    "eval-nofeedback1-81-history-expected": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 1.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 16.0,
+      "attacks_per_minute": 0.3333333333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 18.61069367802702,
+      "scheme": "nofeedback1",
+      "training_seed": 81,
+      "mode": "expected",
+      "full_releases": 0.0
+    },
+    "eval-nofeedback1-81-history-greedy": {
+      "games": 16,
+      "kind": "history",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 57.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 164.0,
+      "attacks_per_minute": 3.4166666666666665,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.43762844800949097,
+      "enemy_turf_percent": 0.18361368775367737,
+      "seconds": 18.107545019011013,
+      "scheme": "nofeedback1",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 64.0
+    },
+    "eval-nofeedback1-81-random-expected": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 0.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 16.0,
+      "attacks_per_minute": 0.3333333333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.49799822003115,
+      "scheme": "nofeedback1",
+      "training_seed": 81,
+      "mode": "expected",
+      "full_releases": 0.0
+    },
+    "eval-nofeedback1-81-random-greedy": {
+      "games": 16,
+      "kind": "random",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 56.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 147.0,
+      "attacks_per_minute": 3.0625,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.42668771743774414,
+      "enemy_turf_percent": 0.9223495125770569,
+      "seconds": 14.196074952953495,
+      "scheme": "nofeedback1",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 58.0
+    },
+    "eval-nofeedback1-81-script-expected": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 1.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 16.0,
+      "attacks_per_minute": 0.3333333333333333,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.0,
+      "enemy_turf_percent": 0.0,
+      "seconds": 16.836005434044637,
+      "scheme": "nofeedback1",
+      "training_seed": 81,
+      "mode": "expected",
+      "full_releases": 0.0
+    },
+    "eval-nofeedback1-81-script-greedy": {
+      "games": 16,
+      "kind": "script",
+      "deterministic": true,
+      "frames": 10800,
+      "all_terminated": true,
+      "kills": 0.0,
+      "deaths": 63.0,
+      "enemy_weapon_kills": 0.0,
+      "damage": 0.0,
+      "attacks": 186.0,
+      "attacks_per_minute": 3.875,
+      "hit_decisions": 0.0,
+      "turf_percent": 0.4552287459373474,
+      "enemy_turf_percent": 0.0,
+      "seconds": 16.65992152504623,
+      "scheme": "nofeedback1",
+      "training_seed": 81,
+      "mode": "greedy",
+      "full_releases": 78.0
+    }
+  },
+  "variants": {
+    "feedback1-greedy": {
+      "groups": 9,
+      "games": 144,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 0.0,
+      "attacks_per_minute_mean": 0.0,
+      "human_attack_fraction": 0.0
+    },
+    "nofeedback1-greedy": {
+      "groups": 9,
+      "games": 144,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 0.464319560262892,
+      "attacks_per_minute_mean": 5.476851851851852,
+      "human_attack_fraction": 0.13924199623352165
+    },
+    "nofeedback1-expected": {
+      "groups": 9,
+      "games": 144,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 0.446137891875373,
+      "attacks_per_minute_mean": 5.6157407407407405,
+      "human_attack_fraction": 0.14277306967984932
+    },
+    "nofeedback1-sampled": {
+      "groups": 3,
+      "games": 48,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 1.9774146874745686,
+      "attacks_per_minute_mean": 42.5625,
+      "human_attack_fraction": 1.0820974576271185
+    },
+    "chunk8-greedy": {
+      "groups": 9,
+      "games": 144,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 0.34487025605307686,
+      "attacks_per_minute_mean": 7.763888888888889,
+      "human_attack_fraction": 0.1973870056497175
+    },
+    "chunk8-expected": {
+      "groups": 9,
+      "games": 144,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 0.5056511229938931,
+      "attacks_per_minute_mean": 6.715277777777779,
+      "human_attack_fraction": 0.1707274011299435
+    },
+    "chunk8-sampled": {
+      "groups": 3,
+      "games": 48,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 1.3195449113845825,
+      "attacks_per_minute_mean": 44.319444444444436,
+      "human_attack_fraction": 1.1267655367231635
+    },
+    "chunk16-greedy": {
+      "groups": 9,
+      "games": 144,
+      "kills": 0.0,
+      "damage": 0.0,
+      "turf_percent_mean": 0.3364665127462811,
+      "attacks_per_minute_mean": 7.263888888888889,
+      "human_attack_fraction": 0.18467514124293785
+    }
+  },
+  "native": {
+    "native-expected": {
+      "passed": true,
+      "complete": true,
+      "frames": 11509,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": [
+          0.0120000001,
+          0.194999993
+        ],
+        "player_1": [
+          0.194999993,
+          0.0120000001
+        ]
+      },
+      "bc_checkpoint_sha256": "e4bef923d42b3ab6a51fc1a715ba1b1937d1da0ed14595481f4c896ef25cb99e",
+      "controlled_presents_per_second": 38.11659401634953,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261025-223016-242784",
+      "attack_birth_proxies": 3,
+      "attacks_per_minute": 1.0,
+      "full": 2,
+      "light": 1,
+      "hud": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "ink_map_available_mean": 0.09244808688500816,
+      "ink_age_mean": 16.87242128121607,
+      "camera_bins": {
+        "yaw": [
+          0,
+          0,
+          0,
+          3207,
+          54,
+          2265,
+          0,
+          0,
+          0
+        ],
+        "pitch": [
+          0,
+          0,
+          1,
+          2826,
+          93,
+          2600,
+          6,
+          0,
+          0
+        ]
+      }
+    },
+    "native-nofeedback": {
+      "passed": true,
+      "complete": true,
+      "frames": 11509,
+      "errors": [],
+      "turf_ratio_by_role": {
+        "player_0": [
+          0.0160000008,
+          0.216000006
+        ],
+        "player_1": [
+          0.216000006,
+          0.0160000008
+        ]
+      },
+      "bc_checkpoint_sha256": "e4bef923d42b3ab6a51fc1a715ba1b1937d1da0ed14595481f4c896ef25cb99e",
+      "controlled_presents_per_second": 38.937161410586086,
+      "session": "/Users/galaxy/Project/GalaxyAI/AwesomeRubish/splatoon3-native/work/tests/m6-2p-20261025-222210-549299",
+      "attack_birth_proxies": 10,
+      "attacks_per_minute": 3.3333333333333335,
+      "full": 1,
+      "light": 9,
+      "hud": {
+        "player_0": {
+          "enemy_hud_downs": 0,
+          "own_hud_downs": 1,
+          "enemy_environmental_downs": 0,
+          "own_environmental_downs": 1,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        },
+        "player_1": {
+          "enemy_hud_downs": 1,
+          "own_hud_downs": 0,
+          "enemy_environmental_downs": 1,
+          "own_environmental_downs": 0,
+          "source": "observer HUD counts, includes unclassified causes; no last-hit attribution"
+        }
+      },
+      "ink_map_available_mean": 0.0899882764063125,
+      "ink_age_mean": 16.867173362287367,
+      "camera_bins": {
+        "yaw": [
+          0,
+          0,
+          104,
+          4910,
+          0,
+          318,
+          2,
+          192,
+          0
+        ],
+        "pitch": [
+          0,
+          0,
+          33,
+          931,
+          0,
+          4541,
+          21,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "ink_contract": {
+    "schema": "inklab.bc.ink-contract.v2",
+    "snapshot_period_frames": 30,
+    "max_age_frames": 29,
+    "observation_is_last_snapshot": true,
+    "current_native_truth": false,
+    "original_control_panels": [
+      133,
+      147
+    ],
+    "expansion": "unique upward native bounds + nonsingular native UV + paintable collision cells + no distant UV alias; common-transform geometric inference, not per-panel native firing validation",
+    "cells": 5302,
+    "paintable_cells": 13139,
+    "map_valid_fraction": 0.12225976270920091,
+    "map_valid_among_paintable": 0.39555969833064997,
+    "atlas_alias_cells_rejected": 976,
+    "panels": [
+      130,
+      131,
+      133,
+      134,
+      135,
+      136,
+      137,
+      139,
+      140,
+      141,
+      142,
+      144,
+      145,
+      146,
+      147,
+      148,
+      150,
+      152,
+      153,
+      155,
+      156,
+      158,
+      159,
+      160
+    ],
+    "panels_sha256": "258cdf7772bb09d615c4fd0691d570b3e0cf02e5ee8783eaaa282be68ec310dd",
+    "source_recording": "work/rl-demo/my-demo-002",
+    "original_index_sha256": "5f3efeba05981e476d66909173fe0cd5e6e95a585d71887b1ff73b1528994bb8",
+    "map_sha256": "230b35c2626ff4fab52db748aa66e80e913a60a0653c96bc6fd6407f0c34c4af",
+    "contract_sha256": "8ef4d7934cd2bf6d6a55f5e5813129548ae65b0187477180a778fbf3b03cc34e"
+  },
+  "human_reference": {
+    "source_matches": [
+      2,
+      3,
+      4
+    ],
+    "validation_not_in_bank": true,
+    "snapshots": 1080,
+    "human_attacks_per_minute": 39.333333333333336,
+    "gate_attack_per_minute": 11.8
+  },
+  "gates": {
+    "required": {
+      "attacks_per_minute": 11.8,
+      "human_fraction": 0.3,
+      "script_weapon_kills": ">0",
+      "turf_percent": 8
+    },
+    "cases": {
+      "eval-chunk16-79-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk16-80-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk16-81-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk8-79-script-expected": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk8-79-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk8-80-script-expected": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk8-80-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk8-80-script-sampled": {
+        "attack_frequency": true,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk8-81-script-expected": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-chunk8-81-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-feedback1-79-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-feedback1-80-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-feedback1-81-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-nofeedback1-79-script-expected": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-nofeedback1-79-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-nofeedback1-80-script-expected": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-nofeedback1-80-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-nofeedback1-80-script-sampled": {
+        "attack_frequency": true,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-nofeedback1-81-script-expected": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      },
+      "eval-nofeedback1-81-script-greedy": {
+        "attack_frequency": false,
+        "nonzero_weapon_ko": false,
+        "turf": false,
+        "passed": false
+      }
+    },
+    "any_pass": false,
+    "ppo_started": false
+  },
+  "paired_same_input": {
+    "samples": 20,
+    "fields": {
+      "screen": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "not_equal_fraction": 0.0
+      },
+      "entities": {
+        "max_abs": 0.00017410516738891602,
+        "mean_abs": 3.750602315579142e-07,
+        "not_equal_fraction": 0.0004464285714285714
+      },
+      "entity_mask": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "not_equal_fraction": 0.0
+      },
+      "hud": {
+        "max_abs": 0.00023299455642700195,
+        "mean_abs": 2.1946579217910766e-05,
+        "not_equal_fraction": 0.105
+      },
+      "minimap": {
+        "max_abs": 2.8483569622039795e-05,
+        "mean_abs": 2.842917941355457e-07,
+        "not_equal_fraction": 0.0
+      },
+      "quality": {
+        "max_abs": 0.00022792816162109375,
+        "mean_abs": 1.303359475655005e-05,
+        "not_equal_fraction": 0.04181614349775785
+      }
+    },
+    "scope": "Identical native poses/cameras/past ink: CPU-prepared float16 versus GPU rebuild; does not validate native pixels or free dynamics"
+  },
+  "train_vs_gpu_distribution": {
+    "screen": [
+      {
+        "name": "distance",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.3838120698928833,
+        "train_variance": 0.13182950019836426,
+        "gpu_mean": 0.3291875422000885,
+        "gpu_variance": 0.09911752492189407,
+        "ks": 0.10727801104972379
+      },
+      {
+        "name": "kind_none",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.21331000328063965,
+        "train_variance": 0.16780884563922882,
+        "gpu_mean": 0.1453617513179779,
+        "gpu_variance": 0.12423169612884521,
+        "ks": 0.06794825309129171
+      },
+      {
+        "name": "kind_ground",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.42937999963760376,
+        "train_variance": 0.24501283466815948,
+        "gpu_mean": 0.647671639919281,
+        "gpu_variance": 0.22819307446479797,
+        "ks": 0.21829166535122335
+      },
+      {
+        "name": "kind_wall",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.3570899963378906,
+        "train_variance": 0.22957675158977509,
+        "gpu_mean": 0.2069665938615799,
+        "gpu_variance": 0.16413143277168274,
+        "ks": 0.15012341225993164
+      },
+      {
+        "name": "kind_person",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.00022000000171829015,
+        "train_variance": 0.00021995161660015583,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.00021999999999999797
+      },
+      {
+        "name": "ink_own",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.006560000125318766,
+        "train_variance": 0.0065169669687747955,
+        "gpu_mean": 0.007187582086771727,
+        "gpu_variance": 0.007135919760912657,
+        "ks": 0.0006275822152065347
+      },
+      {
+        "name": "ink_enemy",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.0006900000153109431,
+        "train_variance": 0.000689523876644671,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0006899999999999684
+      },
+      {
+        "name": "hookable",
+        "train_n": 100000,
+        "gpu_n": 95025,
+        "train_mean": 0.682699978351593,
+        "train_variance": 0.21662069857120514,
+        "gpu_mean": 0.740394651889801,
+        "gpu_variance": 0.19221042096614838,
+        "ks": 0.05769463299131811
+      }
+    ],
+    "hud": [
+      {
+        "name": "ink",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.7255207300186157,
+        "train_variance": 0.06240009143948555,
+        "gpu_mean": 0.8631526231765747,
+        "gpu_variance": 0.03363243490457535,
+        "ks": 0.3540090636439818
+      },
+      {
+        "name": "special",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.9010439515113831,
+        "train_variance": 0.055015064775943756,
+        "gpu_mean": 0.1602357029914856,
+        "gpu_variance": 0.009883038699626923,
+        "ks": 0.9247375733251003
+      },
+      {
+        "name": "squid_form",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.33812904357910156,
+        "train_variance": 0.22379779815673828,
+        "gpu_mean": 0.22821427881717682,
+        "gpu_variance": 0.17613251507282257,
+        "ks": 0.10991476646231202
+      },
+      {
+        "name": "submerged",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.3081198036670685,
+        "train_variance": 0.2131819874048233,
+        "gpu_mean": 0.0017857142956927419,
+        "gpu_variance": 0.0017825252143666148,
+        "ks": 0.3063340757729458
+      },
+      {
+        "name": "charge",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hook_phase",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "remaining_time",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.4999382793903351,
+        "train_variance": 0.0832820013165474,
+        "gpu_mean": 0.5005555748939514,
+        "gpu_variance": 0.08410398662090302,
+        "ks": 0.006056543024743122
+      },
+      {
+        "name": "own_turf",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "enemy_turf",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "own_hp_cue",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.9742358922958374,
+        "train_variance": 0.02424745261669159,
+        "gpu_mean": 0.8824999928474426,
+        "gpu_variance": 0.10369374603033066,
+        "ks": 0.09298626119172583
+      }
+    ],
+    "minimap": [
+      {
+        "name": "ink_own_pooled",
+        "train_n": 100000,
+        "gpu_n": 82775,
+        "train_mean": 0.002544320886954665,
+        "train_variance": 0.00011101372365374118,
+        "gpu_mean": 0.0006440149154514074,
+        "gpu_variance": 3.336070221848786e-05,
+        "ks": 0.06656447598912718
+      },
+      {
+        "name": "ink_enemy_pooled",
+        "train_n": 100000,
+        "gpu_n": 82775,
+        "train_mean": 0.00018320526578463614,
+        "train_variance": 5.57966541236965e-06,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.009170000000000011
+      }
+    ],
+    "entities": [
+      {
+        "name": "screen_x",
+        "train_n": 3409,
+        "gpu_n": 0,
+        "train_mean": -0.005502348765730858,
+        "train_variance": 0.03857718035578728,
+        "gpu_mean": null,
+        "gpu_variance": null,
+        "ks": null
+      },
+      {
+        "name": "screen_y",
+        "train_n": 3409,
+        "gpu_n": 0,
+        "train_mean": 0.34702974557876587,
+        "train_variance": 0.03843143209815025,
+        "gpu_mean": null,
+        "gpu_variance": null,
+        "ks": null
+      },
+      {
+        "name": "distance",
+        "train_n": 3409,
+        "gpu_n": 0,
+        "train_mean": 0.4089387059211731,
+        "train_variance": 0.033730488270521164,
+        "gpu_mean": null,
+        "gpu_variance": null,
+        "ks": null
+      },
+      {
+        "name": "kind",
+        "train_n": 3409,
+        "gpu_n": 0,
+        "train_mean": 0.199951171875,
+        "train_variance": 0.0,
+        "gpu_mean": null,
+        "gpu_variance": null,
+        "ks": null
+      },
+      {
+        "name": "velocity_x",
+        "train_n": 3409,
+        "gpu_n": 0,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": null,
+        "gpu_variance": null,
+        "ks": null
+      },
+      {
+        "name": "velocity_y",
+        "train_n": 3409,
+        "gpu_n": 0,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": null,
+        "gpu_variance": null,
+        "ks": null
+      },
+      {
+        "name": "velocity_z",
+        "train_n": 3409,
+        "gpu_n": 0,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": null,
+        "gpu_variance": null,
+        "ks": null
+      }
+    ],
+    "validity": [
+      {
+        "name": "hud_ink",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_charge",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_time",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_own_turf",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_enemy_turf",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "projectiles",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "native_camera",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.6870639324188232,
+        "train_variance": 0.21500709652900696,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.3129360913862303
+      },
+      {
+        "name": "ink_age_over30",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.46657276153564453,
+        "train_variance": 0.08290690928697586,
+        "gpu_mean": 0.4925714433193207,
+        "gpu_variance": 0.08317656815052032,
+        "ks": 0.06857142857142862
+      }
+    ],
+    "availability": [
+      {
+        "name": "visible_enemy",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.21049706637859344,
+        "train_variance": 0.16618803143501282,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.21049706699598647
+      },
+      {
+        "name": "hud_ink",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_special",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_squid_form",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_submerged",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.9654214382171631,
+        "train_variance": 0.03338288888335228,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0345785736338376
+      },
+      {
+        "name": "hud_charge",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_hook_phase",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_remaining_time",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_own_turf",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_enemy_turf",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "hud_own_hp_cue",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "screen_distance",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "screen_kind",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "screen_ink",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.05133070796728134,
+        "train_variance": 0.004627574700862169,
+        "gpu_mean": 0.25590527057647705,
+        "gpu_variance": 0.026334751397371292,
+        "ks": 0.6613352886693423
+      },
+      {
+        "name": "screen_hookable",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 1.0,
+        "train_variance": 0.0,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "minimap",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.08623769879341125,
+        "train_variance": 0.0002226249489467591,
+        "gpu_mean": 0.08589290827512741,
+        "gpu_variance": 0.00026672700187191367,
+        "ks": 0.018260155250738763
+      },
+      {
+        "name": "entity_velocity",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "projectiles",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.0,
+        "train_variance": 0.0,
+        "gpu_mean": 0.0,
+        "gpu_variance": 0.0,
+        "ks": 0.0
+      },
+      {
+        "name": "native_camera",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.6870639324188232,
+        "train_variance": 0.21500709652900696,
+        "gpu_mean": 1.0,
+        "gpu_variance": 0.0,
+        "ks": 0.3129360913862303
+      },
+      {
+        "name": "ink_age_over30",
+        "train_n": 16195,
+        "gpu_n": 2800,
+        "train_mean": 0.46657276153564453,
+        "train_variance": 0.08290690928697586,
+        "gpu_mean": 0.4925714433193207,
+        "gpu_variance": 0.08317656815052032,
+        "ks": 0.06857142857142862
+      }
+    ]
+  },
+  "visible_enemy_probe": {
+    "train": 0.21049706699598641,
+    "gpu": 0.0,
+    "scope": "training samples vs one GPU observation probe each62f (all ink-age phases); not every-decision hit visibility"
+  },
+  "logger_replay_equal": {
+    "kills": true,
+    "deaths": true,
+    "damage": true,
+    "attacks": true,
+    "turf_percent": true,
+    "per_game": true
+  },
+  "native_ink_reservation_audit": {
+    "2": {
+      "n": 1,
+      "frame_offsets": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32
+      ],
+      "median_delta": [
+        0.0,
+        -0.014000058000000037,
+        -0.040466785000000005,
+        -0.062333344999999984,
+        -0.08419990499999996,
+        -0.10606646500000005,
+        -0.11699974499999999,
+        -0.11699974499999999,
+        -0.11699974499999999
+      ]
+    },
+    "3": {
+      "n": 1,
+      "frame_offsets": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32
+      ],
+      "median_delta": [
+        0.0,
+        0.0,
+        -0.021000087,
+        -0.04593342499999997,
+        -0.06779998499999995,
+        -0.08966654500000004,
+        -0.11153310500000002,
+        -0.11699974499999999,
+        -0.11699974499999999
+      ]
+    },
+    "4": {
+      "n": 3,
+      "frame_offsets": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32
+      ],
+      "median_delta": [
+        0.0,
+        -0.0020000339999999284,
+        -0.030000150000000003,
+        -0.05186670999999998,
+        -0.07373335999999997,
+        -0.09560003899999997,
+        -0.11199998899999997,
+        -0.11199998899999997,
+        -0.11199998899999997
+      ]
+    },
+    "5": {
+      "n": 0,
+      "frame_offsets": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32
+      ],
+      "median_delta": null
+    }
+  },
+  "formal_gpu_games": 960,
+  "all_formal_gpu_terminated": true,
+  "protected_hosts_unchanged": {
+    "work/rl-stage0/camera-host-r9/dmhost-aim": true,
+    "upstream/dm/host/dmhost": true,
+    "work/a8/dmhost-arena-v15": true,
+    "work/a8/dmhost-arena-special-v15": true,
+    "work/rl-demo/host-r5/dmhost-demo": true,
+    "work/rl-demo/render-host-r2/dmhost-demo": true,
+    "work/rl-demo/data-host-r2/dmhost-demo": true,
+    "work/rl-demo/data-host-r3/dmhost-demo": true,
+    "work/rl-demo/periodic-host-r2/dmhost-demo": true
+  },
+  "source_sha256": {
+    "rl/gpu/bc2/__init__.py": "656338cff99f116099d2908a1821e3da8ef850385df7cecea7f741f45c418dee",
+    "rl/gpu/bc2/distribution.py": "dfb948b8a87e09ec2dec560c857708828af33a2529139fc7872d022f1fb6a9ec",
+    "rl/gpu/bc2/evaluate.py": "d449099e67ee2d2cd871cdbd17c803a2bd8190425074036cf713b0cab60af2ac",
+    "rl/gpu/bc2/model.py": "56e24daef2b48c873221f2798ae94f8cbda66006063548172f23a7e4cbeecf7f",
+    "rl/gpu/bc2/observation.py": "0c2c05bb927aaef1e1153368adaeeb0af1c3a953f97da46c6231fbd678b6868d",
+    "rl/gpu/bc2/paired.py": "b40c27d52a82a0993b045fa6de512fdefe0d477ca50a064e4c109cc98d93b960",
+    "rl/gpu/bc2/report.py": "2c262fd1f817a20c38f3efae44dc87843a50e27f48f75b1166d669099f1faaa1",
+    "rl/gpu/bc2/test_bc2.py": "628932b7f780c55e06b3039628dd04cd0644d24c218afef7c2c6b11a4e842582",
+    "rl/gpu/bc2/train.py": "7035f0fb81dde8bad02c92e84a604b7aba0246ea810ba902cca2d92f016dbf6e",
+    "rl/demo/bc_ink.py": "66be4fe2c4e47bdf01da76bda9a6685bb1fff41db695a38baee189d7591d37bf",
+    "rl/demo/bc2_export.py": "fb50714181512bdc9b870b37056831641d5d0d00c8bd9aa5a679dcefb6ad3841",
+    "rl/demo/bc2_pair.py": "cb89c6985866e897e41bb4a510533f04303187c1886e09c1d9f2c6b6537adc69",
+    "rl/demo/bc2_native.py": "e5dfcb5b969ad6ea978072d27f240d89dcb59fc414c203938fa39744e06cdbe3",
+    "rl/demo/bc_native.py": "eaabb70d8b089ad5c3e225e31bf81afc1f947155bbbc4c29d8193028effe16ad",
+    "rl/demo/capture.py": "006b60df968600d373bfa9db0d2a426ef48d75cda2aa9abde617b34d27750d12",
+    "rl/demo/test_bc2_sensor.py": "2e06c75a9089a905376a64b7485c3a7b731e6e425659472c215c13a0071322de"
+  },
+  "checkpoint_sha256": {
+    "fit-chunk8-80/best.pt": "16057cf26aaeec3225aff9f9862e16b51e9a55f57b0e765b19fb1ab77c884f6f",
+    "fit-nofeedback1-80/best.pt": "e4bef923d42b3ab6a51fc1a715ba1b1937d1da0ed14595481f4c896ef25cb99e"
+  }
+}

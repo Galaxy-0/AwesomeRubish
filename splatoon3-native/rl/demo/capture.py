@@ -730,8 +730,15 @@ def run(a):
         hunter = SaberFixture(atlas) if a.source == "script" and getattr(a, "script_pattern", "legacy") == "hunter" else None
         if bc_path:
             from .bc_native import NativeBC
-            bc_actor = NativeBC(bc_path, out, env.session.out, origins,
-                                a.bc_data, a.bc_calibration, a.bc_camera)
+            if getattr(a, "bc_ink_contract", None):
+                from .bc2_native import NativeBC2
+                bc_actor = NativeBC2(bc_path, out, env.session.out, origins,
+                                    a.bc_data, a.bc_calibration, a.bc_camera,
+                                    contract=a.bc_ink_contract, stochastic=getattr(a, "bc_stochastic", False),
+                                    camera_decode=getattr(a, "bc_camera_decode", "argmax"))
+            else:
+                bc_actor = NativeBC(bc_path, out, env.session.out, origins,
+                                    a.bc_data, a.bc_calibration, a.bc_camera)
             result["bc_checkpoint"] = str(bc_path)
             result["bc_checkpoint_sha256"] = hashlib.sha256(Path(bc_path).read_bytes()).hexdigest()
         fixture_control = neutral()
@@ -972,6 +979,9 @@ if __name__ == "__main__":
     p.add_argument("--bc-data", default="work/rl-stage0/data-v5")
     p.add_argument("--bc-calibration", default="work/rl-stage0/native-camera-calibration-v1.json")
     p.add_argument("--bc-camera", default="work/rl-demo/run70/camera-nonlinear-r2.json")
+    p.add_argument("--bc-ink-contract", help="BC2 private contract.npz; enables causal snapshot sensor and level/chunk actor")
+    p.add_argument("--bc-stochastic", action="store_true", help="BC2 native sampled diagnostic; default greedy temporal ensemble")
+    p.add_argument("--bc-camera-decode", choices=["argmax","expectation"], default="argmax")
     p.add_argument("--dry-run", action="store_true", help="validate runtime/profile then exit; never opens SDL/controller or launches a game")
     p.add_argument(
         "--allow-unqualified",
